@@ -57,4 +57,13 @@ public class Reader extends APipe<Object, String> {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    @Override
+    public Reader clone() {
+        try {
+            return new Reader(filepath_);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

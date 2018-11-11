@@ -1,6 +1,7 @@
 package hr.fer.zemris.data;
 
 import hr.fer.zemris.utils.Pair;
+import org.tensorflow.op.core.Batch;
 
 /**
  * Constructs batches from the input stream.
@@ -63,5 +64,10 @@ public class Batcher extends APipe<Pair<float[], Float>, Pair<float[][], float[]
     @Override
     public void reset() {
         parent_.reset();
+    }
+
+    @Override
+    public Batcher clone() {
+        return new Batcher(parent_, batch_size_);
     }
 }

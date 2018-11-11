@@ -44,6 +44,17 @@ public class Cacher extends APipe<Pair<float[], Float>, Pair<float[], Float>> {
         }
     }
 
+    /**
+     * Instead of generating the data all over again, just use the original reference.
+     * This saves memory when cloning (shared data) and since modifiers are applied only in constructor,
+     * no worries of data modification (important for maintaining randomization).
+     */
+    private Cacher(@NotNull APipe<?, Pair<float[], Float>> parent, @NotNull IModifier[] data_modifiers, Pair<float[], Float>[] data) {
+        parent_ = parent;
+        data_modifiers_ = data_modifiers;
+        data_ = data;
+    }
+
 
     /**
      * Returns cached data.
@@ -68,5 +79,14 @@ public class Cacher extends APipe<Pair<float[], Float>, Pair<float[], Float>> {
     public void hard_reset() {
         index = 0;
         parent_.reset();
+    }
+
+    /**
+     * Returns a clone of this pipe.
+     * The internal data is shared with clones (for memory efficiency) and the modifiers are not re-applied.
+     */
+    @Override
+    public Cacher clone() {
+        return new Cacher(parent_, data_modifiers_, data_);
     }
 }

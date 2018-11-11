@@ -80,4 +80,9 @@ public class Parser extends APipe<String, Pair<float[], Float>> {
         data_started_ = false;
         parent_.reset();
     }
+
+    @Override
+    public Parser clone() {
+        return new Parser(parent_);
+    }
 }
