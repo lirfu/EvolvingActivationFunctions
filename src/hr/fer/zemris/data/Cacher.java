@@ -24,7 +24,7 @@ public class Cacher extends APipe<Pair<float[], Float>, Pair<float[], Float>> {
 
     /**
      * Caches the input stream to the specified file.
-     * Applies modifications to the dataset in the order they are specified.
+     * Applies modifiers to the dataset in the order they are specified.
      */
     public Cacher(@NotNull APipe<?, Pair<float[], Float>> parent, @NotNull IModifier[] data_modifiers) {
         parent_ = parent;
@@ -46,8 +46,7 @@ public class Cacher extends APipe<Pair<float[], Float>, Pair<float[], Float>> {
 
     /**
      * Instead of generating the data all over again, just use the original reference.
-     * This saves memory when cloning (shared data) and since modifiers are applied only in constructor,
-     * no worries of data modification (important for maintaining randomization).
+     * This saves memory when cloning (shares data) and since modifiers aren't re-applied (important for maintaining randomization).
      */
     private Cacher(@NotNull APipe<?, Pair<float[], Float>> parent, @NotNull IModifier[] data_modifiers, Pair<float[], Float>[] data) {
         parent_ = parent;
@@ -71,6 +70,15 @@ public class Cacher extends APipe<Pair<float[], Float>, Pair<float[], Float>> {
     @Override
     public void reset() {
         index = 0;
+    }
+
+    /**
+     * Apply the given modifier on the dataset.
+     *
+     * @param modifier Modifier applied to the dataset.
+     */
+    public void applyModifier(@NotNull IModifier modifier) {
+        modifier.apply(data_);
     }
 
     /**
