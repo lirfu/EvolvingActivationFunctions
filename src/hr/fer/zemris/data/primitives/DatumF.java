@@ -1,4 +1,4 @@
-package hr.fer.zemris.data;
+package hr.fer.zemris.data.primitives;
 
 import com.sun.istack.internal.NotNull;
 import hr.fer.zemris.utils.Pair;
@@ -8,18 +8,18 @@ import org.tensorflow.Tensors;
 import java.nio.FloatBuffer;
 
 /**
- * Container for <b>float</b> data.
+ * Container for <b>Tensor</b> data pairs.
  */
 public class DatumF implements IDatum<Tensor<Float>> {
     private Tensor<Float> input_;
     private Tensor<Float> label_;
 
-    public DatumF(@NotNull Pair<float[], Float> pair) {
+    public DatumF(@NotNull DataPair pair) {
         input_ = Tensors.create(pair.getKey());
         label_ = Tensors.create(pair.getVal());
     }
 
-    public DatumF(@NotNull Pair<float[][], float[]> pair, Object ignore) {
+    public DatumF(@NotNull BatchPair pair) {
         input_ = Tensors.create(pair.getKey());
         label_ = Tensors.create(pair.getVal());
     }

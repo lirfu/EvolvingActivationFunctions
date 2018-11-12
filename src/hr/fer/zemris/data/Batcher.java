@@ -1,12 +1,14 @@
 package hr.fer.zemris.data;
 
+import hr.fer.zemris.data.primitives.BatchPair;
+import hr.fer.zemris.data.primitives.DataPair;
 import hr.fer.zemris.utils.Pair;
 import org.tensorflow.op.core.Batch;
 
 /**
  * Constructs batches from the input stream.
  */
-public class Batcher extends APipe<Pair<float[], Float>, Pair<float[][], float[]>> {
+public class Batcher extends APipe<DataPair, BatchPair> {
     private int batch_size_;
 
     /**
@@ -16,7 +18,7 @@ public class Batcher extends APipe<Pair<float[], Float>, Pair<float[][], float[]
      * @param batch_size Size of the constructed batches. Last batch might be smaller then the specified size
      *                   (depending on the stream size).
      */
-    public Batcher(APipe<?, Pair<float[], Float>> parent, int batch_size) {
+    public Batcher(APipe<?, DataPair> parent, int batch_size) {
         parent_ = parent;
         batch_size_ = batch_size;
     }
@@ -27,7 +29,7 @@ public class Batcher extends APipe<Pair<float[], Float>, Pair<float[][], float[]
      * After the last batch was constructed, this method returns <code>null</code>.
      */
     @Override
-    public Pair<float[][], float[]> get() {
+    public BatchPair get() {
         int this_batch_size = 0, data_dim = 0;
         float[][] inputs = null;
         float[] labels = new float[batch_size_];
@@ -53,9 +55,9 @@ public class Batcher extends APipe<Pair<float[], Float>, Pair<float[][], float[]
             float[] short_labels = new float[this_batch_size];
             System.arraycopy(inputs, 0, short_inputs, 0, this_batch_size);
             System.arraycopy(labels, 0, short_labels, 0, this_batch_size);
-            return new Pair<>(short_inputs, short_labels);
+            return new BatchPair(short_inputs, short_labels);
         }
-        return new Pair<>(inputs, labels);
+        return new BatchPair(inputs, labels);
     }
 
     /**

@@ -1,6 +1,7 @@
 package hr.fer.zemris.data;
 
 import com.sun.istack.internal.NotNull;
+import hr.fer.zemris.data.primitives.DataPair;
 import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Util;
 
@@ -9,7 +10,7 @@ import hr.fer.zemris.utils.Util;
  * Additionally, keeps track of dataset specifics (argument, classes and instances number)
  * which can be accessed by the <code>getDatasetDescriptor()</code> method.
  */
-public class Parser extends APipe<String, Pair<float[], Float>> {
+public class Parser extends APipe<String, DataPair> {
     /**
      * Descriptor being constructed while reading the stream.
      * Should be used only when the whole stream was read.
@@ -27,7 +28,7 @@ public class Parser extends APipe<String, Pair<float[], Float>> {
      * Returns <code>null</code> if end of stream is reached.
      */
     @Override
-    public Pair<float[], Float> get() {
+    public DataPair get() {
         String s;
         while (!data_started_ && (s = parent_.get()) != null) { // Read all the descriptors until data start is reached.
             s = s.trim();
@@ -61,7 +62,7 @@ public class Parser extends APipe<String, Pair<float[], Float>> {
         }
 
         dataset_descriptor_.instances_num++;
-        return Util.parse(s, ",");
+        return parse(s, ",");
     }
 
     /**
@@ -84,5 +85,27 @@ public class Parser extends APipe<String, Pair<float[], Float>> {
     @Override
     public Parser clone() {
         return new Parser(parent_);
+    }
+
+
+    /**
+     * Parses an array of floats from the given string.
+     * For supervised data, the label is specified as a single last value.
+     * String format e.g.: "v1,v2,v3,v4,l"
+     *
+     * @param s         String to parse.
+     * @param delimiter Regex that splits the string into packets of data.
+     */
+    public static DataPair parse(@NotNull String s, @NotNull String delimiter) {
+        String[] parts = s.split(delimiter);
+        int l = parts.length - 1;
+        float[] inputs = new float[l];
+        float label;
+
+        for (int i = 0; i < l; i++) {
+            inputs[i] = Float.parseFloat(parts[i]);
+        }
+        label = Float.parseFloat(parts[l]);
+        return new DataPair(inputs, label);
     }
 }
