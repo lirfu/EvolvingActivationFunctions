@@ -1,19 +1,39 @@
 package hr.fer.zemris.data;
 
 public class DatasetDescriptor {
-    public String relation;
-    public int attributes_num;
-    public int classes_num;
-    public int instances_num;
+    private String name_;
+    private int attributes_num_;
+    private int classes_num_;
+    private int instances_num_;
 
-    public void reset() {
-        relation = null;
-        attributes_num = 0;
-        classes_num = 0;
+    public DatasetDescriptor(String name, int attributes_num, int classes_num, int instances_num) {
+        name_ = name;
+        attributes_num_ = attributes_num;
+        classes_num_ = classes_num;
+        instances_num_ = instances_num;
     }
 
-    @Override
-    public String toString() {
-        return "Dataset description:\n" + relation + "\n" + attributes_num + " attributes\n" + classes_num + " classes\n" + instances_num + " instances";
+    public DatasetDescriptor(UnsafeDatasetDescriptor d) {
+        name_ = d.name;
+        attributes_num_ = d.attributes_num;
+        classes_num_ = d.classes_num;
+        instances_num_ = d.instances_num;
+    }
+
+
+    public String getName() {
+        return name_;
+    }
+
+    public int getAttributesNumber() {
+        return attributes_num_;
+    }
+
+    public int getClassesNumber() {
+        return classes_num_;
+    }
+
+    public int getInstancesNumber() {
+        return instances_num_;
     }
 }

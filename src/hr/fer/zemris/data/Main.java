@@ -38,7 +38,7 @@ public class Main {
             System.out.println(Arrays.toString(s.getKey()) + " " + s.getVal());
         }
         System.out.println();
-        System.out.println(parser.getDatasetDescriptor());
+        System.out.println(parser.describe());
     }
 
     @SuppressWarnings("Duplicates")

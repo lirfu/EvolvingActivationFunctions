@@ -2,20 +2,18 @@ package hr.fer.zemris.data;
 
 import com.sun.istack.internal.NotNull;
 import hr.fer.zemris.data.primitives.DataPair;
-import hr.fer.zemris.utils.Pair;
-import hr.fer.zemris.utils.Util;
 
 /**
  * Reads the stream and parses it into a pair of float array input and float label (<code>Pair(float[], Float)</code>).
  * Additionally, keeps track of dataset specifics (argument, classes and instances number)
  * which can be accessed by the <code>getDatasetDescriptor()</code> method.
  */
-public class Parser extends APipe<String, DataPair> {
+public class Parser extends APipe<String, DataPair> implements IDescriptableDS {
     /**
      * Descriptor being constructed while reading the stream.
      * Should be used only when the whole stream was read.
      */
-    private DatasetDescriptor dataset_descriptor_ = new DatasetDescriptor();
+    private UnsafeDatasetDescriptor dataset_descriptor_ = new UnsafeDatasetDescriptor();
     private boolean data_started_;
 
     public Parser(@NotNull APipe<?, String> parent) {
@@ -35,7 +33,7 @@ public class Parser extends APipe<String, DataPair> {
             if (s.isEmpty()) {
                 continue;
             } else if (s.startsWith("@relation")) {
-                dataset_descriptor_.relation = s.substring("@relation".length() + 1, s.length());
+                dataset_descriptor_.name = s.substring("@relation".length() + 1, s.length());
 
             } else if (s.startsWith("@attribute")) {
 
@@ -69,7 +67,7 @@ public class Parser extends APipe<String, DataPair> {
      * Returns the constructed dataset descriptor.
      * It should be accessed only when the whole stream was read.
      */
-    public DatasetDescriptor getDatasetDescriptor() {
+    public UnsafeDatasetDescriptor getDatasetDescriptor() {
         return dataset_descriptor_;
     }
 
@@ -107,5 +105,10 @@ public class Parser extends APipe<String, DataPair> {
         }
         label = Float.parseFloat(parts[l]);
         return new DataPair(inputs, label);
+    }
+
+    @Override
+    public DatasetDescriptor describe() {
+        return new DatasetDescriptor(dataset_descriptor_);
     }
 }
