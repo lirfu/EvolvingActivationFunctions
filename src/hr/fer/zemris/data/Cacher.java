@@ -8,7 +8,7 @@ import hr.fer.zemris.utils.Pair;
 import java.util.ArrayList;
 
 /**
- * Caches the input stream into RAM.
+ * Caches the whole input stream into RAM.
  * Applies modifiers to the data such as normalization, randomization, etc.
  */
 public class Cacher extends APipe<DataPair, DataPair> {
@@ -85,9 +85,17 @@ public class Cacher extends APipe<DataPair, DataPair> {
     /**
      * Sends the reset signal to parent and resets the internal index.
      */
-    public void hard_reset() {
+    public void hardReset() {
         index = 0;
         parent_.reset();
+    }
+
+    /**
+     * Sets parent to null, effectively releasing this resource.
+     * Useful for releasing memory in concurrent applications.
+     */
+    public void releaseParent() {
+        parent_ = null;
     }
 
     /**
