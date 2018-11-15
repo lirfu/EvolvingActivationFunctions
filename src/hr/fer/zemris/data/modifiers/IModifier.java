@@ -1,7 +1,7 @@
 package hr.fer.zemris.data.modifiers;
 
-import hr.fer.zemris.utils.Pair;
+import hr.fer.zemris.data.primitives.DataPair;
 
 public interface IModifier {
-    public void apply(Pair<float[], Float>[] data);
+    public void apply(DataPair[] data);
 }
