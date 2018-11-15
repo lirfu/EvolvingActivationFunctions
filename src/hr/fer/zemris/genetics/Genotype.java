@@ -13,7 +13,7 @@ public abstract class Genotype<T> implements Comparable<Genotype<T>> {
         fitness_ = g.fitness_;
     }
 
-    public final void evaluate(AFitnessFunction mFitnessFunction) {
+    public final void evaluate(AEvaluator mFitnessFunction) {
         fitness_ = mFitnessFunction.evaluate(this);
     }
 
@@ -34,7 +34,7 @@ public abstract class Genotype<T> implements Comparable<Genotype<T>> {
 
     public abstract Genotype copy();
 
-    public abstract void randomize(Random rand);
+    public abstract void initialize(Random rand);
 
     public abstract String stringify();
 

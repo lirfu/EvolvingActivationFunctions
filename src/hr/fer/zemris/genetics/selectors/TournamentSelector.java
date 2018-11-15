@@ -2,6 +2,7 @@ package hr.fer.zemris.genetics.selectors;
 
 import hr.fer.zemris.genetics.Genotype;
 import hr.fer.zemris.genetics.Selector;
+import hr.fer.zemris.genetics.Utils;
 import hr.fer.zemris.utils.Util;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class TournamentSelector implements Selector {
         }
 
         // Sort tournament.
-        Util.sortPopulation(pool);
+        Utils.sortPopulation(pool);
 
         // Take first two best and replace the worst.
         return new Parent[]{new Parent(pool[0], indexes.get(0)), new Parent(pool[1], indexes.get(1)), new Parent(pool[pool.length - 1], indexes.get(indexes.size() - 1))};

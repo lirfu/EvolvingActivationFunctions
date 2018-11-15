@@ -3,6 +3,7 @@ package hr.fer.zemris.genetics;
 import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Util;
 import hr.fer.zemris.utils.threading.WorkArbiter;
+import org.tensorflow.Session;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -10,19 +11,20 @@ import java.util.Random;
 
 public class Algorithm {
     protected final Random random = new Random();
-    protected final AFitnessFunction mFitnessFunction;
+    // Components.
+    protected final AEvaluator mFitnessFunction;
     protected Selector mSelector;
-
     private final ArrayList<Crossover> mCrossovers;
     private final ArrayList<Mutation> mMutations;
     private final Genotype mGenotypeTemplate;
+    // Hyperparams.
     private final int mPopulationSize;
-
     private final Long mMaxIterations;
     private Long mMaxEvalsCondition;
     private Long mMaxTimeCondition;
     private final Double mMinFitness;
-
+    // Algorithm internals.
+    protected WorkArbiter mWorkArbiter;
     private long iterations;
     private long mElapsedTime;
     private LinkedList<Pair<Long, Genotype>> optimumHistory;
@@ -30,9 +32,7 @@ public class Algorithm {
     private long mBestIteration;
     private Genotype[] mPopulation;
 
-    protected WorkArbiter mWorkArbiter;
-
-    private Algorithm(ArrayList<Crossover> crossovers, ArrayList<Mutation> mutations, Genotype genotypeTemplate, AFitnessFunction function, Selector selector, int popSize, Long maxIterCondition, Long maxEvalCondition, Long maxTimeCondition, Double minimumFitnessCondition, Integer workerNumber) {
+    private Algorithm(ArrayList<Crossover> crossovers, ArrayList<Mutation> mutations, Genotype genotypeTemplate, AEvaluator function, Selector selector, int popSize, Long maxIterCondition, Long maxEvalCondition, Long maxTimeCondition, Double minimumFitnessCondition, Integer workerNumber) {
         mCrossovers = crossovers;
         mMutations = mutations;
         mFitnessFunction = function;
@@ -73,16 +73,12 @@ public class Algorithm {
         final Random rand = new Random();
         for (int i = 0; i < mPopulationSize; i++) {
             mPopulation[i] = mGenotypeTemplate.copy();
-            mPopulation[i].randomize(rand);
+            mPopulation[i].initialize(rand);
             mPopulation[i].evaluate(mFitnessFunction);
         }
 
         // Evaluate population and find the initial best.
-        mBestUnit = mPopulation[0];
-        for (Genotype g : mPopulation)
-            if (mBestUnit.getFitness() > g.getFitness())
-                mBestUnit = g;
-        mBestUnit = mBestUnit.copy();
+        mBestUnit = Utils.findBest(mPopulation).copy();
         mBestIteration = iterations;
 
         if (showTrace) {
@@ -101,15 +97,8 @@ public class Algorithm {
             // Apply operators on this generation.
             runIteration(mPopulation);
 
-            // Find the best in the population.
-            Genotype best = mPopulation[0];
-            for (int i = 1; i < mPopulationSize; i++)
-                if (best.getFitness() > mPopulation[i].getFitness())
-                    best = mPopulation[i];
-
-            mElapsedTime = System.currentTimeMillis() - startingTime;
-
             // Update the global best if needed.
+            Genotype best = Utils.findBest(mPopulation);
             if (mBestUnit.getFitness() > best.getFitness()) {
                 mBestUnit = best.copy();
                 mBestIteration = iterations;
@@ -117,8 +106,9 @@ public class Algorithm {
                     print(iterations, mBestUnit);
                 }
             }
-
             optimumHistory.add(new Pair<>(iterations, best.copy()));
+
+            mElapsedTime = System.currentTimeMillis() - startingTime;
         }
 
         if (showTrace) {
@@ -160,16 +150,17 @@ public class Algorithm {
     }
 
     private void print(long iterations, Genotype best) {
-        System.out.println("\n===> Best unit: " + best.stringify());
-        System.out.println("Fitness: " + best.getFitness());
-        System.out.println("Stddev: " + standardDeviation(mPopulation));
-        System.out.println("Iteration: " + iterations);
-        System.out.println("Evaluations: " + mFitnessFunction.getEvaluations());
-        System.out.println("Time: " + Util.formatMiliseconds(mElapsedTime));
+        String s = "\n===> Best unit: " + best.stringify()
+                + "\nFitness: " + best.getFitness()
+                + "\nStddev: " + standardDeviation(mPopulation)
+                + "\nIteration: " + iterations
+                + "\nEvaluations: " + mFitnessFunction.getEvaluations()
+                + "\nTime: " + Util.formatMiliseconds(mElapsedTime);
+        System.out.println(s);
     }
 
     protected void runIteration(Genotype[] population) {
-        // must be overwritten
+        throw new RuntimeException("Method runIteration() not implemented!");
     }
 
     protected Crossover getCrossover(Random rand) {
@@ -271,7 +262,7 @@ public class Algorithm {
 
         private Long mMaxIterCondition;
         private Double mMinimumFitnessCondition;
-        private AFitnessFunction mFitnessFunction;
+        private AEvaluator mFitnessFunction;
         private Long mMaxEvalsCondition;
         private Long mMaxTimeCondition;
         private Selector mSelector;
@@ -281,8 +272,6 @@ public class Algorithm {
         public Algorithm create() {
             if (mGenotypeTemplate == null)
                 throw new IllegalStateException("Genotype template must be specified!");
-            if (mCrossovers.isEmpty())
-                throw new IllegalStateException("At least 1 crossover must be set!");
             if (mMaxIterCondition == null && mMinimumFitnessCondition == null && mMaxEvalsCondition == null && mMaxTimeCondition == null)
                 throw new IllegalStateException("At least 1 stop condition must be set!");
             if (mPopulationSize == null)
@@ -322,7 +311,7 @@ public class Algorithm {
             return this;
         }
 
-        public Builder setFitnessFunction(AFitnessFunction function) {
+        public Builder setFitnessFunction(AEvaluator function) {
             mFitnessFunction = function;
             return this;
         }
