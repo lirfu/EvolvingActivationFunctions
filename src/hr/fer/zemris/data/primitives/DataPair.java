@@ -6,8 +6,8 @@ import org.tensorflow.Tensors;
 /**
  * Primitive for a single input-label pair (vector, scalar).
  */
-public class DataPair extends Pair<float[], Float> implements ITensorablePair<Float> {
-    public DataPair(float[] key, Float val) {
+public class DataPair extends Pair<float[], float[]> implements ITensorablePair<Float> {
+    public DataPair(float[] key, float[] val) {
         super(key, val);
     }
 

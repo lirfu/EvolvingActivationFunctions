@@ -76,23 +76,23 @@ public class DemoTests {
         for (int i = 0; i < repeats; i++) {
             f = 0;
             stopwatch.start();
-            while ((p = parser.next()) != null) f += p.getVal();
+            while ((p = parser.next()) != null) f += p.getVal()[0];
             parser.reset();
             t += stopwatch.stop();
         }
         System.out.println("Iterating parser (avg): " + t / (double) repeats + "ms");
-        System.out.println("Calculated value: " + f);
+        System.out.println("Calculated test value: " + f);
 
         t = 0;
         for (int i = 0; i < repeats; i++) {
             f = 0;
             stopwatch.start();
-            while ((p = cacher.next()) != null) f += p.getVal();
+            while ((p = cacher.next()) != null) f += p.getVal()[0];
             cacher.reset();
             t += stopwatch.stop();
         }
         System.out.println("Iterating cacher (avg): " + t / (double) repeats + "ms");
-        System.out.println("Calculated value: " + f);
+        System.out.println("Calculated test value: " + f);
     }
 
     public static void test_batcher() throws FileNotFoundException {

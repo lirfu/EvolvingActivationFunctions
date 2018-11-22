@@ -1,11 +1,9 @@
 package hr.fer.zemris.data.datasets;
 
-import hr.fer.zemris.data.APipe;
-import hr.fer.zemris.data.DatasetDescriptor;
-import hr.fer.zemris.data.IDescriptableDS;
+import hr.fer.zemris.data.*;
 import hr.fer.zemris.data.primitives.DataPair;
 
-public class BinaryDecoderClassification extends APipe<Object, DataPair> implements IDescriptableDS {
+public class BinaryDecoderClassification extends ADataGenerator {
     private DataPair[] data_;
     private int index_;
     private DatasetDescriptor descriptor_ = new DatasetDescriptor("BinaryDecoderClassification", 3, 8, 8);
@@ -14,7 +12,7 @@ public class BinaryDecoderClassification extends APipe<Object, DataPair> impleme
         data_ = new DataPair[8];
         for (int i = 0; i < 8; i++) {
             float[] x = new float[]{i / 4 % 2, i / 2 % 2, i % 2}; // Binary arrays.
-            data_[i] = new DataPair(x, (float) i);
+            data_[i] = new DataPair(x, Utils.toOneHot(i, 8));
         }
     }
 

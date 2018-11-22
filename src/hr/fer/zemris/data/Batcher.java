@@ -29,18 +29,20 @@ public class Batcher extends APipe<DataPair, BatchPair> {
      */
     @Override
     public BatchPair next() {
-        int this_batch_size = 0, data_dim = 0;
+        int this_batch_size = 0, data_dim = 0, label_dim = 0;
         float[][] inputs = null;
-        float[] labels = new float[batch_size_];
+        float[][] labels = null;
 
         for (int i = 0; i < batch_size_; i++) {
-            Pair<float[], Float> pair = parent_.next();
+            DataPair pair = parent_.next();
             if (pair == null) break; // End of stream.
             this_batch_size++;
 
-            if (inputs == null) { // Initialize array size.
+            if (inputs == null) { // Initialize array sizes.
                 data_dim = pair.getKey().length;
                 inputs = new float[batch_size_][data_dim];
+                label_dim = pair.getVal().length;
+                labels = new float[batch_size_][label_dim];
             }
 
             inputs[i] = pair.getKey();
@@ -51,7 +53,7 @@ public class Batcher extends APipe<DataPair, BatchPair> {
 
         if (this_batch_size < batch_size_) { // Trim if batch is not filled.
             float[][] short_inputs = new float[this_batch_size][data_dim];
-            float[] short_labels = new float[this_batch_size];
+            float[][] short_labels = new float[this_batch_size][label_dim];
             System.arraycopy(inputs, 0, short_inputs, 0, this_batch_size);
             System.arraycopy(labels, 0, short_labels, 0, this_batch_size);
             return new BatchPair(short_inputs, short_labels);

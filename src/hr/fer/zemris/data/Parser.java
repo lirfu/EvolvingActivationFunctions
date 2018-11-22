@@ -8,7 +8,7 @@ import hr.fer.zemris.data.primitives.DataPair;
  * Additionally, keeps track of dataset specifics (argument, classes and instances number)
  * which can be accessed by the <code>getDatasetDescriptor()</code> method.
  */
-public class Parser extends APipe<String, DataPair> implements IDescriptableDS {
+public class Parser extends ADataGenerator<String> {
     /**
      * Descriptor being constructed while reading the stream.
      * Should be used only when the whole stream was read.
@@ -104,7 +104,7 @@ public class Parser extends APipe<String, DataPair> implements IDescriptableDS {
             inputs[i] = Float.parseFloat(parts[i]);
         }
         label = Float.parseFloat(parts[l]);
-        return new DataPair(inputs, label);
+        return new DataPair(inputs, new float[]{label});
     }
 
     @Override

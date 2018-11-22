@@ -10,8 +10,8 @@ import java.util.Arrays;
 /**
  * Primitive for a batch of input-label pairs (matrix, vector).
  */
-public class BatchPair extends Pair<float[][], float[]> implements ITensorablePair<Float> {
-    public BatchPair(float[][] key, float[] val) {
+public class BatchPair extends Pair<float[][], float[][]> implements ITensorablePair<Float> {
+    public BatchPair(float[][] key, float[][] val) {
         super(key, val);
     }
 

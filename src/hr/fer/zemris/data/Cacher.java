@@ -23,7 +23,7 @@ public class Cacher<T> extends APipe<T, T> implements Iterable<T> {
     }
 
     public boolean hasNext() {
-        return index_ >= data_.size();
+        return index_ < data_.size();
     }
 
     @Override
