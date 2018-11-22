@@ -1,5 +1,9 @@
-package hr.fer.zemris.data;
+package hr.fer.zemris.data.demo;
 
+import hr.fer.zemris.data.Batcher;
+import hr.fer.zemris.data.Modifier;
+import hr.fer.zemris.data.Parser;
+import hr.fer.zemris.data.Reader;
 import hr.fer.zemris.data.modifiers.IModifier;
 import hr.fer.zemris.data.primitives.BatchPair;
 import hr.fer.zemris.data.primitives.DataPair;
@@ -11,7 +15,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 
-public class Main {
+public class DemoTests {
     public static void main(String[] args) throws IOException {
 //        test_reader();
 //        test_parser();
@@ -24,7 +28,7 @@ public class Main {
         Reader reader = new Reader(path);
         int i = 0;
         String s;
-        while (i++ < 5 && (s = reader.get()) != null) {
+        while (i++ < 5 && (s = reader.next()) != null) {
             System.out.println(s);
         }
     }
@@ -34,7 +38,7 @@ public class Main {
         Parser parser = new Parser(new Reader(path));
         int i = 0;
         DataPair s;
-        while (i++ < 5 && (s = parser.get()) != null) {
+        while (i++ < 5 && (s = parser.next()) != null) {
             System.out.println(Arrays.toString(s.getKey()) + " " + s.getVal());
         }
         System.out.println();
@@ -60,7 +64,7 @@ public class Main {
 
         stopwatch.start();
         freeS = Runtime.getRuntime().freeMemory();
-        Cacher cacher = new Cacher(new Parser(new Reader(path)), modifiers);
+        Modifier cacher = new Modifier(new Parser(new Reader(path)), modifiers);
         freeE = Runtime.getRuntime().freeMemory();
         System.out.println("Loading cacher: " + stopwatch.stop() + "ms\n                " + (freeS - freeE) + "B");
 
@@ -72,7 +76,7 @@ public class Main {
         for (int i = 0; i < repeats; i++) {
             f = 0;
             stopwatch.start();
-            while ((p = parser.get()) != null) f += p.getVal();
+            while ((p = parser.next()) != null) f += p.getVal();
             parser.reset();
             t += stopwatch.stop();
         }
@@ -83,7 +87,7 @@ public class Main {
         for (int i = 0; i < repeats; i++) {
             f = 0;
             stopwatch.start();
-            while ((p = cacher.get()) != null) f += p.getVal();
+            while ((p = cacher.next()) != null) f += p.getVal();
             cacher.reset();
             t += stopwatch.stop();
         }
@@ -98,14 +102,14 @@ public class Main {
         // Build string by serializing batches.
         StringBuilder batches = new StringBuilder();
         BatchPair d;
-        while ((d = batcher.get()) != null)
+        while ((d = batcher.next()) != null)
             batches.append(new DatumF(d).toString(","));
 
         // Build string by serializing individual parses.
         StringBuilder parses = new StringBuilder();
         Parser parser = new Parser(new Reader(path));
         DataPair s;
-        while ((s = parser.get()) != null)
+        while ((s = parser.next()) != null)
             parses.append(new DatumF(s).toString(","));
 
         // Compare strings.
