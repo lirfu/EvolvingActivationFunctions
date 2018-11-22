@@ -1,7 +1,6 @@
-package hr.fer.zemris.neurology;
+package hr.fer.zemris.neurology.tf;
 
 import com.sun.istack.internal.NotNull;
-import hr.fer.zemris.tf.TFContext;
 import org.tensorflow.Operand;
 
 import java.util.List;
@@ -24,14 +23,14 @@ public interface ILayer<T> {
     public void initialize(@NotNull TFContext context, long seed);
 
     /**
-     * Registers layers' operands that get updated during training.
+     * Registers layers' operands that next updated during training.
      *
      * @param gradients Container for gradients.
      */
     public void registerGradients(@NotNull List<Operand<T>> gradients);
 
     /**
-     * Registers parameters that can get fetched from the given context.
+     * Registers parameters that can next fetched from the given context.
      *
      * @param context Context that will fetch layers' parameters.
      */

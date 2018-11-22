@@ -1,8 +1,7 @@
-package hr.fer.zemris.neurology;
+package hr.fer.zemris.neurology.tf;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
-import hr.fer.zemris.tf.TFContext;
 import org.tensorflow.Operand;
 import org.tensorflow.Shape;
 import org.tensorflow.op.Ops;

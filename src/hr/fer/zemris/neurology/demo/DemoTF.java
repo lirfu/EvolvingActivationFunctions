@@ -1,39 +1,40 @@
-package hr.fer.zemris.neurology;
+package hr.fer.zemris.neurology.demo;
 
 import hr.fer.zemris.data.*;
 import hr.fer.zemris.data.datasets.BinaryDecoderClassification;
-import hr.fer.zemris.data.datasets.ComplexFunctionRegression;
 import hr.fer.zemris.data.modifiers.IModifier;
 import hr.fer.zemris.data.modifiers.Randomizer;
 import hr.fer.zemris.data.primitives.DataPair;
 import hr.fer.zemris.data.primitives.TensorPair;
-import hr.fer.zemris.neurology.descendmethods.AdamOptimizer;
-import hr.fer.zemris.neurology.descendmethods.MomentumOptimizer;
-import hr.fer.zemris.tf.TFContext;
-import hr.fer.zemris.tf.TFStep;
-import hr.fer.zemris.tf.Utils;
+import hr.fer.zemris.neurology.tf.FullyConnectedLayer;
+import hr.fer.zemris.neurology.tf.IActivationFunction;
+import hr.fer.zemris.neurology.tf.ILayer;
+import hr.fer.zemris.neurology.tf.INeuralNetwork;
+import hr.fer.zemris.neurology.tf.descendmethods.AdamOptimizer;
+import hr.fer.zemris.neurology.tf.TFContext;
+import hr.fer.zemris.neurology.tf.TFStep;
+import hr.fer.zemris.neurology.tf.Utils;
 import org.tensorflow.*;
 import org.tensorflow.Shape;
 import org.tensorflow.op.Ops;
 import org.tensorflow.op.core.*;
 
-import javax.xml.crypto.Data;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 
-public class Main {
+public class DemoTF {
     private static DatasetDescriptor descriptor;
-    private static Cacher cacher;
+    private static Modifier cacher;
 
     public static void main(String[] args) {
         // Construct dataset pipeline.
         APipe<?, DataPair> dataset = new BinaryDecoderClassification();
-        cacher = new Cacher(dataset, new IModifier[]{new Randomizer(1)});
+        cacher = new Modifier(dataset, new IModifier[]{});
         descriptor = ((IDescriptableDS) dataset).describe();
-        Tensorifyer<Float> pipeline = new Tensorifyer(new Batcher(cacher, 3));
+        Tensorifyer<Float> pipeline = new Tensorifyer(new Batcher(cacher, 4));
         // Run the nn procedures.
         try (Graph g = new Graph()) {
             try (Session sess = new Session(g)) {
@@ -67,7 +68,7 @@ public class Main {
             tf = Ops.create(graph);
             sess = session;
 
-            IActivationFunction<Float> af = input -> tf.sigmoid(input);
+            IActivationFunction<Float> af = input -> tf.relu(input);
 
             layers = new FullyConnectedLayer[]{
                     new FullyConnectedLayer(tf, 5, af, Float.class),
@@ -118,10 +119,10 @@ public class Main {
                 l.registerGradients(grad_list);
             Gradients gradients = tf.gradients(loss, grad_list);
             // Define descend method.
-            Constant<Float> learning_rate = tf.constant(5e-1f);
-            Constant<Float> momentum = tf.constant(1e-1f);
+            Constant<Float> learning_rate = tf.constant(1e-4f);
+            Constant<Float> momentum_rate = tf.constant(1e-2f);
             for (int i = 0; i < grad_list.size(); i++) {
-                context.addTarget(new MomentumOptimizer<>(learning_rate, momentum).apply(
+                context.addTarget(new AdamOptimizer(learning_rate).apply(
                         tf, context, grad_list.get(i), gradients.dy(i), Float.class
                 ));
             }
@@ -129,14 +130,18 @@ public class Main {
             context.addTargetToFetch(loss);
             context.addTargetToFetch(accuracy);
 
+            Randomizer rand = new Randomizer(2, new Random(42));
+
             // Training procedure.
-            for (int epoch = 0; epoch < 100000; epoch++) {
-                cacher.applyModifier(new Randomizer(2)); // Randomize inputs (2 passes).
+            float t = 0;
+            for (int epoch = 0; epoch < 10000; epoch++) {
+//                cacher.applyModifier(rand); // Randomize inputs (2 passes).
                 double lss = 0;
                 double acc = 0;
                 int ctr = 0;
+                t++;
                 dataset.reset();
-                for (TensorPair<Float> tp = dataset.get(); tp != null; tp = dataset.get(), ctr++) {
+                for (TensorPair<Float> tp = dataset.next(); tp != null; tp = dataset.next(), ctr++) {
                     try (TFStep step = context.createStep(sess)) {
                         step
                                 .feed(x, tp.getKey())
@@ -150,11 +155,13 @@ public class Main {
                     }
                 }
                 lss /= ctr;
-                if (lss < 1e-6) {
+                if (Double.isNaN(lss)) {
+                    System.out.println("Error! Loss is NaN!");
+                    break;
+                } else if (lss < 1e-6) {
                     System.out.println("Goal reached: " + lss);
                     break;
-                }
-                if (epoch % 100 == 0) {
+                } else if (epoch % 100 == 0) {
                     System.out.println("Epoch " + (epoch + 1) + " has accuracy: " + lss + "   (" + acc + " correct)");
                 }
             }
@@ -165,13 +172,11 @@ public class Main {
             TFContext context = new TFContext();
             // Add fetchables.
             context.addTargetToFetch(output);
-            context.addTargetToFetch(accuracy);
 
             // Print predictions.
             dataset.reset();
-            int corr = 0;
             LinkedList<TensorPair<Float>> predictions = new LinkedList<>();
-            for (TensorPair<Float> tp = dataset.get(); tp != null; tp = dataset.get()) {
+            for (TensorPair<Float> tp = dataset.next(); tp != null; tp = dataset.next()) {
                 try (TFStep step = context.createStep(sess)) {
                     step
                             .feed(x, tp.getKey())
@@ -179,11 +184,9 @@ public class Main {
                     // Print out predictions and number of hits.
                     System.out.println(Utils.toString(tp.getKey(), Float.class) + " --> "
                             + Utils.toString(step.target(output), Long.class));
-                    corr += step.target(accuracy).floatValue();
                     predictions.add(new TensorPair(null, step.target(output)));
                 }
             }
-            System.out.println("Correct: " + corr);
             return predictions.toArray(new TensorPair[]{});
         }
     }

@@ -1,4 +1,4 @@
-package hr.fer.zemris.tf;
+package hr.fer.zemris.neurology.tf;
 
 import org.tensorflow.Operand;
 import org.tensorflow.Session;

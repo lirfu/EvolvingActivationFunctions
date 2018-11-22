@@ -1,10 +1,9 @@
-package hr.fer.zemris.neurology.descendmethods;
+package hr.fer.zemris.neurology.tf.descendmethods;
 
 import com.sun.istack.internal.NotNull;
-import hr.fer.zemris.tf.TFContext;
+import hr.fer.zemris.neurology.tf.TFContext;
 import org.tensorflow.Operand;
 import org.tensorflow.op.Ops;
-import org.tensorflow.op.core.Assign;
 import org.tensorflow.op.core.Variable;
 
 public class MomentumOptimizer<T extends Number> implements IOptimizer<T> {

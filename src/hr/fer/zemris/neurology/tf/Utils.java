@@ -1,4 +1,4 @@
-package hr.fer.zemris.tf;
+package hr.fer.zemris.neurology.tf;
 
 import com.sun.istack.internal.NotNull;
 import org.tensorflow.Tensor;

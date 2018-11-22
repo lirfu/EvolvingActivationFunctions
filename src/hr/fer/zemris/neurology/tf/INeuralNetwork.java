@@ -1,14 +1,6 @@
-package hr.fer.zemris.neurology;
+package hr.fer.zemris.neurology.tf;
 
 import hr.fer.zemris.data.APipe;
-import hr.fer.zemris.data.primitives.TensorPair;
-import hr.fer.zemris.tf.TFContext;
-import hr.fer.zemris.tf.TFStep;
-import org.tensorflow.Graph;
-import org.tensorflow.Operand;
-import org.tensorflow.Session;
-import org.tensorflow.op.Ops;
-import org.tensorflow.op.core.Placeholder;
 
 public interface INeuralNetwork<T> {
     /**
