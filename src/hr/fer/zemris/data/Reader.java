@@ -37,7 +37,7 @@ public class Reader extends APipe<Object, String> {
      * Returns <code>null</code> if end of file is reached.
      */
     @Override
-    public String get() {
+    public String next() {
         try {
             return reader_.readLine();
         } catch (IOException e) {

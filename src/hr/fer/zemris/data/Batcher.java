@@ -3,7 +3,6 @@ package hr.fer.zemris.data;
 import hr.fer.zemris.data.primitives.BatchPair;
 import hr.fer.zemris.data.primitives.DataPair;
 import hr.fer.zemris.utils.Pair;
-import org.tensorflow.op.core.Batch;
 
 /**
  * Constructs batches from the input stream.
@@ -29,13 +28,13 @@ public class Batcher extends APipe<DataPair, BatchPair> {
      * After the last batch was constructed, this method returns <code>null</code>.
      */
     @Override
-    public BatchPair get() {
+    public BatchPair next() {
         int this_batch_size = 0, data_dim = 0;
         float[][] inputs = null;
         float[] labels = new float[batch_size_];
 
         for (int i = 0; i < batch_size_; i++) {
-            Pair<float[], Float> pair = parent_.get();
+            Pair<float[], Float> pair = parent_.next();
             if (pair == null) break; // End of stream.
             this_batch_size++;
 

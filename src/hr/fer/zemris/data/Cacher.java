@@ -1,109 +1,59 @@
 package hr.fer.zemris.data;
 
-import com.sun.istack.internal.NotNull;
-import hr.fer.zemris.data.modifiers.IModifier;
-import hr.fer.zemris.data.primitives.DataPair;
-import hr.fer.zemris.utils.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
-/**
- * Caches the whole input stream into RAM.
- * Applies modifiers to the data such as normalization, randomization, etc.
- */
-public class Cacher extends APipe<DataPair, DataPair> {
-    private IModifier[] data_modifiers_;
-    private DataPair[] data_;
-    private int index = 0;
+public class Cacher<T> extends APipe<T, T> implements Iterable<T> {
+    private int index_ = 0;
+    private ArrayList<T> data_;
 
-    /**
-     * Caches the input stream into RAM.
-     */
-    public Cacher(@NotNull APipe<?, DataPair> parent) {
-        this(parent, new IModifier[]{});
-    }
-
-    /**
-     * Caches the input stream to the specified file.
-     * Applies modifiers to the dataset in the order they are specified.
-     */
-    public Cacher(@NotNull APipe<?, DataPair> parent, @NotNull IModifier[] data_modifiers) {
+    public Cacher(APipe<?, T> parent) {
         parent_ = parent;
-        data_modifiers_ = data_modifiers;
-
-        // Load the data into memory.
-        ArrayList<DataPair> data = new ArrayList<>();
-        DataPair d;
-        while ((d = parent.get()) != null)
-            data.add(d);
-        data_ = new DataPair[]{};
-        data_ = data.toArray(data_);
-
-        // Apply modifiers to data.
-        for (IModifier m : data_modifiers) {
-            m.apply(data_);
+        data_ = new ArrayList<>();
+        T t;
+        while ((t = parent.next()) != null) {
+            data_.add(t);
         }
     }
 
-    /**
-     * Instead of generating the data all over again, just use the original reference.
-     * This saves memory when cloning (shares data) and since modifiers aren't re-applied (important for maintaining randomization).
-     */
-    private Cacher(@NotNull APipe<?, DataPair> parent, @NotNull IModifier[] data_modifiers, DataPair[] data) {
-        parent_ = parent;
-        data_modifiers_ = data_modifiers;
-        data_ = data;
+    private Cacher(Cacher<T> c) {
+        data_ = c.data_;
     }
 
+    public boolean hasNext() {
+        return index_ >= data_.size();
+    }
 
-    /**
-     * Returns cached data.
-     */
     @Override
-    public DataPair get() {
-        if (index >= data_.length) return null;
-        return data_[index++];
+    public T next() {
+        if (index_ >= data_.size()) {
+            return null;
+        }
+        return data_.get(index_++);
     }
 
-    /**
-     * Resets the internal index to enable reusing this object.
-     */
     @Override
     public void reset() {
-        index = 0;
+        index_ = 0;
+        if (parent_ != null) {
+            parent_.reset();
+        }
     }
 
-    /**
-     * Apply the given modifier on the dataset.
-     *
-     * @param modifier Modifier applied to the dataset.
-     */
-    public void applyModifier(@NotNull IModifier modifier) {
-        modifier.apply(data_);
-    }
-
-    /**
-     * Sends the reset signal to parent and resets the internal index.
-     */
-    public void hardReset() {
-        index = 0;
-        parent_.reset();
-    }
-
-    /**
-     * Sets parent to null, effectively releasing this resource.
-     * Useful for releasing memory in concurrent applications.
-     */
     public void releaseParent() {
         parent_ = null;
     }
 
-    /**
-     * Returns a clone of this pipe.
-     * The internal data is shared with clones (for memory efficiency) and the modifiers are not re-applied.
-     */
     @Override
-    public Cacher clone() {
-        return new Cacher(parent_, data_modifiers_, data_);
+    public APipe<T, T> clone() {
+        return new Cacher<>(this);
+    }
+
+    @NotNull
+    @Override
+    public Iterator<T> iterator() {
+        return data_.iterator();
     }
 }

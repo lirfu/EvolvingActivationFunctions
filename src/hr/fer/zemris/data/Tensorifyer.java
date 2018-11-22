@@ -18,8 +18,8 @@ public class Tensorifyer<T> extends APipe<ITensorablePair<T>, TensorPair<T>> {
      * @return Tensor created from the parent input.
      */
     @Override
-    public TensorPair<T> get() {
-        ITensorablePair<T> d = parent_.get();
+    public TensorPair<T> next() {
+        ITensorablePair<T> d = parent_.next();
         if (d == null) {
             return null;
         }

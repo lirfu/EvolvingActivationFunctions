@@ -19,7 +19,7 @@ public class BinaryDecoderClassification extends APipe<Object, DataPair> impleme
     }
 
     @Override
-    public DataPair get() {
+    public DataPair next() {
         if (index_ >= data_.length) return null;
         return data_[index_++];
     }

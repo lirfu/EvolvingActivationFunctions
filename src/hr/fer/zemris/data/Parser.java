@@ -26,9 +26,9 @@ public class Parser extends APipe<String, DataPair> implements IDescriptableDS {
      * Returns <code>null</code> if end of stream is reached.
      */
     @Override
-    public DataPair get() {
+    public DataPair next() {
         String s;
-        while (!data_started_ && (s = parent_.get()) != null) { // Read all the descriptors until data start is reached.
+        while (!data_started_ && (s = parent_.next()) != null) { // Read all the descriptors until data start is reached.
             s = s.trim();
             if (s.isEmpty()) {
                 continue;
@@ -49,9 +49,9 @@ public class Parser extends APipe<String, DataPair> implements IDescriptableDS {
                 data_started_ = true;
             }
         }
-        s = parent_.get();
+        s = parent_.next();
         while (s != null && s.isEmpty()) { // Skip blanks.
-            s = parent_.get();
+            s = parent_.next();
         }
 
         if (s == null) { // End of data stream.

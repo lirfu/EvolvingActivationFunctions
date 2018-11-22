@@ -20,7 +20,7 @@ public class ComplexFunctionRegression extends APipe<Object, DataPair> implement
     }
 
     @Override
-    public DataPair get() {
+    public DataPair next() {
         if (index_ >= data_.length) return null;
         return data_[index_++];
     }

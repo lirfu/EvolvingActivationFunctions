@@ -8,9 +8,16 @@ public abstract class APipe<I, O> {
     protected APipe<?, I> parent_;
 
     /**
+     * Gets the parent.
+     */
+    public APipe<?, I> getParent() {
+        return parent_;
+    }
+
+    /**
      * This method fetches an object from the upstream pipeline, modifies it and returns.
      */
-    public abstract O get();
+    public abstract O next();
 
     /**
      * This method propagates the reset signal upstream.
