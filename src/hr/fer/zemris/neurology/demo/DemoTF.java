@@ -88,13 +88,10 @@ public class DemoTF {
                 logits = l.build(logits);
             logits = tf.softmax(logits);
             output = tf.argMax(logits, tf.constant(1));
-            accuracy = tf.reduceSum(tf.cast(tf.equal(tf.cast(y, Long.class), output), Float.class), tf.constant(0));
+            accuracy = tf.reduceSum(tf.cast(tf.equal(tf.argMax(y, tf.constant(1)), output), Float.class), tf.constant(0));
             // Define loss.
 //            loss = tf.pow(tf.sub(logits, y), tf.constant(2f));
-            loss = tf.reduceMean(tf.reduceSum(tf.neg(tf.mul(
-                    tf.cast(tf.oneHot(tf.cast(y, Integer.class), tf.constant(descriptor.getClassesNumber()), tf.constant(1), tf.constant(0)), Float.class),
-                    tf.log(logits)
-            )), tf.constant(1)), tf.constant(0));
+            loss = tf.reduceMean(tf.reduceSum(tf.neg(tf.mul(y, tf.log(logits))), tf.constant(1)), tf.constant(0));
         }
 
         @Override
