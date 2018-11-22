@@ -2,7 +2,7 @@ package hr.fer.zemris.data.modifiers;
 
 import com.sun.istack.internal.NotNull;
 import hr.fer.zemris.data.primitives.DataPair;
-import hr.fer.zemris.utils.Pair;
+import hr.fer.zemris.utils.Utils;
 
 import java.util.Random;
 
@@ -41,13 +41,6 @@ public class Randomizer implements IModifier {
 
     @Override
     public void apply(DataPair[] data) {
-        int len = data.length;
-        for (int i = 0; i < n_; i++) {
-            int a = r_.nextInt(len);
-            int b = r_.nextInt(len);
-            DataPair t = data[a];
-            data[a] = data[b];
-            data[b] = t;
-        }
+        Utils.permuteArray(data, n_, r_);
     }
 }
