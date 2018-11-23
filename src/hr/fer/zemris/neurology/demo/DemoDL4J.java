@@ -1,8 +1,7 @@
 package hr.fer.zemris.neurology.demo;
 
 import hr.fer.zemris.data.datasets.BinaryDecoderClassification;
-import hr.fer.zemris.neurology.dl4j.CommonModel;
-import hr.fer.zemris.neurology.dl4j.Dl4jDataset;
+import hr.fer.zemris.neurology.dl4j.*;
 import hr.fer.zemris.utils.logs.StdoutLogger;
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.nd4j.linalg.activations.BaseActivationFunction;
@@ -19,8 +18,8 @@ import java.io.IOException;
 public class DemoDL4J {
 
     public static void main(String[] args) throws IOException {
-//        originalTest();
-        dataFromGeneratorTest();
+        originalTest();
+//        dataFromGeneratorTest();
     }
 
     private static class MyActivation extends BaseActivationFunction {
@@ -42,9 +41,12 @@ public class DemoDL4J {
     }
 
     public static void originalTest() throws IOException {
-        CommonModel.Params p = new CommonModel.Params(
-                28 * 28, 10, 10, 64, 0.0015, 0.0015 * 0.005, 42
-        );
+        ModelParams p = new ModelParams.Builder()
+                .input_size(28 * 28).output_size(10).epochs_num(20).batch_size(64)
+                .learning_rate(0.001).regularization_coef(1e-6).dropout_keep_prob(0.5)
+                .decay_rate(9e-1).decay_step(5)
+                .seed(42).build();
+
         DataSetIterator mnistTrain = new MnistDataSetIterator(p.batch_size(), true, (int) p.seed());
         DataSetIterator mnistTest = new MnistDataSetIterator(p.batch_size(), false, (int) p.seed());
 
@@ -52,13 +54,19 @@ public class DemoDL4J {
         StdoutLogger log = new StdoutLogger();
 
         model.train(mnistTrain, log);
-        model.test(mnistTest, log);
+
+        IReport rep = new CommonReport();
+        model.test(mnistTest, log, rep);
+        log.logD(rep.toString());
     }
 
     public static void dataFromGeneratorTest() throws FileNotFoundException {
         DataSetIterator dataset = new Dl4jDataset(new BinaryDecoderClassification(), 3, 42);
-        CommonModel.Params p = new CommonModel.Params(dataset.inputColumns(), dataset.totalOutcomes(),
-                500, dataset.batch(), 1e-1, 1e-9, 42);
+        ModelParams p = new ModelParams.Builder()
+                .input_size(dataset.inputColumns()).output_size(dataset.totalOutcomes())
+                .epochs_num(500).batch_size(dataset.batch())
+                .learning_rate(1e-1).regularization_coef(1e-4).dropout_keep_prob(0.5)
+                .seed(42).build();
 
         CommonModel model = new CommonModel(p, new int[]{5, 5}, new IActivation[]{new MyActivation()});
         StdoutLogger log = new StdoutLogger();
@@ -66,6 +74,8 @@ public class DemoDL4J {
         dataset.reset();
         model.train(dataset, log);
         dataset.reset();
-        model.test(dataset, log);
+        IReport rep = new CommonReport();
+        model.test(dataset, log, rep);
+        log.logD(rep.toString());
     }
 }

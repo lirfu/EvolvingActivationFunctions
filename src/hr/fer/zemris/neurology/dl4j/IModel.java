@@ -2,6 +2,7 @@ package hr.fer.zemris.neurology.dl4j;
 
 import hr.fer.zemris.utils.logs.ILogger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 
 public interface IModel {
@@ -19,7 +20,7 @@ public interface IModel {
      * @param testset Dataset for testing.
      * @param log     Logger for testing messages.
      */
-    public void test(@NotNull DataSetIterator testset, @NotNull ILogger log);
+    public void test(@NotNull DataSetIterator testset, @NotNull ILogger log, @Nullable IReport report);
 
     /**
      * Predicts outputs for given inputs.

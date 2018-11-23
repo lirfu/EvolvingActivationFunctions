@@ -10,7 +10,9 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.api.BaseTrainingListener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.nd4j.evaluation.classification.Evaluation;
+import org.nd4j.evaluation.classification.ROCMultiClass;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -18,9 +20,11 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
+import org.nd4j.linalg.schedule.ScheduleType;
+import org.nd4j.linalg.schedule.StepSchedule;
 
 public class CommonModel implements IModel {
-    private Params params_;
+    private ModelParams params_;
     private MultiLayerNetwork model_;
 
     /**
@@ -30,10 +34,10 @@ public class CommonModel implements IModel {
      * @param layers      Array of sizes for the hidden layers.
      * @param activations Array of activation functions. Must define either one common activation function) or one function per layer.
      */
-    public CommonModel(@NotNull Params params, @NotNull int[] layers, @NotNull IActivation[] activations) {
-        boolean common_func = false;
+    public CommonModel(@NotNull ModelParams params, @NotNull int[] layers, @NotNull IActivation[] activations) {
+        boolean common_act = false;
         if (layers.length > 1 && activations.length == 1) { // Single common activation.
-            common_func = true;
+            common_act = true;
         } else if (layers.length > 0 && activations.length == 0 || activations.length != layers.length) {
             throw new IllegalArgumentException("Activation function ill defined! Please provide one common function or one function per layer.");
         }
@@ -42,10 +46,11 @@ public class CommonModel implements IModel {
                 .seed(params.seed()) // Reproducibility of results (defined initialization).
                 .cacheMode(CacheMode.DEVICE)
                 .weightInit(WeightInit.XAVIER)
-                .updater(new Adam(params.learning_rate()))
-                .l2(params.regularization_coef()); // L2 parameter regularization.
+                .updater(new Adam(new StepSchedule(ScheduleType.EPOCH, params.learning_rate(), params.decay_rate(), params.decay_step())))
+                .l2(params.regularization_coef())
+                .dropOut(params.dropout_keep_prob());
 
-        if (common_func) {
+        if (common_act) {
             conf.activation(activations[0]);
         }
 
@@ -57,14 +62,14 @@ public class CommonModel implements IModel {
             DenseLayer.Builder lay = new DenseLayer.Builder()
                     .nIn(last_size)
                     .nOut(l);
-            if (!common_func) {
+            if (!common_act) {
                 lay.activation(activations[index]);
             }
             list.layer(index++, lay.build());
             last_size = l;
         }
         // Define output layer and loss.
-        list.layer(index, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD) //create hidden layer
+        list.layer(index, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                 .activation(Activation.SOFTMAX)
                 .nIn(last_size)
                 .nOut(params.output_size())
@@ -77,8 +82,8 @@ public class CommonModel implements IModel {
     @Override
     public void train(@NotNull DataSetIterator dataset, @NotNull ILogger log) {
         model_.init();
-        model_.setListeners(new BaseTrainingListener() { // Print the score with start of every epoch.
-            private int last_epoch_ = -1; // Because there's no other way of getting the dataset size -.-"
+        model_.setListeners(new BaseTrainingListener() { // Print the score at the start of each epoch.
+            private int last_epoch_ = -1;
 
             @Override
             public void iterationDone(org.deeplearning4j.nn.api.Model model, int iteration, int epoch) {
@@ -98,19 +103,22 @@ public class CommonModel implements IModel {
     }
 
     @Override
-    public void test(@NotNull DataSetIterator dataset, @NotNull ILogger log) {
+    public void test(@NotNull DataSetIterator dataset, @NotNull ILogger log, @Nullable IReport report) {
         if (dataset.resetSupported()) {
             dataset.reset();
         }
         log.logD("Evaluating...");
-        log.logD("Model train loss: " + model_.score());
         Evaluation eval = new Evaluation(params_.output_size());
+        ROCMultiClass roc = new ROCMultiClass(0);
         while (dataset.hasNext()) {
             DataSet next = dataset.next();
-            INDArray output = model_.output(next.getFeatures()); //next the networks prediction
-            eval.eval(next.getLabels(), output); //check the prediction against the true class
+            INDArray output = model_.output(next.getFeatures());
+            eval.eval(next.getLabels(), output);
+            roc.eval(next.getLabels(), output);
         }
-        log.logD(eval.stats());
+        if (report != null) {
+            report.build(params_, model_, eval, roc);
+        }
     }
 
     /**
@@ -125,55 +133,6 @@ public class CommonModel implements IModel {
             INDArray in = dataset.next().getFeatures();
             INDArray out = model_.output(in);
             log.logO(new Pair<>(in, out));
-        }
-    }
-
-    public static class Params {
-        private final int input_size_;
-        private final int output_size_;
-        private int epochs_num_;
-        private int batch_size_;
-        private double learning_rate_;
-        private double regularization_coef_;
-        private long seed_;
-
-        public Params(int input_size, int output_size, int epochs_num, int batch_size, double learning_rate, double regularization_coef, long seed) {
-            input_size_ = input_size;
-            output_size_ = output_size;
-            epochs_num_ = epochs_num;
-            batch_size_ = batch_size;
-            learning_rate_ = learning_rate;
-            regularization_coef_ = regularization_coef;
-            seed_ = seed;
-        }
-
-
-        public int input_size() {
-            return input_size_;
-        }
-
-        public int output_size() {
-            return output_size_;
-        }
-
-        public int epochs_num() {
-            return epochs_num_;
-        }
-
-        public int batch_size() {
-            return batch_size_;
-        }
-
-        public double learning_rate() {
-            return learning_rate_;
-        }
-
-        public double regularization_coef() {
-            return regularization_coef_;
-        }
-
-        public long seed() {
-            return seed_;
         }
     }
 }
