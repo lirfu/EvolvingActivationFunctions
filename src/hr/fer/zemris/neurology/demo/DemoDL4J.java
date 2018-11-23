@@ -6,6 +6,7 @@ import hr.fer.zemris.utils.logs.StdoutLogger;
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.nd4j.linalg.activations.BaseActivationFunction;
 import org.nd4j.linalg.activations.IActivation;
+import org.nd4j.linalg.activations.impl.ActivationReLU;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.impl.transforms.*;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
@@ -18,8 +19,8 @@ import java.io.IOException;
 public class DemoDL4J {
 
     public static void main(String[] args) throws IOException {
-        originalTest();
-//        dataFromGeneratorTest();
+//        originalTest();
+        dataFromGeneratorTest();
     }
 
     private static class MyActivation extends BaseActivationFunction {
@@ -74,8 +75,27 @@ public class DemoDL4J {
         dataset.reset();
         model.train(dataset, log);
         dataset.reset();
+
         IReport rep = new CommonReport();
         model.test(dataset, log, rep);
         log.logD(rep.toString());
+
+        // Test store/load mechanism.
+        try {
+            String path = "./model.zip";
+
+            log.logD("Storing model...");
+            model.store(path);
+            model = new CommonModel(p, new int[]{1, 1, 1}, new IActivation[]{new ActivationReLU()});
+            log.logD("Loading model...");
+            model.load(path);
+
+            rep = new CommonReport();
+            model.test(dataset, log, rep);
+            log.logD("Report of loaded model:");
+            log.logD(rep.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

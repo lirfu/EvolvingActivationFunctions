@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 
+import java.io.IOException;
+
 public interface IModel {
     /**
      * Trains the model on given dataset.
@@ -29,4 +31,18 @@ public interface IModel {
      * @param log    Logger for prediction messages.
      */
     public void predict(@NotNull DataSetIterator inputs, @NotNull ILogger log);
+
+    /**
+     * Saves the model in the given file location.
+     *
+     * @param filepath Path to the destination file.
+     */
+    public void store(@NotNull String filepath) throws IOException;
+
+    /**
+     * Loads the model from the given file location.
+     *
+     * @param filepath Path to the source file.
+     */
+    public void load(@NotNull String filepath) throws IOException;
 }

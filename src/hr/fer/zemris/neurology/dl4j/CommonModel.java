@@ -9,6 +9,7 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.api.BaseTrainingListener;
+import org.deeplearning4j.util.ModelSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.nd4j.evaluation.classification.Evaluation;
@@ -22,6 +23,9 @@ import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.nd4j.linalg.schedule.ScheduleType;
 import org.nd4j.linalg.schedule.StepSchedule;
+
+import java.io.File;
+import java.io.IOException;
 
 public class CommonModel implements IModel {
     private ModelParams params_;
@@ -134,5 +138,16 @@ public class CommonModel implements IModel {
             INDArray out = model_.output(in);
             log.logO(new Pair<>(in, out));
         }
+    }
+
+    @Override
+    public void store(@NotNull String filepath) throws IOException {
+        File locationToSave = new File(filepath);
+        ModelSerializer.writeModel(model_, locationToSave, true);
+    }
+
+    @Override
+    public void load(@NotNull String filepath) throws IOException {
+        model_ = ModelSerializer.restoreMultiLayerNetwork(filepath);
     }
 }
