@@ -18,7 +18,7 @@ public interface ILayer<T> {
      * Initializes layers' weights and bias with given seed.
      *
      * @param context Context for initialization.
-     * @param seed    Seed for the random initializer.
+     * @param seed    Seed for the random_ initializer.
      */
     public void initialize(@NotNull TFContext context, long seed);
 

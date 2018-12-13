@@ -1,5 +1,7 @@
-package hr.fer.zemris.neurology.dl4j;
+package hr.fer.zemris.neurology.demo;
 
+import hr.fer.zemris.neurology.dl4j.IReport;
+import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.logs.ILogger;
 import org.deeplearning4j.nn.conf.CacheMode;
@@ -27,8 +29,8 @@ import org.nd4j.linalg.schedule.StepSchedule;
 import java.io.File;
 import java.io.IOException;
 
-public class CommonModel implements IModel {
-    private ModelParams params_;
+public class ExampleModel {
+    private TrainParams params_;
     private MultiLayerNetwork model_;
 
     /**
@@ -38,7 +40,7 @@ public class CommonModel implements IModel {
      * @param layers      Array of sizes for the hidden layers.
      * @param activations Array of activation functions. Must define either one common activation function) or one function per layer.
      */
-    public CommonModel(@NotNull ModelParams params, @NotNull int[] layers, @NotNull IActivation[] activations) {
+    public ExampleModel(@NotNull TrainParams params, @NotNull int[] layers, @NotNull IActivation[] activations) {
         boolean common_act = false;
         if (layers.length > 1 && activations.length == 1) { // Single common activation.
             common_act = true;
@@ -83,7 +85,11 @@ public class CommonModel implements IModel {
         params_ = params;
     }
 
-    @Override
+    private ExampleModel(@NotNull ExampleModel model) {
+        model_ = model.model_.clone();
+        params_ = model.params_;
+    }
+
     public void train(@NotNull DataSetIterator dataset, @NotNull ILogger log) {
         model_.init();
         model_.setListeners(new BaseTrainingListener() { // Print the score at the start of each epoch.
@@ -106,7 +112,6 @@ public class CommonModel implements IModel {
         }
     }
 
-    @Override
     public void test(@NotNull DataSetIterator dataset, @NotNull ILogger log, @Nullable IReport report) {
         if (dataset.resetSupported()) {
             dataset.reset();
@@ -128,7 +133,6 @@ public class CommonModel implements IModel {
     /**
      * Predicts inputs from given dataset and logs as objects the input-output pairs - Pair(INDArray,INDArray).
      **/
-    @Override
     public void predict(@NotNull DataSetIterator dataset, @NotNull ILogger log) {
         if (dataset.resetSupported()) {
             dataset.reset();
@@ -140,14 +144,16 @@ public class CommonModel implements IModel {
         }
     }
 
-    @Override
     public void store(@NotNull String filepath) throws IOException {
         File locationToSave = new File(filepath);
         ModelSerializer.writeModel(model_, locationToSave, true);
     }
 
-    @Override
     public void load(@NotNull String filepath) throws IOException {
         model_ = ModelSerializer.restoreMultiLayerNetwork(filepath);
+    }
+
+    public ExampleModel clone() {
+        return new ExampleModel(this);
     }
 }

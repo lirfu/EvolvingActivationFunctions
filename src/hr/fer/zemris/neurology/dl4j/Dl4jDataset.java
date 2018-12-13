@@ -29,6 +29,7 @@ public class Dl4jDataset implements DataSetIterator {
     public Dl4jDataset(ADataGenerator generator, int batch_size, long seed) throws FileNotFoundException {
         cacher_ = new Cacher<>(new Batcher(generator, batch_size));
         DatasetDescriptor dd = generator.describe();
+        cacher_.applyModifier(new OneHotModifier(dd.getClassesNumber()));
         cacher_.releaseParent();
 
         input_size_ = dd.getAttributesNumber();
@@ -60,6 +61,10 @@ public class Dl4jDataset implements DataSetIterator {
     @Override
     public int batch() {
         return batch_size_;
+    }
+
+    public int size() {
+        return instances_;
     }
 
     @Override
