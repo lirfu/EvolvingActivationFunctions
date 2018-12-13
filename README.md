@@ -5,10 +5,13 @@ Project is implemented using [DeepLearning4Java](https://deeplearning4j.org/).
 # Main components
 ## Packages
 #### `hr.fer.zemris.evolveactivationfunction`
-* Defines common structures and procedures for the evolution process  
+* Defines common structures and procedures for the evolution process.
 
 #### `hr.fer.zemris.genetics`
 * Evolutionary search algorithms and structures. 
+
+#### `hr.fer.zemris.architecturesearch`
+* Methods for search and analysis of the initial architecture for a given dataset.
 
 #### `hr.fer.zemris.data`
 * Custom data structures and pipelines.
@@ -43,7 +46,7 @@ Project is implemented using [DeepLearning4Java](https://deeplearning4j.org/).
 * Defines the storage paths of an experiment.
 
 ## Programs and demos
-#### `hr.fer.zemris.evolveactivationfunction.architecturesearch.Main`
+#### `hr.fer.zemris.architecturesearch.Main`
 * Used to run custom experiments using the DL4J model and data API
 
 #### `hr.fer.zemris.data.DemoTests`

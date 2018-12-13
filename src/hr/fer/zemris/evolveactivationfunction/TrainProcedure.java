@@ -4,7 +4,6 @@ import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.logs.ILogger;
-import hr.fer.zemris.utils.threading.Worker;
 import org.deeplearning4j.api.storage.StatsStorageRouter;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -80,7 +79,6 @@ public class TrainProcedure {
     }
 
     public void train(@NotNull CommonModel model, @NotNull ILogger log, @NotNull StatsStorageRouter stats_storage) {
-        log.logD("Training...");
         MultiLayerNetwork m = model.getModel();
         m.init();
 

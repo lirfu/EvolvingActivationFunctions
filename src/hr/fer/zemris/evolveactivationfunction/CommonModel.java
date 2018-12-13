@@ -39,11 +39,20 @@ public class CommonModel {
         NeuralNetConfiguration.Builder conf = new NeuralNetConfiguration.Builder()
                 .seed(params.seed()) // Reproducibility of results (defined initialization).
                 .cacheMode(CacheMode.DEVICE)
-                .weightInit(WeightInit.XAVIER)
-                .updater(new Adam(new StepSchedule(ScheduleType.EPOCH, params.learning_rate(), params.decay_rate(), params.decay_step())))
-                .l2(params.regularization_coef())
-                .dropOut(params.dropout_keep_prob());
-
+                .weightInit(WeightInit.XAVIER);
+        // Omittable parameters.
+        if (params.decay_rate() != 1.) {
+            conf.updater(new Adam(new StepSchedule(ScheduleType.EPOCH, params.learning_rate(), params.decay_rate(), params.decay_step())));
+        } else {
+            conf.updater(new Adam(params.learning_rate()));
+        }
+        if (params.regularization_coef() > 0.) {
+            conf.l2(params.regularization_coef());
+        }
+        if (params.dropout_keep_prob() < 1.) {
+            conf.dropOut(params.dropout_keep_prob());
+        }
+        // Apply common function globally if it is defined.
         if (common_act) {
             conf.activation(activations[0]);
         }
