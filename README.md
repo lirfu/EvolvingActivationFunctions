@@ -1,6 +1,63 @@
-# Workflow pipeline
+# About
+This project attempts evolving transfer functions for neural networks using symbolic regression.
+Project is implemented using [DeepLearning4Java](https://deeplearning4j.org/).
 
-## 1. Loading data
+# Main components
+## Packages
+### `hr.fer.zemris.evolveactivationfunction`
+* Defines common structures and procedures for the evolution process  
+
+### `hr.fer.zemris.genetics`
+* Evolutionary search algorithms and structures. 
+
+### `hr.fer.zemris.data`
+* Custom data structures and pipelines.
+* Includes `Parser` for DPAv2/4 CSV files.
+
+### `hr.fer.zemris.neurology`
+* Demos on the usage of DL4J and TF frameworks.
+
+### `hr.fer.zemris.utils`
+* Various common utilities.
+
+## Structures and algorithms
+### `hr.fer.zemris.evolveactivationfunction.CommonModel`
+* Wrapper for the neural network, used to hide unnecessary features
+* Softly prevents unwanted model modifications (for comparable results).
+
+### `hr.fer.zemris.evolveactivationfunction.TrainProcedure`
+* Defines the common procedures and structures used for model training.
+* Ensures comparability of experiment results.
+
+### `hr.fer.zemris.neurology.dl4j.TrainParams`
+* Defines immutable parameters used for model training.
+* Ensures comparability of experiment results.
+
+### `hr.fer.zemris.neurology.dl4j.ModelReport`
+* Defines model performance on the test set.
+
+### `hr.fer.zemris.evolveactivationfunction.StorageManager`
+* Workhorse for procedures related to storing and loading experiments.
+
+### `hr.fer.zemris.evolveactivationfunction.Context`
+* Defines the storage paths of an experiment.
+
+## Programs and demos
+### `hr.fer.zemris.evolveactivationfunction.architecturesearch.Main`
+* Used to run custom experiments using the DL4J model and data API
+
+### `hr.fer.zemris.data.DemoTests`
+* Demonstrates the usage of the custom data pipeline.
+
+### `hr.fer.zemris.neurology.DemoDL4J`
+* Demonstrates learning a neural network using DeepLearning4Java on MNIST and custom datasets. 
+
+### `hr.fer.zemris.neurology.DemoTF`
+* Demonstrates learning a neural network using Tensorflow Java Ops API.
+
+## Workflow pipeline (deprecated)
+
+### 1. Loading data
 To load data construct a pipeline.
 * Reader - reads a file line by line
 * Parser - reads dataset description markers and passes actual data through
@@ -11,3 +68,5 @@ To load data construct a pipeline.
   * Randomizer - randomizes the order of instances in dataset
 
 Method `get()` fetches the next data, method `reset()` generally resets internals to start over the inference procedure. 
+
+
