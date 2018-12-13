@@ -39,9 +39,10 @@ public class Modifier extends APipe<DataPair, DataPair> {
         data_ = data.toArray(data_);
 
         // Apply modifiers to data.
-        for (IModifier m : data_modifiers) {
-            m.apply(data_);
-        }
+        // FIXME If needed.
+//        for (IModifier m : data_modifiers) {
+//            m.apply(data_);
+//        }
     }
 
     /**
@@ -78,7 +79,8 @@ public class Modifier extends APipe<DataPair, DataPair> {
      * @param modifier Modifier applied to the dataset.
      */
     public void applyModifier(@NotNull IModifier modifier) {
-        modifier.apply(data_);
+        // FIXME If needed.
+//        modifier.apply(data_);
     }
 
     /**

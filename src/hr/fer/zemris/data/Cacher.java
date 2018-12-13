@@ -1,5 +1,6 @@
 package hr.fer.zemris.data;
 
+import hr.fer.zemris.data.modifiers.IModifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -44,6 +45,10 @@ public class Cacher<T> extends APipe<T, T> implements Iterable<T> {
 
     public void releaseParent() {
         parent_ = null;
+    }
+
+    public void applyModifier(@NotNull IModifier modifier){
+        modifier.apply(data_);
     }
 
     @Override

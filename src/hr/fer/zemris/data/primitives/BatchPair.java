@@ -26,7 +26,9 @@ public class BatchPair extends Pair<float[][], float[][]> implements ITensorable
         for (float[] a : getKey()) {
             sb.append('|').append(Arrays.toString(a)).append('|').append('\n');
         }
-        sb.append('<').append(Arrays.toString(getVal())).append('>');
+        for (float[] a : getVal()) {
+            sb.append('<').append(Arrays.toString(a)).append('>');
+        }
         return sb.toString();
     }
 }
