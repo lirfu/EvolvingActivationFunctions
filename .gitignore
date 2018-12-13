@@ -5,4 +5,5 @@ target
 # Resources, temporaries, etc.
 res
 tmp
-
+sol
+test/gen
