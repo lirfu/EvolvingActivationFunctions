@@ -1,13 +1,24 @@
 package hr.fer.zemris.utils;
 
+
 import com.sun.istack.internal.NotNull;
-import hr.fer.zemris.data.primitives.DataPair;
-import hr.fer.zemris.genetics.Genotype;
+import com.sun.istack.internal.Nullable;
 
 import java.util.Random;
 
-public class Util {
-        public static String formatMiliseconds(long miliseconds) {
+public class Utilities {
+    public static void permuteArray(@NotNull Object[] array, int n, @Nullable Random rand) {
+        if (rand == null) rand = new Random();
+        for (int i = 0; i < n; i++) {
+            int x = rand.nextInt(array.length);
+            int y = rand.nextInt(array.length);
+            Object t = array[x];
+            array[x] = array[y];
+            array[y] = t;
+        }
+    }
+
+    public static String formatMiliseconds(long miliseconds) {
         if (miliseconds >= 1000L) {
             long seconds = miliseconds / 1000L;
             miliseconds -= seconds * 1000L;
