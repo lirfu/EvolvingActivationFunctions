@@ -31,18 +31,18 @@ public class Main {
         TrainParams.Builder params = new TrainParams.Builder()
                 .batch_size(32)
                 .normalize_features(true)
-                .shuffle_batches(false)
-                .epochs_num(200)
-                .learning_rate(1e-3)
-//                .decay_rate(1 - 1e-3)
-//                .decay_step(5)
+                .shuffle_batches(true)
+                .epochs_num(80)
+                .learning_rate(2e-3)
+                .decay_rate(1 - 1e-2)
+                .decay_step(5)
 //                .regularization_coef(1e-4)
-//                .dropout_keep_prob(0.5)
+                .dropout_keep_prob(0.5)
                 ;
 
         TrainProcedure train_procedure = new TrainProcedure(train_ds, test_ds, params);
-        Context context = train_procedure.createContext("1_relu_30_30_overfit");
         CommonModel model = train_procedure.createModel(new int[]{30, 30}, new IActivation[]{common_activation});
+        Context context = train_procedure.createContext("7_relu_30_30_drop");
 
         ILogger log = new MultiLogger(new StdoutLogger(), StorageManager.createTrainingLogger(context)); // Log to stdout.
         FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
@@ -56,6 +56,6 @@ public class Main {
 
         train_procedure.storeResults(model, context, result);
 
-        TrainProcedure.runStatisticsServer(stat_storage);
+        TrainProcedure.displayTrainStats(stat_storage);
     }
 }

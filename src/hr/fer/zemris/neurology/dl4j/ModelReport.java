@@ -5,7 +5,9 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.evaluation.classification.ROCMultiClass;
 
-
+/**
+ * Defines the models' results from testing.
+ */
 public class ModelReport implements IReport, ISerializable {
     private String name_, confusion_matrix_;
     private double score_, accuracy_, precision_, recall_, f1_, auc_, aucpr_;
@@ -21,9 +23,9 @@ public class ModelReport implements IReport, ISerializable {
         precision_ = eval.precision();
         recall_ = eval.recall();
         f1_ = eval.f1();
-        confusion_matrix_ = eval.confusionMatrix();
         auc_ = roc.calculateAverageAUC();
         aucpr_ = roc.calculateAverageAUCPR();
+        confusion_matrix_ = eval.confusionMatrix();
     }
 
     public String name() {
@@ -107,11 +109,6 @@ public class ModelReport implements IReport, ISerializable {
 
     @Override
     public String serialize() {
-        return toString();
-    }
-
-    @Override
-    public String toString() {
         return new StringBuilder()
                 .append("name").append('\t').append(name_).append('\n')
                 .append("score").append('\t').append(score_).append('\n')
@@ -123,5 +120,10 @@ public class ModelReport implements IReport, ISerializable {
                 .append("auc_pr").append('\t').append(aucpr_).append('\n')
                 .append("confusion_matrix").append('\n').append(confusion_matrix_)
                 .toString();
+    }
+
+    @Override
+    public String toString() {
+        return serialize();
     }
 }

@@ -4,7 +4,7 @@ import hr.fer.zemris.data.ISerializable;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Immutable wrapper for model parameters.
+ * Immutable wrapper for train parameters.
  */
 public class TrainParams implements ISerializable {
     private int input_size_, output_size_;

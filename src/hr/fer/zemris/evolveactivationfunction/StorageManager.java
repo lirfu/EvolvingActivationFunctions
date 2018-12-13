@@ -49,11 +49,11 @@ public class StorageManager {
     private static final String sol_dir_name_ = current_dir_ + "sol" + File.separator;
     private static final String tmp_dir_name_ = current_dir_ + "tmp" + File.separator;
     private static final String sol_model_name_ = "model.zip";
-    private static final String sol_train_params_name_ = "train_parameters.txt";
     private static final String sol_predictions_name_ = "predictions.txt";
     private static final String sol_result_name_ = "results.txt";
     private static final String sol_stats_name_ = "stats.dl4jlog";
     private static final String sol_train_log_name_ = "train.log";
+    private static final String sol_train_params_name_ = "train_parameters.txt";
 
     static {
         File sol = new File(sol_dir_name_);

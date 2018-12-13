@@ -3,22 +3,23 @@ package hr.fer.zemris.utils.threading;
 import java.util.LinkedList;
 
 public class Worker {
-    private int mID;
+    private String mID;
 
     private boolean isAlive = true;
     private final Thread mThread;
     private final LinkedList<Work> mWorkQueue;
-//    private ArrayList<Listener> mListeners;
 
-    public Worker(int id) {
+    /**
+     * Creates a new worker and starts the internal thread.
+     */
+    public Worker(String id) {
         mID = id;
         mWorkQueue = new LinkedList<>();
-//        mListeners = new ArrayList<>();
 
         mThread = new Thread(() -> {
             while (isAlive) {
                 doWork();
-//                notifyListeners(mWorkQueue.size());
+                notifyAll();
             }
         });
         mThread.setDaemon(true);
@@ -38,38 +39,35 @@ public class Worker {
         }
     }
 
+
+    /**
+     * Enqueues work to workers' queue. If worker is dead, work is dropped.
+     */
     public synchronized void enqueueWork(Work work) {
+        if (!isAlive) return;
         mWorkQueue.push(work);
         notify();
     }
 
+    /**
+     * Returns the current queue size.
+     */
     public int getWorkCount() {
         return mWorkQueue.size();
     }
 
-    public int getID() {
+    /**
+     * Returns workers' name.
+     */
+    public String getID() {
         return mID;
     }
 
+    /**
+     * Kills the worker and notifies his listeners. May he rest in peace for all of eternity.
+     */
     public synchronized void kill() {
         isAlive = false;
         notify();
     }
-
-//    private void notifyListeners(int workLeft) {
-//        for (Listener l : mListeners)
-//            l.notify(mID, workLeft);
-//    }
-//
-//    public void registerListener(Listener listener) {
-//        mListeners.add(listener);
-//    }
-//
-//    public void unregisterListener(Listener listener) {
-//        mListeners.remove(listener);
-//    }
-//
-//    public interface Listener {
-//        public void notify(int workerID, int workLeft);
-//    }
 }

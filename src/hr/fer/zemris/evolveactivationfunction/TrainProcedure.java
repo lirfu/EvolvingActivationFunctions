@@ -3,13 +3,10 @@ package hr.fer.zemris.evolveactivationfunction;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.utils.Pair;
-import hr.fer.zemris.utils.Stopwatch;
-import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
-import org.apache.commons.math3.util.Incrementor;
+import hr.fer.zemris.utils.threading.Worker;
 import org.deeplearning4j.api.storage.StatsStorageRouter;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
-import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.api.BaseTrainingListener;
 import org.deeplearning4j.ui.api.UIServer;
@@ -24,10 +21,8 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
-import org.nd4j.linalg.string.NDArrayStrings;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -119,16 +114,18 @@ public class TrainProcedure {
     }
 
     public Pair<ModelReport, INDArray> test(@NotNull CommonModel model) {
-        Evaluation eval = new Evaluation(params_.output_size());
-        ROCMultiClass roc = new ROCMultiClass(0);
-        ModelReport report = new ModelReport();
         MultiLayerNetwork m = model.getModel();
-
         INDArray output = m.output(test_set_.getFeatures());
+
+        Evaluation eval = new Evaluation(params_.output_size());
         eval.eval(test_set_.getLabels(), output);
+
+        ROCMultiClass roc = new ROCMultiClass(0);
         roc.eval(test_set_.getLabels(), output);
 
+        ModelReport report = new ModelReport();
         report.build(params_, m, eval, roc);
+
         return new Pair<>(report, output);
     }
 
@@ -139,8 +136,11 @@ public class TrainProcedure {
         StorageManager.storePredictions(result.getVal(), context);
     }
 
-    public static void runStatisticsServer(FileStatsStorage storage) {
-        UIServer uiServer = UIServer.getInstance();
-        uiServer.attach(storage);
+    /**
+     * Runs a UIServer and attaches the given stats storage.
+     */
+    public static void displayTrainStats(FileStatsStorage storage) {
+        UIServer uiServer_ = UIServer.getInstance();
+        uiServer_.attach(storage);
     }
 }
