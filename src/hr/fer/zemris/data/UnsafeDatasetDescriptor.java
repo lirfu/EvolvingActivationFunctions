@@ -6,12 +6,14 @@ public class UnsafeDatasetDescriptor {
     public int attributes_num;
     public int classes_num;
     public int instances_num;
+    public int skip_lines;
 
     public void reset() {
         name = null;
         attributes_num = 0;
         classes_num = 0;
         instances_num = 0;
+        skip_lines = 0;
     }
 
     @Override

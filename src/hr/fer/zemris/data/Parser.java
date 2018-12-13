@@ -29,6 +29,7 @@ public class Parser extends ADataGenerator<String> {
     public DataPair next() {
         String s;
         while (!data_started_ && (s = parent_.next()) != null) { // Read all the descriptors until data start is reached.
+            dataset_descriptor_.skip_lines++;
             s = s.trim();
             if (s.isEmpty()) {
                 continue;
@@ -55,7 +56,6 @@ public class Parser extends ADataGenerator<String> {
         }
 
         if (s == null) { // End of data stream.
-            dataset_descriptor_.instances_num--;
             return null;
         }
 
@@ -77,6 +77,7 @@ public class Parser extends ADataGenerator<String> {
     @Override
     public void reset() {
         data_started_ = false;
+        dataset_descriptor_.reset();
         parent_.reset();
     }
 
