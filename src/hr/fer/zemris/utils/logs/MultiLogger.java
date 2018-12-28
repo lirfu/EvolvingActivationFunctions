@@ -8,26 +8,32 @@ public class MultiLogger implements ILogger {
     }
 
     @Override
-    public void logD(String s) {
+    public void d(String s) {
         for (ILogger l : loggers_)
-            l.logD(s);
+            l.d(s);
     }
 
     @Override
-    public void logW(String s) {
+    public void i(String s) {
         for (ILogger l : loggers_)
-            l.logW(s);
+            l.i(s);
     }
 
     @Override
-    public void logE(String s) {
+    public void w(String s) {
         for (ILogger l : loggers_)
-            l.logE(s);
+            l.w(s);
     }
 
     @Override
-    public void logO(Object o) {
+    public void e(String s) {
         for (ILogger l : loggers_)
-            l.logO(o);
+            l.e(s);
+    }
+
+    @Override
+    public void o(Object o) {
+        for (ILogger l : loggers_)
+            l.o(o);
     }
 }

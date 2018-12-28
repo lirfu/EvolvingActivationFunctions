@@ -32,7 +32,7 @@ public class DemoDL4J {
 
         @Override
         public Pair<INDArray, INDArray> backprop(INDArray input, INDArray gradient) {
-            // calculate the function gradient in given input
+            // calculate the activationfunction gradient in given input
             INDArray out = Nd4j.getExecutioner().execAndReturn(new SigmoidDerivative(input));
             // multiply with incoming gradient (dL/do)
             out.muli(gradient);
@@ -58,7 +58,7 @@ public class DemoDL4J {
 
         IReport rep = new ModelReport();
         model.test(mnistTest, log, rep);
-        log.logD(rep.toString());
+        log.d(rep.toString());
     }
 
     public static void dataFromGeneratorTest() throws FileNotFoundException {
@@ -78,22 +78,22 @@ public class DemoDL4J {
 
         IReport rep = new ModelReport();
         model.test(dataset, log, rep);
-        log.logD(rep.toString());
+        log.d(rep.toString());
 
         // Test storeResults/load mechanism.
         try {
             String path = "./model.zip";
 
-            log.logD("Storing model...");
+            log.d("Storing model...");
             model.store(path);
             model = new ExampleModel(p, new int[]{1, 1, 1}, new IActivation[]{new ActivationReLU()});
-            log.logD("Loading model...");
+            log.d("Loading model...");
             model.load(path);
 
             rep = new ModelReport();
             model.test(dataset, log, rep);
-            log.logD("Report of loaded model:");
-            log.logD(rep.toString());
+            log.d("Report of loaded model:");
+            log.d(rep.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

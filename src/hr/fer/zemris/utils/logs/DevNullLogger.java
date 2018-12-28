@@ -2,18 +2,22 @@ package hr.fer.zemris.utils.logs;
 
 public class DevNullLogger implements ILogger {
     @Override
-    public void logD(String ignore) {
+    public void d(String ignore) {
     }
 
     @Override
-    public void logW(String ignore) {
+    public void i(String s) {
     }
 
     @Override
-    public void logE(String ignore) {
+    public void w(String ignore) {
     }
 
     @Override
-    public void logO(Object ignore) {
+    public void e(String ignore) {
+    }
+
+    @Override
+    public void o(Object ignore) {
     }
 }

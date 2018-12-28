@@ -20,7 +20,7 @@ public class FileLogger implements ILogger {
     }
 
     @Override
-    public void logD(String s) {
+    public void d(String s) {
         try {
             if (type_flags_)
                 writer_.write("[D] ");
@@ -33,7 +33,20 @@ public class FileLogger implements ILogger {
     }
 
     @Override
-    public void logW(String s) {
+    public void i(String s) {
+        try {
+            if (type_flags_)
+                writer_.write("[I] ");
+            writer_.write(s);
+            writer_.newLine();
+            writer_.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void w(String s) {
         try {
             if (type_flags_)
                 writer_.write("[W] ");
@@ -46,7 +59,7 @@ public class FileLogger implements ILogger {
     }
 
     @Override
-    public void logE(String s) {
+    public void e(String s) {
         try {
             if (type_flags_)
                 writer_.write("[E] ");
@@ -59,7 +72,7 @@ public class FileLogger implements ILogger {
     }
 
     @Override
-    public void logO(Object o) {
+    public void o(Object o) {
         try {
             if (type_flags_)
                 writer_.write("[O] ");

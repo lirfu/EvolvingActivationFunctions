@@ -18,7 +18,7 @@ public class FileLoggerTest {
 
     @org.junit.Test
     public void logD() throws Exception {
-        log.logD("This line is totally ok!\nEven the new line works.");
+        log.d("This line is totally ok!\nEven the new line works.");
     }
 
     @org.junit.Test
@@ -29,7 +29,7 @@ public class FileLoggerTest {
                 return "@Obj1 [This][is a][object]";
             }
         };
-        log.logO(o);
+        log.o(o);
     }
 
 }

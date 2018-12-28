@@ -155,7 +155,7 @@ public class StorageManager {
      */
     public static void storeTrainParameters(TrainParams params, Context c) throws IOException {
         FileLogger log = new FileLogger(createExperimentPath(c) + sol_train_params_name_, false);
-        log.logO(params);
+        log.o(params);
     }
 
     /**
@@ -172,7 +172,7 @@ public class StorageManager {
      */
     public static void storeResults(ModelReport report, Context c) throws IOException {
         FileLogger log = new FileLogger(createExperimentPath(c) + sol_result_name_, false);
-        log.logD(report.toString());
+        log.d(report.toString());
     }
 
     /**

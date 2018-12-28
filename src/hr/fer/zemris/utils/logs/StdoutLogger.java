@@ -1,23 +1,41 @@
 package hr.fer.zemris.utils.logs;
 
 public class StdoutLogger implements ILogger {
-    @Override
-    public void logD(String s) {
-        System.out.println(s);
+    private LogLevel level_;
+
+    public StdoutLogger() {
+        level_ = new LogLevel(LogLevel.INFO | LogLevel.WARNING | LogLevel.ERROR);
+    }
+
+    public StdoutLogger(LogLevel level) {
+        if (level == null) {
+            level = new LogLevel(LogLevel.INFO | LogLevel.WARNING | LogLevel.ERROR);
+        }
+        level_ = level;
     }
 
     @Override
-    public void logW(String s) {
-        System.out.println(s);
+    public void d(String s) {
+        if (level_.debug()) System.out.println(s);
     }
 
     @Override
-    public void logE(String s) {
-        System.err.println(s);
+    public void i(String s) {
+        if (level_.info()) System.out.println(s);
     }
 
     @Override
-    public void logO(Object o) {
-        System.out.println(o.toString());
+    public void w(String s) {
+        if (level_.warning()) System.out.println(s);
+    }
+
+    @Override
+    public void e(String s) {
+        if (level_.error()) System.err.println(s);
+    }
+
+    @Override
+    public void o(Object o) {
+        if (level_.info()) System.out.println(o.toString());
     }
 }

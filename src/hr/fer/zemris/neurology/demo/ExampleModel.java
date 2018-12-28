@@ -38,14 +38,14 @@ public class ExampleModel {
      *
      * @param params      Parameters used in the training process.
      * @param layers      Array of sizes for the hidden layers.
-     * @param activations Array of activation functions. Must define either one common activation function) or one function per layer.
+     * @param activations Array of activation functions. Must define either one common activation activationfunction) or one activationfunction per layer.
      */
     public ExampleModel(@NotNull TrainParams params, @NotNull int[] layers, @NotNull IActivation[] activations) {
         boolean common_act = false;
         if (layers.length > 1 && activations.length == 1) { // Single common activation.
             common_act = true;
         } else if (layers.length > 0 && activations.length == 0 || activations.length != layers.length) {
-            throw new IllegalArgumentException("Activation function ill defined! Please provide one common function or one function per layer.");
+            throw new IllegalArgumentException("Activation activationfunction ill defined! Please provide one common activationfunction or one activationfunction per layer.");
         }
 
         NeuralNetConfiguration.Builder conf = new NeuralNetConfiguration.Builder()
@@ -99,11 +99,11 @@ public class ExampleModel {
             public void iterationDone(org.deeplearning4j.nn.api.Model model, int iteration, int epoch) {
                 if (epoch != last_epoch_) {
                     last_epoch_ = epoch;
-                    log.logD("Epoch " + epoch + " has loss: " + model.score());
+                    log.d("Epoch " + epoch + " has loss: " + model.score());
                 }
             }
         });
-        log.logD("Training...");
+        log.d("Training...");
         for (int i = 0; i < params_.epochs_num(); i++) {
             if (dataset.resetSupported()) {
                 dataset.reset();
@@ -116,7 +116,7 @@ public class ExampleModel {
         if (dataset.resetSupported()) {
             dataset.reset();
         }
-        log.logD("Evaluating...");
+        log.d("Evaluating...");
         Evaluation eval = new Evaluation(params_.output_size());
         ROCMultiClass roc = new ROCMultiClass(0);
         while (dataset.hasNext()) {
@@ -140,7 +140,7 @@ public class ExampleModel {
         while (dataset.hasNext()) {
             INDArray in = dataset.next().getFeatures();
             INDArray out = model_.output(in);
-            log.logO(new Pair<>(in, out));
+            log.o(new Pair<>(in, out));
         }
     }
 
