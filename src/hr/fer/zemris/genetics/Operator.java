@@ -1,6 +1,6 @@
 package hr.fer.zemris.genetics;
 
-public abstract class Operator {
+public abstract class Operator<T extends Operator> {
     private int importance = 1;
 
     protected Operator() {
@@ -13,10 +13,10 @@ public abstract class Operator {
     /**
      * Sets importance of operator. Higher importance means higher chance of using it instead of others (if specified). Level must be within [0, 10].
      */
-    public Operator setImportance(int level) {
+    public T setImportance(int level) {
         if (level < 0 || level > 10)
             throw new IllegalArgumentException("Level must be within [0, 10]!");
         importance = level;
-        return this;
+        return (T) this;
     }
 }

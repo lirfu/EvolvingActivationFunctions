@@ -1,6 +1,7 @@
 package hr.fer.zemris.genetics;
 
-public abstract class AEvaluator {
+
+public abstract class AEvaluator<T extends Genotype> {
     private long evaluations = 0;
 
     public void resetEvals() {
@@ -11,10 +12,10 @@ public abstract class AEvaluator {
         return evaluations;
     }
 
-    public final double evaluate(Genotype g) {
+    public final double evaluate(T g) {
         evaluations++;
         return performEvaluate(g);
     }
 
-    public abstract double performEvaluate(Genotype g);
+    public abstract double performEvaluate(T g);
 }

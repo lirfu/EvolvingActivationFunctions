@@ -1,0 +1,25 @@
+package hr.fer.zemris.genetics.symboregression;
+
+import hr.fer.zemris.genetics.Mutation;
+import hr.fer.zemris.genetics.Utils;
+
+import java.util.Random;
+
+/**
+ * Replaces a random node with a new random node of the same order (children number).
+ */
+public class MutSRReplaceNode extends Mutation<SymbolicTree> {
+    private final TreeNodeSet set_;
+    private final Random r_;
+
+    public MutSRReplaceNode(TreeNodeSet set, Random random) {
+        set_ = set;
+        r_ = random;
+    }
+
+    @Override
+    public void mutate(SymbolicTree genotype) {
+        TreeNode n = genotype.get(r_.nextInt(genotype.size()));
+        n.swapNodeWith(set_.getRandomNode(n.getChildrenNum()));
+    }
+}

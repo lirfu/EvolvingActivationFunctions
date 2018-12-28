@@ -2,37 +2,41 @@ package hr.fer.zemris.genetics.selectors;
 
 import hr.fer.zemris.genetics.Genotype;
 import hr.fer.zemris.genetics.Selector;
-import hr.fer.zemris.genetics.Utils;
-import hr.fer.zemris.utils.Util;
+import hr.fer.zemris.utils.Pair;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Random;
 
-public class TournamentSelector implements Selector {
-    private int mTournamentSize;
+public class TournamentSelector implements Selector<Genotype> {
+    private final int tournament_size_;
+    private final Random rand_;
 
-    public TournamentSelector(int tournamentSize) {
-        this.mTournamentSize = tournamentSize;
+    public TournamentSelector(int tournament_size, Random random) {
+        this.tournament_size_ = tournament_size;
+        this.rand_ = random;
     }
 
     @SuppressWarnings("Duplicates")
     @Override
-    public Parent[] selectParentsFrom(Random rand, Genotype[] population) {
-        Genotype[] pool = new Genotype[mTournamentSize];
-        ArrayList<Integer> indexes = new ArrayList<>(mTournamentSize);
-        for (int i = 0; i < mTournamentSize; i++) {
-            int index;
-            do {
-                index = rand.nextInt(population.length);
-            } while (indexes.contains(index));
-            pool[i] = population[index];
-            indexes.add(index);
+    public Parent[] selectParentsFrom(Genotype[] population) {
+        // Construct indices set (guarantees uniqueness).
+        ArrayList<Integer> indices = new ArrayList<>(population.length);
+        for (int i = 0; i < population.length; i++) {
+            indices.add(i);
+        }
+
+        // Select k random units and indices without repeats.
+        ArrayList<Parent> tournament = new ArrayList<>(tournament_size_);
+        for (int i = 0; i < tournament_size_; i++) {
+            int index = indices.remove(rand_.nextInt(indices.size()));
+            tournament.add(new Parent(population[index], index));
         }
 
         // Sort tournament.
-        Utils.sortPopulation(pool);
+        tournament.sort(Comparator.comparing(Parent::getGenotype));
 
-        // Take first two best and replace the worst.
-        return new Parent[]{new Parent(pool[0], indexes.get(0)), new Parent(pool[1], indexes.get(1)), new Parent(pool[pool.length - 1], indexes.get(indexes.size() - 1))};
+        // Take first two (best) and replace the two last (worst).
+        return new Parent[]{tournament.get(0), tournament.get(1), tournament.get(tournament_size_ - 1)};
     }
 }

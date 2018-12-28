@@ -13,8 +13,12 @@ public abstract class Genotype<T> implements Comparable<Genotype<T>> {
         fitness_ = g.fitness_;
     }
 
-    public final void evaluate(AEvaluator mFitnessFunction) {
-        fitness_ = mFitnessFunction.evaluate(this);
+    public final void evaluate(AEvaluator fitness_func) {
+        fitness_ = fitness_func.evaluate(this);
+    }
+
+    public final Double getFitness() {
+        return fitness_;
     }
 
     @Override
@@ -22,9 +26,7 @@ public abstract class Genotype<T> implements Comparable<Genotype<T>> {
         return (int) Math.signum(fitness_ - tGenotype.fitness_);
     }
 
-    public final Double getFitness() {
-        return fitness_;
-    }
+    /* ABSTRACT METHODS */
 
     public abstract T get(int index);
 
@@ -33,8 +35,6 @@ public abstract class Genotype<T> implements Comparable<Genotype<T>> {
     public abstract int size();
 
     public abstract Genotype copy();
-
-    public abstract void initialize(Random rand);
 
     public abstract String stringify();
 

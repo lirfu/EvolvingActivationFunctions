@@ -1,338 +1,327 @@
 package hr.fer.zemris.genetics;
 
+import hr.fer.zemris.genetics.stopconditions.StopCondition;
 import hr.fer.zemris.utils.Pair;
-import hr.fer.zemris.utils.Util;
+import hr.fer.zemris.utils.Utilities;
+import hr.fer.zemris.utils.logs.ILogger;
+import hr.fer.zemris.utils.logs.StdoutLogger;
 import hr.fer.zemris.utils.threading.WorkArbiter;
-import org.tensorflow.Session;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class Algorithm {
-    protected final Random random = new Random();
-    // Components.
-    protected final AEvaluator mFitnessFunction;
-    protected Selector mSelector;
-    private final ArrayList<Crossover> mCrossovers;
-    private final ArrayList<Mutation> mMutations;
-    private final Genotype mGenotypeTemplate;
-    // Hyperparams.
-    private final int mPopulationSize;
-    private final Long mMaxIterations;
-    private Long mMaxEvalsCondition;
-    private Long mMaxTimeCondition;
-    private final Double mMinFitness;
-    // Algorithm internals.
-    protected WorkArbiter mWorkArbiter;
-    private long iterations;
-    private long mElapsedTime;
-    private LinkedList<Pair<Long, Genotype>> optimumHistory;
-    private Genotype mBestUnit;
-    private long mBestIteration;
-    private Genotype[] mPopulation;
+public abstract class Algorithm {
+    // Evolutionary algorithm components.
+    protected Genotype[] population_;
+    protected final Selector selector_;
+    protected final AEvaluator evaluator_;
+    protected final ArrayList<Crossover> crossover_list_;
+    protected final ArrayList<Mutation> mutation_list_;
+    protected final double mut_prob_;
+    protected final int population_size_;
+    private final Initializer initializer_;
+    private final StopCondition condition_;
+    private final Genotype genotype_template_;
+    // Algorithm internal utilities.
+    protected final Random random_;
+    protected final ILogger log_;
+    protected final WorkArbiter work_arbiter_;
+    // Algorithm internal variables.
+    private long iterations_;
+    private long elapsed_time_;
+    private final LinkedList<Pair<Long, Genotype>> optimum_history_list_;
+    private Genotype best_unit_;
+    private long best_iteration_;
 
-    private Algorithm(ArrayList<Crossover> crossovers, ArrayList<Mutation> mutations, Genotype genotypeTemplate, AEvaluator function, Selector selector, int popSize, Long maxIterCondition, Long maxEvalCondition, Long maxTimeCondition, Double minimumFitnessCondition, Integer workerNumber) {
-        mCrossovers = crossovers;
-        mMutations = mutations;
-        mFitnessFunction = function;
-        mGenotypeTemplate = genotypeTemplate;
-        mSelector = selector;
-        mPopulationSize = popSize;
+    private Algorithm(ArrayList<Crossover> crossovers, ArrayList<Mutation> mutations, Genotype genotype_template,
+                      AEvaluator evaluator, Selector selector, Initializer initializer, StopCondition condition, int population_size,
+                      double mut_prob, int worker_number, ILogger logger, Random random) {
+        selector_ = selector;
+        evaluator_ = evaluator;
+        initializer_ = initializer;
+        crossover_list_ = crossovers;
+        mutation_list_ = mutations;
+        genotype_template_ = genotype_template;
 
-        mMaxIterations = maxIterCondition;
-        mMaxEvalsCondition = maxEvalCondition;
-        mMaxTimeCondition = maxTimeCondition;
-        mMinFitness = minimumFitnessCondition;
+        condition_ = condition;
+        population_size_ = population_size;
+        mut_prob_ = mut_prob;
 
-        mWorkArbiter = new WorkArbiter(workerNumber);
+        optimum_history_list_ = new LinkedList<>();
+        random_ = random;
+        log_ = logger;
+        work_arbiter_ = new WorkArbiter("Algorithm", worker_number);
     }
 
-    protected Algorithm(Algorithm algorithm) {
-        mCrossovers = algorithm.mCrossovers;
-        mMutations = algorithm.mMutations;
-        mFitnessFunction = algorithm.mFitnessFunction;
-        mSelector = algorithm.mSelector;
-        mGenotypeTemplate = algorithm.mGenotypeTemplate;
-        mPopulationSize = algorithm.mPopulationSize;
+    protected Algorithm(Algorithm a) {
+        selector_ = a.selector_;
+        evaluator_ = a.evaluator_;
+        initializer_ = a.initializer_;
+        crossover_list_ = a.crossover_list_;
+        mutation_list_ = a.mutation_list_;
+        genotype_template_ = a.genotype_template_;
 
-        mMaxIterations = algorithm.mMaxIterations;
-        mMaxEvalsCondition = algorithm.mMaxEvalsCondition;
-        mMaxTimeCondition = algorithm.mMaxTimeCondition;
-        mMinFitness = algorithm.mMinFitness;
+        condition_ = a.condition_;
+        population_size_ = a.population_size_;
+        mut_prob_ = a.mut_prob_;
 
-        mWorkArbiter = new WorkArbiter(algorithm.mWorkArbiter.getWorkerNumber());
+        optimum_history_list_ = a.optimum_history_list_;
+        random_ = a.random_;
+        log_ = a.log_;
+        work_arbiter_ = new WorkArbiter(a.work_arbiter_.getName(), a.work_arbiter_.getWorkerNumber());
     }
 
-    public void run(boolean showTrace) {
-        iterations = 0;
-        optimumHistory = new LinkedList<>();
+    /**
+     * Runs an iteration of the algorithm on the current population.
+     */
+    protected abstract void runIteration();
 
-        // Initialize population.
-        mPopulation = new Genotype[mPopulationSize];
-        final Random rand = new Random();
-        for (int i = 0; i < mPopulationSize; i++) {
-            mPopulation[i] = mGenotypeTemplate.copy();
-            mPopulation[i].initialize(rand);
-            mPopulation[i].evaluate(mFitnessFunction);
+    protected void initializePopulation() {
+        population_ = new Genotype[population_size_];
+        for (int i = 0; i < population_size_; i++) {
+            population_[i] = genotype_template_.copy();
+            initializer_.initialize(population_[i]);
+            population_[i].evaluate(evaluator_);
+        }
+    }
+
+    public void run() {
+        run(new LogParams());
+    }
+
+    public void run(@NotNull LogParams p) {
+        // Clear internals.
+        iterations_ = 1;
+        elapsed_time_ = 0;
+        optimum_history_list_.clear();
+        best_unit_ = null;
+        best_iteration_ = 0;
+
+        initializePopulation();
+        if (p.print_population_) {
+            log_.d(getPopulationReport());
         }
 
         // Evaluate population and find the initial best.
-        mBestUnit = Utils.findBest(mPopulation).copy();
-        mBestIteration = iterations;
+        best_unit_ = findBest(population_).copy();
+        best_iteration_ = iterations_;
 
-        if (showTrace) {
-            System.out.println("===> Starting algorithm with population of " + mPopulationSize + " units!\n");
-            print(iterations, mBestUnit);
-        }
+        log_.i("===> Starting algorithm with population of " + population_size_ + " units!\n");
+        log_.i(getReport(iterations_, best_unit_));
 
         long startingTime = System.currentTimeMillis();
-        mElapsedTime = 0;
-        while ((mMaxIterations == null || mMaxIterations > iterations) &&
-                (mMinFitness == null || mMinFitness < mBestUnit.getFitness()) &&
-                (mMaxEvalsCondition == null || mMaxEvalsCondition > mFitnessFunction.getEvaluations()) &&
-                (mMaxTimeCondition == null || mMaxTimeCondition > mElapsedTime)) {
-            iterations++;
-
+        elapsed_time_ = 0;
+        // Loop until a condition is satisfied.
+        while (!condition_.isSatisfied(getResultBundle())) {
             // Apply operators on this generation.
-            runIteration(mPopulation);
+            runIteration();
 
+            // Check if new best is an improvement.
+            Genotype best = findBest(population_);
+            boolean improvement = best_unit_.compareTo(best) > 0;
             // Update the global best if needed.
-            Genotype best = Utils.findBest(mPopulation);
-            if (mBestUnit.getFitness() > best.getFitness()) {
-                mBestUnit = best.copy();
-                mBestIteration = iterations;
-                if (showTrace) {
-                    print(iterations, mBestUnit);
+            if (!p.print_improvements_only_ || improvement) {
+                best_unit_ = best.copy();
+                best_iteration_ = iterations_;
+                log_.i(getReport(iterations_, best_unit_));
+                if (p.print_population_) {
+                    log_.d(getPopulationReport());
                 }
             }
-            optimumHistory.add(new Pair<>(iterations, best.copy()));
 
-            mElapsedTime = System.currentTimeMillis() - startingTime;
+            // Update internals;
+            optimum_history_list_.add(new Pair<>(iterations_, best.copy()));
+            elapsed_time_ = System.currentTimeMillis() - startingTime;
+            iterations_++;
         }
 
-        if (showTrace) {
-            System.out.println("\n===> Algorithm ended!");
-            if (mMaxIterations != null && mMaxIterations <= iterations) {
-                System.out.println("Max iterations achieved!");
-            }
-            if (mMinFitness != null && mMinFitness >= mBestUnit.getFitness()) {
-                System.out.println("Min fitness achieved!");
-            }
-            if (mMaxEvalsCondition != null && mMaxEvalsCondition <= mFitnessFunction.getEvaluations()) {
-                System.out.println("Max evaluations achieved!");
-            }
-            if (mMaxTimeCondition != null && mMaxTimeCondition <= mElapsedTime) {
-                System.out.println("Max time achieved!");
-            }
+        log_.i("\n===> Algorithm ended!");
+        log_.i(condition_.report(getResultBundle()));
+        log_.i(getReport(--iterations_, best_unit_));
+        log_.i("Best iteration: " + best_iteration_);
+        if (p.print_population_) {
+            log_.d(getPopulationReport());
         }
-
-        // Tell listeners that algorithm ended.
-        notifyAll();
     }
 
-    public static double standardDeviation(Genotype[] population) {
-        int size = population.length;
-        double mean = 0;
-        for (Genotype g : population)
-            mean += g.fitness_;
-        mean /= size;
-
-        double squares = 0;
-        for (Genotype g : population)
-            squares += Math.pow(g.fitness_ - mean, 2);
-
-        return Math.sqrt(squares / (size - 1));
-    }
-
-    public Result getResultBundle() {
-        return new Result(mBestUnit, mBestIteration, mFitnessFunction.getEvaluations(), standardDeviation(mPopulation), mElapsedTime, optimumHistory);
-    }
-
-    private void print(long iterations, Genotype best) {
-        String s = "\n===> Best unit: " + best.stringify()
+    private String getReport(long iteration, Genotype best) {
+        return "===> Best unit:\n" + best.stringify()
                 + "\nFitness: " + best.getFitness()
-                + "\nStddev: " + standardDeviation(mPopulation)
-                + "\nIteration: " + iterations
-                + "\nEvaluations: " + mFitnessFunction.getEvaluations()
-                + "\nTime: " + Util.formatMiliseconds(mElapsedTime);
-        System.out.println(s);
+                + "\nStddev: " + Utils.calculateStandardDeviation(population_)
+                + "\nIteration: " + iteration
+                + "\nEvaluations: " + evaluator_.getEvaluations()
+                + "\nTime: " + Utilities.formatMiliseconds(elapsed_time_);
     }
 
-    protected void runIteration(Genotype[] population) {
-        throw new RuntimeException("Method runIteration() not implemented!");
+    private String getPopulationReport() {
+        StringBuilder sb = new StringBuilder();
+        for (Genotype g : population_) {
+            sb
+                    .append(g)
+                    .append(' ')
+                    .append('(')
+                    .append(g.fitness_)
+                    .append(')')
+                    .append('\n');
+        }
+        return sb.toString();
     }
 
-    protected Crossover getCrossover(Random rand) {
-        return (Crossover) getRandomFrom(mCrossovers, rand);
+    /* GETTERS */
+
+    protected Genotype findBest(Genotype[] pop) {
+        return Utils.findLowest(pop);
     }
 
-    protected Mutation getMutation(Random rand) {
-        return (Mutation) getRandomFrom(mMutations, rand);
+    protected Crossover getRandomCrossover() {
+        return (Crossover) Utils.getRandomOperator(crossover_list_, random_);
     }
 
-    private Operator getRandomFrom(ArrayList<? extends Operator> list, Random rand) {
-        if (list.size() == 1)
-            return list.get(0);
-
-        int importanceSum = 0;
-        for (Operator o : list)
-            importanceSum += o.getImportance();
-
-        int randomSum = rand.nextInt(importanceSum);
-        int sum = 0;
-        int i;
-        for (i = 0; i < list.size() - 1 && sum < randomSum; i++)
-            sum += list.get(i).getImportance();
-        return list.get(i);
+    protected Mutation getRandomMutation() {
+        return (Mutation) Utils.getRandomOperator(mutation_list_, random_);
     }
 
     public long getIterations() {
-        return iterations;
+        return iterations_;
     }
 
-    public LinkedList<Pair<Long, Genotype>> getOptimumHistory() {
-        return optimumHistory;
+    public LinkedList<Pair<Long, Genotype>> optimum_history_list() {
+        return optimum_history_list_;
     }
 
     public Genotype getBest() {
-        return mBestUnit;
+        return best_unit_;
     }
 
     public long getBestIteration() {
-        return mBestIteration;
+        return best_iteration_;
     }
 
-    public static class Result {
-        private long iteration;
-        private double stddev;
-        private long elapsedTime;
-        private LinkedList<Pair<Long, Genotype>> optimumHistory;
-        private Genotype best;
-        private long evaluations;
+    public Result getResultBundle() {
+        return new Result(best_unit_, best_iteration_, evaluator_.getEvaluations(), Utils.calculateStandardDeviation(population_), elapsed_time_, optimum_history_list_);
+    }
 
-        Result(Genotype best, long iteration, long evaluations, double stddev, long elapsedTime, LinkedList<Pair<Long, Genotype>> optimumHistory) {
-            this.best = best;
-            this.evaluations = evaluations;
-            this.iteration = iteration;
-            this.stddev = stddev;
-            this.elapsedTime = elapsedTime;
-            this.optimumHistory = optimumHistory;
+    /* INTERNAL CLASSES */
+
+    public static class LogParams {
+        private boolean print_improvements_only_ = true;
+        private boolean print_population_ = false;
+
+        public LogParams() {
         }
 
-        public Genotype getBest() {
-            return best;
+        public LogParams(boolean print_improvements_only, boolean print_population) {
+            print_improvements_only_ = print_improvements_only;
+            print_population_ = print_population;
         }
 
-        public long getEvaluations() {
-            return evaluations;
+        public boolean willPrintImprovementsOnly() {
+            return print_improvements_only_;
         }
 
-        public long getIteration() {
-            return iteration;
-        }
-
-        public long getElapsedTime() {
-            return elapsedTime;
-        }
-
-        public double getStddev() {
-            return stddev;
-        }
-
-        public LinkedList<Pair<Long, Genotype>> getOptimumHistory() {
-            return optimumHistory;
-        }
-
-        @Override
-        public String toString() {
-            return best.stringify() +
-                    "\nFitness: " + best.fitness_ +
-                    "\nEvaluations: " + evaluations +
-                    "\nIteration: " + iteration +
-                    "\nElapsed time: " + (elapsedTime / 1000.) + "s";
+        public boolean willPrintPopulation() {
+            return print_population_;
         }
     }
 
     public static class Builder {
-        private ArrayList<Crossover> mCrossovers = new ArrayList<>();
-        private ArrayList<Mutation> mMutations = new ArrayList<>();
-        private Genotype mGenotypeTemplate;
-        private Integer mPopulationSize;
+        private ArrayList<Crossover> crossovers_ = new ArrayList<>();
+        private ArrayList<Mutation> mutations_ = new ArrayList<>();
+        private Genotype genotype_temp_;
+        private AEvaluator evaluator_;
+        private Integer pop_size_;
+        private double mut_prob_ = 0;
 
-        private Long mMaxIterCondition;
-        private Double mMinimumFitnessCondition;
-        private AEvaluator mFitnessFunction;
-        private Long mMaxEvalsCondition;
-        private Long mMaxTimeCondition;
-        private Selector mSelector;
+        private StopCondition condition_;
+        private Selector selector_;
+        private Initializer initializer_;
 
-        private Integer mThreadNumber = 1;
+        private ILogger logger_ = new StdoutLogger();
+        private int workers_num_ = 1;
+        private Random random_ = new Random();
 
-        public Algorithm create() {
-            if (mGenotypeTemplate == null)
+        public Algorithm build() {
+            if (genotype_temp_ == null)
                 throw new IllegalStateException("Genotype template must be specified!");
-            if (mMaxIterCondition == null && mMinimumFitnessCondition == null && mMaxEvalsCondition == null && mMaxTimeCondition == null)
+            if (condition_ == null)
                 throw new IllegalStateException("At least 1 stop condition must be set!");
-            if (mPopulationSize == null)
+            if (pop_size_ == null)
                 throw new IllegalStateException("Must specify population size!");
-            if (mSelector == null)
+            if (selector_ == null)
                 throw new IllegalStateException("Must specify a selector!");
-            return new Algorithm(mCrossovers, mMutations, mGenotypeTemplate, mFitnessFunction, mSelector, mPopulationSize, mMaxIterCondition, mMaxEvalsCondition, mMaxTimeCondition, mMinimumFitnessCondition, mThreadNumber);
+            if (initializer_ == null)
+                throw new IllegalStateException("Must specify an initializer!");
+            if (logger_ == null)
+                throw new IllegalStateException("Must specify a logger!");
+
+            return new Algorithm(crossovers_, mutations_, genotype_temp_, evaluator_, selector_, initializer_, condition_, pop_size_, mut_prob_, workers_num_, logger_, random_) {
+                @Override
+                protected void runIteration() {
+                    throw new IllegalStateException("Method runIteration() not implemented!");
+                }
+            };
         }
 
-        public Builder setGenotypeTemplate(Genotype template) {
-            mGenotypeTemplate = template;
+        public Builder setGenotypeTemplate(@NotNull Genotype template) {
+            genotype_temp_ = template;
             return this;
         }
 
-        public Builder setPopulationSize(Integer size) {
-            mPopulationSize = size;
+        public Builder setPopulationSize(int size) {
+            pop_size_ = size;
             return this;
         }
 
-        public Builder setMaxIterationsCondition(Long maxIterations) {
-            mMaxIterCondition = maxIterations;
+        public Builder setMutationProbability(double probability) {
+            mut_prob_ = probability;
             return this;
         }
 
-        public Builder setMinFitnessCondition(Double fitness) {
-            this.mMinimumFitnessCondition = fitness;
+        public Builder setStopCondition(StopCondition condition) {
+            condition_ = condition;
             return this;
         }
 
-        public Builder setMaxEvalsCondition(Long evaluations) {
-            this.mMaxEvalsCondition = evaluations;
+        public Builder setEvaluator(@NotNull AEvaluator evaluator) {
+            evaluator_ = evaluator;
             return this;
         }
 
-        public Builder setMaxTimeCondition(Long miliseconds) {
-            this.mMaxTimeCondition = miliseconds;
+        public Builder setSelector(@NotNull Selector selector) {
+            selector_ = selector;
             return this;
         }
 
-        public Builder setFitnessFunction(AEvaluator function) {
-            mFitnessFunction = function;
+        public Builder setInitializer(@NotNull Initializer initializer) {
+            initializer_ = initializer;
             return this;
         }
 
-        public Builder setSelector(Selector selector) {
-            mSelector = selector;
+        public Builder addCrossover(@NotNull Crossover crx) {
+            crossovers_.add(crx);
             return this;
         }
 
-        public Builder addCrossover(Crossover crx) {
-            mCrossovers.add(crx);
+        public Builder addMutation(@NotNull Mutation mut) {
+            mutations_.add(mut);
             return this;
         }
 
-        public Builder addMutation(Mutation mut) {
-            mMutations.add(mut);
+        public Builder setLogger(@NotNull ILogger logger) {
+            logger_ = logger;
             return this;
         }
 
-        public Builder setThreadsNumber(Integer number) {
-            mThreadNumber = number;
+        public Builder setNumberOfWorkers(int number) {
+            workers_num_ = number;
+            return this;
+        }
+
+        public Builder setRandom(Random random) {
+            random_ = random;
             return this;
         }
     }

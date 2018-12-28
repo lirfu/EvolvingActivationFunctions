@@ -1,82 +1,62 @@
 package hr.fer.zemris.genetics.symboregression;
 
 import hr.fer.zemris.genetics.Genotype;
+import hr.fer.zemris.utils.Counter;
 
 import java.util.Random;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
-public class SymbolicTree<T> extends Genotype<TreeNode<T, ?>> implements IExecutable<T, Object> {
+public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
+    private TreeNodeSet set_;
     private int size_;
-    private TreeNode root_;
-    private TreeNodeSet factory_;
+    protected TreeNode<I, O> root_;
 
-    public SymbolicTree(TreeNodeSet factory) {
-        factory_ = factory;
-    }
-
-    private void preOrderWalk(TreeNode p, Function<TreeNode, Boolean> op) {
-        if (op.apply(p)) {
-            return;
-        }
-        if (p.getChildrenNum() > 0) {
-            for (TreeNode c : p.getChildren()) {
-                preOrderWalk(c, op);
-            }
-        }
+    public SymbolicTree(TreeNodeSet set, TreeNode<I, O> root) {
+        set_ = set;
+        root_ = root;
+        updateSize();
     }
 
     /**
      * Execute the tree with given input.
      */
-    @Override
-    public Object execute(T input) {
+    public O execute(I input) {
         return root_.execute(input);
     }
 
     /**
      * Gets the node at given index.
      * Indexes are calculated dynamically by a pre-order preOrderWalk through the tree. Indexes start from 0.
-     * <p>WARNING! Modifications to the tree can destroy previous index-node pairs.</p>
+     * <p>WARNING! Modifications to the tree can destroy previous index-node relations.</p>
      */
     @Override
-    public TreeNode get(int index) {
-        TreeNode[] result = new TreeNode[1];
-        preOrderWalk(root_, new Function<TreeNode, Boolean>() {
-            private int i = 0;
-
-            @Override
-            public Boolean apply(TreeNode node) {
-                if (i++ == index) {
-                    result[0] = node;
-                    return true;
-                }
-                return false;
-            }
-        });
-        return result[0];
+    public TreeNode<I, O> get(int index) {
+        if (index == 0) {
+            return root_;
+        } else if (index > size_) {
+            throw new IllegalStateException("Index out of bounds: " + index);
+        }
+        return root_.get(new Counter(index));
     }
 
     /**
      * Sets the node at given index.
      * Effectively, swaps the contents of selected and given node, preserving their references.
      * <p>Indexes are calculated dynamically by a pre-order preOrderWalk through the tree. Indexes start from 0.</p>
-     * <p>WARNING! Modifications to the tree can destroy previous index-node pairs.</p>
+     * <p>If index is 0, the given value is set as the tree root. This effectively re-defines the whole tree.</p>
+     * <p>WARNING! Method swaps the contents of the given node with the node at position. This means replaced node will be in the given value.</p>
+     * <p>WARNING! Modifications to the tree can destroy previous index-node relations.</p>
      */
     @Override
-    public void set(int index, TreeNode value) {
-        preOrderWalk(root_, new Function<TreeNode, Boolean>() {
-            private int i = 0;
-
-            @Override
-            public Boolean apply(TreeNode node) {
-                if (i++ == index) {
-                    TreeNode.swapContents(node, value);
-                    return true;
-                }
-                return false;
-            }
-        });
+    public void set(int index, TreeNode<I, O> value) {
+        if (index > size_) {
+            throw new IllegalStateException("Index out of bounds: " + index);
+        }
+        if (index == 0 && root_ == null) {
+            root_ = value;
+        } else {
+            get(index).swapContentWith(value);
+        }
+        updateSize();
     }
 
     /**
@@ -87,60 +67,30 @@ public class SymbolicTree<T> extends Genotype<TreeNode<T, ?>> implements IExecut
         return size_;
     }
 
-    public void setSize(int size) {
-        size_ = size;
+    public void updateSize() {
+        size_ = (root_ == null) ? 0 : root_.getSize();
+    }
+
+    @Override
+    public TreeNode<I, O> generateParameter(Random rand) {
+        return set_.getRandomNode();
     }
 
     /**
      * Deep copy of the tree.
      */
     @Override
-    public SymbolicTree<T> copy() {
-        SymbolicTree<T> st = new SymbolicTree<>(factory_);
-        st.root_ = (root_ == null) ? null : root_.clone(); // Clone root and its entire subtree (meaning the whole tree).
-        st.size_ = size_;
-        return st;
-    }
-
-    @Override
-    public void initialize(Random r) {
-        root_ = factory_.getRandomOperator(r);
-        int[] size = new int[]{r.nextInt(3)};
-        preOrderWalk(root_, n -> {
-            boolean made_op = false;
-            for (int i = 0; i < n.getChildrenNum(); i++) {
-                if (size[0] > 0 && r.nextBoolean()) {
-                    n.getChildren()[i] = factory_.getRandomOperator(r);
-                    made_op = true;
-                } else {
-                    n.getChildren()[i] = factory_.getRandomTerminal(r);
-                }
-                size[0]--;
-            }
-            return size[0] <= 0 && !made_op;
-        });
-    }
-
-    private void buildString(TreeNode p, StringBuilder sb) {
-        sb.append(p.getName());
-        if (p.getChildrenNum() > 0) {
-            sb.append('[');
-            int i = 0;
-            for (TreeNode c : p.getChildren()) {
-                buildString(c, sb);
-                if (++i != p.getChildrenNum()) {
-                    sb.append(',');
-                }
-            }
-            sb.append(']');
-        }
+    public SymbolicTree<I, O> copy() {
+        SymbolicTree t = new SymbolicTree<>(set_, (root_ == null) ? null : root_.clone());
+        t.fitness_ = fitness_;
+        return t;
     }
 
     @Override
     public String stringify() {
-        StringBuilder sb = new StringBuilder();
-        buildString(root_, sb);
-        return sb.toString();
+        if (root_ == null)
+            return "null";
+        return root_.toString();
     }
 
     @Override
@@ -149,7 +99,59 @@ public class SymbolicTree<T> extends Genotype<TreeNode<T, ?>> implements IExecut
     }
 
     @Override
-    public TreeNode generateParameter(Random rand) {
-        return factory_.getRandomNode(rand);
+    public boolean equals(Object o) {
+        if (!(o instanceof SymbolicTree)) return false;
+        if (size_ != ((SymbolicTree) o).size_) return false;
+        return root_.equals(((SymbolicTree) o).root_);
+    }
+
+    /**
+     * Convenience class for building the symbolic tree.
+     */
+    public static class Builder {
+        protected TreeNodeSet set_;
+        protected TreeNode root_ = null;
+        protected boolean is_full_ = false;
+
+        public SymbolicTree build() {
+            if (set_ == null)
+                throw new IllegalStateException("Node set must be defined!");
+
+            add(null);  // Simulate adding to set the "is_full" flag if tree is complete. This won't be added to the full tree.
+            if (!is_full_)
+                throw new IllegalStateException("The tree isn't complete (some children are undefined)! " + new SymbolicTree<>(set_, root_).toString());
+
+            return new SymbolicTree(set_, root_);
+        }
+
+        private boolean add(TreeNode current, TreeNode value) {
+            for (int i = 0; i < current.getChildrenNum(); i++) {
+                if (current.getChildren()[i] == null) {
+                    current.getChildren()[i] = value;
+                    return true;
+                }
+                if (add(current.getChildren()[i], value))
+                    return true;
+            }
+            return false;
+        }
+
+        /**
+         * Puts the given node to the first encountered null child in an in-order walk.
+         * If there is no space left, the inputs are ignored.
+         */
+        public Builder add(TreeNode node) {
+            if (root_ == null) {
+                root_ = node;
+            } else if (!add(root_, node)) {
+                is_full_ = true;
+            }
+            return this;
+        }
+
+        public Builder setNodeSet(TreeNodeSet set) {
+            set_ = set;
+            return this;
+        }
     }
 }

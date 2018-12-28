@@ -1,29 +1,27 @@
 package hr.fer.zemris.genetics;
 
-import java.util.Random;
-
-public interface Selector {
+public interface Selector<T extends Genotype> {
     /**
      * Selects two parents from the population. Returns the genotypes and indexes from which they were taken.
      *
-     * @param rand       Random generator.
      * @param population Population of Genotypes.
      * @return Array of Parent elements.
      * First two are used as parents and must define the Genotype.
-     * The third is used by the elimination algorithm to know on which index to store the child (has the worst Genotype). If selector doesn't specify which index it needs to store the child on, the child is <code>null</code>.
+     * The third is used by the elimination algorithm to know on which index to store the child (has the worst fitness).
+     * If selector doesn't specify which index it needs to store results the child on, the child is <code>null</code>.
      */
-    public Parent[] selectParentsFrom(Random rand, Genotype[] population);
+    Parent[] selectParentsFrom(T[] population);
 
-    public static class Parent {
-        private Genotype genotype;
+    class Parent<T extends Genotype> {
+        private T genotype;
         private int index;
 
-        public Parent(Genotype genotype, int index) {
+        public Parent(T genotype, int index) {
             this.genotype = genotype;
             this.index = index;
         }
 
-        public Genotype getGenotype() {
+        public T getGenotype() {
             return genotype;
         }
 
