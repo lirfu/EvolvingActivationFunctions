@@ -1,73 +1,86 @@
 package hr.fer.zemris.utils.threading;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.LinkedList;
 
-public class Worker {
-    private String mID;
-
-    private boolean isAlive = true;
-    private final Thread mThread;
-    private final LinkedList<Work> mWorkQueue;
+public class Worker implements Comparable<Worker> {
+    private boolean is_alive_ = true;
+    private long wait_time_ = 500;
+    private final String ID_;
+    private final Thread thread_;
+    private final LinkedList<Work> queue_;
 
     /**
      * Creates a new worker and starts the internal thread.
      */
     public Worker(String id) {
-        mID = id;
-        mWorkQueue = new LinkedList<>();
+        ID_ = id;
+        queue_ = new LinkedList<>();
 
-        mThread = new Thread(() -> {
-            while (isAlive) {
-                doWork();
-                notifyAll();
+        thread_ = new Thread(() -> {
+            while (is_alive_) {
+                // Deplete the queue.
+                synchronized (Worker.this) {
+                    while (queue_.size() > 0) {
+                        queue_.pop().work();
+                    }
+                }
+
+                // Wait for changes in queue or timeout.
+                synchronized (Worker.this) {
+                    try {
+                        wait(wait_time_);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
-        mThread.setDaemon(true);
-        mThread.start();
+        thread_.setDaemon(true);
+        thread_.start();
     }
-
-    private synchronized void doWork() {
-        while (mWorkQueue.size() > 0) {
-            mWorkQueue.pop().work();
-        }
-
-        // wait for changes in queue or kill signal
-        try {
-            wait(10_000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     /**
      * Enqueues work to workers' queue. If worker is dead, work is dropped.
      */
-    public synchronized void enqueueWork(Work work) {
-        if (!isAlive) return;
-        mWorkQueue.push(work);
+    public final synchronized void enqueueWork(Work work) {
+        if (!is_alive_) return;
+        queue_.push(work);
         notify();
     }
 
     /**
      * Returns the current queue size.
      */
-    public int getWorkCount() {
-        return mWorkQueue.size();
+    public final int getWorkCount() {
+        return queue_.size();
     }
 
     /**
      * Returns workers' name.
      */
-    public String getID() {
-        return mID;
+    public final String getID() {
+        return ID_;
+    }
+
+    /**
+     * Sets the wait time when queue gets emptied.
+     */
+    public void setWaitTime(long wait_time) {
+        wait_time_ = wait_time;
     }
 
     /**
      * Kills the worker and notifies his listeners. May he rest in peace for all of eternity.
      */
-    public synchronized void kill() {
-        isAlive = false;
+    public final void kill() {
+        is_alive_ = false;
         notify();
+    }
+
+    @Override
+    public final int compareTo(@NotNull Worker o) {
+        return getWorkCount() - o.getWorkCount();
     }
 }

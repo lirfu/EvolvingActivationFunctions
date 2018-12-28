@@ -1,32 +1,43 @@
 package hr.fer.zemris.utils.threading;
 
-public class WorkArbiter {
-    private final String mName;
-    private Worker[] mWorkers;
-    private int mCurrentIndex = 0;
+import hr.fer.zemris.genetics.Utils;
 
-    public WorkArbiter(String name, int workerNumber) {
-        mName = name;
-        mWorkers = new Worker[workerNumber];
-        for (int i = 0; i < workerNumber; i++)
-            mWorkers[i] = new Worker(name + '_' + i);
+public class WorkArbiter {
+    private final String name_;
+    private Worker[] workers_;
+
+    public WorkArbiter(String name, int worker_number) {
+        name_ = name;
+        workers_ = new Worker[worker_number];
+        for (int i = 0; i < worker_number; i++)
+            workers_[i] = new Worker(name + '_' + i);
     }
 
     public void postWork(Work work) {
-        mWorkers[mCurrentIndex].enqueueWork(work);
-        mCurrentIndex = ++mCurrentIndex % mWorkers.length;
+        // Selects the worker with the smallest queue.
+        Utils.findLowest(workers_).enqueueWork(work);
+
+        // Select workers in the defined order, distributing load uniformly.
+//        workers_[mCurrentIndex].enqueueWork(work);
+//        mCurrentIndex = ++mCurrentIndex % workers_.length;
     }
 
     public void kill() {
-        for (Worker w : mWorkers)
+        for (Worker w : workers_)
             w.kill();
     }
 
     public String getName() {
-        return mName;
+        return name_;
     }
 
     public int getWorkerNumber() {
-        return mWorkers.length;
+        return workers_.length;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        kill();
+        super.finalize();
     }
 }
