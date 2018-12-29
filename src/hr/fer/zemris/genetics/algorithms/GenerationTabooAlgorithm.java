@@ -58,20 +58,22 @@ public class GenerationTabooAlgorithm extends Algorithm {
             }
             // Try fixing a taboo child by mutating.
             synchronized (tabu_list_) {
-                for (int i = 0; i < taboo_attempts_ && tabu_list_.contains(child.stringify()); i++) {
+                for (int i = 0; i < taboo_attempts_; i++) {
+                    if (!tabu_list_.contains(child.stringify())) {
+                        // Update taboo list.
+                        tabu_list_.add(child.stringify());
+                        if (tabu_list_.size() > taboo_size_) {
+                            tabu_list_.removeFirst();
+                        }
+                        break;
+                    }
+
                     getRandomMutation().mutate(child);
                 }
             }
             // Evaluate.
             child.evaluate(evaluator_);
 
-            synchronized (tabu_list_) {
-                // Update taboo list.
-                tabu_list_.addLast(child.stringify());
-                if (tabu_list_.size() > taboo_size_) {
-                    tabu_list_.removeFirst();
-                }
-            }
             synchronized (index) {
                 // Store the child to current index.
                 population_[index[0]] = child;
@@ -85,15 +87,7 @@ public class GenerationTabooAlgorithm extends Algorithm {
         }
 
         // Wait for all work to be done.
-        while (index[0] < size) {
-            synchronized (this) {
-                try {
-                    wait(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        work_arbiter_.waitOn(() -> index[0] == size);
     }
 
     public static class Builder extends Algorithm.Builder {

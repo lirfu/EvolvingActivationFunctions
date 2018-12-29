@@ -27,6 +27,18 @@ public class WorkArbiter {
             w.kill();
     }
 
+    public void waitOn(WaitCondition condition) {
+        while (!condition.satisfied()) {
+            synchronized (this) {
+                try {
+                    wait(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public String getName() {
         return name_;
     }
@@ -39,5 +51,9 @@ public class WorkArbiter {
     protected void finalize() throws Throwable {
         kill();
         super.finalize();
+    }
+
+    public interface WaitCondition {
+        public boolean satisfied();
     }
 }

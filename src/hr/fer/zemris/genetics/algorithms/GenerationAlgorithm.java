@@ -67,14 +67,6 @@ public class GenerationAlgorithm extends Algorithm {
         }
 
         // Wait for all work to be done.
-        while (index[0] < size) {
-            synchronized (this) {
-                try {
-                    wait(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        work_arbiter_.waitOn(() -> index[0] == size);
     }
 }
