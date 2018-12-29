@@ -14,12 +14,14 @@ public class DemoTest {
         @Override
         public double performEvaluate(SymbolicTree<Demo.State, Double> g) {
             double fitness = 0;
-            Demo.State state = new Demo.State(0, 0);
+            Demo.State state = new Demo.State(0, 0, 0);
             for (state.x_ = min_; state.x_ <= max_; state.x_++) {
                 for (state.y_ = min_; state.y_ <= max_; state.y_++) {
-                    double true_val = state.x_ * state.y_ + state.x_;
-                    double pred_val = g.execute(state);
-                    fitness += Math.pow(true_val - pred_val, 2);
+                    for (state.z_ = min_; state.z_ <= max_; state.z_++) {
+                        double true_val = state.x_ * state.y_ + state.z_;
+                        double pred_val = g.execute(state);
+                        fitness += Math.pow(true_val - pred_val, 2);
+                    }
                 }
             }
             fitness /= Math.pow(max_ - min_ + 1, 2);
@@ -38,7 +40,7 @@ public class DemoTest {
                 .add(new Demo.MulNode())
                 .add(new Demo.XNode())
                 .add(new Demo.YNode())
-                .add(new Demo.XNode())
+                .add(new Demo.ZNode())
                 .build();
     }
 
@@ -46,7 +48,7 @@ public class DemoTest {
     public void testGetSet() {
         SymbolicTree t = buildSolution();
 
-        assertTrue("Getter should work correctly.", t.get(4).equals(new Demo.XNode()));
+        assertTrue("Getter should work correctly.", t.get(4).equals(new Demo.ZNode()));
 
         t.set(3, new Demo.XNode());
 
@@ -63,7 +65,7 @@ public class DemoTest {
     @Test
     public void testSubOptimal() {
         SymbolicTree t = buildSolution();
-        TreeNode[] nodes = new TreeNode[]{new Demo.XNode(), new Demo.YNode()};
+        TreeNode[] nodes = new TreeNode[]{new Demo.XNode(), new Demo.YNode(), new Demo.ZNode()};
 
         for (int i = 0; i < t.size(); i++) {
             TreeNode orig = t.get(i).clone();
@@ -82,13 +84,13 @@ public class DemoTest {
 
     @Test
     public void testCloning() {
-        Demo.State s = new Demo.State(3, 5);
+        Demo.State s = new Demo.State(3, 5, 7);
         SymbolicTree t = buildSolution();
         SymbolicTree c = t.copy();
 
         TreeNode n = new Demo.AddNode();
         n.children_[0] = new Demo.XNode();
-        n.children_[1] = new Demo.XNode();
+        n.children_[1] = new Demo.ZNode();
 
         assertTrue("Node should clone properly.", n.clone().equals(n));
 

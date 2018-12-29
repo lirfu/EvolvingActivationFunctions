@@ -32,7 +32,7 @@ public class Demo {
         node_set.registerTerminal(new ZNode());
 
         StopCondition cond = new StopCondition.Builder()
-                .setMaxIterations(20)
+                .setMaxIterations(10)
                 .setMinFitness(0)
                 .build();
 
@@ -60,38 +60,39 @@ public class Demo {
                 .addMutation(new MutSRInsertRoot(node_set, rand).setImportance(2))
                 .addMutation(new MutSRReplaceNode(node_set, rand).setImportance(2))
                 .addMutation(new MutSRReplaceSubtree(node_set, new SRGenericInitializer(node_set, 2), rand).setImportance(2))
+//                .addMutation(new MutInitialize<>(new SRGenericInitializer(node_set, 2)).setImportance(1))
 
-                .setNumberOfWorkers(7)
+                .setNumberOfWorkers(10)
                 .build();
 
 //        algo.run();
         algo.run(new Algorithm.LogParams(false, true));
 
-        Genotype best = algo.getBest();
-        System.out.println(best);
+        SymbolicTree best = (SymbolicTree) algo.getBest();
+        System.out.println("Final result: " + best + "   (" + best.getFitness() + ")");
 
         System.out.println("Done!");
     }
 
     public static class Eval extends AEvaluator<SymbolicTree<State, Double>> {
-        private final int min_ = -5, max_ = 5;
-        private final State state_ = new State(-1, -1, -1);
+        private final int min_ = -10, max_ = 10;
 
         @Override
         public double performEvaluate(SymbolicTree<State, Double> g) {
+            State s = new State(0, 0, 0);
             double fitness = 0;
-            for (state_.x_ = min_; state_.x_ <= max_; state_.x_++) {
-                for (state_.y_ = min_; state_.y_ <= max_; state_.y_++) {
-                    for (state_.z_ = min_; state_.z_ <= max_; state_.z_++) {
-                        double true_val = func(state_);
-                        double pred_val = g.execute(state_);
+            for (s.x_ = min_; s.x_ <= max_; s.x_++) {
+                for (s.y_ = min_; s.y_ <= max_; s.y_++) {
+                    for (s.z_ = min_; s.z_ <= max_; s.z_++) {
+                        double true_val = func(s);
+                        double pred_val = g.execute(s);
                         fitness += Math.pow(true_val - pred_val, 2);
                     }
                 }
             }
-//            if (Double.isNaN(fitness)) {
-//                return Double.MAX_VALUE;
-//            }
+            if (!Double.isFinite(fitness)) {
+                return Double.MAX_VALUE;
+            }
             return fitness;
         }
     }
