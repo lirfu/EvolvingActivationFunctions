@@ -5,6 +5,7 @@ import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
+import hr.fer.zemris.utils.threading.Work;
 import hr.fer.zemris.utils.threading.WorkArbiter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.locks.Condition;
 
 public abstract class Algorithm {
     // Evolutionary algorithm components.
@@ -81,11 +83,26 @@ public abstract class Algorithm {
 
     protected void initializePopulation() {
         population_ = new Genotype[population_size_];
-        for (int i = 0; i < population_size_; i++) {
+        final int[] index = new int[]{0, 0};
+
+        Work w = () -> {
+            int i;
+            synchronized (index) {
+                i = index[0]++;
+            }
             population_[i] = genotype_template_.copy();
             initializer_.initialize(population_[i]);
             population_[i].evaluate(evaluator_);
+            synchronized (index) {
+                index[1]++;
+            }
+        };
+
+        for (int i = 0; i < population_size_; i++) {
+            work_arbiter_.postWork(w);
         }
+
+        work_arbiter_.waitOn(() -> index[1] == population_size_);
     }
 
     public void run() {
@@ -94,28 +111,33 @@ public abstract class Algorithm {
 
     public void run(@NotNull LogParams p) {
         // Clear internals.
-        iterations_ = 1;
+        iterations_ = 0;
         elapsed_time_ = 0;
         optimum_history_list_.clear();
         best_unit_ = null;
         best_iteration_ = 0;
+        long startingTime = System.currentTimeMillis();
 
+        log_.i("===> Initializing population!");
         initializePopulation();
+
+        // Find the initial best.
+        best_unit_ = findBest(population_).copy();
+        best_iteration_ = iterations_;
+        optimum_history_list_.add(new Pair<>(iterations_, best_unit_.copy()));
+        log_.i("===> Done! (" + Utilities.formatMiliseconds(System.currentTimeMillis() - startingTime) + ")\n");
+
+        log_.i("===> Starting algorithm with population of " + population_size_ + " units!\n");
+        startingTime = System.currentTimeMillis();
+        log_.i(getReport(best_unit_));
         if (p.print_population_) {
             log_.d(getPopulationReport());
         }
 
-        // Evaluate population and find the initial best.
-        best_unit_ = findBest(population_).copy();
-        best_iteration_ = iterations_;
-
-        log_.i("===> Starting algorithm with population of " + population_size_ + " units!\n");
-        log_.i(getReport(iterations_, best_unit_));
-
-        long startingTime = System.currentTimeMillis();
-        elapsed_time_ = 0;
         // Loop until a condition is satisfied.
         while (!condition_.isSatisfied(getResultBundle())) {
+            ++iterations_;
+
             // Apply operators on this generation.
             runIteration();
 
@@ -126,7 +148,7 @@ public abstract class Algorithm {
             if (!p.print_improvements_only_ || improvement) {
                 best_unit_ = best.copy();
                 best_iteration_ = iterations_;
-                log_.i(getReport(iterations_, best_unit_));
+                log_.i(getReport(best_unit_));
                 if (p.print_population_) {
                     log_.d(getPopulationReport());
                 }
@@ -135,23 +157,22 @@ public abstract class Algorithm {
             // Update internals;
             optimum_history_list_.add(new Pair<>(iterations_, best.copy()));
             elapsed_time_ = System.currentTimeMillis() - startingTime;
-            iterations_++;
         }
 
         log_.i("\n===> Algorithm ended!");
         log_.i(condition_.report(getResultBundle()));
-        log_.i(getReport(--iterations_, best_unit_));
+        log_.i(getReport(best_unit_));
         log_.i("Best iteration: " + best_iteration_);
         if (p.print_population_) {
             log_.d(getPopulationReport());
         }
     }
 
-    private String getReport(long iteration, Genotype best) {
+    private String getReport(Genotype best) {
         return "===> Best unit:\n" + best.stringify()
                 + "\nFitness: " + best.getFitness()
                 + "\nStddev: " + Utils.calculateStandardDeviation(population_)
-                + "\nIteration: " + iteration
+                + "\nIteration: " + iterations_
                 + "\nEvaluations: " + evaluator_.getEvaluations()
                 + "\nTime: " + Utilities.formatMiliseconds(elapsed_time_);
     }
@@ -245,9 +266,9 @@ public abstract class Algorithm {
 
         public Algorithm build() {
             if (genotype_temp_ == null)
-                throw new IllegalStateException("Genotype template must be specified!");
+                throw new IllegalStateException("Must specify a genotype template!");
             if (condition_ == null)
-                throw new IllegalStateException("At least 1 stop condition must be set!");
+                throw new IllegalStateException("Must specify the stop!");
             if (pop_size_ == null)
                 throw new IllegalStateException("Must specify population size!");
             if (selector_ == null)
@@ -256,6 +277,8 @@ public abstract class Algorithm {
                 throw new IllegalStateException("Must specify an initializer!");
             if (logger_ == null)
                 throw new IllegalStateException("Must specify a logger!");
+            if (workers_num_ < 1)
+                throw new IllegalStateException("Must have at least 1 worker!");
 
             return new Algorithm(crossovers_, mutations_, genotype_temp_, evaluator_, selector_, initializer_, condition_, pop_size_, mut_prob_, workers_num_, logger_, random_) {
                 @Override
