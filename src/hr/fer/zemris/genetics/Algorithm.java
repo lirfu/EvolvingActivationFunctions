@@ -8,12 +8,10 @@ import hr.fer.zemris.utils.logs.StdoutLogger;
 import hr.fer.zemris.utils.threading.Work;
 import hr.fer.zemris.utils.threading.WorkArbiter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.concurrent.locks.Condition;
 
 public abstract class Algorithm {
     // Evolutionary algorithm components.
@@ -169,12 +167,9 @@ public abstract class Algorithm {
     }
 
     private String getReport(Genotype best) {
-        return "===> Best unit:\n" + best.stringify()
-                + "\nFitness: " + best.getFitness()
-                + "\nStddev: " + Utils.calculateStandardDeviation(population_)
-                + "\nIteration: " + iterations_
-                + "\nEvaluations: " + evaluator_.getEvaluations()
-                + "\nTime: " + Utilities.formatMiliseconds(elapsed_time_);
+        return "===> Best unit:\n" +
+                Result.generateString(best, Utils.calculateRelativeStandardDeviation(population_),
+                        iterations_, evaluator_.getEvaluations(), elapsed_time_);
     }
 
     private String getPopulationReport() {
@@ -222,7 +217,7 @@ public abstract class Algorithm {
     }
 
     public Result getResultBundle() {
-        return new Result(best_unit_, best_iteration_, evaluator_.getEvaluations(), Utils.calculateStandardDeviation(population_), elapsed_time_, optimum_history_list_);
+        return new Result(best_unit_, best_iteration_, evaluator_.getEvaluations(), Utils.calculateRelativeStandardDeviation(population_), elapsed_time_, optimum_history_list_);
     }
 
     /* INTERNAL CLASSES */

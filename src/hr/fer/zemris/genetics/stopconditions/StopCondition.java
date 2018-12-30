@@ -18,7 +18,7 @@ public class StopCondition {
     }
 
     public boolean isSatisfied(Result r) {
-        return (max_iterations_ != null && max_iterations_ <= r.getIteration()) ||
+        return (max_iterations_ != null && max_iterations_ <= r.getIterations()) ||
                 (min_fitness_ != null && min_fitness_ >= r.getBest().getFitness()) ||
                 (max_fitness_ != null && max_fitness_ <= r.getBest().getFitness()) ||
                 (max_evals_condition_ != null && max_evals_condition_ <= r.getEvaluations()) ||
@@ -27,7 +27,7 @@ public class StopCondition {
 
     public String report(Result r) {
         String s = "";
-        if (max_iterations_ != null && max_iterations_ <= r.getIteration()) {
+        if (max_iterations_ != null && max_iterations_ <= r.getIterations()) {
             s += "Max iterations achieved!\n";
         }
         if (min_fitness_ != null && min_fitness_ >= r.getBest().getFitness()) {

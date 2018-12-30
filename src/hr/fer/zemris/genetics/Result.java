@@ -1,23 +1,24 @@
 package hr.fer.zemris.genetics;
 
 import hr.fer.zemris.utils.Pair;
+import hr.fer.zemris.utils.Utilities;
 
 import java.util.LinkedList;
 
 public class Result {
-    private long iteration;
-    private double stddev;
-    private long elapsedTime;
-    private LinkedList<Pair<Long, Genotype>> optimumHistory;
     private Genotype best;
+    private double relstddev;
+    private long iterations;
     private long evaluations;
+    private long elapsed_time;
+    private LinkedList<Pair<Long, Genotype>> optimumHistory;
 
-    Result(Genotype best, long iteration, long evaluations, double stddev, long elapsedTime, LinkedList<Pair<Long, Genotype>> optimumHistory) {
+    Result(Genotype best, long iterations, long evaluations, double relstddev, long elapsed_time, LinkedList<Pair<Long, Genotype>> optimumHistory) {
         this.best = best;
         this.evaluations = evaluations;
-        this.iteration = iteration;
-        this.stddev = stddev;
-        this.elapsedTime = elapsedTime;
+        this.iterations = iterations;
+        this.relstddev = relstddev;
+        this.elapsed_time = elapsed_time;
         this.optimumHistory = optimumHistory;
     }
 
@@ -29,16 +30,16 @@ public class Result {
         return evaluations;
     }
 
-    public long getIteration() {
-        return iteration;
+    public long getIterations() {
+        return iterations;
     }
 
     public long getElapsedTime() {
-        return elapsedTime;
+        return elapsed_time;
     }
 
-    public double getStddev() {
-        return stddev;
+    public double getRelStddev() {
+        return relstddev;
     }
 
     public LinkedList<Pair<Long, Genotype>> getOptimumHistory() {
@@ -47,10 +48,15 @@ public class Result {
 
     @Override
     public String toString() {
-        return best.stringify() +
-                "\nFitness: " + best.fitness_ +
+        return generateString(best, relstddev, iterations, evaluations, elapsed_time);
+    }
+
+    public static String generateString(Genotype g, double relstddev, long iterations, long evaluations, long elapsed_time) {
+        return g.stringify() +
+                "\nFitness: " + g.fitness_ +
+                "\nRelStdDev: " + relstddev +
+                "\nIteration: " + iterations +
                 "\nEvaluations: " + evaluations +
-                "\nIteration: " + iteration +
-                "\nElapsed time: " + (elapsedTime / 1000.) + "s";
+                "\nElapsed time: " + Utilities.formatMiliseconds(elapsed_time);
     }
 }

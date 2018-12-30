@@ -34,9 +34,9 @@ public class Utils {
     }
 
     /**
-     * Returns the standard deviation of the fitness values in the population.
+     * Returns the relative standard deviation of the fitness values in the population.
      */
-    public static double calculateStandardDeviation(Genotype[] population) {
+    public static double calculateRelativeStandardDeviation(Genotype[] population) {
         int size = population.length;
         double mean = 0;
         for (Genotype g : population)
@@ -47,7 +47,7 @@ public class Utils {
         for (Genotype g : population)
             squares += Math.pow(g.fitness_ - mean, 2);
 
-        return Math.sqrt(squares / (size - 1));
+        return Math.sqrt(squares / (size - 1)) / (mean + 1e-32);
     }
 
     /**
