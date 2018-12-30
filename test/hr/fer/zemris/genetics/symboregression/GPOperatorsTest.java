@@ -1,5 +1,10 @@
 package hr.fer.zemris.genetics.symboregression;
 
+import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtree;
+import hr.fer.zemris.genetics.symboregression.mut.MutSRInsertTerminal;
+import hr.fer.zemris.genetics.symboregression.mut.MutSRReplaceNode;
+import hr.fer.zemris.genetics.symboregression.mut.MutSRReplaceSubtree;
+import hr.fer.zemris.genetics.symboregression.mut.MutSRSwapOrder;
 import org.junit.Test;
 
 import java.util.Random;

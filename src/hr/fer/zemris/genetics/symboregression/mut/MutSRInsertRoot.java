@@ -1,7 +1,10 @@
-package hr.fer.zemris.genetics.symboregression;
+package hr.fer.zemris.genetics.symboregression.mut;
 
 import hr.fer.zemris.genetics.Mutation;
 import hr.fer.zemris.genetics.Utils;
+import hr.fer.zemris.genetics.symboregression.SymbolicTree;
+import hr.fer.zemris.genetics.symboregression.TreeNode;
+import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 
 import java.util.Random;
 
@@ -18,7 +21,7 @@ public class MutSRInsertRoot extends Mutation<SymbolicTree> {
     public void mutate(SymbolicTree genotype) {
          // Create a new operator and set current root as its first child.
         TreeNode root = set_.getRandomOperator();
-        root.getChildren()[0] = genotype.root_.clone();
+        root.getChildren()[0] = genotype.get(0).clone();
 
         // Populate the rest of the children with terminals.
         for (int i = 1; i < root.getChildrenNum(); i++)

@@ -1,8 +1,10 @@
-package hr.fer.zemris.genetics.symboregression;
+package hr.fer.zemris.genetics.symboregression.mut;
 
 import hr.fer.zemris.genetics.Initializer;
 import hr.fer.zemris.genetics.Mutation;
 import hr.fer.zemris.genetics.Utils;
+import hr.fer.zemris.genetics.symboregression.SymbolicTree;
+import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 
 import java.util.Random;
 

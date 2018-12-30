@@ -1,6 +1,7 @@
-package hr.fer.zemris.genetics.symboregression;
+package hr.fer.zemris.genetics.symboregression.crx;
 
 import hr.fer.zemris.genetics.Crossover;
+import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 
 import java.util.Random;
 
