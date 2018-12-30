@@ -3,6 +3,7 @@ package hr.fer.zemris.genetics.symboregression;
 import hr.fer.zemris.genetics.Genotype;
 import hr.fer.zemris.utils.Counter;
 
+import java.util.LinkedList;
 import java.util.Random;
 
 public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
@@ -69,6 +70,10 @@ public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
 
     public void updateSize() {
         size_ = (root_ == null) ? 0 : root_.getSize();
+    }
+
+    public void collect(TreeNode.Condition c, LinkedList<TreeNode> list) {
+        root_.collect(list, c);
     }
 
     @Override

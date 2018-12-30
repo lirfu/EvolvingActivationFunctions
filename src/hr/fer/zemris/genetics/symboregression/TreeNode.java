@@ -4,9 +4,12 @@ package hr.fer.zemris.genetics.symboregression;
 import hr.fer.zemris.utils.Counter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.LinkedList;
+
 public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
     private String name_;
     protected TreeNode[] children_;
+    protected Object extra_;
     private IExecutable<I, O> executable_;
     private IInstantiable<TreeNode<I, O>> instantiable_;
 
@@ -15,6 +18,11 @@ public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
         children_ = new TreeNode[children_num];
         executable_ = getExecutable();
         instantiable_ = getInstantiable();
+    }
+
+    protected TreeNode(String name, int children_num, Object extra) {
+        this(name, children_num);
+        extra_ = extra;
     }
 
     public TreeNode[] getChildren() {
@@ -31,6 +39,14 @@ public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
 
     public String getName() {
         return name_;
+    }
+
+    public Object getExtra() {
+        return extra_;
+    }
+
+    public void setExtra(Object extra) {
+        extra_ = extra;
     }
 
     public int getDepth() {
@@ -92,6 +108,10 @@ public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
         IInstantiable ins = instantiable_;
         instantiable_ = n.instantiable_;
         n.instantiable_ = ins;
+
+        Object ext = extra_;
+        extra_ = n.extra_;
+        n.extra_ = ext;
     }
 
     public void swapChildrenWith(@NotNull TreeNode n) {
@@ -119,6 +139,10 @@ public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
         instantiable_ = n.instantiable_;
         n.instantiable_ = ins;
 
+        Object ext = extra_;
+        extra_ = n.extra_;
+        n.extra_ = ext;
+
         TreeNode[] ch = children_;
         children_ = n.children_;
         n.children_ = ch;
@@ -133,6 +157,7 @@ public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
         n.name_ = name_;
         n.instantiable_ = instantiable_;
         n.executable_ = executable_;
+        n.extra_ = extra_;
 
         n.children_ = new TreeNode[children_.length];
         for (int i = 0; i < children_.length; i++) {
@@ -151,16 +176,16 @@ public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
             return false;
         if (children_.length != ((TreeNode) o).children_.length)
             return false;
-
+        if (!extra_.equals(((TreeNode) o).extra_))
+            return false;
         for (int i = 0; i < children_.length; i++)
             if (!children_[i].equals(((TreeNode) o).children_[i]))
                 return false;
-
         return true;
     }
 
     public void buildString(StringBuilder sb) {
-        sb.append(name_);
+        sb.append(extra_ == null ? name_ : extra_.toString());
         if (children_.length > 0) {
             sb.append('[');
             int i = 0;
@@ -174,10 +199,23 @@ public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
         }
     }
 
+    public void collect(LinkedList<TreeNode> list, Condition cond) {
+        if (cond.satisfies(this)) {
+            list.add(this);
+        }
+        for (TreeNode c : children_) {
+            c.collect(list, cond);
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         buildString(sb);
         return sb.toString();
+    }
+
+    public interface Condition {
+        public boolean satisfies(TreeNode node);
     }
 }

@@ -1,10 +1,14 @@
 package hr.fer.zemris.genetics.symboregression;
 
 import hr.fer.zemris.genetics.*;
-import hr.fer.zemris.genetics.algorithms.GenerationAlgorithm;
 import hr.fer.zemris.genetics.algorithms.GenerationTabooAlgorithm;
 import hr.fer.zemris.genetics.selectors.RouletteWheelSelector;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
+import hr.fer.zemris.genetics.symboregression.crx.CrxSRMeanConstants;
+import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapConstants;
+import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtree;
+import hr.fer.zemris.genetics.symboregression.mut.*;
+import hr.fer.zemris.genetics.symboregression.nodes.ConstNode;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.LogLevel;
 import hr.fer.zemris.utils.logs.StdoutLogger;
@@ -15,7 +19,7 @@ public class Demo {
     private static final long SEED = 12;
 
     public static double func(State s) {
-        return s.x_ * s.y_ + s.z_;
+        return s.x_ * s.y_ + s.z_ * 5;
     }
 
     public static void main(String[] args) {
@@ -25,48 +29,58 @@ public class Demo {
         TreeNodeSet node_set = new TreeNodeSet(rand);
         node_set.registerBinaryOperator(new AddNode());
         node_set.registerBinaryOperator(new MulNode());
+//        node_set.registerBinaryOperator(new MaxNode());
+//        node_set.registerBinaryOperator(new MinNode());
 //        node_set.registerBinaryOperator(new DivNode());
 //        node_set.registerUnaryOperator(new ExpNode());
         node_set.registerTerminal(new XNode());
         node_set.registerTerminal(new YNode());
         node_set.registerTerminal(new ZNode());
+        node_set.registerTerminal(new ConstNode<State>(1.));
 
         StopCondition cond = new StopCondition.Builder()
-                .setMaxIterations(10)
+                .setMaxIterations(50)
                 .setMinFitness(0)
                 .build();
 
         GenerationTabooAlgorithm algo = (GenerationTabooAlgorithm) new GenerationTabooAlgorithm.Builder()
+                // Algorithm specific params.
                 .setElitism(true)
-                .setTabooSize(15)
-                .setTabooAttempts(5)
-
+                .setTabooSize(20)
+                .setTabooAttempts(2)
+                // Common params.
                 .setRandom(rand)
                 .setLogger(logger)
-                .setPopulationSize(10)
-                .setMutationProbability(0.4)
+                .setPopulationSize(100)
+                .setMutationProbability(0.3)
                 .setStopCondition(cond)
-
+                .setNumberOfWorkers(10)
+                // Problem specific params.
                 .setGenotypeTemplate(new SymbolicTree<>(node_set, null))
                 .setSelector(new RouletteWheelSelector(rand))
                 .setInitializer(new SRGenericInitializer(node_set, 4))
                 .setEvaluator(new Eval())
-
-                .addCrossover(new CrxSRSwapSubtree(rand).setImportance(2))
-                .addCrossover((Crossover) new CrxRandom(rand).setImportance(1))
-
+                // Tree crossovers.
+                .addCrossover(new CrxSRSwapSubtree(rand).setImportance(1))
+                .addCrossover((Crossover) new CrxRandom(rand).setImportance(2))
+                // Tree mutations.
                 .addMutation(new MutSRSwapOrder(rand).setImportance(1))
-                .addMutation(new MutSRInsertTerminal(node_set, rand).setImportance(3))
+                .addMutation(new MutSRInsertTerminal(node_set, rand).setImportance(4))
                 .addMutation(new MutSRInsertRoot(node_set, rand).setImportance(2))
                 .addMutation(new MutSRReplaceNode(node_set, rand).setImportance(2))
-                .addMutation(new MutSRReplaceSubtree(node_set, new SRGenericInitializer(node_set, 2), rand).setImportance(2))
+                .addMutation(new MutSRReplaceSubtree(node_set, new SRGenericInitializer(node_set, 2), rand).setImportance(1))
 //                .addMutation(new MutInitialize<>(new SRGenericInitializer(node_set, 2)).setImportance(1))
-
-                .setNumberOfWorkers(10)
+                // Constants crossovers.
+                .addCrossover(new CrxSRSwapConstants(rand).setImportance(2))
+//                .addCrossover(new CrxSRMeanConstants(rand).setImportance(2))
+                // Constants mutations.
+//                .addMutation(new MutSRRandomConstantSet(rand, -10, 10).setImportance(3))
+//                .addMutation(new MutSRRandomConstantAdd(rand, 2).setImportance(4))
+                .addMutation(new MutSRRandomConstantSetInt(rand, 0, 10).setImportance(3))
                 .build();
 
 //        algo.run();
-        algo.run(new Algorithm.LogParams(false, true));
+        algo.run(new Algorithm.LogParams(false, false));
 
         SymbolicTree best = (SymbolicTree) algo.getBest();
         System.out.println("Final result: " + best + "   (" + best.getFitness() + ")");
@@ -87,11 +101,11 @@ public class Demo {
                         double true_val = func(s);
                         double pred_val = g.execute(s);
                         fitness += Math.pow(true_val - pred_val, 2);
+                        if (!Double.isFinite(fitness)) {
+                            return Double.MAX_VALUE;
+                        }
                     }
                 }
-            }
-            if (!Double.isFinite(fitness)) {
-                return Double.MAX_VALUE;
             }
             return fitness;
         }
@@ -121,7 +135,7 @@ public class Demo {
 
         @Override
         protected IInstantiable<TreeNode<State, Double>> getInstantiable() {
-            return () -> new AddNode();
+            return AddNode::new;
         }
     }
 
@@ -137,7 +151,7 @@ public class Demo {
 
         @Override
         protected IInstantiable<TreeNode<State, Double>> getInstantiable() {
-            return () -> new MulNode();
+            return MulNode::new;
         }
     }
 
@@ -153,7 +167,39 @@ public class Demo {
 
         @Override
         protected IInstantiable<TreeNode<State, Double>> getInstantiable() {
-            return () -> new DivNode();
+            return DivNode::new;
+        }
+    }
+
+    public static class MaxNode extends TreeNode<State, Double> {
+        MaxNode() {
+            super("max", 2);
+        }
+
+        @Override
+        protected IExecutable<State, Double> getExecutable() {
+            return (state, n) -> Math.max((Double) n.getChild(0).execute(state), (Double) n.getChild(1).execute(state));
+        }
+
+        @Override
+        protected IInstantiable<TreeNode<State, Double>> getInstantiable() {
+            return MaxNode::new;
+        }
+    }
+
+    public static class MinNode extends TreeNode<State, Double> {
+        MinNode() {
+            super("min", 2);
+        }
+
+        @Override
+        protected IExecutable<State, Double> getExecutable() {
+            return (state, n) -> Math.min((Double) n.getChild(0).execute(state), (Double) n.getChild(1).execute(state));
+        }
+
+        @Override
+        protected IInstantiable<TreeNode<State, Double>> getInstantiable() {
+            return MinNode::new;
         }
     }
 
@@ -169,7 +215,7 @@ public class Demo {
 
         @Override
         protected IInstantiable<TreeNode<State, Double>> getInstantiable() {
-            return () -> new ExpNode();
+            return ExpNode::new;
         }
     }
 
@@ -185,7 +231,7 @@ public class Demo {
 
         @Override
         protected IInstantiable<TreeNode<State, Double>> getInstantiable() {
-            return () -> new XNode();
+            return XNode::new;
         }
     }
 
@@ -201,11 +247,12 @@ public class Demo {
 
         @Override
         protected IInstantiable<TreeNode<State, Double>> getInstantiable() {
-            return () -> new YNode();
+            return YNode::new;
         }
     }
 
     public static class ZNode extends TreeNode<State, Double> {
+
         ZNode() {
             super("z", 0);
         }
@@ -217,7 +264,8 @@ public class Demo {
 
         @Override
         protected IInstantiable<TreeNode<State, Double>> getInstantiable() {
-            return () -> new ZNode();
+            return ZNode::new;
         }
+
     }
 }
