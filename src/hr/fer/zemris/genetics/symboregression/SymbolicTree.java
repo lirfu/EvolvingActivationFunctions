@@ -17,6 +17,12 @@ public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
         updateSize();
     }
 
+    public SymbolicTree(SymbolicTree<I, O> t) {
+        set_ = t.set_;
+        root_ = t.root_.clone();
+        updateSize();
+    }
+
     /**
      * Execute the tree with given input.
      */
