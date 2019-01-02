@@ -27,6 +27,9 @@ public class WorkArbiter {
             w.kill();
     }
 
+    /**
+     * Waits until the condition is satisfied (until it is true).
+     */
     public void waitOn(WaitCondition condition) {
         while (!condition.satisfied()) {
             synchronized (this) {
@@ -39,12 +42,34 @@ public class WorkArbiter {
         }
     }
 
+    /**
+     * Returns a condition that is satisfied when all the worker queues are empty.
+     * Use with caution, worker queues can become empty by chance or they can constantly get filled making an infinite loop.
+     * When unsure, construct your own wait condition.
+     */
+    public WaitCondition getFinishedCondition() {
+        return () -> {
+            for (Worker w : workers_)
+                if (w.getWorkCount() > 0)
+                    return false;
+            return true;
+        };
+    }
+
     public String getName() {
         return name_;
     }
 
     public int getWorkerNumber() {
         return workers_.length;
+    }
+
+    public String getStatus() {
+        StringBuilder sb = new StringBuilder();
+        for (Worker w : workers_) {
+            sb.append(w.getID()).append(": ").append(w.getWorkCount()).append('\n');
+        }
+        return sb.toString();
     }
 
     @Override

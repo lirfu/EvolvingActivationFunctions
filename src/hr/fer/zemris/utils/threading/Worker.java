@@ -21,10 +21,12 @@ public class Worker implements Comparable<Worker> {
         thread_ = new Thread(() -> {
             while (is_alive_) {
                 // Deplete the queue.
-                synchronized (Worker.this) {
-                    while (queue_.size() > 0) {
-                        queue_.pop().work();
+                while (queue_.size() > 0) {
+                    Work w;
+                    synchronized (Worker.this) {
+                        w = queue_.pop();
                     }
+                    w.work();
                 }
 
                 // Wait for changes in queue or timeout.
