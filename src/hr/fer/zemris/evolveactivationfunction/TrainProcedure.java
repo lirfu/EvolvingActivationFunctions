@@ -3,21 +3,24 @@ package hr.fer.zemris.evolveactivationfunction;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.utils.Pair;
+import hr.fer.zemris.utils.Stopwatch;
+import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
 import org.deeplearning4j.api.storage.StatsStorageRouter;
-import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.api.BaseTrainingListener;
 import org.deeplearning4j.ui.api.UIServer;
 import org.deeplearning4j.ui.stats.StatsListener;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.evaluation.classification.ROCMultiClass;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+import org.nd4j.linalg.dataset.api.iterator.TestDataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 
@@ -53,17 +56,6 @@ public class TrainProcedure {
         }
     }
 
-    /**
-     * Constructs an iterator from the given dataset instance.
-     *
-     * @param dataset    The dataset to construct batches from.
-     * @param batch_size The batch size.
-     * @return Iterator that splits the dataset into batches.
-     */
-    public static DataSetIterator batch(DataSet dataset, int batch_size) {
-        return new ListDataSetIterator<>(dataset.asList(), batch_size);
-    }
-
     public Context createContext(String experiment_name) {
         return new Context(params_.name(), experiment_name);
     }
@@ -78,18 +70,22 @@ public class TrainProcedure {
         return new CommonModel(params_, architecture, activations);
     }
 
-    public void train(@NotNull CommonModel model, @NotNull ILogger log, @NotNull StatsStorageRouter stats_storage) {
+    public void train(@NotNull CommonModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
         MultiLayerNetwork m = model.getModel();
         m.init();
+        final Stopwatch timer = new Stopwatch();
 
-        m.setListeners(new StatsListener(stats_storage), new BaseTrainingListener() { // Print the score at the start of each epoch.
+        if (stats_storage != null) {
+            m.addListeners(new StatsListener(stats_storage));
+        }
+        m.addListeners(new BaseTrainingListener() { // Print the score at the start of each epoch.
             private int last_epoch_ = -1;
 
             @Override
             public void iterationDone(org.deeplearning4j.nn.api.Model model, int iteration, int epoch) {
                 if (epoch != last_epoch_) {
                     last_epoch_ = epoch;
-                    log.logD("Epoch " + (epoch + 1) + " has loss: " + model.score());
+                    log.d("Epoch " + (epoch + 1) + " has loss: " + model.score() + "   (" + Utilities.formatMiliseconds(timer.lap()) + ")");
                 }
             }
         });
@@ -102,29 +98,29 @@ public class TrainProcedure {
             set = train_set_; // No need for copying.
         }
 
+        timer.start();
+        DataSetIterator iter = new TestDataSetIterator(set, params_.batch_size());
         for (int i = 0; i < params_.epochs_num(); i++) {
             if (params_.shuffle_batches()) {
                 set.shuffle(random.nextLong());
             }
-            DataSetIterator batches = batch(set, params_.batch_size());
-            m.fit(batches);
+            m.fit(iter);
         }
     }
 
     public Pair<ModelReport, INDArray> test(@NotNull CommonModel model) {
         MultiLayerNetwork m = model.getModel();
-        INDArray output = m.output(test_set_.getFeatures());
+        DataSetIterator it = new TestDataSetIterator(test_set_, params_.batch_size());
 
         Evaluation eval = new Evaluation(params_.output_size());
-        eval.eval(test_set_.getLabels(), output);
-
         ROCMultiClass roc = new ROCMultiClass(0);
-        roc.eval(test_set_.getLabels(), output);
+
+        m.doEvaluation(it, eval, roc);
 
         ModelReport report = new ModelReport();
         report.build(params_, m, eval, roc);
 
-        return new Pair<>(report, output);
+        return new Pair<>(report, m.output(test_set_.getFeatures()));
     }
 
     public void storeResults(CommonModel model, Context context, Pair<ModelReport, INDArray> result) throws IOException {
