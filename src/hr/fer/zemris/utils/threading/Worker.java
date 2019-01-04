@@ -24,9 +24,12 @@ public class Worker implements Comparable<Worker> {
                 while (queue_.size() > 0) {
                     Work w;
                     synchronized (Worker.this) {
-                        w = queue_.pop();
+                        w = queue_.getFirst();
                     }
                     w.work();
+                    synchronized (Worker.this) {
+                        queue_.removeFirst();
+                    }
                 }
 
                 // Wait for changes in queue or timeout.
@@ -48,7 +51,7 @@ public class Worker implements Comparable<Worker> {
      */
     public final synchronized void enqueueWork(Work work) {
         if (!is_alive_) return;
-        queue_.push(work);
+        queue_.addLast(work);
         notify();
     }
 
