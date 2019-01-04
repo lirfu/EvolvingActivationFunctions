@@ -10,9 +10,18 @@ public class CommandLine {
     private TreeMap<String, ACommand> mCommands = new TreeMap<>();
 
     public void addCommand(ACommand command) {
-        if (mCommands.containsKey(command.getName()))
-            throw new IllegalStateException("Command " + command.getName() + " is already defined!");
-        mCommands.put(command.getName(), command);
+        addCommand(command, false);
+    }
+
+    public void addCommand(ACommand command, boolean with_replacement) {
+        if (mCommands.containsKey(command.getName())) {
+            if (with_replacement)
+                mCommands.replace(command.getName(), command);
+            else
+                throw new IllegalStateException("Command " + command.getName() + " is already defined!");
+        } else {
+            mCommands.put(command.getName(), command);
+        }
     }
 
     public ACommand constructHelpCommand() {
@@ -49,45 +58,56 @@ public class CommandLine {
         run(false);
     }
 
+    /**
+     * Run the command line.
+     *
+     * @param silentPrompt Displays the starting string to indicate it is listening for commands.
+     */
     public void run(boolean silentPrompt) {
         mRunning = true;
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
+            String input;
             while (mRunning) {
                 if (!silentPrompt)
                     System.out.print("> ");
 
-                String command = null;
-                StringBuilder params = new StringBuilder();
-                String input = reader.readLine();
+                input = reader.readLine();
 
-                if (input == null) // Input stream died so you can end.
+                if (input == null) // EOF
                     break;
 
-                for (char c : input.toCharArray()) {
-                    if (c == ' ' && command == null) { // Command name is read, rest goes to parameters.
-                        command = params.toString();
-                        params = new StringBuilder();
-                    }
-                    params.append(c);
-                }
-                if (command == null) { // No params were inputted (no spaces)
-                    command = params.toString();
-                    params = new StringBuilder();
-                }
-
-                ACommand cmd = mCommands.get(command);
-                if (cmd == null)
-                    System.out.println("Unknown command: " + command);
-                else
-                    cmd.execute(params.toString().trim());
+                runCommand(input);
             }
 
             reader.close();
         } catch (IOException e) {
             System.out.println("Command line stream error!");
         }
+    }
+
+    public boolean runCommand(String input) {
+        String command = null;
+        StringBuilder params = new StringBuilder();
+
+        for (char c : input.toCharArray()) {
+            if (c == ' ' && command == null) { // Command name is read, rest goes to parameters.
+                command = params.toString();
+                params = new StringBuilder();
+            }
+            params.append(c);
+        }
+        if (command == null) { // No params were inputted (no spaces)
+            command = params.toString();
+            params = new StringBuilder();
+        }
+
+        ACommand cmd = mCommands.get(command);
+        if (cmd == null)
+            System.out.println("Unknown command: " + command);
+        else
+            cmd.execute(params.toString().trim());
+        return true;
     }
 }
