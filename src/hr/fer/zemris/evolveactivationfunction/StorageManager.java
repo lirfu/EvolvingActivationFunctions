@@ -187,12 +187,12 @@ public class StorageManager {
     /* RESOURCE FOLDER MANAGEMENT */
 
     /**
-     * Loads the entire dataset.
+     * Loads the entire arff dataset. The file is first parsed with custom .arff parser and then read using DL4Js' CSVRecordReader.
      *
      * @param dataset_path File path of the dataset.
      * @return The entire dataset.
      */
-    public static DataSet loadEntireDataset(String dataset_path) throws IOException, InterruptedException {
+    public static DataSet loadEntireArffDataset(String dataset_path) throws IOException, InterruptedException {
         Parser p = new Parser(new Reader(dataset_path));
         while (p.next() != null) ;  // Read all to generate descriptor.
         UnsafeDatasetDescriptor desc = p.getDatasetDescriptor();
@@ -200,6 +200,20 @@ public class StorageManager {
         CSVRecordReader set = new CSVRecordReader(desc.skip_lines, ',');
         set.initialize(new FileSplit(new File(dataset_path)));
         return new RecordReaderDataSetIterator(set, desc.instances_num, desc.attributes_num, desc.classes_num).next();
+    }
+
+    public static DataSet loadEntireCsvDataset(String dataset_path) throws IOException, InterruptedException {
+        CSVRecordReader set = new CSVRecordReader(',');
+        set.initialize(new FileSplit(new File(dataset_path)));
+
+        int instances_num = 0;
+        while (set.hasNext()) {
+            set.next();
+            instances_num++;
+        }
+        set.reset();
+
+        return new RecordReaderDataSetIterator(set, instances_num).next();
     }
 
     /**
