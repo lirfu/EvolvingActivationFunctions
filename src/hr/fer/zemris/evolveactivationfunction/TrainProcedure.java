@@ -19,6 +19,7 @@ import org.nd4j.evaluation.classification.ROCMultiClass;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.iterator.TestDataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
@@ -36,13 +37,40 @@ public class TrainProcedure {
     private DataSet train_set_, test_set_;
     private TrainParams params_;
 
+    /**
+     * Use given splitted dataset to train and test the network.
+     *
+     * @param train_set_path
+     * @param test_set_path
+     * @param params_builder
+     */
     public TrainProcedure(@NotNull String train_set_path, @NotNull String test_set_path, @NotNull TrainParams.Builder params_builder) throws IOException, InterruptedException {
-        train_set_ = StorageManager.loadEntireDataset(train_set_path);
-        test_set_ = StorageManager.loadEntireDataset(test_set_path);
+        train_set_ = train_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_set_path) : StorageManager.loadEntireCsvDataset(train_set_path);
+        test_set_ = test_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(test_set_path) : StorageManager.loadEntireCsvDataset(test_set_path);
+        initialize(StorageManager.dsNameFromPath(train_set_path), params_builder);
+    }
 
+    /**
+     * Use given dataset and create a train-test split using given ratio.
+     *
+     * @param dataset_name
+     * @param params_builder
+     */
+    public TrainProcedure(@NotNull String dataset_name, @NotNull TrainParams.Builder params_builder, float train_percentage) throws IOException, InterruptedException {
+        DataSet ds = dataset_name.endsWith(".arff") ? StorageManager.loadEntireArffDataset(dataset_name) : StorageManager.loadEntireCsvDataset(dataset_name);
+        ds.shuffle(42);
+        SplitTestAndTrain split = ds.splitTestAndTrain(train_percentage);
+        train_set_ = split.getTrain();
+        test_set_ = split.getTest();
+
+        params_builder.train_percentage(train_percentage);
+        initialize(StorageManager.dsNameFromPath(dataset_name), params_builder);
+    }
+
+    private void initialize(String dataset_name, TrainParams.Builder params_builder) {
         params_ = params_builder
                 .seed(SEED)
-                .name(StorageManager.dsNameFromPath(train_set_path))
+                .name(dataset_name)
                 .input_size(train_set_.numInputs())
                 .output_size(train_set_.numOutcomes())
                 .build();

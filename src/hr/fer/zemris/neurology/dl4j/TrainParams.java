@@ -15,6 +15,7 @@ public class TrainParams implements ISerializable {
     private double regularization_coef_, dropout_keep_prob_;
     private long seed_;
     private String name_;
+    private float train_percentage_;
 
     /**
      * Create an empty params object. Used when parsing from a string.
@@ -22,7 +23,7 @@ public class TrainParams implements ISerializable {
     public TrainParams() {
     }
 
-    public TrainParams(int input_size, int output_size, int epochs_num, int batch_size, boolean normalize_features, boolean shuffle_batches, double learning_rate, double decay_rate, int decay_step, double regularization_coef, double dropout_keep_prob, long seed, String name) {
+    public TrainParams(int input_size, int output_size, int epochs_num, int batch_size, boolean normalize_features, boolean shuffle_batches, double learning_rate, double decay_rate, int decay_step, double regularization_coef, double dropout_keep_prob, long seed, String name, float train_percentage) {
         input_size_ = input_size;
         output_size_ = output_size;
         epochs_num_ = epochs_num;
@@ -36,6 +37,7 @@ public class TrainParams implements ISerializable {
         dropout_keep_prob_ = dropout_keep_prob;
         seed_ = seed;
         name_ = name;
+        train_percentage_ = train_percentage;
     }
 
 
@@ -91,6 +93,10 @@ public class TrainParams implements ISerializable {
         return name_;
     }
 
+    public float train_percentage() {
+        return train_percentage_;
+    }
+
     @Override
     public void parse(String s) {
         for (String line : s.split("\n")) {
@@ -135,6 +141,9 @@ public class TrainParams implements ISerializable {
                 case "name":
                     name_ = parts[1];
                     break;
+                case "train_percentage":
+                    train_percentage_ = Float.parseFloat(parts[1]);
+                    break;
             }
         }
     }
@@ -155,6 +164,7 @@ public class TrainParams implements ISerializable {
                 .append("dropout_keep_prob").append('\t').append(dropout_keep_prob_).append('\n')
                 .append("seed").append('\t').append(seed_).append('\n')
                 .append("name").append('\t').append(name_).append('\n')
+                .append("train_percentage").append('\t').append(train_percentage_).append('\n')
                 .toString();
     }
 
@@ -171,7 +181,8 @@ public class TrainParams implements ISerializable {
         private int decay_step_ = 1;
         private double regularization_coef_ = 0, dropout_keep_prob_ = 1;
         private long seed_ = 42;
-        private String name_ = "Model";
+        private String name_ = "Name";
+        private float train_percentage_;
 
         public TrainParams build() {
             if (input_size_ < 0 || output_size_ < 0) {
@@ -181,7 +192,7 @@ public class TrainParams implements ISerializable {
                 throw new IllegalArgumentException("Epochs number must be defined!");
             }
 
-            return new TrainParams(input_size_, output_size_, epochs_num_, batch_size_, normalize_features_, shuffle_batches_, learning_rate_, decay_rate_, decay_step_, regularization_coef_, dropout_keep_prob_, seed_, name_);
+            return new TrainParams(input_size_, output_size_, epochs_num_, batch_size_, normalize_features_, shuffle_batches_, learning_rate_, decay_rate_, decay_step_, regularization_coef_, dropout_keep_prob_, seed_, name_, train_percentage_);
         }
 
         public Builder input_size(int size) {
@@ -236,6 +247,11 @@ public class TrainParams implements ISerializable {
 
         public Builder dropout_keep_prob(double value) {
             dropout_keep_prob_ = value;
+            return this;
+        }
+
+        public Builder train_percentage(float train_percentage) {
+            train_percentage_ = train_percentage;
             return this;
         }
 
