@@ -18,7 +18,7 @@ public class InputNode extends DerivableNode {
 
     @Override
     protected IExecutable<INDArray, INDArray> getExecutable() {
-        return (input, node) -> input;
+        return (input, node) -> input.dup();
     }
 
     @Override
