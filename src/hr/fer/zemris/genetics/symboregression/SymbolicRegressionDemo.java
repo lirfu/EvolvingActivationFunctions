@@ -15,7 +15,7 @@ import hr.fer.zemris.utils.logs.StdoutLogger;
 
 import java.util.Random;
 
-public class Demo {
+public class SymbolicRegressionDemo {
     private static final long SEED = 12;
 
     public static double func(State s) {

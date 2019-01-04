@@ -8,13 +8,13 @@ import java.util.Random;
 import static org.junit.Assert.*;
 
 public class DemoTest {
-    private static AEvaluator<SymbolicTree<Demo.State, Double>> eval_ = new AEvaluator<SymbolicTree<Demo.State, Double>>() {
+    private static AEvaluator<SymbolicTree<SymbolicRegressionDemo.State, Double>> eval_ = new AEvaluator<SymbolicTree<SymbolicRegressionDemo.State, Double>>() {
         private final int min_ = -100, max_ = 100;
 
         @Override
-        public double performEvaluate(SymbolicTree<Demo.State, Double> g) {
+        public double performEvaluate(SymbolicTree<SymbolicRegressionDemo.State, Double> g) {
             double fitness = 0;
-            Demo.State state = new Demo.State(0, 0, 0);
+            SymbolicRegressionDemo.State state = new SymbolicRegressionDemo.State(0, 0, 0);
             for (state.x_ = min_; state.x_ <= max_; state.x_++) {
                 for (state.y_ = min_; state.y_ <= max_; state.y_++) {
                     for (state.z_ = min_; state.z_ <= max_; state.z_++) {
@@ -36,11 +36,11 @@ public class DemoTest {
     private static SymbolicTree buildSolution() {
         return new SymbolicTree.Builder()
                 .setNodeSet(new TreeNodeSet(new Random()))
-                .add(new Demo.AddNode())
-                .add(new Demo.MulNode())
-                .add(new Demo.XNode())
-                .add(new Demo.YNode())
-                .add(new Demo.ZNode())
+                .add(new SymbolicRegressionDemo.AddNode())
+                .add(new SymbolicRegressionDemo.MulNode())
+                .add(new SymbolicRegressionDemo.XNode())
+                .add(new SymbolicRegressionDemo.YNode())
+                .add(new SymbolicRegressionDemo.ZNode())
                 .build();
     }
 
@@ -48,11 +48,11 @@ public class DemoTest {
     public void testGetSet() {
         SymbolicTree t = buildSolution();
 
-        assertTrue("Getter should work correctly.", t.get(4).equals(new Demo.ZNode()));
+        assertTrue("Getter should work correctly.", t.get(4).equals(new SymbolicRegressionDemo.ZNode()));
 
-        t.set(3, new Demo.XNode());
+        t.set(3, new SymbolicRegressionDemo.XNode());
 
-        assertTrue("Setter should work correctly.", t.get(3).equals(new Demo.XNode()));
+        assertTrue("Setter should work correctly.", t.get(3).equals(new SymbolicRegressionDemo.XNode()));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class DemoTest {
     @Test
     public void testSubOptimal() {
         SymbolicTree t = buildSolution();
-        TreeNode[] nodes = new TreeNode[]{new Demo.XNode(), new Demo.YNode(), new Demo.ZNode()};
+        TreeNode[] nodes = new TreeNode[]{new SymbolicRegressionDemo.XNode(), new SymbolicRegressionDemo.YNode(), new SymbolicRegressionDemo.ZNode()};
 
         for (int i = 0; i < t.size(); i++) {
             TreeNode orig = t.get(i).clone();
@@ -84,13 +84,13 @@ public class DemoTest {
 
     @Test
     public void testCloning() {
-        Demo.State s = new Demo.State(3, 5, 7);
+        SymbolicRegressionDemo.State s = new SymbolicRegressionDemo.State(3, 5, 7);
         SymbolicTree t = buildSolution();
         SymbolicTree c = t.copy();
 
-        TreeNode n = new Demo.AddNode();
-        n.children_[0] = new Demo.XNode();
-        n.children_[1] = new Demo.ZNode();
+        TreeNode n = new SymbolicRegressionDemo.AddNode();
+        n.children_[0] = new SymbolicRegressionDemo.XNode();
+        n.children_[1] = new SymbolicRegressionDemo.ZNode();
 
         assertTrue("Node should clone properly.", n.clone().equals(n));
 

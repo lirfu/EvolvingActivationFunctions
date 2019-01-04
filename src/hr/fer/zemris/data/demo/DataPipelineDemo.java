@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 
-public class DemoTests {
+public class DataPipelineDemo {
     public static void main(String[] args) throws IOException {
 //        test_reader();
 //        test_parser();

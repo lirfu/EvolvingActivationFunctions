@@ -29,19 +29,19 @@ public class GPOperatorsTest {
 
     private TreeNodeSet buildSet() {
         TreeNodeSet set = new TreeNodeSet(r(1, true));
-        set.registerTerminal(new Demo.XNode());
-        set.registerBinaryOperator(new Demo.AddNode());
+        set.registerTerminal(new SymbolicRegressionDemo.XNode());
+        set.registerBinaryOperator(new SymbolicRegressionDemo.AddNode());
         return set;
     }
 
     private SymbolicTree buildTree() {
         return new SymbolicTree.Builder()
                 .setNodeSet(new TreeNodeSet(r(1, true)))
-                .add(new Demo.MulNode())
-                .add(new Demo.AddNode())
-                .add(new Demo.XNode())
-                .add(new Demo.YNode())
-                .add(new Demo.XNode())
+                .add(new SymbolicRegressionDemo.MulNode())
+                .add(new SymbolicRegressionDemo.AddNode())
+                .add(new SymbolicRegressionDemo.XNode())
+                .add(new SymbolicRegressionDemo.YNode())
+                .add(new SymbolicRegressionDemo.XNode())
                 .build();
     }
 
