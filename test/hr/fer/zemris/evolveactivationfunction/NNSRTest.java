@@ -17,6 +17,17 @@ import static org.junit.Assert.assertTrue;
 
 
 public class NNSRTest {
+    @Test
+    public void testParsing() {
+        TreeNodeSetFactory factory = new TreeNodeSetFactory();
+        TreeNodeSet set = factory.build(new Random(42), TreeNodeSetFactory.Set.ARITHMETICS, TreeNodeSetFactory.Set.TRIGONOMETRY, TreeNodeSetFactory.Set.CONSTANT);
+
+        String string = "+[x,*[x,sin[*[-273.15,x]]]]";
+        SymbolicTree tree = SymbolicTree.parse(string, set);
+
+        assertTrue("Serialized tree must equal the inputted parse string.", tree.toString().equals(string));
+    }
+
     private interface IFunc {
         public double f(double x);
     }

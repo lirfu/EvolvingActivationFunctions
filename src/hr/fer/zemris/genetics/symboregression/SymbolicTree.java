@@ -109,6 +109,21 @@ public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
         return stringify();
     }
 
+    public static SymbolicTree parse(String str, TreeNodeSet set) {
+        Builder b = new Builder().setNodeSet(set);
+
+        if (str.indexOf('[') < 0) { // Root is terminal.
+            b.add(set.getNode(str));
+        } else {
+            String[] parts = str.split("[\\[,\\]]+");
+            for (String s : parts) {
+                b.add(set.getNode(s));
+            }
+        }
+
+        return b.build();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof SymbolicTree)) return false;

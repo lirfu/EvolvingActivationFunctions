@@ -111,7 +111,7 @@ public class TreeNodeSet {
         for (List<TreeNode> l : node_buckets_) {
             for (TreeNode n : l) {
                 if (n.getName().equals(node_name)) {
-                    return n;
+                    return n.clone();
                 }
             }
         }
