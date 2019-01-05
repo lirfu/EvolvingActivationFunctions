@@ -4,7 +4,6 @@ import hr.fer.zemris.genetics.*;
 import hr.fer.zemris.genetics.algorithms.GenerationTabooAlgorithm;
 import hr.fer.zemris.genetics.selectors.RouletteWheelSelector;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
-import hr.fer.zemris.genetics.symboregression.crx.CrxSRMeanConstants;
 import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapConstants;
 import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtree;
 import hr.fer.zemris.genetics.symboregression.mut.*;
@@ -62,7 +61,7 @@ public class SymbolicRegressionDemo {
                 .setEvaluator(new Eval())
                 // Tree crossovers.
                 .addCrossover(new CrxSRSwapSubtree(rand).setImportance(1))
-                .addCrossover((Crossover) new CrxRandom(rand).setImportance(2))
+                .addCrossover((Crossover) new CrxReturnRandom(rand).setImportance(2))
                 // Tree mutations.
                 .addMutation(new MutSRSwapOrder(rand).setImportance(1))
                 .addMutation(new MutSRInsertTerminal(node_set, rand).setImportance(4))

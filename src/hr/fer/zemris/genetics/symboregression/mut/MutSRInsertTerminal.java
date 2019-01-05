@@ -20,6 +20,11 @@ public class MutSRInsertTerminal extends Mutation<SymbolicTree> {
     }
 
     @Override
+    public String getName() {
+        return "mut.insert_terminal";
+    }
+
+    @Override
     public void mutate(SymbolicTree genotype) {
         genotype.set(r_.nextInt(genotype.size()), set_.getRandomTerminal());
     }

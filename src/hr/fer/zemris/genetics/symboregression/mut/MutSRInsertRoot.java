@@ -18,6 +18,11 @@ public class MutSRInsertRoot extends Mutation<SymbolicTree> {
     }
 
     @Override
+    public String getName() {
+        return "mut.insert_root";
+    }
+
+    @Override
     public void mutate(SymbolicTree genotype) {
          // Create a new operator and set current root as its first child.
         TreeNode root = set_.getRandomOperator();

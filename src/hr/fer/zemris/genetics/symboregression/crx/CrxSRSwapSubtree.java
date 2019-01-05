@@ -16,6 +16,11 @@ public class CrxSRSwapSubtree extends Crossover<SymbolicTree> {
     }
 
     @Override
+    public String getName() {
+        return "crx.swap_subtree";
+    }
+
+    @Override
     public SymbolicTree cross(SymbolicTree parent1, SymbolicTree parent2) {
         // Construct children by copying parents.
         SymbolicTree child1 = parent1.copy();

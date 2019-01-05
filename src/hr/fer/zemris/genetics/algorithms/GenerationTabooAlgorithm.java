@@ -59,9 +59,9 @@ public class GenerationTabooAlgorithm extends Algorithm {
             // Try fixing a taboo child by mutating.
             synchronized (tabu_list_) {
                 for (int i = 0; i < taboo_attempts_; i++) {
-                    if (!tabu_list_.contains(child.stringify())) {
+                    if (!tabu_list_.contains(child.serialize())) {
                         // Update taboo list.
-                        tabu_list_.add(child.stringify());
+                        tabu_list_.add(child.serialize());
                         if (tabu_list_.size() > taboo_size_) {
                             tabu_list_.removeFirst();
                         }

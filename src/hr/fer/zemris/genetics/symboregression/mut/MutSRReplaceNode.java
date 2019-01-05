@@ -21,6 +21,11 @@ public class MutSRReplaceNode extends Mutation<SymbolicTree> {
     }
 
     @Override
+    public String getName() {
+        return "mut.replace_node";
+    }
+
+    @Override
     public void mutate(SymbolicTree genotype) {
         TreeNode n = genotype.get(r_.nextInt(genotype.size()));
         n.swapNodeWith(set_.getRandomNode(n.getChildrenNum()));

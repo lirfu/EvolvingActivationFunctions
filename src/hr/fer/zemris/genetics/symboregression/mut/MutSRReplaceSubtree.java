@@ -23,6 +23,11 @@ public class MutSRReplaceSubtree extends Mutation<SymbolicTree> {
     }
 
     @Override
+    public String getName() {
+        return "mut.replace_subtree";
+    }
+
+    @Override
     public void mutate(SymbolicTree genotype) {
         // Build a random subtree.
         SymbolicTree tree = new SymbolicTree(set_, null);

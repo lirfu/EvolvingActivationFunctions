@@ -54,6 +54,7 @@ public class StorageManager {
     private static final String sol_stats_name_ = "stats.dl4jlog";
     private static final String sol_train_log_name_ = "train.log";
     private static final String sol_train_params_name_ = "train_parameters.txt";
+    private static final String sol_evolution_params_name_ = "evolution_parameters.txt";
 
     static {
         File sol = new File(sol_dir_name_);
@@ -155,7 +156,7 @@ public class StorageManager {
      */
     public static void storeTrainParameters(TrainParams params, Context c) throws IOException {
         FileLogger log = new FileLogger(createExperimentPath(c) + sol_train_params_name_, false);
-        log.o(params);
+        log.o(params.serialize());
     }
 
     /**
@@ -163,7 +164,26 @@ public class StorageManager {
      */
     public static TrainParams loadTrainParameters(Context c) throws IOException {
         TrainParams params = new TrainParams();
-        params.parse(readEntireFile(createExperimentPath(c) + sol_train_params_name_));
+        for (String line : readEntireFile(createExperimentPath(c) + sol_train_params_name_).split("\n"))
+            params.parse(line);
+        return params;
+    }
+
+    /**
+     * Stores evolution parameters used in given context.
+     */
+    public static void storeEvolutionParams(EvolvingActivationParams params, Context c) throws IOException {
+        FileLogger log = new FileLogger(createExperimentPath(c) + sol_evolution_params_name_, false);
+        log.o(params.serialize());
+    }
+
+    /**
+     * Loads the parameters used in given context.
+     */
+    public static EvolvingActivationParams loadEvolutionParameters(Context c) throws IOException {
+        EvolvingActivationParams params = new EvolvingActivationParams();
+        for (String line : readEntireFile(createExperimentPath(c) + sol_evolution_params_name_).split("\n"))
+            params.parse(line);
         return params;
     }
 

@@ -16,6 +16,11 @@ public class CrxSRMeanConstants extends Crossover<SymbolicTree> {
     }
 
     @Override
+    public String getName() {
+        return "crx.mean_constants";
+    }
+
+    @Override
     public SymbolicTree cross(SymbolicTree parent1, SymbolicTree parent2) {
         TreeNode.Condition c = (node) -> node.getName().equals(ConstNode.NAME);
 

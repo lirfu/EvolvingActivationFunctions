@@ -19,6 +19,11 @@ public class MutSRRandomConstantSet extends Mutation<SymbolicTree> {
     }
 
     @Override
+    public String getName() {
+        return "mut.random_constant_set";
+    }
+
+    @Override
     public void mutate(SymbolicTree genotype) {
         TreeNode.Condition c = node -> node.getName().equals(ConstNode.NAME);
 
@@ -29,5 +34,23 @@ public class MutSRRandomConstantSet extends Mutation<SymbolicTree> {
         if (l.isEmpty()) return;
 
         l.get(r_.nextInt(l.size())).setExtra(min_ + delta_ * r_.nextDouble());
+    }
+
+    @Override
+    public void parse(String line) {
+        super.parse(line);
+        String[] p = line.split(SPLIT_REGEX);
+        if (p[0].equals(getName() + ".min")) {
+            min_ = Double.parseDouble(p[1]);
+        } else if (p[0].equals(getName() + ".delta")) {
+            delta_ = Double.parseDouble(p[1]);
+        }
+    }
+
+    @Override
+    public String serialize() {
+        return super.serialize()
+                + serializeKeyVal(getName() + ".min", String.valueOf(min_))
+                + serializeKeyVal(getName() + ".delta", String.valueOf(delta_));
     }
 }

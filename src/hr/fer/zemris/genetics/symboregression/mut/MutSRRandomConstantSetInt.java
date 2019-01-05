@@ -19,6 +19,11 @@ public class MutSRRandomConstantSetInt extends Mutation<SymbolicTree> {
     }
 
     @Override
+    public String getName() {
+        return "mut.random_constant_set_int";
+    }
+
+    @Override
     public void mutate(SymbolicTree genotype) {
         TreeNode.Condition c = node -> node.getName().equals(ConstNode.NAME);
 
@@ -29,5 +34,15 @@ public class MutSRRandomConstantSetInt extends Mutation<SymbolicTree> {
         if (l.isEmpty()) return;
 
         l.get(r_.nextInt(l.size())).setExtra((double) (min_ + r_.nextInt(delta_)));
+    }
+
+    @Override
+    public void parse(String line) {
+
+    }
+
+    @Override
+    public String serialize() {
+        return super.serialize();
     }
 }

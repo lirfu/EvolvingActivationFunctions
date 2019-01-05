@@ -11,6 +11,10 @@ public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
     private int size_;
     protected TreeNode<I, O> root_;
 
+    public SymbolicTree(TreeNodeSet set) {
+        set_ = set;
+    }
+
     public SymbolicTree(TreeNodeSet set, TreeNode<I, O> root) {
         set_ = set;
         root_ = root;
@@ -98,30 +102,37 @@ public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
     }
 
     @Override
-    public String stringify() {
+    public String serialize() {
         if (root_ == null)
             return "null";
         return root_.toString();
     }
 
+
     @Override
     public String toString() {
-        return stringify();
+        return serialize();
     }
 
-    public static SymbolicTree parse(String str, TreeNodeSet set) {
-        Builder b = new Builder().setNodeSet(set);
+    @Override
+    public void parse(String str) {
+        Builder b = new Builder().setNodeSet(set_);
 
         if (str.indexOf('[') < 0) { // Root is terminal.
-            b.add(set.getNode(str));
+            b.add(set_.getNode(str));
         } else {
             String[] parts = str.split("[\\[,\\]]+");
             for (String s : parts) {
-                b.add(set.getNode(s));
+                b.add(set_.getNode(s));
             }
         }
+        root_ = b.root_;
+    }
 
-        return b.build();
+    public static SymbolicTree parse(String str, TreeNodeSet set) {
+        SymbolicTree tree = new SymbolicTree(set);
+        tree.parse(str);
+        return tree;
     }
 
     @Override

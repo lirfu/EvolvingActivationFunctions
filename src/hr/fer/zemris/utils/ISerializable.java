@@ -1,10 +1,10 @@
-package hr.fer.zemris.data;
+package hr.fer.zemris.utils;
 
 public interface ISerializable {
     /**
-     * Parses given string and populates attributes.
+     * Parses given line and parses it's attribute (if present).
      */
-    public void parse(String s);
+    public void parse(String line);
 
     /**
      * Serializes object attributes onto a string.

@@ -19,6 +19,11 @@ public class MutSRRandomConstantAdd extends Mutation<SymbolicTree> {
     }
 
     @Override
+    public String getName() {
+        return "mut.random_constant_add";
+    }
+
+    @Override
     public void mutate(SymbolicTree genotype) {
         TreeNode.Condition c = node -> node.getName().equals(ConstNode.NAME);
 
@@ -29,6 +34,20 @@ public class MutSRRandomConstantAdd extends Mutation<SymbolicTree> {
         if (l.isEmpty()) return;
 
         TreeNode n = l.get(r_.nextInt(l.size()));
-        n.setExtra((double) n.getExtra() + (r_.nextBoolean() ? -1 : 1) * r_.nextDouble() * max_val_); //FIXME NPE here!
+        n.setExtra((double) n.getExtra() + (r_.nextBoolean() ? -1 : 1) * r_.nextDouble() * max_val_);
+    }
+
+    @Override
+    public void parse(String line) {
+        super.parse(line);
+        String[] p = line.split(SPLIT_REGEX);
+        if (p[0].equals(getName() + ".max")) {
+            max_val_ = Double.parseDouble(p[1]);
+        }
+    }
+
+    @Override
+    public String serialize() {
+        return super.serialize() + serializeKeyVal(getName() + ".max", String.valueOf(max_val_));
     }
 }

@@ -52,7 +52,7 @@ public class Result {
     }
 
     public static String generateString(Genotype g, double relstddev, long iterations, long evaluations, long elapsed_time) {
-        return g.stringify() +
+        return g.serialize() +
                 "\nFitness: " + g.fitness_ +
                 "\nRelStdDev: " + relstddev +
                 "\nIteration: " + iterations +

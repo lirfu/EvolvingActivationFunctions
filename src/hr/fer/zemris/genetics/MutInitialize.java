@@ -8,6 +8,11 @@ public class MutInitialize<G extends Genotype> extends Mutation<G> {
     }
 
     @Override
+    public String getName() {
+        return "mut.initialize";
+    }
+
+    @Override
     public void mutate(G genotype) {
         initializer_.initialize(genotype);
     }

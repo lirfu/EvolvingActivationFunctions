@@ -21,6 +21,11 @@ public class MutSRSwapOrder extends Mutation<SymbolicTree> {
     }
 
     @Override
+    public String getName() {
+        return "mut.swap_order";
+    }
+
+    @Override
     public void mutate(SymbolicTree genotype) {
         // Get random node.
         TreeNode n = genotype.get(r_.nextInt(genotype.size()));

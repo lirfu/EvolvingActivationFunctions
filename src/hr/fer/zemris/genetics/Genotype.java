@@ -1,8 +1,10 @@
 package hr.fer.zemris.genetics;
 
+import hr.fer.zemris.utils.ISerializable;
+
 import java.util.Random;
 
-public abstract class Genotype<T> implements Comparable<Genotype<T>> {
+public abstract class Genotype<T> implements Comparable<Genotype<T>>, ISerializable {
     protected double fitness_;
 
     protected Genotype() {
@@ -35,8 +37,6 @@ public abstract class Genotype<T> implements Comparable<Genotype<T>> {
     public abstract int size();
 
     public abstract Genotype copy();
-
-    public abstract String stringify();
 
     public abstract T generateParameter(Random rand);
 }

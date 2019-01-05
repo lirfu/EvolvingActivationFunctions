@@ -1,12 +1,14 @@
 package hr.fer.zemris.neurology.dl4j;
 
-import hr.fer.zemris.data.ISerializable;
+import hr.fer.zemris.utils.ISerializable;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Immutable wrapper for train parameters.
  */
 public class TrainParams implements ISerializable {
+    public static final String SPLIT_REGEX = "[\t ,:]+";
+
     private int input_size_, output_size_;
     private int epochs_num_, batch_size_;
     private boolean normalize_features_, shuffle_batches_;
@@ -40,6 +42,22 @@ public class TrainParams implements ISerializable {
         train_percentage_ = train_percentage;
     }
 
+    public TrainParams(TrainParams p) {
+        input_size_ = p.input_size_;
+        output_size_ = p.output_size_;
+        epochs_num_ = p.epochs_num_;
+        batch_size_ = p.batch_size_;
+        normalize_features_ = p.normalize_features_;
+        shuffle_batches_ = p.shuffle_batches_;
+        learning_rate_ = p.learning_rate_;
+        decay_rate_ = p.decay_rate_;
+        decay_step_ = p.decay_step_;
+        regularization_coef_ = p.regularization_coef_;
+        dropout_keep_prob_ = p.dropout_keep_prob_;
+        seed_ = p.seed_;
+        name_ = p.name_;
+        train_percentage_ = p.train_percentage_;
+    }
 
     public int input_size() {
         return input_size_;
@@ -97,54 +115,55 @@ public class TrainParams implements ISerializable {
         return train_percentage_;
     }
 
+    /**
+     * Parses entire text line-by-line and populates <code>this</code> with parameters.
+     */
     @Override
-    public void parse(String s) {
-        for (String line : s.split("\n")) {
-            String[] parts = line.split("\t");
-            switch (parts[0]) {
-                case "input_size":
-                    input_size_ = Integer.parseInt(parts[1]);
-                    break;
-                case "output_size":
-                    output_size_ = Integer.parseInt(parts[1]);
-                    break;
-                case "epochs_num":
-                    epochs_num_ = Integer.parseInt(parts[1]);
-                    break;
-                case "batch_size":
-                    batch_size_ = Integer.parseInt(parts[1]);
-                    break;
-                case "normalize_features":
-                    normalize_features_ = Boolean.parseBoolean(parts[1]);
-                    break;
-                case "shuffle_batches":
-                    shuffle_batches_ = Boolean.parseBoolean(parts[1]);
-                    break;
-                case "learning_rate":
-                    learning_rate_ = Double.parseDouble(parts[1]);
-                    break;
-                case "decay_rate":
-                    decay_rate_ = Double.parseDouble(parts[1]);
-                    break;
-                case "decay_step":
-                    decay_step_ = Integer.parseInt(parts[1]);
-                    break;
-                case "regularization_coef":
-                    regularization_coef_ = Double.parseDouble(parts[1]);
-                    break;
-                case "dropout_keep_prob":
-                    dropout_keep_prob_ = Double.parseDouble(parts[1]);
-                    break;
-                case "seed":
-                    seed_ = Long.parseLong(parts[1]);
-                    break;
-                case "name":
-                    name_ = parts[1];
-                    break;
-                case "train_percentage":
-                    train_percentage_ = Float.parseFloat(parts[1]);
-                    break;
-            }
+    public void parse(String line) {
+        String[] parts = line.split(SPLIT_REGEX);
+        switch (parts[0]) {
+            case "input_size":
+                input_size_ = Integer.parseInt(parts[1]);
+                break;
+            case "output_size":
+                output_size_ = Integer.parseInt(parts[1]);
+                break;
+            case "epochs_num":
+                epochs_num_ = Integer.parseInt(parts[1]);
+                break;
+            case "batch_size":
+                batch_size_ = Integer.parseInt(parts[1]);
+                break;
+            case "normalize_features":
+                normalize_features_ = Boolean.parseBoolean(parts[1]);
+                break;
+            case "shuffle_batches":
+                shuffle_batches_ = Boolean.parseBoolean(parts[1]);
+                break;
+            case "learning_rate":
+                learning_rate_ = Double.parseDouble(parts[1]);
+                break;
+            case "decay_rate":
+                decay_rate_ = Double.parseDouble(parts[1]);
+                break;
+            case "decay_step":
+                decay_step_ = Integer.parseInt(parts[1]);
+                break;
+            case "regularization_coef":
+                regularization_coef_ = Double.parseDouble(parts[1]);
+                break;
+            case "dropout_keep_prob":
+                dropout_keep_prob_ = Double.parseDouble(parts[1]);
+                break;
+            case "seed":
+                seed_ = Long.parseLong(parts[1]);
+                break;
+            case "name":
+                name_ = parts[1];
+                break;
+            case "train_percentage":
+                train_percentage_ = Float.parseFloat(parts[1]);
+                break;
         }
     }
 
