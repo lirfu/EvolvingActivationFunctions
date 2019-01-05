@@ -16,13 +16,19 @@ public class EvolvingActivationParams extends TrainParams {
     private LinkedList<Crossover> crossovers_;
     private LinkedList<Mutation> mutations_;
 
+    private int[] architecture_;
+    private String activation_;
+    private double train_percentage_;
+    private String train_path_;
+    private String test_path_;
 
     public EvolvingActivationParams() {
     }
 
     public EvolvingActivationParams(TrainParams train_params, int population_size, double mutation_prob,
                                     boolean elitism, int taboo_size, int taboo_attempts,
-                                    LinkedList<Crossover> crossovers, LinkedList<Mutation> mutations) {
+                                    LinkedList<Crossover> crossovers, LinkedList<Mutation> mutations,
+                                    int[] architecture, String activation, double train_percentage, String train_path, String test_path) {
         super(train_params);
         population_size_ = population_size;
         mutation_prob_ = mutation_prob;
@@ -31,6 +37,11 @@ public class EvolvingActivationParams extends TrainParams {
         taboo_attempts_ = taboo_attempts;
         crossovers_ = crossovers;
         mutations_ = mutations;
+        architecture_ = architecture;
+        activation_ = activation;
+        train_percentage_ = train_percentage;
+        train_path_ = train_path;
+        test_path_ = test_path;
     }
 
     @Override
@@ -47,6 +58,19 @@ public class EvolvingActivationParams extends TrainParams {
         for (Mutation m : mutations_) {
             sb.append(m.serialize());
         }
+        sb.append("architecture");
+        for (int i = 0; i < architecture_.length; i++) {
+            sb.append(architecture_[i]);
+            if (i < architecture_.length - 1)
+                sb.append('-');
+        }
+        sb.append('\n');
+        if (activation_ != null)
+            sb.append("activation").append('\t').append(activation_).append('\n');
+        sb.append("train_percentage").append('\t').append(train_percentage_).append('\n');
+        sb.append("train_path").append('\t').append(train_path_).append('\n');
+        if (test_path_ != null)
+            sb.append("test_path").append('\t').append(test_path_).append('\n');
         return sb.toString();
     }
 
@@ -70,6 +94,25 @@ public class EvolvingActivationParams extends TrainParams {
             case "taboo_attempts":
                 taboo_attempts_ = Integer.parseInt(parts[1]);
                 break;
+            case "architecture":
+                String[] p = parts[1].split("-");
+                architecture_ = new int[p.length];
+                for (int i = 0; i < p.length; i++) {
+                    architecture_[i] = Integer.parseInt(p[i]);
+                }
+                break;
+            case "activation":
+                activation_ = parts[1];
+                break;
+            case "train_percentage":
+                train_percentage_ = Double.parseDouble(parts[1]);
+                break;
+            case "train_path":
+                train_path_ = parts[1];
+                break;
+            case "test_path":
+                test_path_ = parts[1];
+                break;
         }
         for (Crossover c : crossovers_) {
             c.parse(line);
@@ -81,15 +124,26 @@ public class EvolvingActivationParams extends TrainParams {
 
     public static class Builder extends TrainParams.Builder {
         private int population_size_;
-        private double mutation_prob_;
-        private boolean elitism_;
+        private double mutation_prob_ = 0.1;
+        private boolean elitism_ = true;
         private int taboo_size_;
         private int taboo_attempts_;
         private LinkedList<Crossover> crossovers_ = new LinkedList<>();
         private LinkedList<Mutation> mutations_ = new LinkedList<>();
+        private int[] architecture_;
+        private String activation_;
+        private double train_percentage_ = 0.8;
+        private String train_path_, test_path_;
 
         public EvolvingActivationParams build() {
-            return new EvolvingActivationParams(super.build(), population_size_, mutation_prob_, elitism_, taboo_size_, taboo_attempts_, crossovers_, mutations_);
+            if (architecture_ == null)
+                throw new IllegalArgumentException("Network architecture must be defined!");
+            if (train_path_ == null)
+                throw new IllegalArgumentException("Train dataset path must be specified!");
+
+            return new EvolvingActivationParams(super.build(), population_size_, mutation_prob_,
+                    elitism_, taboo_size_, taboo_attempts_, crossovers_, mutations_,
+                    architecture_, activation_, train_percentage_, train_path_, test_path_);
         }
 
         public Builder population_size(int size) {
@@ -124,6 +178,31 @@ public class EvolvingActivationParams extends TrainParams {
 
         public Builder addMutation(Mutation m) {
             mutations_.add(m);
+            return this;
+        }
+
+        public Builder setArchitecture(int[] arch) {
+            architecture_ = arch;
+            return this;
+        }
+
+        public Builder setActivation(String activation) {
+            activation_ = activation;
+            return this;
+        }
+
+        public Builder setTrainPercentage(double percentage) {
+            train_percentage_ = percentage;
+            return this;
+        }
+
+        public Builder setTrainDatasetPath(String path) {
+            train_path_ = path;
+            return this;
+        }
+
+        public Builder setTestDatasetPath(String path) {
+            test_path_ = path;
             return this;
         }
     }
