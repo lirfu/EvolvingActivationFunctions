@@ -1,6 +1,11 @@
 package hr.fer.zemris.genetics.symboregression;
 
+import org.jetbrains.annotations.NotNull;
+import sun.reflect.generics.tree.Tree;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class TreeNodeSet {
@@ -17,7 +22,7 @@ public class TreeNodeSet {
     /**
      * Registers node to a bucket, based on its children number.
      */
-    private boolean registerNode(TreeNode node) {
+    public boolean registerNode(TreeNode node) {
         ArrayList<TreeNode> l = node_buckets_.get(node.getChildrenNum());
         if (l.contains(node)) {
             return false;
@@ -100,5 +105,39 @@ public class TreeNodeSet {
         if (children_num > node_buckets_.size())
             return null;
         return getRandomNodeFrom(node_buckets_.get(children_num));
+    }
+
+    public TreeNode getNode(String node_name) {
+        for (List<TreeNode> l : node_buckets_) {
+            for (TreeNode n : l) {
+                if (n.getName().equals(node_name)) {
+                    return n;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static class Builder {
+        private Random r_ = new Random();
+        private LinkedList<TreeNode> nodes_ = new LinkedList<>();
+
+        public TreeNodeSet build() {
+            TreeNodeSet set = new TreeNodeSet(r_);
+            for (TreeNode n : nodes_) {
+                set.registerNode(n);
+            }
+            return set;
+        }
+
+        public Builder addNode(@NotNull TreeNode node) {
+            nodes_.add(node);
+            return this;
+        }
+
+        public Builder setRandom(@NotNull Random random) {
+            r_ = random;
+            return this;
+        }
     }
 }
