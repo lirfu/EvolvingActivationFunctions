@@ -8,7 +8,22 @@ import java.util.Random;
 
 public class TreeNodeSetFactory {
     public TreeNodeSet build(Random r, Set... use_sets) {
-        TreeNodeSet set = new TreeNodeSet(r);
+        TreeNodeSet set = new TreeNodeSet(r) { // Modify const as a special case.
+            @Override
+            public TreeNode getNode(String node_name) {
+                TreeNode node = super.getNode(node_name);
+                if (node == null) {
+                    try {
+                        Double val = Double.parseDouble(node_name);
+                        node = new ConstNode();
+                        node.setExtra(val);
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                return node;
+            }
+        };
+
         set.registerTerminal(new InputNode());
 
         for (Set s : use_sets) {
@@ -41,7 +56,7 @@ public class TreeNodeSetFactory {
             @Override
             public TreeNode[] list() {
                 return new TreeNode[]{
-                        new GaussNode(), new ExpNode(), new Pow2Node(), new Pow3Node(), new PowNode(), new LogNode()
+                        new ExpNode(), new Pow2Node(), new Pow3Node(), new PowNode(), new LogNode(), new GaussNode()
                 };
             }
         },
