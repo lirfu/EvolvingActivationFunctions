@@ -27,6 +27,7 @@ public class LogNode extends DerivableNode {
     public IDerivable getDerivable() {
         return (input, node) -> {
             INDArray dLdz = ((DerivableNode) node.getChild(0)).derivate(input);
+            input = ((DerivableNode) node.getChild(0)).execute(input);
             return dLdz.divi(input);
         };
     }

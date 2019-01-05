@@ -28,6 +28,7 @@ public class Pow2Node extends DerivableNode {
     public IDerivable getDerivable() {
         return (input, node) -> {
             INDArray dLdz = ((DerivableNode) node.getChild(0)).derivate(input);
+            input = ((DerivableNode) node.getChild(0)).execute(input);
             return input.mul(2.).muli(dLdz);
         };
     }

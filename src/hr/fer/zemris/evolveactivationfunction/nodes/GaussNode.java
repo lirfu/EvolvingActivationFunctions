@@ -26,8 +26,9 @@ public class GaussNode extends DerivableNode {
     public IDerivable getDerivable() {
         return (input, node) -> {
             INDArray dLdz = ((DerivableNode) node.getChild(0)).derivate(input);
+            input = ((DerivableNode) node.getChild(0)).execute(input);
             INDArray out = Nd4j.getExecutioner().execAndReturn(new Exp(input.mul(input).muli(-1.)));
-            return out.muli(-2.).muli(dLdz);
+            return out.muli(-2.).muli(input).muli(dLdz);
         };
     }
 

@@ -29,7 +29,8 @@ public class TanNode extends DerivableNode {
     public IDerivable getDerivable() {
         return (input, node) -> {
             INDArray dLdz = ((DerivableNode) node.getChild(0)).derivate(input);
-            INDArray out = Nd4j.getExecutioner().execAndReturn(new TanDerivative(input.dup()));
+            input = ((DerivableNode) node.getChild(0)).execute(input);
+            INDArray out = Nd4j.getExecutioner().execAndReturn(new TanDerivative(input));
             return out.muli(dLdz);
         };
     }

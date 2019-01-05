@@ -56,7 +56,7 @@ public class TreeNodeSetFactory {
             @Override
             public TreeNode[] list() {
                 return new TreeNode[]{
-                        new ExpNode(), new Pow2Node(), new Pow3Node(), new PowNode(), new LogNode(), new GaussNode()
+                        new ExpNode(), new Pow2Node(), new Pow3Node(), new PowNode(), new LogNode()
                 };
             }
         },
@@ -69,7 +69,7 @@ public class TreeNodeSetFactory {
         ACTIVATIONS {
             @Override
             public TreeNode[] list() {
-                return new TreeNode[]{new ReLUNode(), new SigmoidNode()};
+                return new TreeNode[]{new ReLUNode(), new SigmoidNode(), new GaussNode()};
             }
         }
     }

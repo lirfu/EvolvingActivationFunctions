@@ -9,9 +9,9 @@ import org.nd4j.linalg.api.ops.impl.transforms.Step;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.ops.transforms.Transforms;
 
-public class MinNode extends DerivableNode {
-    public MinNode() {
-        super("min", 2);
+public class MaxNode extends DerivableNode {
+    public MaxNode() {
+        super("max", 2);
     }
 
     @Override
@@ -19,7 +19,7 @@ public class MinNode extends DerivableNode {
         return (input, node) -> {
             INDArray output1 = ((DerivableNode) node.getChild(0)).execute(input);
             INDArray output2 = ((DerivableNode) node.getChild(1)).execute(input);
-            return Transforms.min(output1, output2);
+            return Transforms.max(output1, output2);
         };
     }
 
@@ -30,8 +30,8 @@ public class MinNode extends DerivableNode {
             INDArray output2 = ((DerivableNode) node.getChild(1)).execute(input);
 
             INDArray cond = output1.sub(output2);
-            INDArray mask1 = Nd4j.getExecutioner().execAndReturn(new Step(cond.mul(-1.)));
-            INDArray mask2 = Nd4j.getExecutioner().execAndReturn(new Step(cond));
+            INDArray mask1 = Nd4j.getExecutioner().execAndReturn(new Step(cond));
+            INDArray mask2 = Nd4j.getExecutioner().execAndReturn(new Step(cond.mul(-1.)));
 
             INDArray dLdz1 = ((DerivableNode) node.getChild(0)).derivate(input);
             INDArray dLdz2 = ((DerivableNode) node.getChild(1)).derivate(input);
@@ -41,6 +41,6 @@ public class MinNode extends DerivableNode {
 
     @Override
     protected IInstantiable<TreeNode<INDArray, INDArray>> getInstantiable() {
-        return MinNode::new;
+        return MaxNode::new;
     }
 }
