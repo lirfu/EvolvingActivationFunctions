@@ -10,24 +10,23 @@ import org.nd4j.linalg.factory.Nd4j;
 /**
  * Terminal representing the functions' input.
  */
-public class InputNode extends DerivableNode {
-    public InputNode() {
-        super("x", 0);
+public class ConstNode extends DerivableNode {
+    public ConstNode() {
+        super(hr.fer.zemris.genetics.symboregression.nodes.ConstNode.NAME, 0, 1.);
     }
-
 
     @Override
     protected IExecutable<INDArray, INDArray> getExecutable() {
-        return (input, node) -> input.dup();
+        return (input, node) -> Nd4j.scalar((Double) node.getExtra());
     }
 
     @Override
     public IDerivable getDerivable() {
-        return (input, node) -> Nd4j.scalar(1.f);
+        return (input, node) -> Nd4j.scalar(0.);
     }
 
     @Override
     protected IInstantiable<TreeNode<INDArray, INDArray>> getInstantiable() {
-        return InputNode::new;
+        return ConstNode::new;
     }
 }

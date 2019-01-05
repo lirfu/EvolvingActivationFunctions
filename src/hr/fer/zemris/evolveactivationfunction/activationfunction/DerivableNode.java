@@ -14,6 +14,9 @@ public abstract class DerivableNode extends TreeNode<INDArray, INDArray> {
     protected DerivableNode(String name, int children_num) {
         super(name, children_num);
     }
+    protected DerivableNode(String name, int children_num, Object extra) {
+        super(name, children_num, extra);
+    }
 
     public abstract IDerivable getDerivable();
 

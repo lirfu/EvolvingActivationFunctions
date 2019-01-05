@@ -6,9 +6,11 @@ import hr.fer.zemris.genetics.symboregression.IInstantiable;
 import hr.fer.zemris.genetics.symboregression.TreeNode;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
-public class MulNode extends DerivableNode {
-    public MulNode() {
-        super("*", 2);
+public class DivNode extends DerivableNode {
+    private static double stability_const_ = 1e-12;
+
+    public DivNode() {
+        super("/", 2);
     }
 
     @Override
@@ -16,7 +18,7 @@ public class MulNode extends DerivableNode {
         return (input, node) -> {
             INDArray output1 = ((DerivableNode) node.getChild(0)).execute(input);
             INDArray output2 = ((DerivableNode) node.getChild(1)).execute(input);
-            return output1.muli(output2);
+            return output1.divi(output2.addi(stability_const_));
         };
     }
 
@@ -27,12 +29,12 @@ public class MulNode extends DerivableNode {
             INDArray output2 = ((DerivableNode) node.getChild(1)).execute(input);
             INDArray dLdz1 = ((DerivableNode) node.getChild(0)).derivate(input);
             INDArray dLdz2 = ((DerivableNode) node.getChild(1)).derivate(input);
-            return output1.muli(dLdz2).addi(dLdz1.muli(output2));
+            return dLdz1.muli(output2).subi(output1.muli(dLdz2)).divi(output2.muli(output2.add(stability_const_)));
         };
     }
 
     @Override
     protected IInstantiable<TreeNode<INDArray, INDArray>> getInstantiable() {
-        return MulNode::new;
+        return DivNode::new;
     }
 }
