@@ -4,6 +4,10 @@ import hr.fer.zemris.evolveactivationfunction.activationfunction.DerivableNode;
 import hr.fer.zemris.genetics.symboregression.IExecutable;
 import hr.fer.zemris.genetics.symboregression.IInstantiable;
 import hr.fer.zemris.genetics.symboregression.TreeNode;
+import org.deeplearning4j.nn.graph.ComputationGraph;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.nn.workspace.ArrayType;
+import org.deeplearning4j.nn.workspace.LayerWorkspaceMgr;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -18,7 +22,7 @@ public class InputNode extends DerivableNode {
 
     @Override
     protected IExecutable<INDArray, INDArray> getExecutable() {
-        return (input, node) -> input.dup();
+        return (input, node) -> input.dup().leverage();
     }
 
     @Override
