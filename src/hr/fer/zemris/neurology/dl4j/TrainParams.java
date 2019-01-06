@@ -63,8 +63,16 @@ public class TrainParams implements ISerializable {
         return input_size_;
     }
 
+    public void input_size(int size) {
+        input_size_ = size;
+    }
+
     public int output_size() {
         return output_size_;
+    }
+
+    public void output_size(int size) {
+        output_size_ = size;
     }
 
     public int epochs_num() {
@@ -107,8 +115,16 @@ public class TrainParams implements ISerializable {
         return seed_;
     }
 
+    public void seed(long seed) {
+        seed_ = seed;
+    }
+
     public String name() {
         return name_;
+    }
+
+    public void name(String name) {
+        name_ = name;
     }
 
     public float train_percentage() {
@@ -204,9 +220,9 @@ public class TrainParams implements ISerializable {
         private float train_percentage_;
 
         public TrainParams build() {
-            if (input_size_ < 0 || output_size_ < 0) {
-                throw new IllegalArgumentException("Input and output sizes must be defined!");
-            }
+//            if (input_size_ < 0 || output_size_ < 0) {
+//                throw new IllegalArgumentException("Input and output sizes must be defined!");
+//            }
             if (epochs_num_ < 0) {
                 throw new IllegalArgumentException("Epochs number must be defined!");
             }

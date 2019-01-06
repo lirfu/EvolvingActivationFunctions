@@ -54,7 +54,8 @@ public class StorageManager {
     private static final String sol_stats_name_ = "stats.dl4jlog";
     private static final String sol_train_log_name_ = "train.log";
     private static final String sol_train_params_name_ = "train_parameters.txt";
-    private static final String sol_evolution_params_name_ = "evolution_parameters.txt";
+    private static final String sol_evo_log_name_ = "evolution.log";
+    private static final String sol_evo_params_name_ = "evolution_parameters.txt";
 
     static {
         File sol = new File(sol_dir_name_);
@@ -109,7 +110,14 @@ public class StorageManager {
      * Creates a file logger to log the training process.
      */
     public static ILogger createTrainingLogger(Context c) throws IOException {
-        return new FileLogger(createExperimentPath(c) + sol_train_log_name_, true);
+        return new FileLogger(createExperimentPath(c) + sol_train_log_name_, false);
+    }
+
+    /**
+     * Creates a file logger to log the training process.
+     */
+    public static ILogger createEvolutionLogger(Context c) throws IOException {
+        return new FileLogger(createExperimentPath(c) + sol_evo_log_name_, false);
     }
 
     /**
@@ -173,16 +181,16 @@ public class StorageManager {
      * Stores evolution parameters used in given context.
      */
     public static void storeEvolutionParams(EvolvingActivationParams params, Context c) throws IOException {
-        FileLogger log = new FileLogger(createExperimentPath(c) + sol_evolution_params_name_, false);
+        FileLogger log = new FileLogger(createExperimentPath(c) + sol_evo_params_name_, false);
         log.o(params.serialize());
     }
 
     /**
      * Loads the parameters used in given context.
      */
-    public static EvolvingActivationParams loadEvolutionParameters(Context c) throws IOException {
+    public static EvolvingActivationParams loadEvolutionParameters(String path) throws IOException {
         EvolvingActivationParams params = new EvolvingActivationParams();
-        for (String line : readEntireFile(createExperimentPath(c) + sol_evolution_params_name_).split("\n"))
+        for (String line : readEntireFile(path).split("\n"))
             params.parse(line);
         return params;
     }

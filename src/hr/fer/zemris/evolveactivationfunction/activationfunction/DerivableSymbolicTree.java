@@ -25,4 +25,9 @@ public class DerivableSymbolicTree extends SymbolicTree<INDArray, INDArray> {
             return new DerivableSymbolicTree(super.build());
         }
     }
+
+    @Override
+    public DerivableSymbolicTree copy() {
+        return new DerivableSymbolicTree(super.copy());
+    }
 }

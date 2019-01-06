@@ -32,7 +32,6 @@ import java.util.Random;
  * A common procedure for learning on a particular dataset.
  */
 public class TrainProcedure {
-    private static final long SEED = 42;
 
     private DataSet train_set_, test_set_;
     private TrainParams params_;
@@ -69,7 +68,6 @@ public class TrainProcedure {
 
     private void initialize(String dataset_name, TrainParams.Builder params_builder) {
         params_ = params_builder
-                .seed(SEED)
                 .name(dataset_name)
                 .input_size(train_set_.numInputs())
                 .output_size(train_set_.numOutcomes())
@@ -82,6 +80,29 @@ public class TrainProcedure {
             norm_.transform(train_set_);
             norm_.transform(test_set_);
         }
+    }
+
+    public TrainProcedure(EvolvingActivationParams params) throws IOException, InterruptedException {
+        String dataset_name = params.train_path();
+        DataSet ds = dataset_name.endsWith(".arff") ? StorageManager.loadEntireArffDataset(dataset_name) : StorageManager.loadEntireCsvDataset(dataset_name);
+        ds.shuffle(params.seed());
+
+        SplitTestAndTrain split = ds.splitTestAndTrain(params.train_percentage());
+        train_set_ = split.getTrain();
+        test_set_ = split.getTest();
+
+        params.name(StorageManager.dsNameFromPath(dataset_name));
+        params.input_size(train_set_.numInputs());
+        params.output_size(train_set_.numOutcomes());
+
+        // Normalize dataset.
+        if (params.normalize_features()) {
+            DataNormalization norm_ = new NormalizerStandardize();
+            norm_.fit(train_set_);
+            norm_.transform(train_set_);
+            norm_.transform(test_set_);
+        }
+        params_ = params;
     }
 
     public Context createContext(String experiment_name) {
