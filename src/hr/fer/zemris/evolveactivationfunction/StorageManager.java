@@ -173,7 +173,8 @@ public class StorageManager {
     public static TrainParams loadTrainParameters(Context c) throws IOException {
         TrainParams params = new TrainParams();
         for (String line : readEntireFile(createExperimentPath(c) + sol_train_params_name_).split("\n"))
-            params.parse(line);
+            if(!line.isEmpty())
+                params.parse(line);
         return params;
     }
 
@@ -191,7 +192,8 @@ public class StorageManager {
     public static EvolvingActivationParams loadEvolutionParameters(String path) throws IOException {
         EvolvingActivationParams params = new EvolvingActivationParams();
         for (String line : readEntireFile(path).split("\n"))
-            params.parse(line);
+            if(!line.isEmpty())
+                params.parse(line);
         return params;
     }
 

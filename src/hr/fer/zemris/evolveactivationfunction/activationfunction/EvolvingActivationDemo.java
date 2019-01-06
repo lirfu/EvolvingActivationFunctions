@@ -19,6 +19,7 @@ import hr.fer.zemris.utils.logs.DevNullLogger;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.factory.Nd4j;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
@@ -36,7 +37,7 @@ public class EvolvingActivationDemo {
         EvolvingActivationParams params;
         TrainProcedure proc;
         Context c;
-        if (args.length == 0) {
+        if (args.length == 0 || !new File(args[0]).exists()) {
             params = (EvolvingActivationParams) new EvolvingActivationParams.Builder()
                     .elitism(true)
                     .mutation_prob(0.3)
@@ -84,7 +85,7 @@ public class EvolvingActivationDemo {
         algo.run(new Algorithm.LogParams(false, false));
     }
 
-    private static Algorithm buildAlgorithm(EvolvingActivationParams params, Context c,TrainProcedure proc, TreeNodeSet set, Random r) throws IOException {
+    private static Algorithm buildAlgorithm(EvolvingActivationParams params, Context c, TrainProcedure proc, TreeNodeSet set, Random r) throws IOException {
         GenerationTabooAlgorithm.Builder b = new GenerationTabooAlgorithm.Builder();
         b.setTabooAttempts(params.taboo_attempts())
                 .setTabooSize(params.taboo_size())

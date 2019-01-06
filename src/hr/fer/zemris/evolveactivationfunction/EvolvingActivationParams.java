@@ -3,15 +3,14 @@ package hr.fer.zemris.evolveactivationfunction;
 import hr.fer.zemris.genetics.Crossover;
 import hr.fer.zemris.genetics.Mutation;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
-import hr.fer.zemris.genetics.symboregression.TreeNode;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 
 import java.util.LinkedList;
 
 
 public class EvolvingActivationParams extends TrainParams {
-    private int population_size_;
-    private double mutation_prob_;
+    private Integer population_size_;
+    private Double mutation_prob_;
     private boolean elitism_;
     private int taboo_size_;
     private int taboo_attempts_;
@@ -103,21 +102,7 @@ public class EvolvingActivationParams extends TrainParams {
 
     @Override
     public String serialize() {
-        StringBuilder sb = new StringBuilder(super.serialize())
-                .append("population_size").append('\t').append(population_size_).append('\n')
-                .append("mutation_prob").append('\t').append(mutation_prob_).append('\n')
-                .append("elitism").append('\t').append(elitism_).append('\n')
-                .append("taboo_size").append('\t').append(taboo_size_).append('\n')
-                .append("taboo_attempts").append('\t').append(taboo_attempts_).append('\n')
-                .append("worker_num").append('\t').append(worker_num_).append('\n');
-        if (crossovers_ != null)
-            for (Crossover c : crossovers_)
-                sb.append(c.serialize());
-        if (mutations_ != null)
-            for (Mutation m : mutations_)
-                sb.append(m.serialize());
-        if (condition_ != null)
-            sb.append(condition_.serialize());
+        StringBuilder sb = new StringBuilder("# NN params\n" + super.serialize());
         if (architecture_ != null) {
             sb.append("architecture").append('\t');
             for (int i = 0; i < architecture_.length; i++) {
@@ -129,6 +114,23 @@ public class EvolvingActivationParams extends TrainParams {
         }
         if (activation_ != null)
             sb.append("activation").append('\t').append(activation_).append('\n');
+        sb.append("\n# GA params\n")
+                .append("population_size").append('\t').append(population_size_).append('\n')
+                .append("mutation_prob").append('\t').append(mutation_prob_).append('\n')
+                .append("elitism").append('\t').append(elitism_).append('\n')
+                .append("taboo_size").append('\t').append(taboo_size_).append('\n')
+                .append("taboo_attempts").append('\t').append(taboo_attempts_).append('\n')
+                .append("worker_num").append('\t').append(worker_num_).append('\n');
+        if (condition_ != null)
+            sb.append(condition_.serialize());
+        sb.append("\n# GA operators\n");
+        if (crossovers_ != null)
+            for (Crossover c : crossovers_)
+                sb.append(c.serialize());
+        if (mutations_ != null)
+            for (Mutation m : mutations_)
+                sb.append(m.serialize());
+        sb.append("\n\n# Dataset\n");
         sb.append("train_path").append('\t').append(train_path_).append('\n');
         if (test_path_ != null)
             sb.append("test_path").append('\t').append(test_path_).append('\n');
