@@ -51,25 +51,26 @@ public class StopCondition implements ISerializable {
     }
 
     @Override
-    public void parse(String line) {
+    public boolean parse(String line) {
         String[] parts = line.split("\t ,:");
         switch (parts[0]) {
             case "max_iterations":
                 max_iterations_ = Long.parseLong(parts[1]);
-                break;
+                return true;
             case "max_evaluations":
                 max_evaluations_ = Long.parseLong(parts[1]);
-                break;
+                return true;
             case "max_time":
                 max_time_ = Long.parseLong(parts[1]);
-                break;
+                return true;
             case "min_fitness":
                 min_fitness_ = Double.parseDouble(parts[1]);
-                break;
+                return true;
             case "max_fitness":
                 max_fitness_ = Double.parseDouble(parts[1]);
-                break;
+                return true;
         }
+        return false;
     }
 
     @Override

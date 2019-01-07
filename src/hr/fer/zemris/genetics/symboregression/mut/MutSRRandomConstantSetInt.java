@@ -4,6 +4,7 @@ import hr.fer.zemris.genetics.Mutation;
 import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 import hr.fer.zemris.genetics.symboregression.TreeNode;
 import hr.fer.zemris.genetics.symboregression.nodes.ConstNode;
+import scala.Int;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -37,12 +38,23 @@ public class MutSRRandomConstantSetInt extends Mutation<SymbolicTree> {
     }
 
     @Override
-    public void parse(String line) {
-
+    public boolean parse(String line) {
+        super.parse(line);
+        String[] p = line.split(SPLIT_REGEX);
+        if (p[0].equals(getName() + ".min")) {
+            min_ = Integer.parseInt(p[1]);
+            return true;
+        } else if (p[0].equals(getName() + ".delta")) {
+            delta_ = Integer.parseInt(p[1]);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public String serialize() {
-        return super.serialize();
+        return super.serialize()
+                + serializeKeyVal(getName() + ".min", String.valueOf(min_))
+                + serializeKeyVal(getName() + ".delta", String.valueOf(delta_));
     }
 }

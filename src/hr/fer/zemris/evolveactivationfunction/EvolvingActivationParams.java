@@ -1,14 +1,22 @@
 package hr.fer.zemris.evolveactivationfunction;
 
 import hr.fer.zemris.genetics.Crossover;
+import hr.fer.zemris.genetics.CrxReturnRandom;
 import hr.fer.zemris.genetics.Mutation;
+import hr.fer.zemris.genetics.Operator;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
+import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
+import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtree;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
+import hr.fer.zemris.utils.ISerializable;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 
 public class EvolvingActivationParams extends TrainParams {
+    private static ISerializable[] AVAILABLE_OPERATORS;
+
     private Integer population_size_;
     private Double mutation_prob_;
     private boolean elitism_;
@@ -46,6 +54,10 @@ public class EvolvingActivationParams extends TrainParams {
         activation_ = activation;
         train_path_ = train_path;
         test_path_ = test_path;
+    }
+
+    public static void initialize(ISerializable[] available_nodes) {
+        AVAILABLE_OPERATORS = available_nodes;
     }
 
     public int population_size() {
@@ -138,52 +150,65 @@ public class EvolvingActivationParams extends TrainParams {
     }
 
     @Override
-    public void parse(String line) {
+    public boolean parse(String line) {
         super.parse(line);
         String[] parts = line.split(SPLIT_REGEX);
         switch (parts[0]) {
             case "population_size":
                 population_size_ = Integer.parseInt(parts[1]);
-                break;
+                return true;
             case "mutation_prob":
                 mutation_prob_ = Double.parseDouble(parts[1]);
-                break;
+                return true;
             case "elitism":
                 elitism_ = Boolean.parseBoolean(parts[1]);
-                break;
+                return true;
             case "taboo_size":
                 taboo_size_ = Integer.parseInt(parts[1]);
-                break;
+                return true;
             case "taboo_attempts":
                 taboo_attempts_ = Integer.parseInt(parts[1]);
-                break;
+                return true;
             case "worker_num":
                 worker_num_ = Integer.parseInt(parts[1]);
-                break;
+                return true;
             case "architecture":
                 String[] p = parts[1].split("-");
                 architecture_ = new int[p.length];
                 for (int i = 0; i < p.length; i++) {
                     architecture_[i] = Integer.parseInt(p[i]);
                 }
-                break;
+                return true;
             case "activation":
                 activation_ = parts[1];
-                break;
+                return true;
             case "train_path":
                 train_path_ = parts[1];
-                break;
+                return true;
             case "test_path":
                 test_path_ = parts[1];
-                break;
+                return true;
         }
+
+
         condition_.parse(line);
-        for (Crossover c : crossovers_) {
-            c.parse(line);
+
+        if (AVAILABLE_OPERATORS == null) {
+            throw new IllegalStateException("EvolvingActivationParams wasn't initialized! Please call the static initialize() method before parsing.");
+        } else {
+            for (ISerializable o : AVAILABLE_OPERATORS) {
+                if (o.parse(line)) {
+                    if (o instanceof Crossover && !crossovers_.contains(o)) {
+                        crossovers_.add((Crossover) o);
+                        return true;
+                    } else if (o instanceof Mutation && !mutations_.contains(o)) {
+                        mutations_.add((Mutation) o);
+                        return true;
+                    }
+                }
+            }
         }
-        for (Mutation m : mutations_) {
-            m.parse(line);
-        }
+        return false;
     }
 
     public static class Builder extends TrainParams.Builder {

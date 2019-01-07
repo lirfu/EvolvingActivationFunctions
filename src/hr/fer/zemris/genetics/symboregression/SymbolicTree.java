@@ -115,7 +115,7 @@ public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
     }
 
     @Override
-    public void parse(String str) {
+    public boolean parse(String str) {
         Builder b = new Builder().setNodeSet(set_);
 
         if (str.indexOf('[') < 0) { // Root is terminal.
@@ -127,6 +127,7 @@ public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
             }
         }
         root_ = b.root_;
+        return true;
     }
 
     public static SymbolicTree parse(String str, TreeNodeSet set) {

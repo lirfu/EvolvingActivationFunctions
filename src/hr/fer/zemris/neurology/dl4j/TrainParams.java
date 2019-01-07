@@ -135,52 +135,53 @@ public class TrainParams implements ISerializable {
      * Parses entire text line-by-line and populates <code>this</code> with parameters.
      */
     @Override
-    public void parse(String line) {
+    public boolean parse(String line) {
         String[] parts = line.split(SPLIT_REGEX);
         switch (parts[0]) {
             case "input_size":
                 input_size_ = Integer.parseInt(parts[1]);
-                break;
+                return true;
             case "output_size":
                 output_size_ = Integer.parseInt(parts[1]);
-                break;
+                return true;
             case "epochs_num":
                 epochs_num_ = Integer.parseInt(parts[1]);
-                break;
+                return true;
             case "batch_size":
                 batch_size_ = Integer.parseInt(parts[1]);
-                break;
+                return true;
             case "normalize_features":
                 normalize_features_ = Boolean.parseBoolean(parts[1]);
-                break;
+                return true;
             case "shuffle_batches":
                 shuffle_batches_ = Boolean.parseBoolean(parts[1]);
-                break;
+                return true;
             case "learning_rate":
                 learning_rate_ = Double.parseDouble(parts[1]);
-                break;
+                return true;
             case "decay_rate":
                 decay_rate_ = Double.parseDouble(parts[1]);
-                break;
+                return true;
             case "decay_step":
                 decay_step_ = Integer.parseInt(parts[1]);
-                break;
+                return true;
             case "regularization_coef":
                 regularization_coef_ = Double.parseDouble(parts[1]);
-                break;
+                return true;
             case "dropout_keep_prob":
                 dropout_keep_prob_ = Double.parseDouble(parts[1]);
-                break;
+                return true;
             case "seed":
                 seed_ = Long.parseLong(parts[1]);
-                break;
+                return true;
             case "name":
                 name_ = parts[1];
-                break;
+                return true;
             case "train_percentage":
                 train_percentage_ = Float.parseFloat(parts[1]);
-                break;
+                return true;
         }
+        return false;
     }
 
     @Override

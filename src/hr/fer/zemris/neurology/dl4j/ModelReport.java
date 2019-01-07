@@ -68,7 +68,7 @@ public class ModelReport implements IReport, ISerializable {
      * @param s String containing all of the parameter lines.
      */
     @Override
-    public void parse(String s) {
+    public boolean parse(String s) {
         StringBuilder cm_sb = null;
         for (String line : s.split("\n")) {
             if (cm_sb != null) {
@@ -108,6 +108,7 @@ public class ModelReport implements IReport, ISerializable {
             }
         }
         confusion_matrix_ = cm_sb.toString();
+        return true;
     }
 
     @Override
