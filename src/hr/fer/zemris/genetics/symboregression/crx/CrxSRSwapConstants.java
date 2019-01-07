@@ -34,8 +34,8 @@ public class CrxSRSwapConstants extends Crossover<SymbolicTree> {
 
         if (l1.isEmpty() || l2.isEmpty()) return r_.nextBoolean() ? child1 : child2;
 
-        ConstNode n1 = (ConstNode) l1.get(r_.nextInt(l1.size()));
-        ConstNode n2 = (ConstNode) l2.get(r_.nextInt(l2.size()));
+        TreeNode n1 = l1.get(r_.nextInt(l1.size()));
+        TreeNode n2 = l2.get(r_.nextInt(l2.size()));
         n1.swapContentWith(n2);
 
         return r_.nextBoolean() ? child1 : child2;

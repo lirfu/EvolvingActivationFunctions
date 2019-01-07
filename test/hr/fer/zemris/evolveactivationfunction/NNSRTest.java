@@ -10,6 +10,7 @@ import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import static org.junit.Assert.assertTrue;
@@ -44,13 +45,21 @@ public class NNSRTest {
         assertTrue("Test boundaries don't satisfy: " + start + "<" + end, start < end);
 
         for (double x = start; x <= end; x += 0.01) {
-            INDArray input = Nd4j.scalar(x);
-            double p = n.execute(input).getDouble(0);
-            double t = f.f(x);
-            assertTrue("[" + n.getName() + "] evaluation must not change the input matrix: " + x + "!=" + input.getDouble(0),
-                    Math.abs(x - input.getDouble(0)) <= REQUIRED_PRECISION);
+            INDArray t = Nd4j.create(new double[]{f.f(x), f.f(0.1 * x)});
+            INDArray input = Nd4j.create(new double[]{x, 0.1 * x});
+            INDArray p = n.execute(input);
+
+            assertTrue("[" + n.getName() + "] evaluation must not change shape: " + p.shape()[1] + " != 2",
+                    p.shape()[1] == 2);
+
+            assertTrue("[" + n.getName() + "] evaluation must not change the input matrix: "
+                            + Nd4j.create(new double[]{x, 0.1 * x}) + "!=" + input.toString(),
+                    Math.abs(x - input.getDouble(0)) == 0
+                            && Math.abs(0.1 * x - input.getDouble(1)) <= REQUIRED_PRECISION);
+
             assertTrue("[" + n.getName() + "] should evaluate correctly: " + p + "!=" + t,
-                    Math.abs(t - p) <= REQUIRED_PRECISION);
+                    Math.abs(t.getDouble(0) - p.getDouble(0)) <= REQUIRED_PRECISION
+                            && Math.abs(t.getDouble(1) - p.getDouble(1)) <= REQUIRED_PRECISION);
         }
     }
 
@@ -58,13 +67,21 @@ public class NNSRTest {
         assertTrue("Test boundaries don't satisfy: " + start + "<" + end, start < end);
 
         for (double x = start; x <= end; x += 0.01) {
-            INDArray input = Nd4j.scalar(x);
-            double p = n.derivate(input).getDouble(0);
-            double t = f.f(x);
-            assertTrue("[" + n.getName() + "] derivative must not change the input matrix: " + x + "!=" + input.getDouble(0),
-                    Math.abs(x - input.getDouble(0)) <= REQUIRED_PRECISION);
-            assertTrue("[" + n.getName() + "] should derivate correctly: " + p + "!=" + t,
-                    Math.abs(t - p) <= REQUIRED_PRECISION);
+            INDArray t = Nd4j.create(new double[]{f.f(x), f.f(0.1 * x)});
+            INDArray input = Nd4j.create(new double[]{x, 0.1 * x});
+            INDArray p = n.derivate(input);
+
+            assertTrue("[" + n.getName() + "] derivative must not change shape: " + p.shape()[1] + " != 2",
+                    p.shape()[1] == 2);
+
+            assertTrue("[" + n.getName() + "] derivative must not change the input matrix: "
+                            + Nd4j.create(new double[]{x, 0.1 * x}) + "!=" + input.toString(),
+                    Math.abs(x - input.getDouble(0)) <= REQUIRED_PRECISION
+                            && Math.abs(0.1 * x - input.getDouble(1)) <= REQUIRED_PRECISION);
+
+            assertTrue("[" + n.getName() + "] should derivative correctly: " + p + "!=" + t,
+                    Math.abs(t.getDouble(0) - p.getDouble(0)) <= REQUIRED_PRECISION
+                            && Math.abs(t.getDouble(1) - p.getDouble(1)) <= REQUIRED_PRECISION);
         }
     }
 

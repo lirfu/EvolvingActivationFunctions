@@ -35,9 +35,9 @@ public class CrxSRMeanConstants extends Crossover<SymbolicTree> {
         if (l1.isEmpty() || l2.isEmpty()) return r_.nextBoolean() ? child1 : child2;
 
         int i1 = r_.nextInt(l1.size());
-        ConstNode n1 = (ConstNode) l1.get(i1);
+        TreeNode n1 = l1.get(i1);
         int i2 = r_.nextInt(l2.size());
-        ConstNode n2 = (ConstNode) l2.get(i2);
+        TreeNode n2 = l2.get(i2);
 
         double mean = 0.5 * ((double) n1.getExtra() + (double) n2.getExtra());
 

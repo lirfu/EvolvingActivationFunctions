@@ -21,12 +21,12 @@ public class ConstNode extends DerivableNode {
 
     @Override
     protected IExecutable<INDArray, INDArray> getExecutable() {
-        return (input, node) -> Nd4j.scalar((Double) node.getExtra());
+        return (input, node) -> Nd4j.onesLike(input).muli((Double) node.getExtra());
     }
 
     @Override
     public IDerivable getDerivable() {
-        return (input, node) -> Nd4j.scalar(0.);
+        return (input, node) -> Nd4j.zerosLike(input);
     }
 
     @Override

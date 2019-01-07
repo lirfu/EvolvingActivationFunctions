@@ -29,7 +29,7 @@ public class PowNode extends DerivableNode {
             INDArray out2 = ((DerivableNode) node.getChild(1)).execute(input);
             INDArray dLdz1 = ((DerivableNode) node.getChild(0)).derivate(input);
             INDArray dLdz2 = ((DerivableNode) node.getChild(1)).derivate(input);
-            return Transforms.pow(out1, out2.sub(1))
+            return Transforms.pow(out1, out2.sub(1.))
                     .muli(out2.muli(dLdz1).addi(
                             out1.muli(Transforms.log(out1)).muli(dLdz2)
                     ));
