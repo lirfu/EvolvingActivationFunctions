@@ -27,7 +27,7 @@ public class InputNode extends DerivableNode {
 
     @Override
     public IDerivable getDerivable() {
-        return (input, node) -> Nd4j.scalar(1.f);
+        return (input, node) -> Nd4j.onesLike(input);
     }
 
     @Override
