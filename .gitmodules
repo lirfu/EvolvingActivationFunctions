@@ -1,0 +1,3 @@
+[submodule "LirfuGraph"]
+	path = LirfuGraph
+	url = git@github.com:lirfu/LirfuGraph.git
