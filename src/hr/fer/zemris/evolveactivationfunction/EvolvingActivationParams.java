@@ -9,6 +9,7 @@ import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtree;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.utils.ISerializable;
+import hr.fer.zemris.utils.Utilities;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -151,9 +152,12 @@ public class EvolvingActivationParams extends TrainParams {
 
     @Override
     public boolean parse(String line) {
-        super.parse(line);
-        String[] parts = line.split(SPLIT_REGEX);
+        if (super.parse(line)) return true;
+
+        String[] parts = line.split(Utilities.PARSER_REGEX);
         switch (parts[0]) {
+            case "#":
+                return true;
             case "population_size":
                 population_size_ = Integer.parseInt(parts[1]);
                 return true;
@@ -191,7 +195,7 @@ public class EvolvingActivationParams extends TrainParams {
         }
 
 
-        condition_.parse(line);
+        if (condition_.parse(line)) return true;
 
         if (AVAILABLE_OPERATORS == null) {
             throw new IllegalStateException("EvolvingActivationParams wasn't initialized! Please call the static initialize() method before parsing.");
@@ -208,6 +212,7 @@ public class EvolvingActivationParams extends TrainParams {
                 }
             }
         }
+
         return false;
     }
 

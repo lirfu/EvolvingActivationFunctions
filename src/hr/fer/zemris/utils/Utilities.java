@@ -7,6 +7,8 @@ import com.sun.istack.internal.Nullable;
 import java.util.Random;
 
 public class Utilities {
+    public static final String PARSER_REGEX = "[\t ,:]+";
+
     public static void permuteArray(@NotNull Object[] array, int n, @Nullable Random rand) {
         if (rand == null) rand = new Random();
         for (int i = 0; i < n; i++) {

@@ -1,14 +1,15 @@
 package hr.fer.zemris.neurology.dl4j;
 
 import hr.fer.zemris.utils.ISerializable;
+import hr.fer.zemris.utils.Utilities;
 import org.jetbrains.annotations.NotNull;
+
+import javax.rmi.CORBA.Util;
 
 /**
  * Immutable wrapper for train parameters.
  */
 public class TrainParams implements ISerializable {
-    public static final String SPLIT_REGEX = "[\t ,:]+";
-
     private int input_size_, output_size_;
     private int epochs_num_, batch_size_;
     private boolean normalize_features_, shuffle_batches_;
@@ -136,7 +137,7 @@ public class TrainParams implements ISerializable {
      */
     @Override
     public boolean parse(String line) {
-        String[] parts = line.split(SPLIT_REGEX);
+        String[] parts = line.split(Utilities.PARSER_REGEX);
         switch (parts[0]) {
             case "input_size":
                 input_size_ = Integer.parseInt(parts[1]);

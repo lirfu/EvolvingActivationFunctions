@@ -2,6 +2,7 @@ package hr.fer.zemris.genetics.stopconditions;
 
 import hr.fer.zemris.genetics.Result;
 import hr.fer.zemris.utils.ISerializable;
+import hr.fer.zemris.utils.Utilities;
 
 public class StopCondition implements ISerializable {
     private Long max_iterations_;
@@ -52,7 +53,7 @@ public class StopCondition implements ISerializable {
 
     @Override
     public boolean parse(String line) {
-        String[] parts = line.split("\t ,:");
+        String[] parts = line.split(Utilities.PARSER_REGEX);
         switch (parts[0]) {
             case "max_iterations":
                 max_iterations_ = Long.parseLong(parts[1]);

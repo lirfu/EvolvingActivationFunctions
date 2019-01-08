@@ -1,9 +1,9 @@
 package hr.fer.zemris.genetics;
 
 import hr.fer.zemris.utils.ISerializable;
+import hr.fer.zemris.utils.Utilities;
 
 public abstract class Operator<T extends Operator> implements ISerializable {
-    protected static final String SPLIT_REGEX = "[\t ,:]+";
     private int importance = 1;
 
     protected Operator() {
@@ -27,7 +27,7 @@ public abstract class Operator<T extends Operator> implements ISerializable {
 
     @Override
     public boolean parse(String line) {
-        String[] p = line.split(SPLIT_REGEX);
+        String[] p = line.split(Utilities.PARSER_REGEX);
         if (p[0].equals(getName())) {
             importance = Integer.parseInt(p[1]);
             return true;
