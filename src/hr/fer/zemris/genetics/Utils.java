@@ -33,6 +33,13 @@ public class Utils {
         return best;
     }
 
+    public static double calculateAverage(Genotype[] population) {
+        double sum = 0;
+        for (Genotype g : population)
+            sum += g.getFitness();
+        return sum / population.length;
+    }
+
     /**
      * Returns the relative standard deviation of the fitness values in the population.
      */

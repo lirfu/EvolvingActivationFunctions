@@ -168,7 +168,10 @@ public abstract class Algorithm {
 
     private String getReport(Genotype best) {
         return "===> Best unit:\n" +
-                Result.generateString(best, Utils.calculateRelativeStandardDeviation(population_),
+                Result.generateString(best, Utils.findLowest(population_).getFitness(),
+                        Utils.findHighest(population_).getFitness(),
+                        Utils.calculateAverage(population_),
+                        Utils.calculateRelativeStandardDeviation(population_),
                         iterations_, evaluator_.getEvaluations(), elapsed_time_);
     }
 
@@ -217,7 +220,12 @@ public abstract class Algorithm {
     }
 
     public Result getResultBundle() {
-        return new Result(best_unit_, best_iteration_, evaluator_.getEvaluations(), Utils.calculateRelativeStandardDeviation(population_), elapsed_time_, optimum_history_list_);
+        return new Result(best_unit_, best_iteration_, evaluator_.getEvaluations(),
+                Utils.findLowest(population_).getFitness(),
+                Utils.findHighest(population_).getFitness(),
+                Utils.calculateAverage(population_),
+                Utils.calculateRelativeStandardDeviation(population_),
+                elapsed_time_, optimum_history_list_);
     }
 
     /* INTERNAL CLASSES */

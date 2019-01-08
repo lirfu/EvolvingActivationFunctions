@@ -7,16 +7,22 @@ import java.util.LinkedList;
 
 public class Result {
     private Genotype best;
+    private double min;
+    private double max;
+    private double avg;
     private double relstddev;
     private long iterations;
     private long evaluations;
     private long elapsed_time;
     private LinkedList<Pair<Long, Genotype>> optimumHistory;
 
-    Result(Genotype best, long iterations, long evaluations, double relstddev, long elapsed_time, LinkedList<Pair<Long, Genotype>> optimumHistory) {
+    Result(Genotype best, long iterations, long evaluations, double min, double max, double avg, double relstddev, long elapsed_time, LinkedList<Pair<Long, Genotype>> optimumHistory) {
         this.best = best;
         this.evaluations = evaluations;
         this.iterations = iterations;
+        this.min = min;
+        this.max = max;
+        this.avg = avg;
         this.relstddev = relstddev;
         this.elapsed_time = elapsed_time;
         this.optimumHistory = optimumHistory;
@@ -38,6 +44,18 @@ public class Result {
         return elapsed_time;
     }
 
+    public double getMin() {
+        return min;
+    }
+
+    public double getMax() {
+        return max;
+    }
+
+    public double getAvg() {
+        return avg;
+    }
+
     public double getRelStddev() {
         return relstddev;
     }
@@ -48,12 +66,15 @@ public class Result {
 
     @Override
     public String toString() {
-        return generateString(best, relstddev, iterations, evaluations, elapsed_time);
+        return generateString(best, min, max, avg, relstddev, iterations, evaluations, elapsed_time);
     }
 
-    public static String generateString(Genotype g, double relstddev, long iterations, long evaluations, long elapsed_time) {
+    public static String generateString(Genotype g, double min, double max, double avg, double relstddev, long iterations, long evaluations, long elapsed_time) {
         return g.serialize() +
                 "\nFitness: " + g.fitness_ +
+                "\nMin: " + min +
+                "\nMax: " + max +
+                "\nAvg: " + avg +
                 "\nRelStdDev: " + relstddev +
                 "\nIteration: " + iterations +
                 "\nEvaluations: " + evaluations +
