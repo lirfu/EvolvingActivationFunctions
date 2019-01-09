@@ -7,6 +7,7 @@ import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.logs.ILogger;
+import org.deeplearning4j.api.storage.StatsStorageRouter;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
@@ -35,24 +36,39 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
 
     @Override
     public double performEvaluate(DerivableSymbolicTree g) {
-        String s = g.serialize();
         Double fitness;
+        String s = g.serialize();
         if (use_memory_ && (fitness = memory.get(s)) != null) {
             return fitness;
         }
 
+        log_.i("Evaluating: " + s);
+        CommonModel model = buildModelFrom(g);
+        Pair<ModelReport, INDArray> res = evaluateModel(model, null);
+        g.setResult(res);
+
+        fitness = res.getKey().f1();
+        if (!Double.isFinite(fitness)) {
+            fitness = 0.;
+        }
+        memory.put(s, fitness);
+
+        return -fitness;
+    }
+
+    public CommonModel buildModelFrom(DerivableSymbolicTree g) {
         IActivation[] activations = new IActivation[architecture_.length];
         for (int i = 0; i < activations.length; i++)
             activations[i] = new CustomFunction(g.copy());
+        return tmpl_procedure_.createModel(architecture_, activations);
+    }
 
-        System.out.println("Evaluating: " + s);
-        CommonModel model = tmpl_procedure_.createModel(architecture_, activations);
+    public Pair<ModelReport, INDArray> evaluateModel(CommonModel model, StatsStorageRouter storage) {
+        tmpl_procedure_.train(model, log_, storage);
+        return tmpl_procedure_.test(model);
+    }
 
-        tmpl_procedure_.train(model, log_, null);
-        Pair<ModelReport, INDArray> res = tmpl_procedure_.test(model);
-
-        // TODO Store ot write.
-
-        return res.getKey().f1();
+    public TrainProcedure getTrainProcedure() {
+        return tmpl_procedure_;
     }
 }

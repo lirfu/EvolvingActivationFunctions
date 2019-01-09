@@ -103,11 +103,11 @@ public abstract class Algorithm {
         work_arbiter_.waitOn(() -> index[1] == population_size_);
     }
 
-    public void run() {
-        run(new LogParams());
+    public Genotype[] run() {
+        return run(new LogParams());
     }
 
-    public void run(@NotNull LogParams p) {
+    public Genotype[] run(@NotNull LogParams p) {
         // Clear internals.
         iterations_ = 0;
         elapsed_time_ = 0;
@@ -164,6 +164,8 @@ public abstract class Algorithm {
         if (p.print_population_) {
             log_.d(getPopulationReport());
         }
+
+        return population_;
     }
 
     private String getReport(Genotype best) {

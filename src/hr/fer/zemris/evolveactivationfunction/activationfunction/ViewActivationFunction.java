@@ -13,6 +13,8 @@ import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -36,19 +38,24 @@ public class ViewActivationFunction {
         ), true, true);
     }
 
-    public static void displayResult(SymbolicTree<INDArray, INDArray> best, SymbolicTree<INDArray, INDArray>... top) {
+    public static BufferedImage[] displayResult(SymbolicTree<INDArray, INDArray> best, SymbolicTree<INDArray, INDArray>[] top) {
         StringBuilder legend = new StringBuilder();
-        legend.append("\nBest: ").append(best.serialize());
+        legend.append("\nBest: ").append(best.serialize()).append("  (").append(best.getFitness()).append(')');
         int i = 0;
         for (SymbolicTree t : top)
-            legend.append("\nf").append(++i).append(": ").append(t.serialize());
+            legend.append("\nf").append(++i).append(": ").append(t.serialize()).append("  (").append(t.getFitness()).append(')');
 
         // Display.
-        new Window(new VerticalContainer(
-                new Row(drawFunctions(-5, 5, 0.1, best)),
-                new Row(drawFunctions(-5, 5, 0.1, top)),
-                new Row(new EmptySpace(), new Label("Legend", legend.toString()))
-        ), true, true);
+        MultiLinearGraph g_best = drawFunctions(-5, 5, 0.1, best);
+        MultiLinearGraph g_top = drawFunctions(-5, 5, 0.1, top);
+
+//        new Window(new VerticalContainer(
+//                new Row(g_best),
+//                new Row(g_top),
+//                new Row(new EmptySpace(), new Label("Legend", legend.toString()))
+//        ), true, true);
+
+        return new BufferedImage[]{g_best.getImage(new Dimension(1000, 600)), g_top.getImage(new Dimension(1000, 600))};
     }
 
     public static MultiLinearGraph drawFunctions(double min, double max, double delta, SymbolicTree<INDArray, INDArray>... trees) {

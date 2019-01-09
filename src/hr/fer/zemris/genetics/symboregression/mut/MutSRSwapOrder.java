@@ -45,5 +45,6 @@ public class MutSRSwapOrder extends Mutation<SymbolicTree> {
 
         // Swap the selected children.
         n.getChildren()[i1].swapContentWith(n.getChildren()[i2]);
+        genotype.updateSize();
     }
 }

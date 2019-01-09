@@ -45,6 +45,8 @@ public class Utils {
      */
     public static double calculateRelativeStandardDeviation(Genotype[] population) {
         int size = population.length;
+        if (size <= 1) return 0.;
+
         double mean = 0;
         for (Genotype g : population)
             mean += g.fitness_;
@@ -73,8 +75,11 @@ public class Utils {
         int randomSum = rand.nextInt(importanceSum);
         int sum = 0;
         int i;
-        for (i = 0; i < list.size() - 1 && sum < randomSum; i++)
+        for (i = 0; i < list.size() - 1; i++) {
             sum += list.get(i).getImportance();
+            if (sum >= randomSum)
+                break;
+        }
 
         return list.get(i);
     }

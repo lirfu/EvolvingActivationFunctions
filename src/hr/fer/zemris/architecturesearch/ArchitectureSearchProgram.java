@@ -6,10 +6,10 @@ import hr.fer.zemris.evolveactivationfunction.StorageManager;
 import hr.fer.zemris.evolveactivationfunction.TrainProcedure;
 import hr.fer.zemris.evolveactivationfunction.activationfunction.CustomFunction;
 import hr.fer.zemris.evolveactivationfunction.activationfunction.DerivableSymbolicTree;
+import hr.fer.zemris.evolveactivationfunction.nodes.AddNode;
+import hr.fer.zemris.evolveactivationfunction.nodes.ConstNode;
 import hr.fer.zemris.evolveactivationfunction.nodes.CustomReLUNode;
 import hr.fer.zemris.evolveactivationfunction.nodes.InputNode;
-import hr.fer.zemris.evolveactivationfunction.nodes.ReLUNode;
-import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
@@ -33,19 +33,19 @@ public class ArchitectureSearchProgram {
     // Modifying weights (net2net): https://stackoverflow.com/questions/42806761/initialize-custom-weights-in-deeplearning4j
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        String train_ds = "res/noiseless/10k/256class/noiseless_256class_10k_train.arff";
-        String test_ds = "res/noiseless/10k/256class/noiseless_256class_10k_test.arff";
+        String train_ds = "res/noiseless/5k/9class/noiseless_9class_5k_train.arff";
+        String test_ds = "res/noiseless/5k/9class/noiseless_9class_5k_test.arff";
 
         IActivation common_activation;
-        common_activation = new ActivationReLU();
+//        common_activation = new ActivationReLU();
 
-//        DerivableSymbolicTree tree = (DerivableSymbolicTree) new DerivableSymbolicTree.Builder()
-//                .setNodeSet(new TreeNodeSet(new Random()))
-////                .add(new ReLUNode())
-//                .add(new CustomReLUNode())
-//                .add(new InputNode())
-//                .build();
-//        common_activation = new CustomFunction(tree);
+        DerivableSymbolicTree tree = (DerivableSymbolicTree) new DerivableSymbolicTree.Builder()
+                .setNodeSet(new TreeNodeSet(new Random()))
+//                .add(new ReLUNode())
+                .add(new CustomReLUNode())
+                .add(new InputNode())
+                .build();
+        common_activation = new CustomFunction(tree);
 
         final WorkArbiter arbiter = new WorkArbiter("Experimenter", 3);
 
@@ -81,128 +81,128 @@ public class ArchitectureSearchProgram {
     }
 
     private static final Experiment[] experiments = {
-//            new Experiment("00_relu_30_30_customfunc", new int[]{30, 30}, new TrainParams.Builder()
-//                    .batch_size(32)
-//                    .epochs_num(50)
-//                    .learning_rate(1e-3))
-            /* 30-30 */
-            new Experiment("01_relu_30_30_overfit", new int[]{30, 30}, new TrainParams.Builder()
+            new Experiment("00_relu_30_30_customfunc", new int[]{30, 30}, new TrainParams.Builder()
                     .batch_size(32)
-                    .epochs_num(100)
-                    .learning_rate(1e-3)),
-//            new Experiment("02_relu_30_30_overfit_normfeat", new int[]{30, 30}, new TrainParams.Builder()
+                    .epochs_num(2)
+                    .learning_rate(1e-3))
+//            /* 30-30 */
+//            new Experiment("01_relu_30_30_overfit", new int[]{30, 30}, new TrainParams.Builder()
 //                    .batch_size(32)
-//                    .normalize_features(true)
 //                    .epochs_num(100)
 //                    .learning_rate(1e-3)),
-            new Experiment("03_relu_30_30_overfit_normfeat_shflb", new int[]{30, 30}, new TrainParams.Builder()
-                    .batch_size(32)
-                    .normalize_features(true)
-                    .shuffle_batches(true)
-                    .epochs_num(100)
-                    .learning_rate(1e-3)),
-//            new Experiment("04_relu_30_30_l2_long", new int[]{30, 30}, new TrainParams.Builder()
+////            new Experiment("02_relu_30_30_overfit_normfeat", new int[]{30, 30}, new TrainParams.Builder()
+////                    .batch_size(32)
+////                    .normalize_features(true)
+////                    .epochs_num(100)
+////                    .learning_rate(1e-3)),
+//            new Experiment("03_relu_30_30_overfit_normfeat_shflb", new int[]{30, 30}, new TrainParams.Builder()
 //                    .batch_size(32)
 //                    .normalize_features(true)
 //                    .shuffle_batches(true)
 //                    .epochs_num(100)
-//                    .learning_rate(1e-3)
-//                    .regularization_coef(1e-4)),
-            new Experiment("05_relu_30_30_l2", new int[]{30, 30}, new TrainParams.Builder()
-                    .batch_size(32)
-                    .normalize_features(true)
-                    .shuffle_batches(true)
-                    .epochs_num(80)
-                    .learning_rate(1e-3)
-                    .regularization_coef(1e-4)),
-            new Experiment("06_relu_30_30_l2_decay", new int[]{30, 30}, new TrainParams.Builder()
-                    .batch_size(64)
-                    .normalize_features(true)
-                    .shuffle_batches(true)
-                    .epochs_num(80)
-                    .learning_rate(1e-3)
-                    .regularization_coef(1e-4)
-                    .decay_rate(1 - 1e-2)
-                    .decay_step(1)),
-
-            /* 50-50 */
-            new Experiment("07_relu_50_50_overfit", new int[]{50, 50}, new TrainParams.Builder()
-                    .batch_size(32)
-                    .epochs_num(100)
-                    .learning_rate(1e-3)),
-//            new Experiment("08_relu_50_50_overfit_normfeat", new int[]{50, 50}, new TrainParams.Builder()
+//                    .learning_rate(1e-3)),
+////            new Experiment("04_relu_30_30_l2_long", new int[]{30, 30}, new TrainParams.Builder()
+////                    .batch_size(32)
+////                    .normalize_features(true)
+////                    .shuffle_batches(true)
+////                    .epochs_num(100)
+////                    .learning_rate(1e-3)
+////                    .regularization_coef(1e-4)),
+//            new Experiment("05_relu_30_30_l2", new int[]{30, 30}, new TrainParams.Builder()
 //                    .batch_size(32)
 //                    .normalize_features(true)
+//                    .shuffle_batches(true)
+//                    .epochs_num(80)
+//                    .learning_rate(1e-3)
+//                    .regularization_coef(1e-4)),
+//            new Experiment("06_relu_30_30_l2_decay", new int[]{30, 30}, new TrainParams.Builder()
+//                    .batch_size(64)
+//                    .normalize_features(true)
+//                    .shuffle_batches(true)
+//                    .epochs_num(80)
+//                    .learning_rate(1e-3)
+//                    .regularization_coef(1e-4)
+//                    .decay_rate(1 - 1e-2)
+//                    .decay_step(1)),
+//
+//            /* 50-50 */
+//            new Experiment("07_relu_50_50_overfit", new int[]{50, 50}, new TrainParams.Builder()
+//                    .batch_size(32)
 //                    .epochs_num(100)
 //                    .learning_rate(1e-3)),
-            new Experiment("09_relu_50_50_overfit_normfeat_shflb", new int[]{50, 50}, new TrainParams.Builder()
-                    .batch_size(32)
-                    .normalize_features(true)
-                    .shuffle_batches(true)
-                    .epochs_num(100)
-                    .learning_rate(1e-3)),
-//            new Experiment("10_relu_50_50_l2_long", new int[]{50, 50}, new TrainParams.Builder()
+////            new Experiment("08_relu_50_50_overfit_normfeat", new int[]{50, 50}, new TrainParams.Builder()
+////                    .batch_size(32)
+////                    .normalize_features(true)
+////                    .epochs_num(100)
+////                    .learning_rate(1e-3)),
+//            new Experiment("09_relu_50_50_overfit_normfeat_shflb", new int[]{50, 50}, new TrainParams.Builder()
 //                    .batch_size(32)
 //                    .normalize_features(true)
 //                    .shuffle_batches(true)
 //                    .epochs_num(100)
-//                    .learning_rate(1e-3)
-//                    .regularization_coef(1e-4)),
-            new Experiment("11_relu_50_50_l2", new int[]{50, 50}, new TrainParams.Builder()
-                    .batch_size(32)
-                    .normalize_features(true)
-                    .shuffle_batches(true)
-                    .epochs_num(80)
-                    .learning_rate(1e-3)
-                    .regularization_coef(1e-4)),
-            new Experiment("12_relu_50_50_l2_decay", new int[]{50, 50}, new TrainParams.Builder()
-                    .batch_size(64)
-                    .normalize_features(true)
-                    .shuffle_batches(true)
-                    .epochs_num(80)
-                    .learning_rate(1e-3)
-                    .regularization_coef(1e-4)
-                    .decay_rate(1 - 1e-2)
-                    .decay_step(1)),
-
-            /* 30-50-50 */
-            new Experiment("13_relu_30_50_30_overfit", new int[]{30, 50, 30}, new TrainParams.Builder()
-                    .batch_size(32)
-                    .epochs_num(100)
-                    .learning_rate(1e-3)),
-//            new Experiment("14_relu_30_50_30_overfit_normfeat", new int[]{30, 50, 30}, new TrainParams.Builder()
+//                    .learning_rate(1e-3)),
+////            new Experiment("10_relu_50_50_l2_long", new int[]{50, 50}, new TrainParams.Builder()
+////                    .batch_size(32)
+////                    .normalize_features(true)
+////                    .shuffle_batches(true)
+////                    .epochs_num(100)
+////                    .learning_rate(1e-3)
+////                    .regularization_coef(1e-4)),
+//            new Experiment("11_relu_50_50_l2", new int[]{50, 50}, new TrainParams.Builder()
 //                    .batch_size(32)
 //                    .normalize_features(true)
+//                    .shuffle_batches(true)
+//                    .epochs_num(80)
+//                    .learning_rate(1e-3)
+//                    .regularization_coef(1e-4)),
+//            new Experiment("12_relu_50_50_l2_decay", new int[]{50, 50}, new TrainParams.Builder()
+//                    .batch_size(64)
+//                    .normalize_features(true)
+//                    .shuffle_batches(true)
+//                    .epochs_num(80)
+//                    .learning_rate(1e-3)
+//                    .regularization_coef(1e-4)
+//                    .decay_rate(1 - 1e-2)
+//                    .decay_step(1)),
+//
+//            /* 30-50-50 */
+//            new Experiment("13_relu_30_50_30_overfit", new int[]{30, 50, 30}, new TrainParams.Builder()
+//                    .batch_size(32)
 //                    .epochs_num(100)
 //                    .learning_rate(1e-3)),
-            new Experiment("15_relu_30_50_30_overfit_normfeat_shflb", new int[]{30, 50, 30}, new TrainParams.Builder()
-                    .batch_size(32)
-                    .normalize_features(true)
-                    .shuffle_batches(true)
-                    .epochs_num(100)
-                    .learning_rate(1e-3)),
-//            new Experiment("16_relu_30_50_30_l2_long", new int[]{30, 50, 30}, new TrainParams.Builder()
+////            new Experiment("14_relu_30_50_30_overfit_normfeat", new int[]{30, 50, 30}, new TrainParams.Builder()
+////                    .batch_size(32)
+////                    .normalize_features(true)
+////                    .epochs_num(100)
+////                    .learning_rate(1e-3)),
+//            new Experiment("15_relu_30_50_30_overfit_normfeat_shflb", new int[]{30, 50, 30}, new TrainParams.Builder()
 //                    .batch_size(32)
 //                    .normalize_features(true)
 //                    .shuffle_batches(true)
 //                    .epochs_num(100)
+//                    .learning_rate(1e-3)),
+////            new Experiment("16_relu_30_50_30_l2_long", new int[]{30, 50, 30}, new TrainParams.Builder()
+////                    .batch_size(32)
+////                    .normalize_features(true)
+////                    .shuffle_batches(true)
+////                    .epochs_num(100)
+////                    .learning_rate(1e-3)
+////                    .regularization_coef(1e-4)),
+//            new Experiment("17_relu_30_50_30_l2", new int[]{30, 50, 30}, new TrainParams.Builder()
+//                    .batch_size(32)
+//                    .normalize_features(true)
+//                    .shuffle_batches(true)
+//                    .epochs_num(80)
 //                    .learning_rate(1e-3)
 //                    .regularization_coef(1e-4)),
-            new Experiment("17_relu_30_50_30_l2", new int[]{30, 50, 30}, new TrainParams.Builder()
-                    .batch_size(32)
-                    .normalize_features(true)
-                    .shuffle_batches(true)
-                    .epochs_num(80)
-                    .learning_rate(1e-3)
-                    .regularization_coef(1e-4)),
-            new Experiment("18_relu_30_50_30_l2_decay", new int[]{30, 50, 30}, new TrainParams.Builder()
-                    .batch_size(64)
-                    .normalize_features(true)
-                    .shuffle_batches(true)
-                    .epochs_num(80)
-                    .learning_rate(1e-3)
-                    .regularization_coef(1e-4)
-                    .decay_rate(1 - 1e-2)
-                    .decay_step(1))
+//            new Experiment("18_relu_30_50_30_l2_decay", new int[]{30, 50, 30}, new TrainParams.Builder()
+//                    .batch_size(64)
+//                    .normalize_features(true)
+//                    .shuffle_batches(true)
+//                    .epochs_num(80)
+//                    .learning_rate(1e-3)
+//                    .regularization_coef(1e-4)
+//                    .decay_rate(1 - 1e-2)
+//                    .decay_step(1))
     };
 }

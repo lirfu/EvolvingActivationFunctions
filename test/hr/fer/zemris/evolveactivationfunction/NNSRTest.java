@@ -1,6 +1,7 @@
 package hr.fer.zemris.evolveactivationfunction;
 
 import hr.fer.zemris.evolveactivationfunction.activationfunction.DerivableNode;
+import hr.fer.zemris.evolveactivationfunction.activationfunction.DerivableSymbolicTree;
 import hr.fer.zemris.evolveactivationfunction.nodes.*;
 import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
@@ -27,7 +28,7 @@ public class NNSRTest {
     @Test
     public void testParsing() {
         TreeNodeSetFactory factory = new TreeNodeSetFactory();
-        TreeNodeSet set = factory.build(new Random(42), TreeNodeSetFactory.Set.ARITHMETICS, TreeNodeSetFactory.Set.TRIGONOMETRY, TreeNodeSetFactory.Set.CONSTANT);
+        TreeNodeSet set = factory.build(new Random(42), TreeNodeSetFactory.Set.ALL);
 
         String string = "+[x,*[x,sin[*[-273.15,x]]]]";
         SymbolicTree tree = SymbolicTree.parse(string, set);
@@ -164,7 +165,7 @@ public class NNSRTest {
         IFunc f = x -> x + (x - (x * (x / (0.1 + DivNode.STABILITY_CONST))));
         IFunc df = x -> 1 + 1 - (2 * x / (0.1 + DivNode.STABILITY_CONST));
 
-        SymbolicTree tree = new SymbolicTree.Builder()
+        DerivableSymbolicTree tree = (DerivableSymbolicTree) new DerivableSymbolicTree.Builder()
                 .setNodeSet(new TreeNodeSet(new Random()))
                 .add(new AddNode())
                 .add(new InputNode())
@@ -177,6 +178,8 @@ public class NNSRTest {
                 .add(new ConstNode(0.1))
                 .build();
 
+        tree = tree.copy();
+
         testNodeEval((DerivableNode) tree.get(0), f, 1, 2);
         testNodeDeriv((DerivableNode) tree.get(0), df, 1, 2);
     }
@@ -186,13 +189,15 @@ public class NNSRTest {
         IFunc f = x -> Math.sin(Math.cos(Math.tan(x)));
         IFunc df = x -> Math.cos(Math.cos(Math.tan(x))) * (-1) * Math.sin(Math.tan(x)) / Math.cos(x) / Math.cos(x);
 
-        SymbolicTree tree = new SymbolicTree.Builder()
+        DerivableSymbolicTree tree = (DerivableSymbolicTree) new DerivableSymbolicTree.Builder()
                 .setNodeSet(new TreeNodeSet(new Random()))
                 .add(new SinNode())
                 .add(new CosNode())
                 .add(new TanNode())
                 .add(new InputNode())
                 .build();
+
+        tree = tree.copy();
 
         testNodeEval((DerivableNode) tree.get(0), f, 1, 2);
         testNodeDeriv((DerivableNode) tree.get(0), df, 1, 2);
@@ -203,7 +208,7 @@ public class NNSRTest {
         IFunc f = x -> Math.pow(Math.log(Math.pow(Math.exp(Math.pow(x, 2)), 3)), 0.1);
         IFunc df = x -> Math.pow(3 * Math.log(Math.E), 0.1) * 0.2 * Math.pow(x, -0.8);
 
-        SymbolicTree tree = new SymbolicTree.Builder()
+        DerivableSymbolicTree tree = (DerivableSymbolicTree) new DerivableSymbolicTree.Builder()
                 .setNodeSet(new TreeNodeSet(new Random()))
                 .add(new PowNode())
                 .add(new LogNode())
@@ -213,6 +218,25 @@ public class NNSRTest {
                 .add(new InputNode())
                 .add(new ConstNode(0.1))
                 .build();
+
+        tree = tree.copy();
+
+        testNodeEval((DerivableNode) tree.get(0), f, 1, 2);
+        testNodeDeriv((DerivableNode) tree.get(0), df, 1, 2);
+    }
+
+    @Test
+    public void testActivatedTree() {
+        IFunc f = x -> Math.exp(-x * x);
+        IFunc df = x -> Math.exp(-x * x) * (-2.) * x;
+
+        DerivableSymbolicTree tree = (DerivableSymbolicTree) new DerivableSymbolicTree.Builder()
+                .setNodeSet(new TreeNodeSet(new Random()))
+                .add(new GaussNode())
+                .add(new InputNode())
+                .build();
+
+        tree = tree.copy();
 
         testNodeEval((DerivableNode) tree.get(0), f, 1, 2);
         testNodeDeriv((DerivableNode) tree.get(0), df, 1, 2);

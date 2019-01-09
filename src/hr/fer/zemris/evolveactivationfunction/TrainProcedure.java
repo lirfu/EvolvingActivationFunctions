@@ -33,7 +33,7 @@ import java.util.Random;
  */
 public class TrainProcedure {
 
-    private DataSet train_set_, test_set_;
+    private final DataSet train_set_, test_set_;
     private TrainParams params_;
 
     /**
@@ -57,7 +57,7 @@ public class TrainProcedure {
      */
     public TrainProcedure(@NotNull String dataset_name, @NotNull TrainParams.Builder params_builder, float train_percentage) throws IOException, InterruptedException {
         DataSet ds = dataset_name.endsWith(".arff") ? StorageManager.loadEntireArffDataset(dataset_name) : StorageManager.loadEntireCsvDataset(dataset_name);
-        ds.shuffle(42);
+        ds.shuffle(params_builder.seed());
         SplitTestAndTrain split = ds.splitTestAndTrain(train_percentage);
         train_set_ = split.getTrain();
         test_set_ = split.getTest();
@@ -91,6 +91,7 @@ public class TrainProcedure {
         train_set_ = split.getTrain();
         test_set_ = split.getTest();
 
+        // Automatically populate necessary parameters.
         params.name(StorageManager.dsNameFromPath(dataset_name));
         params.input_size(train_set_.numInputs());
         params.output_size(train_set_.numOutcomes());
@@ -141,11 +142,13 @@ public class TrainProcedure {
 
         Random random = new Random(params_.seed());
         DataSet set;
-        if (params_.shuffle_batches()) {
+//        if (params_.shuffle_batches()) {
+        synchronized (train_set_) {
             set = train_set_.copy();
-        } else {
-            set = train_set_; // No need for copying.
         }
+//        } else {
+//            set = train_set_; // No need for copying.
+//        }
 
         timer.start();
         DataSetIterator iter = new TestDataSetIterator(set, params_.batch_size());

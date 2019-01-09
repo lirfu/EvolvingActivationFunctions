@@ -13,15 +13,18 @@ public abstract class DerivableNode extends TreeNode<INDArray, INDArray> {
 
     protected DerivableNode(String name, int children_num) {
         super(name, children_num);
+        derivable_ = getDerivable();
     }
+
     protected DerivableNode(String name, int children_num, Object extra) {
         super(name, children_num, extra);
+        derivable_ = getDerivable();
     }
 
     public abstract IDerivable getDerivable();
 
     public INDArray derivate(INDArray input) {
-        return getDerivable().derivate(input, this);
+        return derivable_.derivate(input, this);
     }
 
     @Override
@@ -40,5 +43,12 @@ public abstract class DerivableNode extends TreeNode<INDArray, INDArray> {
         IDerivable der = derivable_;
         derivable_ = ((DerivableNode) n).derivable_;
         ((DerivableNode) n).derivable_ = der;
+    }
+
+    @Override
+    public TreeNode clone() {
+        DerivableNode n = (DerivableNode) super.clone();
+        n.derivable_ = derivable_;
+        return n;
     }
 }

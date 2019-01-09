@@ -36,7 +36,10 @@ public class CrxSRSwapConstants extends Crossover<SymbolicTree> {
 
         TreeNode n1 = l1.get(r_.nextInt(l1.size()));
         TreeNode n2 = l2.get(r_.nextInt(l2.size()));
-        n1.swapContentWith(n2);
+
+        Object t = n1.getExtra();
+        n1.setExtra(n2.getExtra());
+        n2.setExtra(t);
 
         return r_.nextBoolean() ? child1 : child2;
     }

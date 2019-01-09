@@ -30,7 +30,7 @@ public class MutSRReplaceSubtree extends Mutation<SymbolicTree> {
     @Override
     public void mutate(SymbolicTree genotype) {
         // Build a random subtree.
-        SymbolicTree tree = new SymbolicTree(set_, null);
+        SymbolicTree tree = genotype.copy();
         init_.initialize(tree);
 
         int i = r_.nextInt(genotype.size());

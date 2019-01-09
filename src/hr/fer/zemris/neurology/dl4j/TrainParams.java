@@ -188,8 +188,8 @@ public class TrainParams implements ISerializable {
     @Override
     public String serialize() {
         return new StringBuilder()
-                .append("input_size").append('\t').append(input_size_).append('\n')
-                .append("output_size").append('\t').append(output_size_).append('\n')
+                .append("input_size").append('\t').append(input_size_).append("  # Generated").append('\n')
+                .append("output_size").append('\t').append(output_size_).append("  # Generated").append('\n')
                 .append("epochs_num").append('\t').append(epochs_num_).append('\n')
                 .append("batch_size").append('\t').append(batch_size_).append('\n')
                 .append("normalize_features").append('\t').append(normalize_features_).append('\n')
@@ -200,7 +200,7 @@ public class TrainParams implements ISerializable {
                 .append("regularization_coef").append('\t').append(regularization_coef_).append('\n')
                 .append("dropout_keep_prob").append('\t').append(dropout_keep_prob_).append('\n')
                 .append("seed").append('\t').append(seed_).append('\n')
-                .append("name").append('\t').append(name_).append('\n')
+                .append("name").append('\t').append(name_).append("  # Generated").append('\n')
                 .append("train_percentage").append('\t').append(train_percentage_).append('\n')
                 .toString();
     }
@@ -295,6 +295,10 @@ public class TrainParams implements ISerializable {
         public Builder seed(long value) {
             seed_ = value;
             return this;
+        }
+
+        public long seed(){
+            return seed_;
         }
 
         public Builder name(String name) {

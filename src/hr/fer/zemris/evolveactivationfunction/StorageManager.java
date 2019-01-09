@@ -17,6 +17,8 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 
 /**
@@ -56,6 +58,8 @@ public class StorageManager {
     private static final String sol_train_params_name_ = "train_parameters.txt";
     private static final String sol_evo_log_name_ = "evolution.log";
     private static final String sol_evo_params_name_ = "evolution_parameters.txt";
+    private static final String sol_best_func_name_ = "best_function.png";
+    private static final String sol_top_func_name_ = "top_functions.png";
 
     static {
         File sol = new File(sol_dir_name_);
@@ -110,14 +114,14 @@ public class StorageManager {
      * Creates a file logger to log the training process.
      */
     public static ILogger createTrainingLogger(Context c) throws IOException {
-        return new FileLogger(createExperimentPath(c) + sol_train_log_name_, false);
+        return new FileLogger(createExperimentPath(c) + sol_train_log_name_, true);
     }
 
     /**
      * Creates a file logger to log the training process.
      */
     public static ILogger createEvolutionLogger(Context c) throws IOException {
-        return new FileLogger(createExperimentPath(c) + sol_evo_log_name_, false);
+        return new FileLogger(createExperimentPath(c) + sol_evo_log_name_, true);
     }
 
     /**
@@ -173,7 +177,7 @@ public class StorageManager {
     public static TrainParams loadTrainParameters(Context c) throws IOException {
         TrainParams params = new TrainParams();
         for (String line : readEntireFile(createExperimentPath(c) + sol_train_params_name_).split("\n"))
-            if(!line.isEmpty())
+            if (!line.isEmpty())
                 params.parse(line);
         return params;
     }
@@ -192,7 +196,7 @@ public class StorageManager {
     public static EvolvingActivationParams loadEvolutionParameters(String path) throws IOException {
         EvolvingActivationParams params = new EvolvingActivationParams();
         for (String line : readEntireFile(path).split("\n"))
-            if(!line.isEmpty())
+            if (!line.isEmpty())
                 params.parse(line);
         return params;
     }
@@ -213,6 +217,19 @@ public class StorageManager {
         report.parse(readEntireFile(createExperimentPath(c) + sol_result_name_));
         return report;
     }
+
+    /** Writes the image to a png file. */
+    public static void writeImageOfBest(BufferedImage img, Context c) throws IOException {
+        File f = createFile(createExperimentPath(c) + sol_best_func_name_);
+        ImageIO.write(img, "png", f);
+    }
+
+    /** Writes the image to a png file. */
+    public static void writeImageOfTop(BufferedImage img, Context c) throws IOException {
+        File f = createFile(createExperimentPath(c) + sol_top_func_name_);
+        ImageIO.write(img, "png", f);
+    }
+
 
     /* RESOURCE FOLDER MANAGEMENT */
 

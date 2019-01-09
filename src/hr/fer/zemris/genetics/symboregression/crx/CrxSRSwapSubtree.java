@@ -27,7 +27,8 @@ public class CrxSRSwapSubtree extends Crossover<SymbolicTree> {
         SymbolicTree child2 = parent2.copy();
 
         // Select nodes from children and swap them.
-        child1.set(r_.nextInt(child1.size()), child2.get(r_.nextInt(child2.size())));
+        child1.get(r_.nextInt(child1.size())).swapContentWith(child2.get(r_.nextInt(child2.size())));
+        child1.updateSize();
         child2.updateSize();
 
         return r_.nextBoolean() ? child1 : child2;

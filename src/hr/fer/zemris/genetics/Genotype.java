@@ -1,6 +1,7 @@
 package hr.fer.zemris.genetics;
 
 import hr.fer.zemris.utils.ISerializable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
@@ -24,8 +25,8 @@ public abstract class Genotype<T> implements Comparable<Genotype<T>>, ISerializa
     }
 
     @Override
-    public int compareTo(Genotype<T> tGenotype) {
-        return (int) Math.signum(fitness_ - tGenotype.fitness_);
+    public int compareTo(@NotNull Genotype<T> g) {
+        return (int) Math.signum(fitness_ - g.fitness_);
     }
 
     /* ABSTRACT METHODS */
