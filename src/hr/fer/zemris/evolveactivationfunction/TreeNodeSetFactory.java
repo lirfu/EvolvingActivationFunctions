@@ -4,6 +4,7 @@ import hr.fer.zemris.evolveactivationfunction.nodes.*;
 import hr.fer.zemris.genetics.symboregression.TreeNode;
 import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 
+import java.util.LinkedList;
 import java.util.Random;
 
 public class TreeNodeSetFactory {
@@ -23,9 +24,9 @@ public class TreeNodeSetFactory {
                 return node;
             }
         };
-
+        // Input is always present.
         set.registerTerminal(new InputNode());
-
+        // Construct from sets.
         for (Set s : use_sets) {
             for (TreeNode n : s.list()) {
                 set.registerNode(n);
@@ -40,6 +41,20 @@ public class TreeNodeSetFactory {
     }
 
     public enum Set implements Listable<TreeNode> {
+        /** Constructs a list from all existing sets, with duplicates filtered out. */
+        ALL {
+            @Override
+            public TreeNode[] list() {
+                LinkedList<TreeNode> nodes = new LinkedList<>();
+                for (Set s : Set.values()) {
+                    if (s.equals(ALL)) continue;
+                    for (TreeNode n : s.list())
+                        if (!nodes.contains(n))
+                            nodes.add(n);
+                }
+                return nodes.toArray(new TreeNode[]{});
+            }
+        },
         ARITHMETICS {
             @Override
             public TreeNode[] list() {
