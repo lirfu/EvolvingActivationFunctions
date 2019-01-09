@@ -218,13 +218,17 @@ public class StorageManager {
         return report;
     }
 
-    /** Writes the image to a png file. */
+    /**
+     * Writes the image to a png file.
+     */
     public static void writeImageOfBest(BufferedImage img, Context c) throws IOException {
         File f = createFile(createExperimentPath(c) + sol_best_func_name_);
         ImageIO.write(img, "png", f);
     }
 
-    /** Writes the image to a png file. */
+    /**
+     * Writes the image to a png file.
+     */
     public static void writeImageOfTop(BufferedImage img, Context c) throws IOException {
         File f = createFile(createExperimentPath(c) + sol_top_func_name_);
         ImageIO.write(img, "png", f);
@@ -270,7 +274,11 @@ public class StorageManager {
      * @param dataset_path Path to the dataset name.
      * @return Snake-case string representing the dataset name.
      */
-    public static String dsNameFromPath(String dataset_path) {
-        return new File(dataset_path).getName().replaceAll("_[^_]+$", "");
+    public static String dsNameFromPath(String dataset_path, boolean remove_last_underscore) {
+        String n = new File(dataset_path).getName();
+        n = n.substring(0, n.lastIndexOf('.'));
+        if (remove_last_underscore)
+            return n.replaceAll("_[^_]+$", "");
+        return n;
     }
 }

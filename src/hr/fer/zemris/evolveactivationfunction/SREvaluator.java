@@ -42,7 +42,6 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
             return fitness;
         }
 
-        log_.i("Evaluating: " + s);
         CommonModel model = buildModelFrom(g);
         Pair<ModelReport, INDArray> res = evaluateModel(model, null);
         g.setResult(res);

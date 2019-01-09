@@ -134,8 +134,10 @@ public class EvolvingActivationParams extends TrainParams {
                 .append("taboo_size").append('\t').append(taboo_size_).append('\n')
                 .append("taboo_attempts").append('\t').append(taboo_attempts_).append('\n')
                 .append("worker_num").append('\t').append(worker_num_).append('\n');
-        if (condition_ != null)
+        if (condition_ != null) {
+            sb.append("\n# Stop conditions:\n");
             sb.append(condition_.serialize());
+        }
         sb.append("\n# GA operators\n");
         if (crossovers_ != null)
             for (Crossover c : crossovers_)
@@ -143,7 +145,7 @@ public class EvolvingActivationParams extends TrainParams {
         if (mutations_ != null)
             for (Mutation m : mutations_)
                 sb.append(m.serialize());
-        sb.append("\n\n# Dataset\n");
+        sb.append("\n# Dataset\n");
         sb.append("train_path").append('\t').append(train_path_).append('\n');
         if (test_path_ != null)
             sb.append("test_path").append('\t').append(test_path_).append('\n');

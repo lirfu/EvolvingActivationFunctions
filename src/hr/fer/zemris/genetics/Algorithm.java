@@ -146,6 +146,7 @@ public abstract class Algorithm {
             if (!p.print_improvements_only_ || improvement) {
                 best_unit_ = best.copy();
                 best_iteration_ = iterations_;
+                log_.d("Done!\n");
                 log_.i(getReport(best_unit_));
                 if (p.print_population_) {
                     log_.d(getPopulationReport());
@@ -157,7 +158,7 @@ public abstract class Algorithm {
             elapsed_time_ = System.currentTimeMillis() - startingTime;
         }
 
-        log_.i("\n===> Algorithm ended!");
+        log_.i("===> Algorithm ended!");
         log_.i(condition_.report(getResultBundle()));
         log_.i(getReport(best_unit_));
         log_.i("Best iteration: " + best_iteration_);
@@ -178,9 +179,10 @@ public abstract class Algorithm {
     }
 
     private String getPopulationReport() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("Population:\n");
         for (Genotype g : population_) {
             sb
+                    .append("--> ")
                     .append(g)
                     .append(' ')
                     .append('(')

@@ -34,6 +34,9 @@ import java.util.*;
 import java.util.logging.Logger;
 
 public class EvolvingActivationDemo {
+    private static final String EXPERIMENT_NAME = "01_initial_train80";
+    private static final String DATASET_PATH = "res/noiseless_Karlo/noiseless_all_training_9class.arff";
+
     public static void main(String[] args) throws IOException, InterruptedException {
         // Set double precision globally.
         Nd4j.setDataType(DataBuffer.Type.DOUBLE);
@@ -58,39 +61,34 @@ public class EvolvingActivationDemo {
         TrainProcedure train_proc;
         Context c;
         if (args.length == 0 || !new File(args[0]).exists()) {
-            params = create_params("res/noiseless/5k/9class/noiseless_9class_5k_train.arff", r, set);
+            params = create_params(DATASET_PATH, r, set);
         } else {
             params = StorageManager.loadEvolutionParameters(args[0]);
         }
+
         // Define the training procedure.
         train_proc = new TrainProcedure(params);
-        c = train_proc.createContext("test_evo_params");
+        c = train_proc.createContext(EXPERIMENT_NAME);
+
         // Store if doesn't exist.
         if (args.length == 0 || !new File(args[0]).exists()) StorageManager.storeEvolutionParams(params, c);
 
+        /* NEUROEVOLUTION */
         ILogger evo_logger = new MultiLogger(StorageManager.createEvolutionLogger(c), new StdoutLogger());
-        SREvaluator evaluator = new SREvaluator(train_proc, params.architecture(), evo_logger);
+        evo_logger.d("=====> Parameters:\n" + params.serialize());
 
-        evo_logger.d("=====> Parameters:\n"+params.serialize());
+        SREvaluator evaluator = new SREvaluator(train_proc, params.architecture(), evo_logger);
 
         // Build and run the algorithm.
         Algorithm algo = buildAlgorithm(params, c, train_proc, set, initializer, evaluator, r, evo_logger);
-        Genotype[] population = algo.run(new Algorithm.LogParams(false, false));
+        Genotype[] population = algo.run(new Algorithm.LogParams(false, true));
+
+        /* RESULTS */
 
         // Retrain best and store results.
         DerivableSymbolicTree best = (DerivableSymbolicTree) algo.getBest();
         evo_logger.i("=====> Retraining best: " + best + "  (" + best.getFitness() + ")");
         best.setResult(null);  // Do this for unknown reasons (dl4j serialization error otherwise).
-
-//        CommonModel model = train_proc.createModel(new int[]{30, 30}, new IActivation[]{new CustomFunction(best.copy())});
-//
-//        evo_logger.d("Training...");
-//        FileStatsStorage stat_storage = StorageManager.createStatsLogger(c);
-//        train_proc.train(model, evo_logger, stat_storage);
-//        evo_logger.d("Testing...");
-//        Pair<ModelReport, INDArray> result = train_proc.test(model);
-//        evo_logger.d(result.getKey().toString());
-//        train_proc.storeResults(model, c, result);
 
         CommonModel model = evaluator.buildModelFrom(best);
 
@@ -100,14 +98,16 @@ public class EvolvingActivationDemo {
         List<Genotype> l = Arrays.asList(population);
         l.sort(Comparator.comparing(Genotype::getFitness));
 
+        evo_logger.d("Done!\n");
         evo_logger.i("=====> Final best: \n" + best + "  (" + best.getFitness() + ")");
+
         // Extract tops to display
         int top_num = Math.min(5, l.size());
         evo_logger.i("=====> Top " + top_num + " functions: ");
         DerivableSymbolicTree[] top = new DerivableSymbolicTree[top_num];
         for (int i = 0; i < top_num; i++) {
             top[i] = (DerivableSymbolicTree) l.get(i);
-            evo_logger.i(" - f" + (i + 1) + ": " + top[i].serialize() + "  (" + top[i].getFitness() + ")");
+            evo_logger.i("--> f" + (i + 1) + ": " + top[i].serialize() + "  (" + top[i].getFitness() + ")");
         }
 
         BufferedImage[] imgs = ViewActivationFunction.displayResult(best, top);
@@ -143,10 +143,14 @@ public class EvolvingActivationDemo {
         return (EvolvingActivationParams) new EvolvingActivationParams.Builder()
                 .elitism(true)
                 .mutation_prob(0.3)
-                .population_size(10)
-                .stop_condition(new StopCondition.Builder().setMaxIterations(50).setMinFitness(-1.0).build())
+                .population_size(20)
+                .stop_condition(new StopCondition.Builder()
+                        .setMaxIterations(50)
+                        .setMinFitness(-1.0)
+                        .build())
                 .taboo_attempts(3)
                 .taboo_size(5)
+                .worker_num(4)
 
                 .addCrossover(new CrxSRSwapSubtree(r).setImportance(1))
                 .addCrossover(new CrxSRSwapConstants(r).setImportance(1))
@@ -159,16 +163,16 @@ public class EvolvingActivationDemo {
                 .addMutation(new MutSRReplaceNode(set, r).setImportance(1))
                 .addMutation(new MutSRSwapOrder(r).setImportance(1))
 
-                .architecture(new int[]{30, 30})
                 .train_path(dataset)
+                .architecture(new int[]{30, 30})
                 .train_percentage(.8f)
+                .seed(42)
 
                 .batch_size(64)
                 .normalize_features(true)
                 .shuffle_batches(true)
-                .epochs_num(80)
-
-                .learning_rate(1e-3)
+                .epochs_num(10)
+                .learning_rate(2e-3)
                 .regularization_coef(1e-4)
                 .decay_rate(1 - 1e-2)
                 .decay_step(1)

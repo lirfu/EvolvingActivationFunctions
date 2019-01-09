@@ -46,7 +46,7 @@ public class TrainProcedure {
     public TrainProcedure(@NotNull String train_set_path, @NotNull String test_set_path, @NotNull TrainParams.Builder params_builder) throws IOException, InterruptedException {
         train_set_ = train_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_set_path) : StorageManager.loadEntireCsvDataset(train_set_path);
         test_set_ = test_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(test_set_path) : StorageManager.loadEntireCsvDataset(test_set_path);
-        initialize(StorageManager.dsNameFromPath(train_set_path), params_builder);
+        initialize(StorageManager.dsNameFromPath(train_set_path, true), params_builder);
     }
 
     /**
@@ -63,7 +63,7 @@ public class TrainProcedure {
         test_set_ = split.getTest();
 
         params_builder.train_percentage(train_percentage);
-        initialize(StorageManager.dsNameFromPath(dataset_name), params_builder);
+        initialize(StorageManager.dsNameFromPath(dataset_name, false), params_builder);
     }
 
     private void initialize(String dataset_name, TrainParams.Builder params_builder) {
@@ -92,7 +92,7 @@ public class TrainProcedure {
         test_set_ = split.getTest();
 
         // Automatically populate necessary parameters.
-        params.name(StorageManager.dsNameFromPath(dataset_name));
+        params.name(StorageManager.dsNameFromPath(dataset_name, false));
         params.input_size(train_set_.numInputs());
         params.output_size(train_set_.numOutcomes());
 
