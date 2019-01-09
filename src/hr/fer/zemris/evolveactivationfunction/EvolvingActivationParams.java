@@ -11,6 +11,7 @@ import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Utilities;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -30,8 +31,10 @@ public class EvolvingActivationParams extends TrainParams {
 
     private int[] architecture_;
     private String activation_;
+    private String[] node_set_;
     private String train_path_;
     private String test_path_;
+    private String experiment_name_;
 
     public EvolvingActivationParams() {
     }
@@ -40,7 +43,7 @@ public class EvolvingActivationParams extends TrainParams {
                                     boolean elitism, int taboo_size, int taboo_attempts,
                                     LinkedList<Crossover> crossovers, LinkedList<Mutation> mutations,
                                     StopCondition condition, int worker_num,
-                                    int[] architecture, String activation, String train_path, String test_path) {
+                                    int[] architecture, String activation, String[] node_set, String train_path, String test_path, String experiment_name) {
         super(train_params);
         population_size_ = population_size;
         mutation_prob_ = mutation_prob;
@@ -53,8 +56,10 @@ public class EvolvingActivationParams extends TrainParams {
         worker_num_ = worker_num;
         architecture_ = architecture;
         activation_ = activation;
+        node_set_ = node_set;
         train_path_ = train_path;
         test_path_ = test_path;
+        experiment_name_ = experiment_name;
     }
 
     public static void initialize(ISerializable[] available_nodes) {
@@ -105,12 +110,20 @@ public class EvolvingActivationParams extends TrainParams {
         return activation_;
     }
 
+    public String[] node_set() {
+        return node_set_;
+    }
+
     public String train_path() {
         return train_path_;
     }
 
     public String test_path() {
         return test_path_;
+    }
+
+    public String experiment_name() {
+        return experiment_name_;
     }
 
     @Override
@@ -133,7 +146,8 @@ public class EvolvingActivationParams extends TrainParams {
                 .append("elitism").append('\t').append(elitism_).append('\n')
                 .append("taboo_size").append('\t').append(taboo_size_).append('\n')
                 .append("taboo_attempts").append('\t').append(taboo_attempts_).append('\n')
-                .append("worker_num").append('\t').append(worker_num_).append('\n');
+                .append("worker_num").append('\t').append(worker_num_).append('\n')
+                .append("node_set").append('\t').append(String.join("-", node_set_)).append('\n');
         if (condition_ != null) {
             sb.append("\n# Stop conditions:\n");
             sb.append(condition_.serialize());
@@ -149,6 +163,7 @@ public class EvolvingActivationParams extends TrainParams {
         sb.append("train_path").append('\t').append(train_path_).append('\n');
         if (test_path_ != null)
             sb.append("test_path").append('\t').append(test_path_).append('\n');
+        sb.append("experiment_name").append('\t').append(experiment_name_).append('\n');
         return sb.toString();
     }
 
@@ -188,14 +203,19 @@ public class EvolvingActivationParams extends TrainParams {
             case "activation":
                 activation_ = parts[1];
                 return true;
+            case "node_set":
+                node_set_ = parts[1].split("-");
+                return true;
             case "train_path":
                 train_path_ = parts[1];
                 return true;
             case "test_path":
                 test_path_ = parts[1];
                 return true;
+            case "experiment_name":
+                experiment_name_ = parts[1];
+                return true;
         }
-
 
         if (condition_.parse(line)) return true;
 
@@ -229,20 +249,27 @@ public class EvolvingActivationParams extends TrainParams {
         private StopCondition condition_;
         private int[] architecture_;
         private String activation_;
+        private LinkedList<String> node_set_ = new LinkedList<>();
         private String train_path_, test_path_;
+        private String experiment_name_;
         private int worker_num_ = 1;
 
         public EvolvingActivationParams build() {
+            if (experiment_name_ == null)
+                throw new IllegalStateException("Experiment name must be defined!");
             if (architecture_ == null)
                 throw new IllegalStateException("Network architecture must be defined!");
             if (train_path_ == null)
                 throw new IllegalStateException("Train dataset path must be specified!");
             if (condition_ == null)
                 throw new IllegalStateException("Stop condition must be specified!");
+            if (node_set_.isEmpty())
+                throw new IllegalStateException("Node set must be specified!");
 
             return new EvolvingActivationParams(super.build(), population_size_, mutation_prob_,
                     elitism_, taboo_size_, taboo_attempts_, crossovers_, mutations_, condition_, worker_num_,
-                    architecture_, activation_, train_path_, test_path_);
+                    architecture_, activation_, node_set_.toArray(new String[]{}),
+                    train_path_, test_path_, experiment_name_);
         }
 
         public Builder population_size(int size) {
@@ -295,6 +322,12 @@ public class EvolvingActivationParams extends TrainParams {
             return this;
         }
 
+        public Builder addNodeSet(String set_name) {
+            TreeNodeSetFactory.Set.valueOf(set_name);
+            node_set_.add(set_name);
+            return this;
+        }
+
         public Builder train_path(String path) {
             train_path_ = path;
             return this;
@@ -302,6 +335,11 @@ public class EvolvingActivationParams extends TrainParams {
 
         public Builder test_path(String path) {
             test_path_ = path;
+            return this;
+        }
+
+        public Builder experiment_name(String experiment_name) {
+            experiment_name_ = experiment_name;
             return this;
         }
 

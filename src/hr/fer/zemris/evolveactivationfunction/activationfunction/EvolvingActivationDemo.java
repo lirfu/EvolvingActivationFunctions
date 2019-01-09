@@ -34,18 +34,13 @@ import java.util.*;
 import java.util.logging.Logger;
 
 public class EvolvingActivationDemo {
-    private static final String EXPERIMENT_NAME = "01_initial_train80";
     private static final String DATASET_PATH = "res/noiseless_Karlo/noiseless_all_training_9class.arff";
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Set double precision globally.
         Nd4j.setDataType(DataBuffer.Type.DOUBLE);
         Random r = new Random(42);
-        // Build node set.
-        TreeNodeSet set = new TreeNodeSetFactory().build(r,
-                TreeNodeSetFactory.Set.ARITHMETICS,
-                TreeNodeSetFactory.Set.CONSTANT,
-                TreeNodeSetFactory.Set.ACTIVATIONS);
+        TreeNodeSet set = new TreeNodeSet(r);
         // Define initializer
         Initializer initializer = new SRGenericInitializer(set, 4);
         // Initialize params class for parsing.
@@ -66,9 +61,12 @@ public class EvolvingActivationDemo {
             params = StorageManager.loadEvolutionParameters(args[0]);
         }
 
+        // Define node set.
+        set.load(new TreeNodeSetFactory().build(new Random(params.seed()), params.node_set()));
+
         // Define the training procedure.
         train_proc = new TrainProcedure(params);
-        c = train_proc.createContext(EXPERIMENT_NAME);
+        c = train_proc.createContext(params.experiment_name());
 
         // Store if doesn't exist.
         if (args.length == 0 || !new File(args[0]).exists()) StorageManager.storeEvolutionParams(params, c);
@@ -163,7 +161,10 @@ public class EvolvingActivationDemo {
                 .addMutation(new MutSRReplaceNode(set, r).setImportance(1))
                 .addMutation(new MutSRSwapOrder(r).setImportance(1))
 
+                .addNodeSet(TreeNodeSetFactory.Set.ALL.toString())
+
                 .train_path(dataset)
+                .experiment_name("Demo_parameters")
                 .architecture(new int[]{30, 30})
                 .train_percentage(.8f)
                 .seed(42)

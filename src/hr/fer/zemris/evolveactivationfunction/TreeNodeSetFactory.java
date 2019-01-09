@@ -86,7 +86,7 @@ public class TreeNodeSetFactory {
                 return "ARITHMETICS";
             }
         },
-        MATH {
+        MATHS {
             @Override
             public DerivableNode[] list() {
                 return new DerivableNode[]{new MaxNode(), new MinNode()};
@@ -94,7 +94,7 @@ public class TreeNodeSetFactory {
 
             @Override
             public String toString() {
-                return "MATH";
+                return "MATHS";
             }
         },
         TRIGONOMETRY {

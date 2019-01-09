@@ -9,14 +9,25 @@ import java.util.List;
 import java.util.Random;
 
 public class TreeNodeSet {
-    private final Random r_;
-    private final ArrayList<ArrayList<TreeNode>> node_buckets_ = new ArrayList<>();
+    private Random r_;
+    private ArrayList<ArrayList<TreeNode>> node_buckets_;
 
     public TreeNodeSet(Random r) {
         r_ = r;
+        node_buckets_ = new ArrayList<>();
         node_buckets_.add(new ArrayList<>());
         node_buckets_.add(new ArrayList<>());
         node_buckets_.add(new ArrayList<>());
+    }
+
+    public TreeNodeSet(TreeNodeSet set) {
+        r_ = set.r_;
+        node_buckets_ = set.node_buckets_;
+    }
+
+    public void load(TreeNodeSet set){
+        r_ = set.r_;
+        node_buckets_ = set.node_buckets_;
     }
 
     /**

@@ -176,10 +176,10 @@ public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
             return false;
         if (children_.length != ((TreeNode) o).children_.length)
             return false;
-        if (!extra_.equals(((TreeNode) o).extra_))
+        if (extra_ != null && !extra_.equals(((TreeNode) o).extra_))
             return false;
         for (int i = 0; i < children_.length; i++)
-            if (!children_[i].equals(((TreeNode) o).children_[i]))
+            if (children_[i] != null && !children_[i].equals(((TreeNode) o).children_[i]))
                 return false;
         return true;
     }
