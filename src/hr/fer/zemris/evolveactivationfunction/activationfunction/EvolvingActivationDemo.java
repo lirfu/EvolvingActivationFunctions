@@ -1,10 +1,6 @@
 package hr.fer.zemris.evolveactivationfunction.activationfunction;
 
-import com.lirfu.lirfugraph.Row;
-import com.lirfu.lirfugraph.VerticalContainer;
-import com.lirfu.lirfugraph.Window;
 import hr.fer.zemris.evolveactivationfunction.*;
-import hr.fer.zemris.evolveactivationfunction.Utils;
 import hr.fer.zemris.genetics.*;
 import hr.fer.zemris.genetics.algorithms.GenerationTabooAlgorithm;
 import hr.fer.zemris.genetics.selectors.RouletteWheelSelector;
@@ -18,20 +14,16 @@ import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtree;
 import hr.fer.zemris.genetics.symboregression.mut.*;
 import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Pair;
-import hr.fer.zemris.utils.logs.DevNullLogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
 import org.nd4j.linalg.api.buffer.DataBuffer;
-import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 
 public class EvolvingActivationDemo {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -66,7 +58,7 @@ public class EvolvingActivationDemo {
         // Define the training procedure.
         proc = new TrainProcedure(params);
         c = proc.createContext("test_params");
-
+        // Store if doesn't exist.
         if (args.length == 0 || !new File(args[0]).exists()) StorageManager.storeEvolutionParams(params, c);
 
         // Build and run the algorithm.
@@ -79,16 +71,17 @@ public class EvolvingActivationDemo {
         // Get history of optima.
         LinkedList<Pair<Long, Genotype>> l = algo.getResultBundle().getOptimumHistory();
         l.sort(Comparator.comparing(p -> p.getVal().getFitness()));
-        // Extract top 5 to display
-        SymbolicTree[] top5 = new SymbolicTree[5];
-        for (int i = 0; i < top5.length; i++) {
-            top5[i] = (SymbolicTree) l.removeLast().getVal();
+
+        // Extract top to display
+        int top_num = 5;
+        System.out.println("=====> Top " + top_num + "functions: ");
+        SymbolicTree[] top = new SymbolicTree[top_num];
+        for (int i = 1; i <= top_num; i++) {
+            top[i] = (SymbolicTree) l.get(l.size() - i).getVal();
+            System.out.println(" - f" + i + ": " + top[i].serialize());
         }
-        // Display.
-        new Window(new VerticalContainer(
-                new Row(Utils.drawFunctions(-5, 5, 0.1, best)),
-                new Row(Utils.drawFunctions(-5, 5, 0.1, top5))
-        ), true, true);
+
+        ViewActivationFunction.displayResult(best, top);
     }
 
     private static Algorithm buildAlgorithm(EvolvingActivationParams params, Context c, TrainProcedure proc, TreeNodeSet set, Initializer init, Random r) throws IOException {
