@@ -1,6 +1,5 @@
 package hr.fer.zemris.evolveactivationfunction;
 
-import org.deeplearning4j.ui.api.UIServer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,5 +26,10 @@ public class Context {
 
     public String getExperimentName() {
         return experiment_name_;
+    }
+
+    @Override
+    public String toString() {
+        return dataset_name_ + " -> " + experiment_name_;
     }
 }

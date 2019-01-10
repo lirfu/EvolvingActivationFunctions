@@ -25,9 +25,19 @@ public class TreeNodeSet {
         node_buckets_ = set.node_buckets_;
     }
 
-    public void load(TreeNodeSet set){
+    public void load(TreeNodeSet set) {
         r_ = set.r_;
         node_buckets_ = set.node_buckets_;
+    }
+
+    @Override
+    public String toString() {
+        String separator = ", ";
+        StringBuilder sb = new StringBuilder();
+        for (ArrayList<TreeNode> arr : node_buckets_)
+            for (TreeNode n : arr)
+                sb.append(n.getName()).append(separator);
+        return sb.toString().substring(0, sb.length() - separator.length());
     }
 
     /**
