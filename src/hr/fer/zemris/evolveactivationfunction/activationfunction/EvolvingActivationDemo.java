@@ -63,8 +63,8 @@ public class EvolvingActivationDemo {
         train_proc = new TrainProcedure(params);
         c = train_proc.createContext(params.experiment_name());
 
-        // Store if doesn't exist.
-        if (args.length == 0 || !new File(args[0]).exists()) StorageManager.storeEvolutionParams(params, c);
+        // Store params to experiment result folder.
+        StorageManager.storeEvolutionParams(params, c);
 
         /* NEUROEVOLUTION */
         ILogger evo_logger = new MultiLogger(StorageManager.createEvolutionLogger(c), new StdoutLogger());
