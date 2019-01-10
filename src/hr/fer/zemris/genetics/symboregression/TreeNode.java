@@ -93,9 +93,9 @@ public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
     /**
      * Swaps the contents with given node, preserves the subtrees.
      */
-    public void swapNodeWith(@NotNull TreeNode n) {
+    public void swapInternalsWith(@NotNull TreeNode n) {
         if (getChildrenNum() != n.getChildrenNum())
-            throw new IllegalArgumentException("Cannot swap contents for nodes with different children number.");
+            throw new IllegalArgumentException("Cannot swap internals for nodes with different children number.");
 
         String nm = name_;
         name_ = n.name_;
@@ -116,7 +116,7 @@ public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
 
     public void swapChildrenWith(@NotNull TreeNode n) {
         if (getChildrenNum() != n.getChildrenNum())
-            throw new IllegalArgumentException("Cannot swap contents for nodes with different children number.");
+            throw new IllegalArgumentException("Cannot swap children for nodes with different children number.");
 
         TreeNode[] ch = children_;
         children_ = n.children_;
@@ -124,9 +124,9 @@ public abstract class TreeNode<I, O> implements IInstantiable<TreeNode<I, O>> {
     }
 
     /**
-     * Nodes will keep their references, but swap all of their internals.
+     * Nodes will keep their references, but swap all of their internals and the subtree.
      */
-    public void swapContentWith(@NotNull TreeNode n) {
+    public void swapAllWith(@NotNull TreeNode n) {
         String nm = name_;
         name_ = n.name_;
         n.name_ = nm;

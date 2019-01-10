@@ -28,14 +28,14 @@ public class MutSRRandomConstantAdd extends Mutation<SymbolicTree> {
     public void mutate(SymbolicTree genotype) {
         TreeNode.Condition c = node -> node.getName().equals(ConstNode.NAME);
 
-        // Add to a random node.
         LinkedList<TreeNode> l = new LinkedList<>();
         genotype.collect(c, l);
 
         if (l.isEmpty()) return;
 
+        // Add to a random const node.
         TreeNode n = l.get(r_.nextInt(l.size()));
-        n.setExtra((double) n.getExtra() + (r_.nextBoolean() ? -1 : 1) * r_.nextDouble() * max_val_);
+        n.setExtra((double) n.getExtra() + (r_.nextBoolean() ? -1 : 1) * r_.nextGaussian() * max_val_);
     }
 
     @Override

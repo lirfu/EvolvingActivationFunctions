@@ -8,10 +8,10 @@ import java.util.Random;
 /**
  * Swaps randomly selected tree nodes and their subtrees.
  */
-public class CrxSRSwapSubtree extends Crossover<SymbolicTree> {
+public class CrxSRSwapSubtrees extends Crossover<SymbolicTree> {
     private final Random r_;
 
-    public CrxSRSwapSubtree(Random random) {
+    public CrxSRSwapSubtrees(Random random) {
         r_ = random;
     }
 
@@ -27,7 +27,7 @@ public class CrxSRSwapSubtree extends Crossover<SymbolicTree> {
         SymbolicTree child2 = parent2.copy();
 
         // Select nodes from children and swap them.
-        child1.get(r_.nextInt(child1.size())).swapContentWith(child2.get(r_.nextInt(child2.size())));
+        child1.get(r_.nextInt(child1.size())).swapAllWith(child2.get(r_.nextInt(child2.size())));
         child1.updateSize();
         child2.updateSize();
 

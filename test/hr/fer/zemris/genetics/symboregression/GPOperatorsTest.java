@@ -1,10 +1,7 @@
 package hr.fer.zemris.genetics.symboregression;
 
-import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtree;
-import hr.fer.zemris.genetics.symboregression.mut.MutSRInsertTerminal;
-import hr.fer.zemris.genetics.symboregression.mut.MutSRReplaceNode;
-import hr.fer.zemris.genetics.symboregression.mut.MutSRReplaceSubtree;
-import hr.fer.zemris.genetics.symboregression.mut.MutSRSwapOrder;
+import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtrees;
+import hr.fer.zemris.genetics.symboregression.mut.*;
 import org.junit.Test;
 
 import java.util.Random;
@@ -41,6 +38,7 @@ public class GPOperatorsTest {
                 .add(new SymbolicRegressionDemo.AddNode())
                 .add(new SymbolicRegressionDemo.XNode())
                 .add(new SymbolicRegressionDemo.YNode())
+                .add(new SymbolicRegressionDemo.ExpNode())
                 .add(new SymbolicRegressionDemo.XNode())
                 .build();
     }
@@ -61,7 +59,7 @@ public class GPOperatorsTest {
         p2.set(4, buildTree().get(0));
         p2.set(1, buildTree().get(0));
 
-        SymbolicTree c = new CrxSRSwapSubtree(r(1, true)).cross(p1, p2);
+        SymbolicTree c = new CrxSRSwapSubtrees(r(1, true)).cross(p1, p2);
 
         assertTrue("CrxSRSwapSubtree child should differ from its parents." + stringifyCrx(p1, p2, c),
                 !c.equals(p1) && !c.equals(p2));
@@ -115,5 +113,27 @@ public class GPOperatorsTest {
 
         assertTrue("MutSRInsertTerminal should insert a terminal." + stringifyMut(t, c),
                 c.get(0).getChildrenNum() == 0);
+    }
+
+    @Test
+    public void testMutSRRemoveRoot() {
+        SymbolicTree t = buildTree();
+        SymbolicTree c = t.copy();
+
+        new MutSRRemoveRoot( r(0, true)).mutate(c);
+
+        assertTrue("MutSRRemoveRoot should remove the root." + stringifyMut(t, c),
+                t.root_.children_[0].equals(c.root_));
+    }
+
+    @Test
+    public void testMutSRRemoveUnary() {
+        SymbolicTree t = buildTree();
+        SymbolicTree c = t.copy();
+
+        new MutSRRemoveUnary( r(0, true)).mutate(c);
+
+        assertTrue("MutSRRemoveUnary should remove u unary node." + stringifyMut(t, c),
+                c.get(4).equals(new SymbolicRegressionDemo.XNode()));
     }
 }

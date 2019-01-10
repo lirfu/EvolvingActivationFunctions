@@ -66,7 +66,7 @@ public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
         if (index == 0 && root_ == null) {
             root_ = value;
         } else {
-            get(index).swapContentWith(value);
+            get(index).swapAllWith(value);
         }
         updateSize();
     }

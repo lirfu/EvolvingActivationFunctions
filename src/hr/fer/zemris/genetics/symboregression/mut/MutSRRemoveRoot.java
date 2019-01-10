@@ -7,26 +7,27 @@ import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 
 import java.util.Random;
 
-/**
- * Replaces a random node with a new random node of the same order (children number).
- */
-public class MutSRReplaceNode extends Mutation<SymbolicTree> {
-    private final TreeNodeSet set_;
+public class MutSRRemoveRoot extends Mutation<SymbolicTree> {
     private final Random r_;
 
-    public MutSRReplaceNode(TreeNodeSet set, Random random) {
-        set_ = set;
+    public MutSRRemoveRoot(Random random) {
         r_ = random;
     }
 
     @Override
     public String getName() {
-        return "mut.replace_node";
+        return "mut.remove_root";
     }
 
     @Override
     public void mutate(SymbolicTree genotype) {
-        TreeNode n = genotype.get(r_.nextInt(genotype.size()));
-        n.swapInternalsWith(set_.getRandomNode(n.getChildrenNum()));
+        TreeNode root = genotype.get(0);
+
+        // Don't remove if root is terminal.
+        if (root.getChildrenNum() == 0) return;
+
+        // Replace root with its random child.
+        root = root.getChild(r_.nextInt(root.getChildrenNum()));
+        genotype.set(0, root);
     }
 }

@@ -1,7 +1,6 @@
 package hr.fer.zemris.genetics.symboregression.mut;
 
 import hr.fer.zemris.genetics.Mutation;
-import hr.fer.zemris.genetics.Utils;
 import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 import hr.fer.zemris.genetics.symboregression.TreeNode;
 
@@ -44,7 +43,7 @@ public class MutSRSwapOrder extends Mutation<SymbolicTree> {
         }
 
         // Swap the selected children.
-        n.getChildren()[i1].swapContentWith(n.getChildren()[i2]);
+        n.getChildren()[i1].swapAllWith(n.getChildren()[i2]);
         genotype.updateSize();
     }
 }

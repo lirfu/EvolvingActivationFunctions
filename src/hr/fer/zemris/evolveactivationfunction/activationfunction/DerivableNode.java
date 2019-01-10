@@ -28,8 +28,8 @@ public abstract class DerivableNode extends TreeNode<INDArray, INDArray> {
     }
 
     @Override
-    public void swapNodeWith(@NotNull TreeNode n) {
-        super.swapNodeWith(n);
+    public void swapInternalsWith(@NotNull TreeNode n) {
+        super.swapInternalsWith(n);
 
         IDerivable der = derivable_;
         derivable_ = ((DerivableNode) n).derivable_;
@@ -37,8 +37,8 @@ public abstract class DerivableNode extends TreeNode<INDArray, INDArray> {
     }
 
     @Override
-    public void swapContentWith(@NotNull TreeNode n) {
-        super.swapContentWith(n);
+    public void swapAllWith(@NotNull TreeNode n) {
+        super.swapAllWith(n);
 
         IDerivable der = derivable_;
         derivable_ = ((DerivableNode) n).derivable_;

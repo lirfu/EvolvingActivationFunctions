@@ -28,12 +28,12 @@ public class MutSRRandomConstantSet extends Mutation<SymbolicTree> {
     public void mutate(SymbolicTree genotype) {
         TreeNode.Condition c = node -> node.getName().equals(ConstNode.NAME);
 
-        // Set a random node.
         LinkedList<TreeNode> l = new LinkedList<>();
         genotype.collect(c, l);
 
         if (l.isEmpty()) return;
 
+        // Set a random const node.
         l.get(r_.nextInt(l.size())).setExtra(min_ + delta_ * r_.nextDouble());
     }
 
