@@ -1,28 +1,23 @@
 package hr.fer.zemris.evolveactivationfunction.activationfunction;
 
 import hr.fer.zemris.evolveactivationfunction.*;
-import hr.fer.zemris.evolveactivationfunction.nodes.CustomReLUNode;
-import hr.fer.zemris.evolveactivationfunction.nodes.InputNode;
 import hr.fer.zemris.genetics.*;
 import hr.fer.zemris.genetics.algorithms.GenerationTabooAlgorithm;
 import hr.fer.zemris.genetics.selectors.RouletteWheelSelector;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
 import hr.fer.zemris.genetics.symboregression.SRGenericInitializer;
-import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import hr.fer.zemris.genetics.symboregression.crx.CrxSRMeanConstants;
 import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapConstants;
-import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtree;
+import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapNodes;
+import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtrees;
 import hr.fer.zemris.genetics.symboregression.mut.*;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Pair;
-import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
-import org.deeplearning4j.ui.storage.FileStatsStorage;
-import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
@@ -31,7 +26,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 
 public class EvolvingActivationDemo {
     private static final String DATASET_PATH = "res/noiseless_Karlo/noiseless_all_training_9class.arff";
@@ -45,11 +39,12 @@ public class EvolvingActivationDemo {
         Initializer initializer = new SRGenericInitializer(set, 4);
         // Initialize params class for parsing.
         EvolvingActivationParams.initialize(new ISerializable[]{
-                new CrxReturnRandom(r), new CrxSRSwapSubtree(r), new CrxSRSwapConstants(r), new CrxSRMeanConstants(r),
+                new CrxReturnRandom(r), new CrxSRSwapSubtrees(r), new CrxSRSwapConstants(r), new CrxSRMeanConstants(r),
+                new CrxSRSwapNodes(r),
                 new MutSRInsertTerminal(set, r), new MutSRInsertRoot(set, r), new MutSRReplaceNode(set, r),
                 new MutSRSwapOrder(r), new MutSRReplaceSubtree(set, initializer, r), new MutInitialize(initializer),
                 new MutSRRandomConstantSet(r, 0, 1), new MutSRRandomConstantSetInt(r, 0, 1),
-                new MutSRRandomConstantAdd(r, 1)
+                new MutSRRandomConstantAdd(r, 1), new MutSRRemoveRoot(r), new MutSRRemoveUnary(r)
         });
         // Build or load the params.
         EvolvingActivationParams params;
@@ -62,7 +57,7 @@ public class EvolvingActivationDemo {
         }
 
         // Define node set.
-        set.load(new TreeNodeSetFactory().build(new Random(params.seed()), params.node_set()));
+        set.load(TreeNodeSetFactory.build(new Random(params.seed()), params.node_set()));
 
         // Define the training procedure.
         train_proc = new TrainProcedure(params);
@@ -150,16 +145,19 @@ public class EvolvingActivationDemo {
                 .taboo_size(5)
                 .worker_num(4)
 
-                .addCrossover(new CrxSRSwapSubtree(r).setImportance(1))
-                .addCrossover(new CrxSRSwapConstants(r).setImportance(1))
-                .addCrossover(new CrxSRMeanConstants(r).setImportance(1))
-                .addCrossover((Crossover) new CrxReturnRandom(r).setImportance(1))
+                .addCrossover(new CrxSRSwapSubtrees(r))
+                .addCrossover(new CrxSRSwapNodes(r))
+                .addCrossover(new CrxSRSwapConstants(r))
+                .addCrossover(new CrxSRMeanConstants(r))
+                .addCrossover(new CrxReturnRandom(r))
 
-                .addMutation(new MutSRInsertRoot(set, r).setImportance(1))
-                .addMutation(new MutSRInsertTerminal(set, r).setImportance(1))
-                .addMutation(new MutSRRandomConstantSet(r, -5, 5).setImportance(1))
-                .addMutation(new MutSRReplaceNode(set, r).setImportance(1))
-                .addMutation(new MutSRSwapOrder(r).setImportance(1))
+                .addMutation(new MutSRInsertRoot(set, r))
+                .addMutation(new MutSRInsertTerminal(set, r))
+                .addMutation(new MutSRRandomConstantSet(r, -5, 5))
+                .addMutation(new MutSRReplaceNode(set, r))
+                .addMutation(new MutSRSwapOrder(r))
+                .addMutation(new MutSRRemoveRoot(r))
+                .addMutation(new MutSRRemoveUnary(r))
 
                 .addNodeSet(TreeNodeSetFactory.Set.ALL.toString())
 
