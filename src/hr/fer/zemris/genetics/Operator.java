@@ -29,7 +29,10 @@ public abstract class Operator<T extends Operator> implements ISerializable {
     public boolean parse(String line) {
         String[] p = line.split(Utilities.PARSER_REGEX);
         if (p[0].equals(getName())) {
-            importance = Integer.parseInt(p[1]);
+            if (p.length > 1 && !p[1].isEmpty())
+                importance = Integer.parseInt(p[1]);
+            else
+                importance = 1;
             return true;
         }
         return false;
