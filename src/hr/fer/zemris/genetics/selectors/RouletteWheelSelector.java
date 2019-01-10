@@ -23,13 +23,18 @@ public class RouletteWheelSelector implements Selector {
 
     @Override
     public Parent[] selectParentsFrom(Genotype[] population) {
-        // Find the minimum fitness to correct the probability calculations (to correct negative fitnesses).
-        double min_fit = Utils.findLowest(population).getFitness();
-
-        // Calculate the total corrected fitness value (from now on: fitness value).
+        // Calculate the total absolute fitness value.
         double accumulator = 0;
         for (Genotype g : population) {
-            accumulator += g.getFitness() - min_fit;
+            accumulator += Double.isFinite(g.getFitness()) ? Math.abs(g.getFitness()) : 0;
+        }
+
+        if (accumulator == 0) { // If none is found, pick two at random.
+            int i1 = rand_.nextInt(population.length), i2 = rand_.nextInt(population.length);
+            return new Parent[]{
+                    new Parent(population[i1], i1),
+                    new Parent(population[i2], i2)
+            };
         }
 
         // Randomly select positions in the sum range.
@@ -41,21 +46,13 @@ public class RouletteWheelSelector implements Selector {
         Parent p2 = null;
         accumulator = 0;
         for (int i = 0; i < population.length; i++) {
-            if (p1 == null && val1 < accumulator) {
+            accumulator += Double.isFinite(population[i].getFitness()) ? Math.abs(population[i].getFitness()) : 0;
+            if (p1 == null && accumulator >= val1) {
                 p1 = new Parent(population[i], i);
             }
-            if (p2 == null && val2 < accumulator) {
+            if (p2 == null && accumulator >= val2) {
                 p2 = new Parent(population[i], i);
             }
-            accumulator += population[i].getFitness();
-        }
-
-        // Fix if the guessed values belong to the last unit.
-        if (p1 == null) {
-            p1 = new Parent(population[population.length - 1], population.length - 1);
-        }
-        if (p2 == null) {
-            p2 = new Parent(population[population.length - 1], population.length - 1);
         }
 
         return new Parent[]{p1, p2};
