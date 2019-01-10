@@ -38,13 +38,13 @@ public class GenerationTabooAlgorithm extends Algorithm {
         index[0] = 0;
 
         // Create the new population.
-        int size = population_.length;
-        population_ = new Genotype[size];
+        int pop_size = population_.length;
+        population_ = new Genotype[pop_size];
 
         // Save the queen.
         if (elitism_) {
             Genotype best = findBest(original_population);
-            population_[index[0]++] = best;
+            population_[index[0]++] = best.copy();
         }
 
         // Parallelised work.
@@ -61,13 +61,12 @@ public class GenerationTabooAlgorithm extends Algorithm {
                 for (int i = 0; i < taboo_attempts_; i++) {
                     if (!tabu_list_.contains(child.serialize())) {
                         // Update taboo list.
-                        tabu_list_.add(child.serialize());
+                        tabu_list_.addLast(child.serialize());
                         if (tabu_list_.size() > taboo_size_) {
                             tabu_list_.removeFirst();
                         }
                         break;
                     }
-
                     getRandomMutation().mutate(child);
                 }
             }
@@ -82,12 +81,12 @@ public class GenerationTabooAlgorithm extends Algorithm {
         };
 
         // Replace the whole population with children.
-        for (int i = elitism_ ? 1 : 0; i < size; i++) {
+        for (int i = elitism_ ? 1 : 0; i < pop_size; i++) {
             work_arbiter_.postWork(work);
         }
 
         // Wait for all work to be done.
-        work_arbiter_.waitOn(() -> index[0] == size);
+        work_arbiter_.waitOn(() -> index[0] == pop_size);
     }
 
     public static class Builder extends Algorithm.Builder {
