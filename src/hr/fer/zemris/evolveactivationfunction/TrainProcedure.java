@@ -26,6 +26,7 @@ import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 
 import java.io.IOException;
+import java.nio.DoubleBuffer;
 import java.util.Random;
 
 /**
@@ -124,6 +125,7 @@ public class TrainProcedure {
         MultiLayerNetwork m = model.getModel();
         m.init();
         final Stopwatch timer = new Stopwatch();
+        final boolean[] running_good = {true};
 
         if (stats_storage != null) {
             m.addListeners(new StatsListener(stats_storage));
@@ -133,7 +135,10 @@ public class TrainProcedure {
 
             @Override
             public void iterationDone(org.deeplearning4j.nn.api.Model model, int iteration, int epoch) {
-                if (epoch != last_epoch_) {
+                if (!Double.isFinite(model.score())) { // End training if network misbehaves.
+                    running_good[0] = false;
+                }
+                if (epoch != last_epoch_ || !running_good[0]) { // For each epoch or when network misbehaves.
                     last_epoch_ = epoch;
                     log.d("Epoch " + (epoch + 1) + " has loss: " + model.score() + "   (" + Utilities.formatMiliseconds(timer.lap()) + ")");
                 }
@@ -152,7 +157,7 @@ public class TrainProcedure {
 
         timer.start();
         DataSetIterator iter = new TestDataSetIterator(set, params_.batch_size());
-        for (int i = 0; i < params_.epochs_num(); i++) {
+        for (int i = 0; i < params_.epochs_num() && running_good[0]; i++) {
             if (params_.shuffle_batches()) {
                 set.shuffle(random.nextLong());
             }
