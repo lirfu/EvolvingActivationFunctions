@@ -46,8 +46,8 @@ public class ViewActivationFunction {
             legend.append("\nf").append(++i).append(": ").append(t.serialize()).append("  (").append(t.getFitness()).append(')');
 
         // Display.
-        MultiLinearGraph g_best = drawFunctions(-5, 5, 0.1, best);
-        MultiLinearGraph g_top = drawFunctions(-5, 5, 0.1, top);
+        MultiLinearGraph g_best = drawFunctions(-3, 3, 0.001, best);
+        MultiLinearGraph g_top = drawFunctions(-3, 3, 0.001, top);
 
 //        new Window(new VerticalContainer(
 //                new Row(g_best),
@@ -55,7 +55,7 @@ public class ViewActivationFunction {
 //                new Row(new EmptySpace(), new Label("Legend", legend.toString()))
 //        ), true, true);
 
-        return new BufferedImage[]{g_best.getImage(new Dimension(1000, 600)), g_top.getImage(new Dimension(1000, 600))};
+        return new BufferedImage[]{g_best.getImage(new Dimension(2000, 1200)), g_top.getImage(new Dimension(2000, 1200))};
     }
 
     public static MultiLinearGraph drawFunctions(double min, double max, double delta, SymbolicTree<INDArray, INDArray>... trees) {
@@ -68,7 +68,7 @@ public class ViewActivationFunction {
         // Create the graph.
         MultiLinearGraph g = new MultiLinearGraph(
                 (trees.length > 1 ? "Top " + trees.length + " results" : "Top result"), size, names);
-        g.setMinX(min).setMaxX(max);
+        g.setMinX(min).setMaxX(max).setShowDots(false);
         // Calculate values and populate graph.
         for (double x = min; x <= max; x += delta) {
             double[] data = new double[size];

@@ -1,11 +1,13 @@
 package hr.fer.zemris.evolveactivationfunction.activationfunction;
 
 import hr.fer.zemris.evolveactivationfunction.*;
+import hr.fer.zemris.evolveactivationfunction.nodes.ConstNode;
 import hr.fer.zemris.genetics.*;
 import hr.fer.zemris.genetics.algorithms.GenerationTabooAlgorithm;
 import hr.fer.zemris.genetics.selectors.RouletteWheelSelector;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
 import hr.fer.zemris.genetics.symboregression.SRGenericInitializer;
+import hr.fer.zemris.genetics.symboregression.TreeNode;
 import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import hr.fer.zemris.genetics.symboregression.crx.CrxSRMeanConstants;
 import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapConstants;
@@ -34,7 +36,21 @@ public class EvolvingActivationDemo {
         // Set double precision globally.
         Nd4j.setDataType(DataBuffer.Type.DOUBLE);
         Random r = new Random(42);
-        TreeNodeSet set = new TreeNodeSet(r);
+        TreeNodeSet set = new TreeNodeSet(r){
+            @Override
+            public TreeNode getNode(String node_name) {
+                TreeNode node = super.getNode(node_name);
+                if (node == null) {
+                    try {
+                        Double val = Double.parseDouble(node_name);
+                        node = new ConstNode();
+                        node.setExtra(val);
+                    } catch (NumberFormatException e) {
+                    }
+                }
+                return node;
+            }
+        };
         // Define initializer
         Initializer initializer = new SRGenericInitializer(set, 4);
         // Initialize params class for parsing.
@@ -80,6 +96,17 @@ public class EvolvingActivationDemo {
 
         // Retrain best and store results.
         DerivableSymbolicTree best = (DerivableSymbolicTree) algo.getBest();
+
+        // Manual results in case of error.
+//        DerivableSymbolicTree best = new DerivableSymbolicTree(SymbolicTree.parse("min[x,sin[gauss[1.0]]]", set));
+//        Genotype[] population = {
+//                best.setFitness(-0.9312078459207975),
+//                new DerivableSymbolicTree(SymbolicTree.parse("-[gauss[max[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[-[gauss[-[sigm[/[tan[tan[/[tan[^3[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]]]]]],x]]],x]],sigm[-[tan[/[tan[^3[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]],x]]]],x]", set)).setFitness(-0.6326136032829283),
+//                new DerivableSymbolicTree(SymbolicTree.parse("-[gauss[max[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[-[gauss[-[sigm[/[tan[tan[/[tan[^3[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]]]]]],x]]],x]],sigm[-[gauss[-[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[0.5055265383772962]]]]]]]],x]]]],x]", set)).setFitness(-0.6278754377157357),
+//                new DerivableSymbolicTree(SymbolicTree.parse("-[gauss[max[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[-[gauss[-[sigm[/[tan[tan[/[tan[^3[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]]]]]],x]]],x]],sigm[-[gauss[-[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[-4.6417928159410815]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]],x]", set)).setFitness(-0.6111795023258811),
+//                new DerivableSymbolicTree(SymbolicTree.parse("-[gauss[max[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[-[gauss[-[sigm[/[tan[tan[/[tan[^3[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]]]]]],x]]],x]],sigm[-[gauss[-[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[^2[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]],x]", set)).setFitness(-0.5956458662683258),
+//        };
+
         evo_logger.i("=====> Retraining best: " + best + "  (" + best.getFitness() + ")");
         best.setResult(null);  // Do this for unknown reasons (dl4j serialization error otherwise).
 

@@ -11,7 +11,7 @@ import org.nd4j.linalg.factory.Nd4j;
 public class DerivableSymbolicTree extends SymbolicTree<INDArray, INDArray> {
     private Pair<ModelReport, INDArray> result_;
 
-    private DerivableSymbolicTree(SymbolicTree<INDArray, INDArray> tree) {
+    public DerivableSymbolicTree(SymbolicTree<INDArray, INDArray> tree) {
         super(tree);
     }
 

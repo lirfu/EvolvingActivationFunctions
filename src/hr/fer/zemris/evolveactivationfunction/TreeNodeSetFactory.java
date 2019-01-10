@@ -209,7 +209,7 @@ public class TreeNodeSetFactory {
             public DerivableNode[] list() {
                 LinkedList<DerivableNode> nodes = new LinkedList<>();
                 for (Set s : Set.values()) {
-                    if (s.list().length > 1) continue;
+                    if (s.equals(ALL) || s.list().length > 1) continue;
                     nodes.add(s.list()[0]);
                 }
                 return nodes.toArray(new DerivableNode[]{});
