@@ -9,11 +9,11 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class TreeNodeSetFactory {
-    public TreeNodeSet build(Random r, String... set_names) {
+    public static TreeNodeSet build(Random r, String... set_names) {
         LinkedList<Set> sets = new LinkedList<>();
         for (String s : set_names) {
             try {
-                sets.add(Set.valueOf(s));
+                sets.add(Set.valueOf(s.toUpperCase()));
             } catch (IllegalArgumentException e) {
                 System.err.println("Unknown set: " + s);
             }
@@ -21,7 +21,7 @@ public class TreeNodeSetFactory {
         return build(r, sets.toArray(new Set[]{}));
     }
 
-    public TreeNodeSet build(Random r, Set... use_sets) {
+    public static TreeNodeSet build(Random r, Set... use_sets) {
         TreeNodeSet set = new TreeNodeSet(r) { // Modify const as a special case.
             @Override
             public TreeNode getNode(String node_name) {
@@ -54,71 +54,90 @@ public class TreeNodeSetFactory {
     }
 
     public enum Set implements Listable<DerivableNode> {
-        /**
-         * Constructs a list from all existing sets, with duplicates filtered out.
-         */
-        ALL {
+        /* PURE OP SETS */
+
+        ADD {
             @Override
             public DerivableNode[] list() {
-                LinkedList<DerivableNode> nodes = new LinkedList<>();
-                for (Set s : Set.values()) {
-                    if (s.equals(ALL)) continue;
-                    for (DerivableNode n : s.list())
-                        if (!nodes.contains(n))
-                            nodes.add(n);
-                }
-                return nodes.toArray(new DerivableNode[]{});
-            }
-
-            @Override
-            public String toString() {
-                return "ALL";
+                return new DerivableNode[]{new AddNode()};
             }
         },
-        ARITHMETICS {
+        SUB {
             @Override
             public DerivableNode[] list() {
-                return new DerivableNode[]{new AddNode(), new SubNode(), new MulNode(), new DivNode()};
-            }
-
-            @Override
-            public String toString() {
-                return "ARITHMETICS";
+                return new DerivableNode[]{new SubNode()};
             }
         },
-        MATHS {
+        MUL {
             @Override
             public DerivableNode[] list() {
-                return new DerivableNode[]{new MaxNode(), new MinNode()};
-            }
-
-            @Override
-            public String toString() {
-                return "MATHS";
+                return new DerivableNode[]{new MulNode()};
             }
         },
-        TRIGONOMETRY {
+        DIV {
             @Override
             public DerivableNode[] list() {
-                return new DerivableNode[]{new SinNode(), new CosNode(), new TanNode()};
-            }
-
-            @Override
-            public String toString() {
-                return "TRIGONOMETRY";
+                return new DerivableNode[]{new DivNode()};
             }
         },
-        EXPONENTIALS {
+        MIN {
             @Override
             public DerivableNode[] list() {
-                return new DerivableNode[]{
-                        new ExpNode(), new Pow2Node(), new Pow3Node(), new PowNode(), new LogNode()
-                };
+                return new DerivableNode[]{new MinNode()};
             }
-
+        },
+        MAX {
             @Override
-            public String toString() {
-                return "EXPONENTIALS";
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new MaxNode()};
+            }
+        },
+        SIN {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new SinNode()};
+            }
+        },
+        COS {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new CosNode()};
+            }
+        },
+        TAN {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new TanNode()};
+            }
+        },
+        EXP {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new ExpNode()};
+            }
+        },
+        POW2 {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new Pow2Node()};
+            }
+        },
+        POW3 {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new Pow3Node()};
+            }
+        },
+        POW {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new PowNode()};
+            }
+        },
+        LOG {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new LogNode()};
             }
         },
         CONSTANT {
@@ -126,21 +145,74 @@ public class TreeNodeSetFactory {
             public DerivableNode[] list() {
                 return new DerivableNode[]{new ConstNode()};
             }
-
+        },
+        RELU {
             @Override
-            public String toString() {
-                return "CONSTANT";
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new ReLUNode()};
+            }
+        },
+        SIGMOID {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new SigmoidNode()};
+            }
+        },
+        GAUSS {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{new GaussNode()};
+            }
+        },
+
+        /* PRE-MADE SETS */
+
+        ARITHMETICS {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{ADD.list()[0], SUB.list()[0], MUL.list()[0], DIV.list()[0]};
+            }
+        },
+        MATHS {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{MAX.list()[0], MIN.list()[0]};
+            }
+        },
+        TRIGONOMETRY {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{SIN.list()[0], COS.list()[0], TAN.list()[0]};
+            }
+        },
+        EXPONENTIALS {
+            @Override
+            public DerivableNode[] list() {
+                return new DerivableNode[]{EXP.list()[0], POW2.list()[0], POW3.list()[0], POW.list()[0], LOG.list()[0]
+                };
             }
         },
         ACTIVATIONS {
             @Override
             public DerivableNode[] list() {
-                return new DerivableNode[]{new ReLUNode(), new SigmoidNode(), new GaussNode()};
+                return new DerivableNode[]{RELU.list()[0], SIGMOID.list()[0], GAUSS.list()[0]};
             }
+        },
 
+        /* THE ALL SET */
+
+        /**
+         * Constructs a list from entries containing only one value (pure sets).
+         */
+        ALL {
             @Override
-            public String toString() {
-                return "ACTIVATIONS";
+            public DerivableNode[] list() {
+                LinkedList<DerivableNode> nodes = new LinkedList<>();
+                for (Set s : Set.values()) {
+                    if (s.list().length > 1) continue;
+                    nodes.add(s.list()[0]);
+                }
+                return nodes.toArray(new DerivableNode[]{});
             }
         }
     }

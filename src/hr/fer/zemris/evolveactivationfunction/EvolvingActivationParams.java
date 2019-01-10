@@ -1,19 +1,13 @@
 package hr.fer.zemris.evolveactivationfunction;
 
 import hr.fer.zemris.genetics.Crossover;
-import hr.fer.zemris.genetics.CrxReturnRandom;
 import hr.fer.zemris.genetics.Mutation;
-import hr.fer.zemris.genetics.Operator;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
-import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
-import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtree;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Utilities;
 
-import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Random;
 
 
 public class EvolvingActivationParams extends TrainParams {
