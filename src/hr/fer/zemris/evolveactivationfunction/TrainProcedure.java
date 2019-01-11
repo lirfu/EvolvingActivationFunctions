@@ -138,7 +138,7 @@ public class TrainProcedure {
                 if (!Double.isFinite(model.score())) { // End training if network misbehaves.
                     running_good[0] = false;
                 }
-                if (epoch != last_epoch_ || !running_good[0]) { // For each epoch or when network misbehaves.
+                if (epoch != last_epoch_) {
                     last_epoch_ = epoch;
                     log.d("Epoch " + (epoch + 1) + " has loss: " + model.score() + "   (" + Utilities.formatMiliseconds(timer.lap()) + ")");
                 }

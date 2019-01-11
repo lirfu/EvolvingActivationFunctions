@@ -7,6 +7,7 @@ import hr.fer.zemris.genetics.algorithms.GenerationTabooAlgorithm;
 import hr.fer.zemris.genetics.selectors.RouletteWheelSelector;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
 import hr.fer.zemris.genetics.symboregression.SRGenericInitializer;
+import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 import hr.fer.zemris.genetics.symboregression.TreeNode;
 import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import hr.fer.zemris.genetics.symboregression.crx.CrxSRMeanConstants;
@@ -36,7 +37,7 @@ public class EvolvingActivationDemo {
         // Set double precision globally.
         Nd4j.setDataType(DataBuffer.Type.DOUBLE);
         Random r = new Random(42);
-        TreeNodeSet set = new TreeNodeSet(r){
+        TreeNodeSet set = new TreeNodeSet(r) {
             @Override
             public TreeNode getNode(String node_name) {
                 TreeNode node = super.getNode(node_name);
@@ -45,26 +46,25 @@ public class EvolvingActivationDemo {
                         Double val = Double.parseDouble(node_name);
                         node = new ConstNode();
                         node.setExtra(val);
-                    } catch (NumberFormatException e) {
+                    } catch (NumberFormatException ignore) {
                     }
                 }
                 return node;
             }
         };
         // Define initializer
-        Initializer initializer = new SRGenericInitializer(set, 4);
+        SRGenericInitializer initializer = new SRGenericInitializer(set, 5);
         // Initialize params class for parsing.
         EvolvingActivationParams.initialize(new ISerializable[]{
                 new CrxReturnRandom(r), new CrxSRSwapSubtrees(r), new CrxSRSwapConstants(r), new CrxSRMeanConstants(r),
                 new CrxSRSwapNodes(r),
                 new MutSRInsertTerminal(set, r), new MutSRInsertRoot(set, r), new MutSRReplaceNode(set, r),
-                new MutSRSwapOrder(r), new MutSRReplaceSubtree(set, initializer, r), new MutInitialize(initializer),
+                new MutSRSwapOrder(r), new MutSRReplaceSubtree(set, initializer, r), new MutInitialize<>(initializer),
                 new MutSRRandomConstantSet(r, 0, 1), new MutSRRandomConstantSetInt(r, 0, 1),
                 new MutSRRandomConstantAdd(r, 1), new MutSRRemoveRoot(r), new MutSRRemoveUnary(r)
         });
         // Build or load the params.
         EvolvingActivationParams params;
-        TrainProcedure train_proc;
         Context c;
         if (args.length == 0 || !new File(args[0]).exists()) {
             params = create_params(DATASET_PATH, r, set);
@@ -76,7 +76,7 @@ public class EvolvingActivationDemo {
         set.load(TreeNodeSetFactory.build(new Random(params.seed()), params.node_set()));
 
         // Define the training procedure.
-        train_proc = new TrainProcedure(params);
+        TrainProcedure train_proc = new TrainProcedure(params);
         c = train_proc.createContext(params.experiment_name());
 
         // Store params to experiment result folder.
@@ -118,8 +118,9 @@ public class EvolvingActivationDemo {
         List<Genotype> l = Arrays.asList(population);
         l.sort(Comparator.comparing(Genotype::getFitness));
 
-        evo_logger.d("Done!\n");
+        evo_logger.i("Done!\n");
         evo_logger.i("=====> Final best: \n" + best + "  (" + best.getFitness() + ")");
+        evo_logger.i(result.getKey().serialize());
 
         // Extract tops to display
         int top_num = Math.min(5, l.size());
