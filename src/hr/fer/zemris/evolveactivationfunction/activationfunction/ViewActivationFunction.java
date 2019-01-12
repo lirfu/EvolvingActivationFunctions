@@ -6,6 +6,8 @@ import com.lirfu.lirfugraph.Window;
 import com.lirfu.lirfugraph.components.EmptySpace;
 import com.lirfu.lirfugraph.components.Label;
 import com.lirfu.lirfugraph.graphs.MultiLinearGraph;
+import com.lirfu.lirfugraph.themes.DarkTheme;
+import com.lirfu.lirfugraph.themes.LightTheme;
 import hr.fer.zemris.evolveactivationfunction.TreeNodeSetFactory;
 import hr.fer.zemris.genetics.Utils;
 import hr.fer.zemris.genetics.symboregression.SymbolicTree;
@@ -69,6 +71,7 @@ public class ViewActivationFunction {
         MultiLinearGraph g = new MultiLinearGraph(
                 (trees.length > 1 ? "Top " + trees.length + " results" : "Top result"), size, names);
         g.setMinX(min).setMaxX(max).setShowDots(false);
+        g.setTheme(new LightTheme());
         // Calculate values and populate graph.
         for (double x = min; x <= max; x += delta) {
             double[] data = new double[size];
