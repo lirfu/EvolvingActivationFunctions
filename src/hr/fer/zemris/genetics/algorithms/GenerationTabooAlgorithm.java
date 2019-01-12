@@ -49,34 +49,40 @@ public class GenerationTabooAlgorithm extends Algorithm {
 
         // Parallelised work.
         Work work = () -> {
-            // Select parents from original population.
-            Selector.Parent[] parents = selector_.selectParentsFrom(original_population);
-            // Process child.
-            Genotype child = getRandomCrossover().cross(parents[0].getGenotype(), parents[1].getGenotype());
-            if (Utils.willOccur(mut_prob_, random_)) {
-                getRandomMutation().mutate(child);
-            }
-            // Try fixing a taboo child by mutating.
-            synchronized (tabu_list_) {
-                for (int i = 0; i < taboo_attempts_; i++) {
-                    if (!tabu_list_.contains(child.serialize())) {
-                        // Update taboo list.
-                        tabu_list_.addLast(child.serialize());
-                        if (tabu_list_.size() > taboo_size_) {
-                            tabu_list_.removeFirst();
-                        }
-                        break;
-                    }
+            Genotype child = null;
+            try {
+                // Select parents from original population.
+                Selector.Parent[] parents = selector_.selectParentsFrom(original_population);
+                // Process child.
+                child = getRandomCrossover().cross(parents[0].getGenotype(), parents[1].getGenotype());
+                if (Utils.willOccur(mut_prob_, random_)) {
                     getRandomMutation().mutate(child);
                 }
-            }
-            // Evaluate.
-            child.evaluate(evaluator_);
-
-            synchronized (index) {
-                // Store the child to current index.
-                population_[index[0]] = child;
-                index[0]++;
+                // Try fixing a taboo child by mutating.
+                synchronized (tabu_list_) {
+                    for (int i = 0; i < taboo_attempts_; i++) {
+                        if (!tabu_list_.contains(child.serialize())) {
+                            // Update taboo list.
+                            tabu_list_.addLast(child.serialize());
+                            if (tabu_list_.size() > taboo_size_) {
+                                tabu_list_.removeFirst();
+                            }
+                            break;
+                        }
+                        getRandomMutation().mutate(child);
+                    }
+                }
+                // Evaluate.
+                child.evaluate(evaluator_);
+            } catch (Exception | Error e) {
+                log_.e(e.toString());
+                child = null;
+            } finally { // Ensure no dead-locks.
+                synchronized (index) {
+                    // Store the child to current index.
+                    population_[index[0]] = child;
+                    index[0]++;
+                }
             }
         };
 
