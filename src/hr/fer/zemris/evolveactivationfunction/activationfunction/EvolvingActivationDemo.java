@@ -86,6 +86,7 @@ public class EvolvingActivationDemo {
         /* NEUROEVOLUTION */
         ILogger evo_logger = new MultiLogger(StorageManager.createEvolutionLogger(c), new StdoutLogger());
         evo_logger.d("===> Parameters:\n" + params.serialize());
+        evo_logger.i("===> Dataset distributions:\n" + train_proc.describeDatasets());
 
         SREvaluator evaluator = new SREvaluator(train_proc, params.architecture(), evo_logger, true);
 

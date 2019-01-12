@@ -27,6 +27,8 @@ import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 
 import java.io.IOException;
 import java.nio.DoubleBuffer;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Random;
 
 /**
@@ -105,6 +107,37 @@ public class TrainProcedure {
             norm_.transform(test_set_);
         }
         params_ = params;
+    }
+
+    public String describeDatasets() {
+        int[] labels = new int[train_set_.numOutcomes()];
+        for (int i = 0; i < labels.length; i++)
+            labels[i] = i;
+
+        int[] total_labels = new int[train_set_.numOutcomes()];
+
+        int[] train_labels = new int[train_set_.numOutcomes()];
+        INDArray arr = train_set_.getLabels().argMax(1);
+        for (int i = 0; i < train_set_.numExamples(); i++) {
+            int l = arr.getInt(i);
+            train_labels[l]++;
+            total_labels[l]++;
+        }
+
+        int[] test_labels = new int[test_set_.numOutcomes()];
+        arr = test_set_.getLabels().argMax(1);
+        for (int i = 0; i < test_set_.numExamples(); i++) {
+            int l = arr.getInt(i);
+            test_labels[l]++;
+            total_labels[l]++;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("  Classes: ").append(Arrays.toString(labels)).append('\n');
+        sb.append("Train set: ").append(Arrays.toString(train_labels)).append('\n');
+        sb.append(" Test set: ").append(Arrays.toString(test_labels)).append('\n');
+        sb.append("    Total: ").append(Arrays.toString(total_labels)).append('\n');
+        return sb.toString();
     }
 
     public Context createContext(String experiment_name) {
