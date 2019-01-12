@@ -21,7 +21,7 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
     private ILogger log_;
 
     private boolean use_memory_;
-    private HashMap<String, Double> memory = new HashMap<>();
+    private final HashMap<String, Double> memory = new HashMap<>();
 
     public SREvaluator(TrainProcedure template_procedure, int[] architecture, ILogger log) {
         tmpl_procedure_ = template_procedure;
@@ -45,17 +45,20 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
 
         CommonModel model = buildModelFrom(g);
         Pair<ModelReport, INDArray> res = evaluateModel(model, null);
-        g.setResult(res);
 
-        fitness = res.getKey().f1();
+        fitness = -res.getKey().f1(); // Negative is for minimization.
+
         if (!Double.isFinite(fitness)) {
             fitness = 0.;
         }
 
-        if (use_memory_)
-            memory.put(s, fitness);
+        if (use_memory_) {
+            synchronized (memory) {
+                memory.put(s, fitness);
+            }
+        }
 
-        return -fitness;
+        return fitness;
     }
 
     public CommonModel buildModelFrom(DerivableSymbolicTree g) {
