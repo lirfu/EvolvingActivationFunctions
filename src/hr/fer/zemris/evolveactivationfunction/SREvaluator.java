@@ -39,6 +39,7 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
         Double fitness;
         String s = g.serialize();
         if (use_memory_ && (fitness = memory.get(s)) != null) {
+            log_.i("Re-using stored fitness for: " + g);
             return fitness;
         }
 
@@ -50,7 +51,9 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
         if (!Double.isFinite(fitness)) {
             fitness = 0.;
         }
-        memory.put(s, fitness);
+
+        if (use_memory_)
+            memory.put(s, fitness);
 
         return -fitness;
     }

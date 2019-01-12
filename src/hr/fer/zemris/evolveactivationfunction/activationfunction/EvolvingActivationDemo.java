@@ -86,7 +86,7 @@ public class EvolvingActivationDemo {
         ILogger evo_logger = new MultiLogger(StorageManager.createEvolutionLogger(c), new StdoutLogger());
         evo_logger.d("=====> Parameters:\n" + params.serialize());
 
-        SREvaluator evaluator = new SREvaluator(train_proc, params.architecture(), evo_logger);
+        SREvaluator evaluator = new SREvaluator(train_proc, params.architecture(), evo_logger, true);
 
         // Build and run the algorithm.
         Algorithm algo = buildAlgorithm(params, c, train_proc, set, initializer, evaluator, r, evo_logger);
