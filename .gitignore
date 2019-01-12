@@ -1,6 +1,7 @@
 # Idea files
 .idea
 target
+META-INF
 
 # Resources, temporaries, etc.
 res
@@ -8,3 +9,7 @@ tmp
 sol
 test/gen
 out
+
+# DL4J memory crash dumps
+dl4j-memory-crash-dump*
+
