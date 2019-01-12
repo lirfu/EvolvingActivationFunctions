@@ -189,8 +189,8 @@ public abstract class Algorithm {
     private void updateOptimaList() {
         if (top_optima_num_ > 0) {
             for (Genotype g : population_) {
-                // If this is unique or list is empty.
-                if (optima_list_.isEmpty() || g.compareTo((double) optima_list_.getLast().getExtra()) < 0) {
+                // If list isn't filled yet or is better then last.
+                if (optima_list_.size() < top_optima_num_ || g.compareTo((double) optima_list_.getLast().getExtra()) < 0) {
                     String serial = g.serialize();
                     boolean unique = true;
                     for (Triple<Long, String, Double> opt : optima_list_) {
@@ -199,7 +199,7 @@ public abstract class Algorithm {
                             break;
                         }
                     }
-                    if (unique)
+                    if (unique) // Don't repeat results.
                         optima_list_.add(new Triple<>(iterations_, g.serialize(), g.fitness_));
                 }
             }
