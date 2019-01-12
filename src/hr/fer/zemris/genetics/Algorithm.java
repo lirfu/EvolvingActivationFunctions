@@ -1,7 +1,7 @@
 package hr.fer.zemris.genetics;
 
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
-import hr.fer.zemris.utils.Pair;
+import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
@@ -10,6 +10,7 @@ import hr.fer.zemris.utils.threading.WorkArbiter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -24,7 +25,8 @@ public abstract class Algorithm {
     protected final int population_size_;
     private final Initializer initializer_;
     private final StopCondition condition_;
-    private final Genotype genotype_template_;
+    private Genotype genotype_template_;
+    private final int top_optima_num_;
     // Algorithm internal utilities.
     protected final Random random_;
     protected final ILogger log_;
@@ -32,13 +34,13 @@ public abstract class Algorithm {
     // Algorithm internal variables.
     private long iterations_;
     private long elapsed_time_;
-    private final LinkedList<Pair<Long, Genotype>> optimum_history_list_;
+    private final LinkedList<Triple<Long, String, Double>> optima_list_;
     private Genotype best_unit_;
     private long best_iteration_;
 
     private Algorithm(ArrayList<Crossover> crossovers, ArrayList<Mutation> mutations, Genotype genotype_template,
                       AEvaluator evaluator, Selector selector, Initializer initializer, StopCondition condition, int population_size,
-                      double mut_prob, int worker_number, ILogger logger, Random random) {
+                      double mut_prob, int top_optima_num, int worker_number, ILogger logger, Random random) {
         selector_ = selector;
         evaluator_ = evaluator;
         initializer_ = initializer;
@@ -49,8 +51,9 @@ public abstract class Algorithm {
         condition_ = condition;
         population_size_ = population_size;
         mut_prob_ = mut_prob;
+        top_optima_num_ = top_optima_num;
 
-        optimum_history_list_ = new LinkedList<>();
+        optima_list_ = new LinkedList<>();
         random_ = random;
         log_ = logger;
         work_arbiter_ = new WorkArbiter("Algorithm", worker_number);
@@ -67,8 +70,9 @@ public abstract class Algorithm {
         condition_ = a.condition_;
         population_size_ = a.population_size_;
         mut_prob_ = a.mut_prob_;
+        top_optima_num_ = a.top_optima_num_;
 
-        optimum_history_list_ = a.optimum_history_list_;
+        optima_list_ = a.optima_list_;
         random_ = a.random_;
         log_ = a.log_;
         work_arbiter_ = new WorkArbiter(a.work_arbiter_.getName(), a.work_arbiter_.getWorkerNumber());
@@ -88,11 +92,17 @@ public abstract class Algorithm {
             synchronized (index) {
                 i = index[0]++;
             }
-            population_[i] = genotype_template_.copy();
-            initializer_.initialize(population_[i]);
-            population_[i].evaluate(evaluator_);
-            synchronized (index) {
-                index[1]++;
+            try {
+                population_[i] = genotype_template_.copy();
+                initializer_.initialize(population_[i]);
+                population_[i].evaluate(evaluator_);
+            } catch (Exception | Error e) {
+                log_.e(e.toString());
+                population_[i] = null;
+            } finally { // Ensure no dead-locks.
+                synchronized (index) {
+                    index[1]++;
+                }
             }
         };
 
@@ -101,17 +111,26 @@ public abstract class Algorithm {
         }
 
         work_arbiter_.waitOn(() -> index[1] == population_size_);
+
+        // Release template (not needed any more).
+        genotype_template_ = null;
     }
 
-    public Genotype[] run() {
-        return run(new LogParams());
+    /**
+     * @throws NullPointerException - if an error occurred in worker and the population element becomes <code>null</code>.
+     */
+    public void run() throws NullPointerException {
+        run(new LogParams());
     }
 
-    public Genotype[] run(@NotNull LogParams p) {
+    /**
+     * @throws NullPointerException - if an error occurred in worker and the population element becomes <code>null</code>.
+     */
+    public void run(@NotNull LogParams p) throws NullPointerException {
         // Clear internals.
         iterations_ = 0;
         elapsed_time_ = 0;
-        optimum_history_list_.clear();
+        optima_list_.clear();
         best_unit_ = null;
         best_iteration_ = 0;
         long startingTime = System.currentTimeMillis();
@@ -122,7 +141,7 @@ public abstract class Algorithm {
         // Find the initial best.
         best_unit_ = findBest(population_).copy();
         best_iteration_ = iterations_;
-        optimum_history_list_.add(new Pair<>(iterations_, best_unit_.copy()));
+        optima_list_.add(new Triple<>(iterations_, best_unit_.serialize(), best_unit_.fitness_));
         log_.i("===> Done! (" + Utilities.formatMiliseconds(System.currentTimeMillis() - startingTime) + ")\n");
 
         log_.i("===> Starting algorithm with population of " + population_size_ + " units!\n");
@@ -154,8 +173,8 @@ public abstract class Algorithm {
             }
 
             // Update internals;
-            optimum_history_list_.add(new Pair<>(iterations_, best.copy()));
             elapsed_time_ = System.currentTimeMillis() - startingTime;
+
         }
 
         log_.i("===> Algorithm ended!");
@@ -165,8 +184,29 @@ public abstract class Algorithm {
         if (p.print_population_) {
             log_.d(getPopulationReport());
         }
+    }
 
-        return population_;
+    private void updateOptimaList() {
+        if (top_optima_num_ > 0) {
+            for (Genotype g : population_) {
+                // If this is unique or list is empty.
+                if (g.compareTo((double) optima_list_.getLast().getExtra()) < 0 || optima_list_.isEmpty()) {
+                    String serial = g.serialize();
+                    boolean add = true;
+                    for (Triple<Long, String, Double> opt : optima_list_) {
+                        if (opt.getVal().equals(serial)) {
+                            add = false;
+                            break;
+                        }
+                    }
+                    optima_list_.add(new Triple<>(iterations_, g.serialize(), g.fitness_));
+                }
+            }
+            Collections.sort(optima_list_, (x, y) -> (int) Math.signum(x.getExtra() - y.getExtra())); // Best first.
+            for (int i = 0; i < optima_list_.size() - top_optima_num_; i++) { // Remove worst.
+                optima_list_.removeLast();
+            }
+        }
     }
 
     private String getReport(Genotype best) {
@@ -211,8 +251,8 @@ public abstract class Algorithm {
         return iterations_;
     }
 
-    public LinkedList<Pair<Long, Genotype>> optimum_history_list() {
-        return optimum_history_list_;
+    public LinkedList<Triple<Long, String, Double>> optimum_history_list() {
+        return optima_list_;
     }
 
     public Genotype getBest() {
@@ -229,7 +269,7 @@ public abstract class Algorithm {
                 Utils.findHighest(population_).getFitness(),
                 Utils.calculateAverage(population_),
                 Utils.calculateRelativeStandardDeviation(population_),
-                elapsed_time_, optimum_history_list_);
+                elapsed_time_, optima_list_);
     }
 
     /* INTERNAL CLASSES */
@@ -262,6 +302,7 @@ public abstract class Algorithm {
         private AEvaluator evaluator_;
         private Integer pop_size_;
         private double mut_prob_ = 0;
+        private int top_optima_num_ = 0;
 
         private StopCondition condition_;
         private Selector selector_;
@@ -287,7 +328,7 @@ public abstract class Algorithm {
             if (workers_num_ < 1)
                 throw new IllegalStateException("Must have at least 1 worker!");
 
-            return new Algorithm(crossovers_, mutations_, genotype_temp_, evaluator_, selector_, initializer_, condition_, pop_size_, mut_prob_, workers_num_, logger_, random_) {
+            return new Algorithm(crossovers_, mutations_, genotype_temp_, evaluator_, selector_, initializer_, condition_, pop_size_, mut_prob_, top_optima_num_, workers_num_, logger_, random_) {
                 @Override
                 protected void runIteration() {
                     throw new IllegalStateException("Method runIteration() not implemented!");
@@ -307,6 +348,11 @@ public abstract class Algorithm {
 
         public Builder setMutationProbability(double probability) {
             mut_prob_ = probability;
+            return this;
+        }
+
+        public Builder setTopOptimaNumber(int number) {
+            top_optima_num_ = number;
             return this;
         }
 

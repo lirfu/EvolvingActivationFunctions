@@ -24,9 +24,18 @@ public abstract class Genotype<T> implements Comparable<Genotype<T>>, ISerializa
         return fitness_;
     }
 
+    public final Genotype<T> setFitness(double fitness) {
+        fitness_ = fitness;
+        return this;
+    }
+
     @Override
     public int compareTo(@NotNull Genotype<T> g) {
         return (int) Math.signum(fitness_ - g.fitness_);
+    }
+
+    public int compareTo(double fitness) {
+        return (int) Math.signum(fitness_ - fitness);
     }
 
     /* ABSTRACT METHODS */

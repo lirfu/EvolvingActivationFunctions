@@ -1,6 +1,7 @@
 package hr.fer.zemris.genetics;
 
 import hr.fer.zemris.utils.Pair;
+import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.Utilities;
 
 import java.util.LinkedList;
@@ -14,9 +15,10 @@ public class Result {
     private long iterations;
     private long evaluations;
     private long elapsed_time;
-    private LinkedList<Pair<Long, Genotype>> optimumHistory;
+    private LinkedList<Triple<Long, String, Double>> optimumHistory;
 
-    Result(Genotype best, long iterations, long evaluations, double min, double max, double avg, double relstddev, long elapsed_time, LinkedList<Pair<Long, Genotype>> optimumHistory) {
+    Result(Genotype best, long iterations, long evaluations, double min, double max, double avg, double relstddev, long elapsed_time,
+           LinkedList<Triple<Long, String, Double>> optimumHistory) {
         this.best = best;
         this.evaluations = evaluations;
         this.iterations = iterations;
@@ -60,7 +62,7 @@ public class Result {
         return relstddev;
     }
 
-    public LinkedList<Pair<Long, Genotype>> getOptimumHistory() {
+    public LinkedList<Triple<Long, String, Double>> getOptimumHistory() {
         return optimumHistory;
     }
 

@@ -10,6 +10,8 @@ import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapNodes;
 import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtrees;
 import hr.fer.zemris.genetics.symboregression.mut.*;
 import hr.fer.zemris.genetics.symboregression.nodes.ConstNode;
+import hr.fer.zemris.utils.Pair;
+import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.LogLevel;
 import hr.fer.zemris.utils.logs.StdoutLogger;
@@ -55,6 +57,7 @@ public class SymbolicRegressionDemo {
                 .setLogger(logger)
                 .setPopulationSize(50)
                 .setMutationProbability(0.3)
+                .setTopOptimaNumber(5)
                 .setStopCondition(cond)
                 .setNumberOfWorkers(4)
                 // Problem specific params.
@@ -89,6 +92,11 @@ public class SymbolicRegressionDemo {
 
         SymbolicTree best = (SymbolicTree) algo.getBest();
         System.out.println("Final result: " + best + "   (" + best.getFitness() + ")");
+
+        System.out.println("Top 5 results:");
+        for (Triple<Long, String, Double> g : algo.getResultBundle().getOptimumHistory()) {
+            System.out.println(g.getKey() + ". " + g.getVal() + "   (" + g.getExtra() + ")");
+        }
 
         System.out.println("Done!");
     }
