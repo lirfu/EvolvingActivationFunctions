@@ -141,7 +141,7 @@ public abstract class Algorithm {
         // Find the initial best.
         best_unit_ = findBest(population_).copy();
         best_iteration_ = iterations_;
-        optima_list_.add(new Triple<>(iterations_, best_unit_.serialize(), best_unit_.fitness_));
+        updateOptimaList();
         log_.i("===> Done! (" + Utilities.formatMiliseconds(System.currentTimeMillis() - startingTime) + ")\n");
 
         log_.i("===> Starting algorithm with population of " + population_size_ + " units!\n");
@@ -174,7 +174,7 @@ public abstract class Algorithm {
 
             // Update internals;
             elapsed_time_ = System.currentTimeMillis() - startingTime;
-
+            updateOptimaList();
         }
 
         log_.i("===> Algorithm ended!");
@@ -190,16 +190,17 @@ public abstract class Algorithm {
         if (top_optima_num_ > 0) {
             for (Genotype g : population_) {
                 // If this is unique or list is empty.
-                if (g.compareTo((double) optima_list_.getLast().getExtra()) < 0 || optima_list_.isEmpty()) {
+                if (optima_list_.isEmpty() || g.compareTo((double) optima_list_.getLast().getExtra()) < 0) {
                     String serial = g.serialize();
-                    boolean add = true;
+                    boolean unique = true;
                     for (Triple<Long, String, Double> opt : optima_list_) {
                         if (opt.getVal().equals(serial)) {
-                            add = false;
+                            unique = false;
                             break;
                         }
                     }
-                    optima_list_.add(new Triple<>(iterations_, g.serialize(), g.fitness_));
+                    if (unique)
+                        optima_list_.add(new Triple<>(iterations_, g.serialize(), g.fitness_));
                 }
             }
             Collections.sort(optima_list_, (x, y) -> (int) Math.signum(x.getExtra() - y.getExtra())); // Best first.
