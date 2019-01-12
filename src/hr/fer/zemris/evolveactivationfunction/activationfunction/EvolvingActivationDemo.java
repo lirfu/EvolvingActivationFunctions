@@ -18,6 +18,7 @@ import hr.fer.zemris.genetics.symboregression.mut.*;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Pair;
+import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
@@ -84,30 +85,36 @@ public class EvolvingActivationDemo {
 
         /* NEUROEVOLUTION */
         ILogger evo_logger = new MultiLogger(StorageManager.createEvolutionLogger(c), new StdoutLogger());
-        evo_logger.d("=====> Parameters:\n" + params.serialize());
+        evo_logger.d("===> Parameters:\n" + params.serialize());
 
         SREvaluator evaluator = new SREvaluator(train_proc, params.architecture(), evo_logger, true);
 
         // Build and run the algorithm.
         Algorithm algo = buildAlgorithm(params, c, train_proc, set, initializer, evaluator, r, evo_logger);
-        Genotype[] population = algo.run(new Algorithm.LogParams(false, true));
+
+        try {
+            algo.run(new Algorithm.LogParams(false, true));
+        } catch (NullPointerException e) {
+            // Use results from previous iteration (is they exist).
+        }
 
         /* RESULTS */
 
         // Retrain best and store results.
         DerivableSymbolicTree best = (DerivableSymbolicTree) algo.getBest();
 
-        // Manual results in case of error.
-//        DerivableSymbolicTree best = new DerivableSymbolicTree(SymbolicTree.parse("min[x,sin[gauss[1.0]]]", set));
+//        // Manual results in case of error.
+//        DerivableSymbolicTree best = new DerivableSymbolicTree(SymbolicTree.parse("", set)).setFitness(-0.);
 //        Genotype[] population = {
-//                best.setFitness(-0.9312078459207975),
-//                new DerivableSymbolicTree(SymbolicTree.parse("-[gauss[max[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[-[gauss[-[sigm[/[tan[tan[/[tan[^3[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]]]]]],x]]],x]],sigm[-[tan[/[tan[^3[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]],x]]]],x]", set)).setFitness(-0.6326136032829283),
-//                new DerivableSymbolicTree(SymbolicTree.parse("-[gauss[max[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[-[gauss[-[sigm[/[tan[tan[/[tan[^3[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]]]]]],x]]],x]],sigm[-[gauss[-[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[0.5055265383772962]]]]]]]],x]]]],x]", set)).setFitness(-0.6278754377157357),
-//                new DerivableSymbolicTree(SymbolicTree.parse("-[gauss[max[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[-[gauss[-[sigm[/[tan[tan[/[tan[^3[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]]]]]],x]]],x]],sigm[-[gauss[-[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[-4.6417928159410815]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]],x]", set)).setFitness(-0.6111795023258811),
-//                new DerivableSymbolicTree(SymbolicTree.parse("-[gauss[max[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[tan[sigm[-[gauss[-[sigm[/[tan[tan[/[tan[^3[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]]]]]],x]]],x]],sigm[-[gauss[-[sigm[/[tan[tan[/[tan[cos[tan[tan[tan[^2[sigm[3.032885906846367]]]]]]],x]]],x]],cos[tan[tan[tan[tan[sigm[3.032885906846367]]]]]]]],x]]]],x]", set)).setFitness(-0.5956458662683258),
+//                best,
+//                new DerivableSymbolicTree(SymbolicTree.parse("", set)).setFitness(-0.),
+//                new DerivableSymbolicTree(SymbolicTree.parse("", set)).setFitness(-0.),
+//                new DerivableSymbolicTree(SymbolicTree.parse("", set)).setFitness(-0.),
+//                new DerivableSymbolicTree(SymbolicTree.parse("", set)).setFitness(-0.),
+//                new DerivableSymbolicTree(SymbolicTree.parse("", set)).setFitness(-0.),
 //        };
 
-        evo_logger.i("=====> Retraining best: " + best + "  (" + best.getFitness() + ")");
+        evo_logger.i("===> Retraining best: " + best + "  (" + best.getFitness() + ")");
         best.setResult(null);  // Do this for unknown reasons (dl4j serialization error otherwise).
 
         CommonModel model = evaluator.buildModelFrom(best);
@@ -115,20 +122,18 @@ public class EvolvingActivationDemo {
         Pair<ModelReport, INDArray> result = evaluator.evaluateModel(model, StorageManager.createStatsLogger(c));
         train_proc.storeResults(model, c, result);
 
-        List<Genotype> l = Arrays.asList(population);
-        l.sort(Comparator.comparing(Genotype::getFitness));
-
         evo_logger.i("Done!\n");
-        evo_logger.i("=====> Final best: \n" + best + "  (" + best.getFitness() + ")");
+        evo_logger.i("===> Final best: \n" + best + "  (" + best.getFitness() + ")");
         evo_logger.i(result.getKey().serialize());
 
         // Extract tops to display
-        int top_num = Math.min(5, l.size());
-        evo_logger.i("=====> Top " + top_num + " functions: ");
-        DerivableSymbolicTree[] top = new DerivableSymbolicTree[top_num];
-        for (int i = 0; i < top_num; i++) {
-            top[i] = (DerivableSymbolicTree) l.get(i);
-            evo_logger.i("--> f" + (i + 1) + ": " + top[i].serialize() + "  (" + top[i].getFitness() + ")");
+        LinkedList<Triple<Long, String, Double>> optima = algo.getResultBundle().getOptimumHistory();
+        evo_logger.i("===> Top " + optima.size() + " functions: ");
+        DerivableSymbolicTree[] top = new DerivableSymbolicTree[optima.size()];
+        for (int i = 0; i < optima.size(); i++) {
+            Triple<Long, String, Double> g = optima.get(i);
+            top[i] = new DerivableSymbolicTree(SymbolicTree.parse(g.getVal(), set));
+            evo_logger.i("--> f" + (i + 1) + ": " + g.getVal() + "  (" + g.getExtra() + ") at iteration " + g.getKey());
         }
 
         BufferedImage[] imgs = ViewActivationFunction.displayResult(best, top);
@@ -143,6 +148,7 @@ public class EvolvingActivationDemo {
                 .setElitism(params.isElitism())
                 .setMutationProbability(params.mutation_prob())
                 .setPopulationSize(params.population_size())
+                .setTopOptimaNumber(5)
 
                 .setInitializer(init)
                 .setEvaluator(eval)
