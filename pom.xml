@@ -55,11 +55,6 @@
             <version>1.0.0-beta3</version>
         </dependency>
         <dependency>
-            <groupId>org.nd4j</groupId>
-            <artifactId>datavec-api</artifactId>
-            <version>1.0.0-beta3</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
