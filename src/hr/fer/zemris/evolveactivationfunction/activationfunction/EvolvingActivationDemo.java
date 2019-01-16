@@ -120,7 +120,7 @@ public class EvolvingActivationDemo {
 
         CommonModel model = evaluator.buildModelFrom(best);
 
-        Pair<ModelReport, INDArray> result = evaluator.evaluateModel(model, StorageManager.createStatsLogger(c));
+        Pair<ModelReport, INDArray> result = evaluator.evaluateModel(model, StorageManager.createStatsLogger(c), best.serialize());
         train_proc.storeResults(model, c, result);
 
         evo_logger.i("Done!\n");

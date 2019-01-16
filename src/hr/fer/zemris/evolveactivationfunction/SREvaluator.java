@@ -3,17 +3,16 @@ package hr.fer.zemris.evolveactivationfunction;
 import hr.fer.zemris.evolveactivationfunction.activationfunction.CustomFunction;
 import hr.fer.zemris.evolveactivationfunction.activationfunction.DerivableSymbolicTree;
 import hr.fer.zemris.genetics.AEvaluator;
-import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.utils.Pair;
+import hr.fer.zemris.utils.Stopwatch;
+import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
 import org.deeplearning4j.api.storage.StatsStorageRouter;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
     private TrainProcedure tmpl_procedure_;
@@ -39,12 +38,12 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
         Double fitness;
         String s = g.serialize();
         if (use_memory_ && (fitness = memory.get(s)) != null) {
-            log_.i("Re-using stored fitness for: " + g);
+            log_.i("Re-using stored fitness for: " + s);
             return fitness;
         }
 
         CommonModel model = buildModelFrom(g);
-        Pair<ModelReport, INDArray> res = evaluateModel(model, null);
+        Pair<ModelReport, INDArray> res = evaluateModel(model, null, s);
 
         fitness = -res.getKey().f1(); // Negative is for minimization.
 
@@ -68,9 +67,13 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
         return tmpl_procedure_.createModel(architecture_, activations);
     }
 
-    public Pair<ModelReport, INDArray> evaluateModel(CommonModel model, StatsStorageRouter storage) {
+    public Pair<ModelReport, INDArray> evaluateModel(CommonModel model, StatsStorageRouter storage, String name) {
+        Stopwatch timer = new Stopwatch();
+        timer.start();
         tmpl_procedure_.train(model, log_, storage);
-        return tmpl_procedure_.test(model);
+        Pair<ModelReport, INDArray> res = tmpl_procedure_.test(model);
+        log_.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + name);
+        return res;
     }
 
     public TrainProcedure getTrainProcedure() {
