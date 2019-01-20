@@ -36,6 +36,7 @@ import java.util.Random;
  */
 public class TrainProcedure {
 
+    private DataNormalization norm_;
     private final DataSet train_set_, test_set_;
     private TrainParams params_;
 
@@ -78,7 +79,7 @@ public class TrainProcedure {
 
         // Normalize dataset.
         if (params_.normalize_features()) {
-            DataNormalization norm_ = new NormalizerStandardize();
+            norm_ = new NormalizerStandardize();
             norm_.fit(train_set_);
             norm_.transform(train_set_);
             norm_.transform(test_set_);
@@ -86,22 +87,32 @@ public class TrainProcedure {
     }
 
     public TrainProcedure(EvolvingActivationParams params) throws IOException, InterruptedException {
-        String dataset_name = params.train_path();
-        DataSet ds = dataset_name.endsWith(".arff") ? StorageManager.loadEntireArffDataset(dataset_name) : StorageManager.loadEntireCsvDataset(dataset_name);
-        ds.shuffle(params.seed());
+        String trainset_path = params.train_path();
+        DataSet trainset = trainset_path.endsWith(".arff") ?
+                StorageManager.loadEntireArffDataset(trainset_path) :
+                StorageManager.loadEntireCsvDataset(trainset_path);
 
-        SplitTestAndTrain split = ds.splitTestAndTrain(params.train_percentage());
-        train_set_ = split.getTrain();
-        test_set_ = split.getTest();
+        if (params.test_path() == null) { // Split.
+            trainset.shuffle(params.seed());
+            SplitTestAndTrain split = trainset.splitTestAndTrain(params.train_percentage());
+            train_set_ = split.getTrain();
+            test_set_ = split.getTest();
+        } else {
+            train_set_ = trainset;
+            String testset_path = params.test_path();
+            test_set_ = testset_path.endsWith(".arff") ?
+                    StorageManager.loadEntireArffDataset(testset_path) :
+                    StorageManager.loadEntireCsvDataset(testset_path);
+        }
 
         // Automatically populate necessary parameters.
-        params.name(StorageManager.dsNameFromPath(dataset_name, false));
+        params.name(StorageManager.dsNameFromPath(trainset_path, false));
         params.input_size(train_set_.numInputs());
         params.output_size(train_set_.numOutcomes());
 
         // Normalize dataset.
         if (params.normalize_features()) {
-            DataNormalization norm_ = new NormalizerStandardize();
+            norm_ = new NormalizerStandardize();
             norm_.fit(train_set_);
             norm_.transform(train_set_);
             norm_.transform(test_set_);
