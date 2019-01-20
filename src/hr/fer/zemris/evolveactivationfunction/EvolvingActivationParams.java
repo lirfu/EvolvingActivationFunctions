@@ -116,6 +116,10 @@ public class EvolvingActivationParams extends TrainParams {
         return test_path_;
     }
 
+    public void test_path(String path) {
+        test_path_ = path;
+    }
+
     public String experiment_name() {
         return experiment_name_;
     }
