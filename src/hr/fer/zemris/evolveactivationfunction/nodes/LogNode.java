@@ -10,8 +10,10 @@ import org.nd4j.linalg.api.ops.impl.transforms.Log;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class LogNode extends DerivableNode {
+    public static final String NAME = "log";
+
     public LogNode() {
-        super("log", 1);
+        super(NAME, 1);
     }
 
     @Override

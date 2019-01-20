@@ -10,8 +10,10 @@ import org.nd4j.linalg.api.ops.impl.transforms.Step;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class CustomReLUNode extends DerivableNode {
+    public static final String NAME = "c_relu";
+
     public CustomReLUNode() {
-        super("c_relu", 1);
+        super(NAME, 1);
     }
 
     @Override

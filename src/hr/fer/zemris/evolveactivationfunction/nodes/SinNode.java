@@ -12,8 +12,10 @@ import org.nd4j.linalg.api.ops.impl.transforms.Step;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class SinNode extends DerivableNode {
+    public static final String NAME = "sin";
+
     public SinNode() {
-        super("sin", 1);
+        super(NAME, 1);
     }
 
     @Override

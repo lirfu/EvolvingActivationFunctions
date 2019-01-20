@@ -11,8 +11,10 @@ import org.nd4j.linalg.api.ops.impl.transforms.Square;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class Pow2Node extends DerivableNode {
+    public static final String NAME = "^2";
+
     public Pow2Node() {
-        super("^2", 1);
+        super(NAME, 1);
     }
 
     @Override

@@ -7,10 +7,11 @@ import hr.fer.zemris.genetics.symboregression.TreeNode;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 public class DivNode extends DerivableNode {
+    public static final String NAME = "/";
     public static final double STABILITY_CONST = 1e-12;
 
     public DivNode() {
-        super("/", 2);
+        super(NAME, 2);
     }
 
     @Override

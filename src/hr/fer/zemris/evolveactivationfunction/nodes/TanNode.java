@@ -12,8 +12,10 @@ import org.nd4j.linalg.api.ops.impl.transforms.TanDerivative;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class TanNode extends DerivableNode {
+    public static final String NAME = "tan";
+
     public TanNode() {
-        super("tan", 1);
+        super(NAME, 1);
     }
 
     @Override

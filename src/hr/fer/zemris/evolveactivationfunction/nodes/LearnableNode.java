@@ -14,6 +14,7 @@ import org.nd4j.linalg.factory.Nd4j;
  * Terminal representing the functions' input.
  */
 public class LearnableNode extends DerivableNode {
+    public static final String NAME = "l";
     private INDArray alpha;
 
     public LearnableNode() {
@@ -21,7 +22,7 @@ public class LearnableNode extends DerivableNode {
     }
 
     public LearnableNode(double init_value) {
-        super("l", 0, init_value);
+        super(NAME, 0, init_value);
     }
 
     @Override

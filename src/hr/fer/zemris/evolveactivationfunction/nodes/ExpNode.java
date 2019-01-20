@@ -11,8 +11,10 @@ import org.nd4j.linalg.api.ops.impl.transforms.Sin;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class ExpNode extends DerivableNode {
+    public static final String NAME = "exp";
+
     public ExpNode() {
-        super("exp", 1);
+        super(NAME, 1);
     }
 
     @Override

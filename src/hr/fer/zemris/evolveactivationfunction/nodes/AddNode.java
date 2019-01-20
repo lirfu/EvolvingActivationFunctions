@@ -11,8 +11,10 @@ import org.nd4j.linalg.api.ops.impl.transforms.Step;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class AddNode extends DerivableNode {
+    public static final String NAME = "+";
+
     public AddNode() {
-        super("+", 2);
+        super(NAME, 2);
     }
 
     @Override

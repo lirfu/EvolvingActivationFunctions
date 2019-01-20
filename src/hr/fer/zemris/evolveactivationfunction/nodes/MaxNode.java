@@ -10,8 +10,10 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.ops.transforms.Transforms;
 
 public class MaxNode extends DerivableNode {
+    public static final String NAME = "max";
+
     public MaxNode() {
-        super("max", 2);
+        super(NAME, 2);
     }
 
     @Override

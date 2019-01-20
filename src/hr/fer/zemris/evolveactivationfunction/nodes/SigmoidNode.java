@@ -10,8 +10,10 @@ import org.nd4j.linalg.api.ops.impl.transforms.SigmoidDerivative;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class SigmoidNode extends DerivableNode {
+    public static final String NAME = "sigm";
+
     public SigmoidNode() {
-        super("sigm", 1);
+        super(NAME, 1);
     }
 
     @Override

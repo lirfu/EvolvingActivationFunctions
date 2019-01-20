@@ -9,8 +9,10 @@ import org.nd4j.linalg.api.ops.impl.transforms.Exp;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class GaussNode extends DerivableNode {
+    public static final String NAME = "gauss";
+
     public GaussNode() {
-        super("gauss", 1);
+        super(NAME, 1);
     }
 
     @Override

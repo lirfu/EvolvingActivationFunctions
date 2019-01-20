@@ -9,8 +9,10 @@ import org.nd4j.linalg.ops.transforms.Transforms;
 
 
 public class PowNode extends DerivableNode {
+    public static final String NAME = "^";
+
     public PowNode() {
-        super("^", 2);
+        super(NAME, 2);
     }
 
     @Override

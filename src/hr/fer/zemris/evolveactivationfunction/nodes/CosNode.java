@@ -10,8 +10,10 @@ import org.nd4j.linalg.api.ops.impl.transforms.Sin;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class CosNode extends DerivableNode {
+    public static final String NAME = "cos";
+
     public CosNode() {
-        super("cos", 1);
+        super(NAME, 1);
     }
 
     @Override

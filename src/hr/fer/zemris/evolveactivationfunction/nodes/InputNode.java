@@ -19,8 +19,10 @@ import org.nd4j.linalg.factory.Nd4j;
  * Terminal representing the functions' input.
  */
 public class InputNode extends DerivableNode {
+    public static final String NAME = "x";
+
     public InputNode() {
-        super("x", 0);
+        super(NAME, 0);
     }
 
 
