@@ -125,6 +125,7 @@ public class TrainProcedure {
         for (int i = 0; i < labels.length; i++)
             labels[i] = i;
 
+        int total_instances = 0;
         int[] total_labels = new int[train_set_.numOutcomes()];
 
         int[] train_labels = new int[train_set_.numOutcomes()];
@@ -133,6 +134,7 @@ public class TrainProcedure {
             int l = arr.getInt(i);
             train_labels[l]++;
             total_labels[l]++;
+            total_instances++;
         }
 
         int[] test_labels = new int[test_set_.numOutcomes()];
@@ -141,6 +143,7 @@ public class TrainProcedure {
             int l = arr.getInt(i);
             test_labels[l]++;
             total_labels[l]++;
+            total_instances++;
         }
 
         StringBuilder sb = new StringBuilder();
@@ -148,6 +151,7 @@ public class TrainProcedure {
         sb.append("Train set: ").append(Arrays.toString(train_labels)).append('\n');
         sb.append(" Test set: ").append(Arrays.toString(test_labels)).append('\n');
         sb.append("    Total: ").append(Arrays.toString(total_labels)).append('\n');
+        sb.append("Total inp: ").append(total_instances).append('\n');
         return sb.toString();
     }
 
