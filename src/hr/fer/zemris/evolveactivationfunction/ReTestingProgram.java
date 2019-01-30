@@ -15,6 +15,8 @@ import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Pair;
+import hr.fer.zemris.utils.logs.ILogger;
+import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.evaluation.classification.Evaluation;
@@ -35,18 +37,36 @@ public class ReTestingProgram {
         Nd4j.setDataType(DataBuffer.Type.DOUBLE);
         Random r = new Random(42);
 
+
         TreeNodeSet set = TreeNodeSetFactory.build(r, TreeNodeSetFactory.Set.ALL);
 
         EvolvingActivationParams.initialize(new ISerializable[]{});
 
-        String function = "min[sin[sin[x]],x]";
-        EvolvingActivationParams params = StorageManager.loadEvolutionParameters(
-                "sol/noiseless_all_training_256class/06_arch28-28-28/evolution_parameters.txt"
-        );
-        params.test_path("res/noiseless_Karlo/noiseless_all_testing_256class.arff");
+        String experiment;
+        String function;
+        EvolvingActivationParams params;
+        if (args.length == 1) {
+            params = StorageManager.loadEvolutionParameters(args[0]);
+            function = params.activation();
+            experiment = params.experiment_name();
+            if (function == null) throw new IllegalStateException("Please define a function.");
+            if (params.test_path() == null) throw new IllegalStateException("Please define the test set path.");
+        } else {
+            function = "relu[x]";
+            params = StorageManager.loadEvolutionParameters(
+                    "sol/noiseless_all_training_9class/03_fixed_algorithms_train80/evolution_parameters.txt"
+            );
+            params.test_path("res/noiseless_Karlo/noiseless_all_testing_9class.arff");
+            experiment = "00_retraining";
+        }
 
         TrainProcedure proc = new TrainProcedure(params);
-        System.out.println(proc.describeDatasets());
+        Context c = proc.createContext(experiment);
+        ILogger evo_logger = new MultiLogger(StorageManager.createEvolutionLogger(c), new StdoutLogger());
+
+        evo_logger.i("");
+        evo_logger.i(proc.describeDatasets());
+        evo_logger.i("===> Re-training for function: " + function);
 
         SREvaluator evaluator = new SREvaluator(proc, params.architecture(), new StdoutLogger(), true);
         DerivableSymbolicTree best = new DerivableSymbolicTree(SymbolicTree.parse(function, set));
@@ -54,5 +74,7 @@ public class ReTestingProgram {
 
         Pair<ModelReport, INDArray> result = evaluator.evaluateModel(model, null, best.serialize());
         System.out.println(result.getKey());
+
+        proc.storeResults(model, proc.createContext(""), result);
     }
 }
