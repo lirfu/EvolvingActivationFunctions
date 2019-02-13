@@ -46,20 +46,20 @@ import java.io.*;
  * </code></p>
  */
 public class StorageManager {
-    private static final String current_dir_ = System.getProperty("user.dir") + File.separator;
-    private static final String res_dir_name_ = current_dir_ + "res" + File.separator;
-    private static final String sol_dir_name_ = current_dir_ + "sol" + File.separator;
-    private static final String tmp_dir_name_ = current_dir_ + "tmp" + File.separator;
-    private static final String sol_model_name_ = "model.zip";
-    private static final String sol_predictions_name_ = "predictions.txt";
-    private static final String sol_result_name_ = "results.txt";
-    private static final String sol_stats_name_ = "stats.dl4jlog";
-    private static final String sol_train_log_name_ = "train.log";
-    private static final String sol_train_params_name_ = "train_parameters.txt";
-    private static final String sol_evo_log_name_ = "evolution.log";
-    private static final String sol_evo_params_name_ = "evolution_parameters.txt";
-    private static final String sol_best_func_name_ = "best_function.png";
-    private static final String sol_top_func_name_ = "top_functions.png";
+    public static final String current_dir_ = System.getProperty("user.dir") + File.separator;
+    public static final String res_dir_name_ = current_dir_ + "res" + File.separator;
+    public static final String sol_dir_name_ = current_dir_ + "sol" + File.separator;
+    public static final String tmp_dir_name_ = current_dir_ + "tmp" + File.separator;
+    public static final String sol_model_name_ = "model.zip";
+    public static final String sol_predictions_name_ = "predictions.txt";
+    public static final String sol_result_name_ = "results.txt";
+    public static final String sol_stats_name_ = "stats.dl4jlog";
+    public static final String sol_train_log_name_ = "train.log";
+    public static final String sol_train_params_name_ = "train_parameters.txt";
+    public static final String sol_evo_log_name_ = "evolution.log";
+    public static final String sol_evo_params_name_ = "evolution_parameters.txt";
+    public static final String sol_best_func_name_ = "best_function.png";
+    public static final String sol_top_func_name_ = "top_functions.png";
 
     static {
         File sol = new File(sol_dir_name_);
@@ -91,7 +91,7 @@ public class StorageManager {
         return sb.toString();
     }
 
-    private static String createExperimentPath(Context c) {
+    public static String createExperimentPath(Context c) {
         return sol_dir_name_ + c.getDatasetName() + File.separator + c.getExperimentName() + File.separator;
     }
 
