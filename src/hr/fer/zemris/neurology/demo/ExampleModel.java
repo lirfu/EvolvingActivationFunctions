@@ -38,14 +38,14 @@ public class ExampleModel {
      *
      * @param params      Parameters used in the training process.
      * @param layers      Array of sizes for the hidden layers.
-     * @param activations Array of activation functions. Must define either one common activation activationfunction) or one activationfunction per layer.
+     * @param activations Array of activation functions. Must define either one common activation activation function) or one activation function per layer.
      */
     public ExampleModel(@NotNull TrainParams params, @NotNull int[] layers, @NotNull IActivation[] activations) {
         boolean common_act = false;
         if (layers.length > 1 && activations.length == 1) { // Single common activation.
             common_act = true;
         } else if (layers.length > 0 && activations.length == 0 || activations.length != layers.length) {
-            throw new IllegalArgumentException("Activation activationfunction ill defined! Please provide one common activationfunction or one activationfunction per layer.");
+            throw new IllegalArgumentException("Activation activation function ill defined! Please provide one common activation function or one activation function per layer.");
         }
 
         NeuralNetConfiguration.Builder conf = new NeuralNetConfiguration.Builder()
