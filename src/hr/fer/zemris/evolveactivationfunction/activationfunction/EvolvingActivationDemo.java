@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class EvolvingActivationDemo {
-    private static final String DATASET_PATH = "res/noiseless_Karlo/noiseless_all_training_9class.arff";
+    private static final String DATASET_PATH = "<dataset-path>";
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Set double precision globally.
@@ -69,6 +69,16 @@ public class EvolvingActivationDemo {
         Context c;
         if (args.length == 0 || !new File(args[0]).exists()) {
             params = create_params(DATASET_PATH, r, set);
+            c = new Context(params.name(), params.experiment_name());
+            StorageManager.storeEvolutionParams(params, c);
+
+            System.err.println("Config file not specified!");
+            System.err.println("As a result, template config file generated in: "
+                    + StorageManager.createExperimentPath(c)
+                    + StorageManager.sol_evo_params_name_);
+            System.err.println("Before usage, edit the dataset paths!");
+            System.err.println("Usage: ./executable <config-file>");
+            System.exit(1);
         } else {
             params = StorageManager.loadEvolutionParameters(args[0]);
         }
@@ -197,6 +207,7 @@ public class EvolvingActivationDemo {
                 .addNodeSet(TreeNodeSetFactory.Set.ALL.toString())
 
                 .train_path(dataset)
+                .test_path(dataset)
                 .experiment_name("Demo_parameters")
                 .architecture(new int[]{30, 30})
                 .train_percentage(.8f)
