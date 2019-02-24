@@ -321,7 +321,7 @@ public class EvolvingActivationParams extends TrainParams {
         }
 
         public Builder addNodeSet(String set_name) {
-            TreeNodeSetFactory.Set.valueOf(set_name);
+            TreeNodeSets.valueOf(set_name);
             node_set_.add(set_name);
             return this;
         }

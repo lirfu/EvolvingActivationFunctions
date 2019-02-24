@@ -11,7 +11,6 @@ import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import static org.junit.Assert.assertTrue;
@@ -28,7 +27,7 @@ public class NNSRTest {
     @Test
     public void testParsing() {
         TreeNodeSetFactory factory = new TreeNodeSetFactory();
-        TreeNodeSet set = factory.build(new Random(42), TreeNodeSetFactory.Set.ALL);
+        TreeNodeSet set = factory.build(new Random(42), TreeNodeSets.ALL);
 
         String string = "+[x,*[x,sin[*[-273.15,x]]]]";
         SymbolicTree tree = SymbolicTree.parse(string, set);

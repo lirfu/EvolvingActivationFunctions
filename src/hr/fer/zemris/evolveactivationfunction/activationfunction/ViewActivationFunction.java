@@ -6,10 +6,9 @@ import com.lirfu.lirfugraph.Window;
 import com.lirfu.lirfugraph.components.EmptySpace;
 import com.lirfu.lirfugraph.components.Label;
 import com.lirfu.lirfugraph.graphs.MultiLinearGraph;
-import com.lirfu.lirfugraph.themes.DarkTheme;
 import com.lirfu.lirfugraph.themes.LightTheme;
 import hr.fer.zemris.evolveactivationfunction.TreeNodeSetFactory;
-import hr.fer.zemris.genetics.Utils;
+import hr.fer.zemris.evolveactivationfunction.TreeNodeSets;
 import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -23,7 +22,7 @@ import java.util.Random;
 public class ViewActivationFunction {
     public static void main(String[] args) {
         if (args.length < 1) throw new IllegalArgumentException("Specify at least 1 function.");
-        TreeNodeSet set = new TreeNodeSetFactory().build(new Random(), TreeNodeSetFactory.Set.ALL);
+        TreeNodeSet set = new TreeNodeSetFactory().build(new Random(), TreeNodeSets.ALL);
         LinkedList<SymbolicTree> trees = new LinkedList<>();
         for (String s : args) {
             trees.add(SymbolicTree.parse(s, set));

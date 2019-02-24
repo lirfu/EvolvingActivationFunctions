@@ -204,7 +204,7 @@ public class EvolvingActivationDemo {
                 .addMutation(new MutSRRemoveRoot(r))
                 .addMutation(new MutSRRemoveUnary(r))
 
-                .addNodeSet(TreeNodeSetFactory.Set.ALL.toString())
+                .addNodeSet(TreeNodeSets.ALL.toString())
 
                 .train_path(dataset)
                 .test_path(dataset)
