@@ -38,12 +38,14 @@ public class EvolvingActivationDemo {
         // Set double precision globally.
         Nd4j.setDataType(DataBuffer.Type.DOUBLE);
         Random r = new Random(42);
+
+        // Override deserialization of numerical nodes.
         TreeNodeSet set = new TreeNodeSet(r) {
             @Override
             public TreeNode getNode(String node_name) {
                 TreeNode node = super.getNode(node_name);
                 if (node == null) {
-                    try {
+                    try { // Constant node.
                         Double val = Double.parseDouble(node_name);
                         node = new ConstNode();
                         node.setExtra(val);
@@ -53,22 +55,23 @@ public class EvolvingActivationDemo {
                 return node;
             }
         };
-        // Define initializer
-        SRGenericInitializer initializer = new SRGenericInitializer(set, 5);
+        // Define tree initializer.
+        SRGenericInitializer tree_init = new SRGenericInitializer(set, 5);
         // Initialize params class for parsing.
         EvolvingActivationParams.initialize(new ISerializable[]{
                 new CrxReturnRandom(), new CrxSRSwapSubtrees(), new CrxSRSwapConstants(), new CrxSRMeanConstants(),
                 new CrxSRSwapNodes(),
                 new MutSRInsertTerminal(set), new MutSRInsertRoot(set), new MutSRReplaceNode(set),
-                new MutSRSwapOrder(), new MutSRReplaceSubtree(set, initializer), new MutInitialize<>(initializer),
+                new MutSRSwapOrder(), new MutSRReplaceSubtree(set, tree_init), new MutInitialize<>(tree_init),
                 new MutSRRandomConstantSet(0, 1), new MutSRRandomConstantSetInt(0, 1),
                 new MutSRRandomConstantAdd(1), new MutSRRemoveRoot(), new MutSRRemoveUnary()
         });
         // Build or load the params.
         EvolvingActivationParams params;
         Context c;
-        if (args.length == 0 || !new File(args[0]).exists()) {
-            params = create_params(DATASET_PATH, r, set);
+
+        if (args.length == 0 || !new File(args[0]).exists()) { // Generate the example params.
+            params = create_example_params(DATASET_PATH, r, set);
             c = new Context(params.name(), params.experiment_name());
             StorageManager.storeEvolutionParams(params, c);
 
@@ -79,7 +82,7 @@ public class EvolvingActivationDemo {
             System.err.println("Before usage, edit the dataset paths!");
             System.err.println("Usage: ./executable <config-file>");
             System.exit(1);
-        } else {
+        } else { // Load from file.
             params = StorageManager.loadEvolutionParameters(args[0]);
         }
 
@@ -101,7 +104,7 @@ public class EvolvingActivationDemo {
         SREvaluator evaluator = new SREvaluator(train_proc, params.architecture(), evo_logger, true);
 
         // Build and run the algorithm.
-        Algorithm algo = buildAlgorithm(params, c, train_proc, set, initializer, evaluator, r, evo_logger);
+        Algorithm algo = buildAlgorithm(params, set, tree_init, evaluator, r, evo_logger);
 
         try {
             algo.run(new Algorithm.LogParams(false, true));
@@ -111,9 +114,8 @@ public class EvolvingActivationDemo {
 
         /* RESULTS */
 
-        // Retrain best and store results.
+        // Fetch best result.
         DerivableSymbolicTree best = (DerivableSymbolicTree) algo.getBest();
-
 //        // Manual results in case of error.
 //        DerivableSymbolicTree best = new DerivableSymbolicTree(SymbolicTree.parse("", set)).setFitness(-0.);
 //        Genotype[] population = {
@@ -125,19 +127,17 @@ public class EvolvingActivationDemo {
 //                new DerivableSymbolicTree(SymbolicTree.parse("", set)).setFitness(-0.),
 //        };
 
+        // Retrain the best model.
         evo_logger.i("===> Retraining best: " + best + "  (" + best.getFitness() + ")");
         best.setResult(null);  // Do this for unknown reasons (dl4j serialization error otherwise).
-
         CommonModel model = evaluator.buildModelFrom(best);
-
         Pair<ModelReport, INDArray> result = evaluator.evaluateModel(model, StorageManager.createStatsLogger(c), best.serialize());
         train_proc.storeResults(model, c, result);
-
         evo_logger.i("Done!\n");
         evo_logger.i("===> Final best: \n" + best + "  (" + best.getFitness() + ")");
         evo_logger.i(result.getKey().serialize());
 
-        // Extract tops to display
+        // Extract tops to display.
         LinkedList<Triple<Long, String, Double>> optima = algo.getResultBundle().getOptimumHistory();
         evo_logger.i("===> Top " + optima.size() + " functions: ");
         DerivableSymbolicTree[] top = new DerivableSymbolicTree[optima.size()];
@@ -147,12 +147,17 @@ public class EvolvingActivationDemo {
             evo_logger.i("--> f" + (i + 1) + ": " + g.getVal() + "  (" + g.getExtra() + ") at iteration " + g.getKey());
         }
 
+        // Create function images.
         BufferedImage[] imgs = ViewActivationFunction.displayResult(best, top);
         StorageManager.writeImageOfBest(imgs[0], c);
         StorageManager.writeImageOfTop(imgs[1], c);
     }
 
-    private static Algorithm buildAlgorithm(EvolvingActivationParams params, Context c, TrainProcedure proc, TreeNodeSet set, Initializer init, SREvaluator eval, Random r, ILogger log) throws IOException {
+    /**
+     * Build an algorithm instance from given objects.
+     */
+    private static Algorithm buildAlgorithm(EvolvingActivationParams params, TreeNodeSet set, Initializer init,
+                                            SREvaluator eval, Random r, ILogger log) throws IOException {
         GenerationTabooAlgorithm.Builder b = new GenerationTabooAlgorithm.Builder();
         b.setTabooAttempts(params.taboo_attempts())
                 .setTabooSize(params.taboo_size())
@@ -177,7 +182,10 @@ public class EvolvingActivationDemo {
         return b.build();
     }
 
-    private static EvolvingActivationParams create_params(String dataset, Random r, TreeNodeSet set) {
+    /**
+     * Creates an example of parameters.
+     */
+    private static EvolvingActivationParams create_example_params(String dataset, Random r, TreeNodeSet set) {
         return (EvolvingActivationParams) new EvolvingActivationParams.Builder()
                 .elitism(true)
                 .mutation_prob(0.3)

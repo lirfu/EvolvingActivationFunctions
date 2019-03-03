@@ -22,7 +22,7 @@ public class TreeNodeSetFactory {
     }
 
     public static TreeNodeSet build(Random r, TreeNodeSets... use_sets) {
-        TreeNodeSet set = new TreeNodeSet(r) { // Modify const as a special case.
+        TreeNodeSet set = new TreeNodeSet(r) { // Modify constant node as a special case.
             @Override
             public TreeNode getNode(String node_name) {
                 TreeNode node = super.getNode(node_name);
@@ -113,7 +113,7 @@ public class TreeNodeSetFactory {
                     s = "gauss (" + token + ")";
                     break;
                 default:
-                    s = "NONE";
+                    s = "UNKNOWN";
             }
             str[0] = str[0].replaceFirst(token, s);
             return false;
