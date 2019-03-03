@@ -11,11 +11,9 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class MutSRRandomConstantSetInt extends Mutation<SymbolicTree> {
-    private Random r_;
     private int min_, delta_;
 
-    public MutSRRandomConstantSetInt(Random r, int min, int max) {
-        r_ = r;
+    public MutSRRandomConstantSetInt(int min, int max) {
         min_ = min;
         delta_ = max - min + 1;
     }

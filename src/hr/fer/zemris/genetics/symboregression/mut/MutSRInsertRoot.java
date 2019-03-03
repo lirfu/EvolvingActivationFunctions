@@ -10,11 +10,9 @@ import java.util.Random;
 
 public class MutSRInsertRoot extends Mutation<SymbolicTree> {
     private final TreeNodeSet set_;
-    private final Random r_;
 
-    public MutSRInsertRoot(TreeNodeSet set, Random random) {
+    public MutSRInsertRoot(TreeNodeSet set) {
         set_ = set;
-        r_ = random;
     }
 
     @Override

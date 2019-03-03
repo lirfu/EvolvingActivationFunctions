@@ -14,12 +14,10 @@ import java.util.Random;
 public class MutSRReplaceSubtree extends Mutation<SymbolicTree> {
     private final TreeNodeSet set_;
     private final Initializer<SymbolicTree> init_;
-    private final Random r_;
 
-    public MutSRReplaceSubtree(TreeNodeSet set, Initializer<SymbolicTree> init, Random random) {
+    public MutSRReplaceSubtree(TreeNodeSet set, Initializer<SymbolicTree> init) {
         set_ = set;
         init_ = init;
-        r_ = random;
     }
 
     @Override

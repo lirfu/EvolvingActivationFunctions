@@ -66,25 +66,25 @@ public class SymbolicRegressionDemo {
                 .setInitializer(new SRGenericInitializer(node_set, 4))
                 .setEvaluator(new Eval())
                 // Tree crossovers.
-                .addCrossover(new CrxSRSwapSubtrees(rand).setImportance(1))
-                .addCrossover(new CrxSRSwapNodes(rand).setImportance(1))
-                .addCrossover((Crossover) new CrxReturnRandom(rand).setImportance(1))
+                .addCrossover(new CrxSRSwapSubtrees().setImportance(1))
+                .addCrossover(new CrxSRSwapNodes().setImportance(1))
+                .addCrossover((Crossover) new CrxReturnRandom().setImportance(1))
                 // Tree mutations.
-                .addMutation(new MutSRSwapOrder(rand).setImportance(1))
-                .addMutation(new MutSRInsertTerminal(node_set, rand).setImportance(1))
-                .addMutation(new MutSRInsertRoot(node_set, rand).setImportance(1))
-                .addMutation(new MutSRReplaceNode(node_set, rand).setImportance(1))
-                .addMutation(new MutSRReplaceSubtree(node_set, new SRGenericInitializer(node_set, 3), rand).setImportance(1))
-                .addMutation(new MutSRRemoveRoot(rand).setImportance(1))
-                .addMutation(new MutSRRemoveUnary(rand))
+                .addMutation(new MutSRSwapOrder().setImportance(1))
+                .addMutation(new MutSRInsertTerminal(node_set).setImportance(1))
+                .addMutation(new MutSRInsertRoot(node_set).setImportance(1))
+                .addMutation(new MutSRReplaceNode(node_set).setImportance(1))
+                .addMutation(new MutSRReplaceSubtree(node_set, new SRGenericInitializer(node_set, 3)).setImportance(1))
+                .addMutation(new MutSRRemoveRoot().setImportance(1))
+                .addMutation(new MutSRRemoveUnary())
 //                .addMutation(new MutInitialize<>(new SRGenericInitializer(node_set, 2)).setImportance(1))
                 // Constants crossovers.
-                .addCrossover(new CrxSRSwapConstants(rand).setImportance(1))
+                .addCrossover(new CrxSRSwapConstants().setImportance(1))
 //                .addCrossover(new CrxSRMeanConstants(rand).setImportance(2))
                 // Constants mutations.
-                .addMutation(new MutSRRandomConstantSet(rand, -10, 10).setImportance(1))
-                .addMutation(new MutSRRandomConstantAdd(rand, 2).setImportance(1))
-//                .addMutation(new MutSRRandomConstantSetInt(rand, 0, 10).setImportance(3))
+                .addMutation(new MutSRRandomConstantSet(-10, 10).setImportance(1))
+                .addMutation(new MutSRRandomConstantAdd(2).setImportance(1))
+//                .addMutation(new MutSRRandomConstantSetInt(0, 10).setImportance(3))
                 .build();
 
 //        algo.run();

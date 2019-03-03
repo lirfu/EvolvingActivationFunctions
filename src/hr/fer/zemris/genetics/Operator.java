@@ -3,8 +3,11 @@ package hr.fer.zemris.genetics;
 import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Utilities;
 
+import java.util.Random;
+
 public abstract class Operator<T extends Operator> implements ISerializable {
-    private int importance = 1;
+    private int importance_ = 1;
+    protected Random r_;
 
     protected Operator() {
     }
@@ -12,7 +15,12 @@ public abstract class Operator<T extends Operator> implements ISerializable {
     public abstract String getName();
 
     public int getImportance() {
-        return importance;
+        return importance_;
+    }
+
+    public T setRandom(Random random) {
+        r_ = random;
+        return (T) this;
     }
 
     /**
@@ -21,7 +29,7 @@ public abstract class Operator<T extends Operator> implements ISerializable {
     public T setImportance(int level) {
         if (level < 0 || level > 10)
             throw new IllegalArgumentException("Level must be within [0, 10]!");
-        importance = level;
+        importance_ = level;
         return (T) this;
     }
 
@@ -30,9 +38,9 @@ public abstract class Operator<T extends Operator> implements ISerializable {
         String[] p = line.split(Utilities.PARSER_REGEX);
         if (p[0].equals(getName())) {
             if (p.length > 1 && !p[1].isEmpty())
-                importance = Integer.parseInt(p[1]);
+                importance_ = Integer.parseInt(p[1]);
             else
-                importance = 1;
+                importance_ = 1;
             return true;
         }
         return false;
@@ -40,7 +48,7 @@ public abstract class Operator<T extends Operator> implements ISerializable {
 
     @Override
     public String serialize() {
-        return serializeKeyVal(getName(), String.valueOf(importance));
+        return serializeKeyVal(getName(), String.valueOf(importance_));
     }
 
     protected String serializeKeyVal(String key, String val) {

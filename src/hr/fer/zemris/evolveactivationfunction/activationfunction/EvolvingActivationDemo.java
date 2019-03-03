@@ -57,12 +57,12 @@ public class EvolvingActivationDemo {
         SRGenericInitializer initializer = new SRGenericInitializer(set, 5);
         // Initialize params class for parsing.
         EvolvingActivationParams.initialize(new ISerializable[]{
-                new CrxReturnRandom(r), new CrxSRSwapSubtrees(r), new CrxSRSwapConstants(r), new CrxSRMeanConstants(r),
-                new CrxSRSwapNodes(r),
-                new MutSRInsertTerminal(set, r), new MutSRInsertRoot(set, r), new MutSRReplaceNode(set, r),
-                new MutSRSwapOrder(r), new MutSRReplaceSubtree(set, initializer, r), new MutInitialize<>(initializer),
-                new MutSRRandomConstantSet(r, 0, 1), new MutSRRandomConstantSetInt(r, 0, 1),
-                new MutSRRandomConstantAdd(r, 1), new MutSRRemoveRoot(r), new MutSRRemoveUnary(r)
+                new CrxReturnRandom(), new CrxSRSwapSubtrees(), new CrxSRSwapConstants(), new CrxSRMeanConstants(),
+                new CrxSRSwapNodes(),
+                new MutSRInsertTerminal(set), new MutSRInsertRoot(set), new MutSRReplaceNode(set),
+                new MutSRSwapOrder(), new MutSRReplaceSubtree(set, initializer), new MutInitialize<>(initializer),
+                new MutSRRandomConstantSet(0, 1), new MutSRRandomConstantSetInt(0, 1),
+                new MutSRRandomConstantAdd(1), new MutSRRemoveRoot(), new MutSRRemoveUnary()
         });
         // Build or load the params.
         EvolvingActivationParams params;
@@ -190,19 +190,19 @@ public class EvolvingActivationDemo {
                 .taboo_size(5)
                 .worker_num(4)
 
-                .addCrossover(new CrxSRSwapSubtrees(r))
-                .addCrossover(new CrxSRSwapNodes(r))
-                .addCrossover(new CrxSRSwapConstants(r))
-                .addCrossover(new CrxSRMeanConstants(r))
-                .addCrossover(new CrxReturnRandom(r))
+                .addCrossover(new CrxSRSwapSubtrees())
+                .addCrossover(new CrxSRSwapNodes())
+                .addCrossover(new CrxSRSwapConstants())
+                .addCrossover(new CrxSRMeanConstants())
+                .addCrossover(new CrxReturnRandom())
 
-                .addMutation(new MutSRInsertRoot(set, r))
-                .addMutation(new MutSRInsertTerminal(set, r))
-                .addMutation(new MutSRRandomConstantSet(r, -5, 5))
-                .addMutation(new MutSRReplaceNode(set, r))
-                .addMutation(new MutSRSwapOrder(r))
-                .addMutation(new MutSRRemoveRoot(r))
-                .addMutation(new MutSRRemoveUnary(r))
+                .addMutation(new MutSRInsertRoot(set))
+                .addMutation(new MutSRInsertTerminal(set))
+                .addMutation(new MutSRRandomConstantSet(-5, 5))
+                .addMutation(new MutSRReplaceNode(set))
+                .addMutation(new MutSRSwapOrder())
+                .addMutation(new MutSRRemoveRoot())
+                .addMutation(new MutSRRemoveUnary())
 
                 .addNodeSet(TreeNodeSets.ALL.toString())
 

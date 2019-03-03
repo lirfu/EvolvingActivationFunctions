@@ -8,6 +8,7 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("unchecked")
 public class GPOperatorsTest {
 
     private Random r(int i, boolean b) {
@@ -59,7 +60,9 @@ public class GPOperatorsTest {
         p2.set(4, buildTree().get(0));
         p2.set(1, buildTree().get(0));
 
-        SymbolicTree c = new CrxSRSwapSubtrees(r(1, true)).cross(p1, p2);
+        SymbolicTree c = (SymbolicTree) new CrxSRSwapSubtrees()
+                .setRandom(r(1, true))
+                .cross(p1, p2);
 
         assertTrue("CrxSRSwapSubtree child should differ from its parents." + stringifyCrx(p1, p2, c),
                 !c.equals(p1) && !c.equals(p2));
@@ -73,7 +76,9 @@ public class GPOperatorsTest {
         SymbolicTree t = buildTree();
         SymbolicTree c = t.copy();
 
-        new MutSRSwapOrder(r(1, true)).mutate(c);
+        new MutSRSwapOrder()
+                .setRandom(r(1, true))
+                .mutate(c);
 
         assertFalse("MutSRSwapOrder result should differ from original." + stringifyMut(t, c),
                 t.equals(c));
@@ -87,7 +92,9 @@ public class GPOperatorsTest {
         SymbolicTree t = buildTree();
         SymbolicTree c = t.copy();
 
-        new MutSRReplaceSubtree(buildSet(), new SRGenericInitializer(buildSet(), 3), r(1, true)).mutate(c);
+        new MutSRReplaceSubtree(buildSet(), new SRGenericInitializer(buildSet(), 3))
+                .setRandom(r(1, true))
+                .mutate(c);
 
         assertFalse("MutSRReplaceSubtree should replace the subtree." + stringifyMut(t, c),
                 c.get(1).equals(t.get(1)));
@@ -98,7 +105,9 @@ public class GPOperatorsTest {
         SymbolicTree t = buildTree();
         SymbolicTree c = t.copy();
 
-        new MutSRReplaceNode(buildSet(), r(0, true)).mutate(c);
+        new MutSRReplaceNode(buildSet())
+                .setRandom(r(0, true))
+                .mutate(c);
 
         assertFalse("MutSRReplaceNode should replace the node." + stringifyMut(t, c),
                 c.get(0).equals(t.get(0)) && c.get(1).equals(t.get(1)) && c.get(2).equals(t.get(2)));
@@ -109,7 +118,9 @@ public class GPOperatorsTest {
         SymbolicTree t = buildTree();
         SymbolicTree c = t.copy();
 
-        new MutSRInsertTerminal(buildSet(), r(0, true)).mutate(c);
+        new MutSRInsertTerminal(buildSet())
+                .setRandom(r(0, true))
+                .mutate(c);
 
         assertTrue("MutSRInsertTerminal should insert a terminal." + stringifyMut(t, c),
                 c.get(0).getChildrenNum() == 0);
@@ -120,7 +131,9 @@ public class GPOperatorsTest {
         SymbolicTree t = buildTree();
         SymbolicTree c = t.copy();
 
-        new MutSRRemoveRoot( r(0, true)).mutate(c);
+        new MutSRRemoveRoot()
+                .setRandom(r(0, true))
+                .mutate(c);
 
         assertTrue("MutSRRemoveRoot should remove the root." + stringifyMut(t, c),
                 t.root_.children_[0].equals(c.root_));
@@ -131,7 +144,9 @@ public class GPOperatorsTest {
         SymbolicTree t = buildTree();
         SymbolicTree c = t.copy();
 
-        new MutSRRemoveUnary( r(0, true)).mutate(c);
+        new MutSRRemoveUnary()
+                .setRandom(r(0, true))
+                .mutate(c);
 
         assertTrue("MutSRRemoveUnary should remove u unary node." + stringifyMut(t, c),
                 c.get(4).equals(new SymbolicRegressionDemo.XNode()));

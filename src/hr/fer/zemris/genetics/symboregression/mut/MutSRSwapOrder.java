@@ -13,10 +13,8 @@ import java.util.Random;
  * Can fizzle if random selects same children indexes.
  */
 public class MutSRSwapOrder extends Mutation<SymbolicTree> {
-    private final Random r_;
 
-    public MutSRSwapOrder(Random random) {
-        r_ = random;
+    public MutSRSwapOrder() {
     }
 
     @Override

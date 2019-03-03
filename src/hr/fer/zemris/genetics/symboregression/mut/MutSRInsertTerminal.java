@@ -12,11 +12,9 @@ import java.util.Random;
  */
 public class MutSRInsertTerminal extends Mutation<SymbolicTree> {
     private final TreeNodeSet set_;
-    private final Random r_;
 
-    public MutSRInsertTerminal(TreeNodeSet set, Random random) {
+    public MutSRInsertTerminal(TreeNodeSet set) {
         set_ = set;
-        r_ = random;
     }
 
     @Override

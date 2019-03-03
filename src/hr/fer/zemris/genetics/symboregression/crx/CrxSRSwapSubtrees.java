@@ -9,10 +9,8 @@ import java.util.Random;
  * Swaps randomly selected tree nodes and their subtrees.
  */
 public class CrxSRSwapSubtrees extends Crossover<SymbolicTree> {
-    private final Random r_;
 
-    public CrxSRSwapSubtrees(Random random) {
-        r_ = random;
+    public CrxSRSwapSubtrees() {
     }
 
     @Override

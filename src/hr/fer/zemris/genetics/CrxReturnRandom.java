@@ -1,12 +1,9 @@
 package hr.fer.zemris.genetics;
 
-import java.util.Random;
 
 public class CrxReturnRandom<G extends Genotype> extends Crossover<G> {
-    private Random r_;
 
-    public CrxReturnRandom(Random random) {
-        r_ = random;
+    public CrxReturnRandom() {
     }
 
     @Override

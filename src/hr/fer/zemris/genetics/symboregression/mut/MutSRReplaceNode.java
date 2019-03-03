@@ -12,11 +12,9 @@ import java.util.Random;
  */
 public class MutSRReplaceNode extends Mutation<SymbolicTree> {
     private final TreeNodeSet set_;
-    private final Random r_;
 
-    public MutSRReplaceNode(TreeNodeSet set, Random random) {
+    public MutSRReplaceNode(TreeNodeSet set) {
         set_ = set;
-        r_ = random;
     }
 
     @Override

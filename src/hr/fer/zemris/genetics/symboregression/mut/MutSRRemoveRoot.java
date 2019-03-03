@@ -8,10 +8,8 @@ import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import java.util.Random;
 
 public class MutSRRemoveRoot extends Mutation<SymbolicTree> {
-    private final Random r_;
 
-    public MutSRRemoveRoot(Random random) {
-        r_ = random;
+    public MutSRRemoveRoot() {
     }
 
     @Override

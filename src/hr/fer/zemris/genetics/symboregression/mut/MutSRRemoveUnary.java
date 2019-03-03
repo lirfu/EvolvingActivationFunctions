@@ -8,10 +8,8 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class MutSRRemoveUnary extends Mutation<SymbolicTree> {
-    private Random r_;
 
-    public MutSRRemoveUnary(Random r) {
-        r_ = r;
+    public MutSRRemoveUnary() {
     }
 
     @Override

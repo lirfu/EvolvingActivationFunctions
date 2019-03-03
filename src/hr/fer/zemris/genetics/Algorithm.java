@@ -329,6 +329,12 @@ public abstract class Algorithm {
             if (workers_num_ < 1)
                 throw new IllegalStateException("Must have at least 1 worker!");
 
+            // Set internal random generators of operators.
+            for (Operator o : crossovers_)
+                o.setRandom(random_);
+            for (Operator o : mutations_)
+                o.setRandom(random_);
+
             return new Algorithm(crossovers_, mutations_, genotype_temp_, evaluator_, selector_, initializer_, condition_, pop_size_, mut_prob_, top_optima_num_, workers_num_, logger_, random_) {
                 @Override
                 protected void runIteration() {

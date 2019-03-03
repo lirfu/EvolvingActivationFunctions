@@ -9,10 +9,8 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class CrxSRSwapConstants extends Crossover<SymbolicTree> {
-    private Random r_;
 
-    public CrxSRSwapConstants(Random r) {
-        r_ = r;
+    public CrxSRSwapConstants() {
     }
 
     @Override
