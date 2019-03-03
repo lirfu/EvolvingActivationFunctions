@@ -5,8 +5,8 @@ import hr.fer.zemris.evolveactivationfunction.nodes.*;
 
 import java.util.LinkedList;
 
-public enum TreeNodeSets implements TreeNodeSetFactory.Listable<DerivableNode> {
-        /* PURE OP SETS */
+public enum TreeNodeSets implements Listable<DerivableNode> {
+    /* BINARY FUNCTIONS */
 
     ADD {
         @Override
@@ -44,6 +44,15 @@ public enum TreeNodeSets implements TreeNodeSetFactory.Listable<DerivableNode> {
             return new DerivableNode[]{new MaxNode()};
         }
     },
+    POW {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new PowNode()};
+        }
+    },
+
+    /* UNARY FUNCTIONS */
+
     SIN {
         @Override
         public DerivableNode[] list() {
@@ -80,22 +89,10 @@ public enum TreeNodeSets implements TreeNodeSetFactory.Listable<DerivableNode> {
             return new DerivableNode[]{new Pow3Node()};
         }
     },
-    POW {
-        @Override
-        public DerivableNode[] list() {
-            return new DerivableNode[]{new PowNode()};
-        }
-    },
     LOG {
         @Override
         public DerivableNode[] list() {
             return new DerivableNode[]{new LogNode()};
-        }
-    },
-    CONSTANT {
-        @Override
-        public DerivableNode[] list() {
-            return new DerivableNode[]{new ConstNode()};
         }
     },
     RELU {
@@ -117,7 +114,16 @@ public enum TreeNodeSets implements TreeNodeSetFactory.Listable<DerivableNode> {
         }
     },
 
-        /* PRE-MADE SETS */
+    /* TERMINALS */
+
+    CONSTANT {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new ConstNode()};
+        }
+    },
+
+    /* PRE-MADE SETS */
 
     ARITHMETICS {
         @Override
