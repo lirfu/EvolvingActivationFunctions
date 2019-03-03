@@ -16,19 +16,19 @@ import java.util.HashMap;
 
 public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
     private TrainProcedure tmpl_procedure_;
-    private int[] architecture_;
+    private NetworkArchitecture architecture_;
     private ILogger log_;
 
     private boolean use_memory_;
     private final HashMap<String, Double> memory = new HashMap<>();
 
-    public SREvaluator(TrainProcedure template_procedure, int[] architecture, ILogger log) {
+    public SREvaluator(TrainProcedure template_procedure, NetworkArchitecture architecture, ILogger log) {
         tmpl_procedure_ = template_procedure;
         architecture_ = architecture;
         log_ = log;
     }
 
-    public SREvaluator(TrainProcedure template_procedure, int[] architecture, ILogger log, boolean use_memory) {
+    public SREvaluator(TrainProcedure template_procedure, NetworkArchitecture architecture, ILogger log, boolean use_memory) {
         this(template_procedure, architecture, log);
         use_memory_ = use_memory;
     }
@@ -61,7 +61,7 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
     }
 
     public CommonModel buildModelFrom(DerivableSymbolicTree g) {
-        IActivation[] activations = new IActivation[architecture_.length];
+        IActivation[] activations = new IActivation[architecture_.layersNum()];
         for (int i = 0; i < activations.length; i++)
             activations[i] = new CustomFunction(g.copy());
         return tmpl_procedure_.createModel(architecture_, activations);

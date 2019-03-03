@@ -50,7 +50,7 @@ public class TrainProcedure {
     public TrainProcedure(@NotNull String train_set_path, @NotNull String test_set_path, @NotNull TrainParams.Builder params_builder) throws IOException, InterruptedException {
         train_set_ = train_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_set_path) : StorageManager.loadEntireCsvDataset(train_set_path);
         test_set_ = test_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(test_set_path) : StorageManager.loadEntireCsvDataset(test_set_path);
-        initialize(StorageManager.dsNameFromPath(train_set_path, true), params_builder);
+        initialize(StorageManager.dsNameFromPath(train_set_path, false), params_builder);
     }
 
     /**
@@ -162,10 +162,10 @@ public class TrainProcedure {
     /**
      * Defines and builds the model with internal common parameters.
      *
-     * @param architecture Array of sizes for each hidden layer.
+     * @param architecture Network architecture.
      * @param activations  Array of activation functions. Must define either one function per layer or a single common activation function.
      */
-    public CommonModel createModel(int[] architecture, IActivation[] activations) {
+    public CommonModel createModel(NetworkArchitecture architecture, IActivation[] activations) {
         return new CommonModel(params_, architecture, activations);
     }
 

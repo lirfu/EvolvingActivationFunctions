@@ -217,7 +217,7 @@ public class EvolvingActivationDemo {
                 .train_path(dataset)
                 .test_path(dataset)
                 .experiment_name("Demo_parameters")
-                .architecture(new int[]{30, 30})
+                .architecture(new NetworkArchitecture("fc(30)-fc(30)"))
                 .train_percentage(.8f)
                 .seed(42)
 

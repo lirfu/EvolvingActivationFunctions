@@ -1,8 +1,10 @@
 package hr.fer.zemris.evolveactivationfunction;
 
+import hr.fer.zemris.evolveactivationfunction.layers.ALayerDescriptor;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import org.deeplearning4j.nn.conf.CacheMode;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.inputs.InputType;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -24,15 +26,15 @@ public class CommonModel {
     /**
      * Defines and builds the model.
      *
-     * @param params      Parameters used in the training process.
-     * @param layers      Array of sizes for the hidden layers.
-     * @param activations Array of activation functions. Must define either one common activation function) or one function per layer.
+     * @param params       Parameters used in the training process.
+     * @param architecture Architecture of the network.
+     * @param activations  Array of activation functions. Must define either one common activation function) or one function per layer.
      */
-    public CommonModel(@NotNull TrainParams params, @NotNull int[] layers, @NotNull IActivation[] activations) {
+    public CommonModel(@NotNull TrainParams params, @NotNull NetworkArchitecture architecture, @NotNull IActivation[] activations) {
         boolean common_act = false;
-        if (layers.length > 1 && activations.length == 1) { // Single common activation.
+        if (architecture.layersNum() > 1 && activations.length == 1) { // Single common activation.
             common_act = true;
-        } else if (layers.length > 0 && activations.length == 0 || activations.length != layers.length) {
+        } else if (architecture.layersNum() > 0 && activations.length == 0 || activations.length != architecture.layersNum()) {
             throw new IllegalArgumentException("Activation function ill defined! Please provide one common function or one function per layer.");
         }
 
@@ -64,15 +66,11 @@ public class CommonModel {
         NeuralNetConfiguration.ListBuilder list = conf.list();
         int index = 0;
         int last_size = params.input_size();
-        for (int l : layers) {
-            DenseLayer.Builder lay = new DenseLayer.Builder()
-                    .nIn(last_size)
-                    .nOut(l);
-            if (!common_act) {
-                lay.activation(activations[index]);
-            }
-            list.layer(index++, lay.build());
-            last_size = l;
+        list.setInputType(InputType.feedForward(params.input_size()));
+        for (ALayerDescriptor l : architecture.getLayers()) {
+            list.layer(index, l.constructLayer(last_size, common_act ? activations[0] : activations[index]));
+            last_size = l.outputNum();
+            index++;
         }
         // Define output layer and loss.
         list.layer(index, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)

@@ -1,51 +1,50 @@
 # NN params
-# input_size	50  # Generated
-# output_size	9  # Generated
+input_size	50  # Generated
+output_size	9  # Generated
+epochs_num	10
 batch_size	64
 normalize_features	true
 shuffle_batches	true
-epochs_num	10
 learning_rate	0.002
 decay_rate	0.99
 decay_step	1
 regularization_coef	1.0E-4
 dropout_keep_prob	1.0
 seed	42
-# name	noiseless_all_training_9class  # Generated
+name	noiseless_all_training_9class  # Generated
 train_percentage	0.8
-architecture	30-30
+architecture	fc(30)-fc(30)
 
 # GA params
-population_size	10
+population_size	12
 mutation_prob	0.3
 elitism	true
-taboo_size	10  # Keep population diverse
-taboo_attempts	3
-worker_num	5
-node_set	ALL    # ALL-ARITHMETICS-MATHS-TRIGONOMETRY-EXPONENTIALS-CONSTANT-ACTIVATIONS
+taboo_size	36 # Original was 10
+taboo_attempts	1000
+worker_num	2
+node_set	ALL
 
 # Stop conditions:
 max_iterations	30
 min_fitness	-1.0
-max_time	27000000    # 7.5 hours, till the morning class
 
 # GA operators
 crx.swap_subtree	1
-crx.swap_nodes	1
+crx.swap_nodes		1
 crx.swap_constants	1
 crx.mean_constants	1
 crx.return_random	1
-mut.insert_root	2
+mut.insert_root		2
 mut.insert_terminal	1
 mut.random_constant_set	1
 mut.random_constant_set.min	-1.0
 mut.random_constant_set.delta	2.0
 mut.replace_node	1
 mut.remove_unary	1
-mut.remove_root	1
-mut.swap_order	1
+mut.remove_root		1
+mut.swap_order		1
 
 # Dataset
-train_path	res/noiseless_Karlo/noiseless_all_training_256class.arff
-experiment_name	02_depth_cut_ops_train80
-
+train_path	res/noiseless_Karlo/noiseless_all_training_9class.arff
+test_path	res/noiseless_Karlo/noiseless_all_testing_9class.arff
+experiment_name	00_test_new_arch_parsing

@@ -23,7 +23,7 @@ public class EvolvingActivationParams extends TrainParams {
     private StopCondition condition_ = new StopCondition();
     private int worker_num_;
 
-    private int[] architecture_;
+    private NetworkArchitecture architecture_;
     private String activation_;
     private String[] node_set_;
     private String train_path_;
@@ -37,7 +37,8 @@ public class EvolvingActivationParams extends TrainParams {
                                     boolean elitism, int taboo_size, int taboo_attempts,
                                     LinkedList<Crossover> crossovers, LinkedList<Mutation> mutations,
                                     StopCondition condition, int worker_num,
-                                    int[] architecture, String activation, String[] node_set, String train_path, String test_path, String experiment_name) {
+                                    NetworkArchitecture architecture, String activation, String[] node_set,
+                                    String train_path, String test_path, String experiment_name) {
         super(train_params);
         population_size_ = population_size;
         mutation_prob_ = mutation_prob;
@@ -96,7 +97,7 @@ public class EvolvingActivationParams extends TrainParams {
         return worker_num_;
     }
 
-    public int[] architecture() {
+    public NetworkArchitecture architecture() {
         return architecture_;
     }
 
@@ -128,13 +129,7 @@ public class EvolvingActivationParams extends TrainParams {
     public String serialize() {
         StringBuilder sb = new StringBuilder("# NN params\n" + super.serialize());
         if (architecture_ != null) {
-            sb.append("architecture").append('\t');
-            for (int i = 0; i < architecture_.length; i++) {
-                sb.append(architecture_[i]);
-                if (i < architecture_.length - 1)
-                    sb.append('-');
-            }
-            sb.append('\n');
+            sb.append("architecture").append('\t').append(architecture_.serialize()).append('\n');
         }
         if (activation_ != null)
             sb.append("activation").append('\t').append(activation_).append('\n');
@@ -192,12 +187,8 @@ public class EvolvingActivationParams extends TrainParams {
                 worker_num_ = Integer.parseInt(parts[1]);
                 return true;
             case "architecture":
-                String[] p = parts[1].split("-");
-                architecture_ = new int[p.length];
-                for (int i = 0; i < p.length; i++) {
-                    architecture_[i] = Integer.parseInt(p[i]);
-                }
-                return true;
+                architecture_ = new NetworkArchitecture();
+                return architecture_.parse(parts[1]);
             case "activation":
                 activation_ = parts[1];
                 return true;
@@ -245,7 +236,7 @@ public class EvolvingActivationParams extends TrainParams {
         private LinkedList<Crossover> crossovers_ = new LinkedList<>();
         private LinkedList<Mutation> mutations_ = new LinkedList<>();
         private StopCondition condition_;
-        private int[] architecture_;
+        private NetworkArchitecture architecture_;
         private String activation_;
         private LinkedList<String> node_set_ = new LinkedList<>();
         private String train_path_, test_path_;
@@ -310,7 +301,7 @@ public class EvolvingActivationParams extends TrainParams {
             return this;
         }
 
-        public Builder architecture(int[] arch) {
+        public Builder architecture(NetworkArchitecture arch) {
             architecture_ = arch;
             return this;
         }

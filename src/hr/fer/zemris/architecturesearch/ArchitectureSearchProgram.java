@@ -37,15 +37,15 @@ public class ArchitectureSearchProgram {
         String test_ds = "res/noiseless/5k/9class/noiseless_9class_5k_test.arff";
 
         IActivation common_activation;
-//        common_activation = new ActivationReLU();
+        common_activation = new ActivationReLU();
 
-        DerivableSymbolicTree tree = (DerivableSymbolicTree) new DerivableSymbolicTree.Builder()
-                .setNodeSet(new TreeNodeSet(new Random()))
-//                .add(new ReLUNode())
-                .add(new CustomReLUNode())
-                .add(new InputNode())
-                .build();
-        common_activation = new CustomFunction(tree);
+//        DerivableSymbolicTree tree = (DerivableSymbolicTree) new DerivableSymbolicTree.Builder()
+//                .setNodeSet(new TreeNodeSet(new Random()))
+////                .add(new ReLUNode())
+//                .add(new CustomReLUNode())
+//                .add(new InputNode())
+//                .build();
+//        common_activation = new CustomFunction(tree);
 
         final WorkArbiter arbiter = new WorkArbiter("Experimenter", 3);
 
@@ -81,7 +81,7 @@ public class ArchitectureSearchProgram {
     }
 
     private static final Experiment[] experiments = {
-            new Experiment("00_relu_30_30_customfunc", new int[]{30, 30}, new TrainParams.Builder()
+            new Experiment("01_relu_30_30_changedmodel", "fc(30)-fc(30)", new TrainParams.Builder()
                     .batch_size(32)
                     .epochs_num(2)
                     .learning_rate(1e-3))

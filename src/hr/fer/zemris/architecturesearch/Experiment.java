@@ -1,13 +1,14 @@
 package hr.fer.zemris.architecturesearch;
 
+import hr.fer.zemris.evolveactivationfunction.NetworkArchitecture;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 
 public class Experiment {
     private final String name_;
     private final TrainParams.Builder params_;
-    private final int[] architecture_;
+    private final String architecture_;
 
-    public Experiment(String name, int[] architecture, TrainParams.Builder params) {
+    public Experiment(String name, String architecture, TrainParams.Builder params) {
         name_ = name;
         params_ = params;
         architecture_ = architecture;
@@ -21,7 +22,7 @@ public class Experiment {
         return params_;
     }
 
-    public int[] getArchitecture() {
-        return architecture_;
+    public NetworkArchitecture getArchitecture() {
+        return new NetworkArchitecture(architecture_);
     }
 }
