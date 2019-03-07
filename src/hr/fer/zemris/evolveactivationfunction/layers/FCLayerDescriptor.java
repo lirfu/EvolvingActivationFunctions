@@ -8,25 +8,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FCLayerDescriptor extends ALayerDescriptor {
+    private static Pattern pattern = Pattern.compile("\\((.*)\\)");
     private int neurons_num_;
 
     public FCLayerDescriptor() {
         super("fc");
     }
 
-    public String getName() {
-        return name_;
-    }
-
     @Override
-    public int outputNum() {
-        return neurons_num_;
-    }
-
-    @Override
-    public Layer constructLayer(int input_num, IActivation activation) {
+    public Layer constructLayer(IActivation activation) {
         return new DenseLayer.Builder()
-                .nIn(input_num)
                 .nOut(neurons_num_)
                 .activation(activation)
                 .build();
@@ -35,7 +26,6 @@ public class FCLayerDescriptor extends ALayerDescriptor {
     @Override
     public boolean parse(String line) {
         try {
-            Pattern pattern = Pattern.compile("\\((.*)\\)");
             Matcher matcher = pattern.matcher(line);
             if (matcher.find()) {
                 neurons_num_ = Integer.parseInt(matcher.group(1));

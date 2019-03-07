@@ -65,17 +65,14 @@ public class CommonModel {
         // Define inner layers.
         NeuralNetConfiguration.ListBuilder list = conf.list();
         int index = 0;
-        int last_size = params.input_size();
         list.setInputType(InputType.feedForward(params.input_size()));
         for (ALayerDescriptor l : architecture.getLayers()) {
-            list.layer(index, l.constructLayer(last_size, common_act ? activations[0] : activations[index]));
-            last_size = l.outputNum();
+            list.layer(index, l.constructLayer(common_act ? activations[0] : activations[index]));
             index++;
         }
         // Define output layer and loss.
         list.layer(index, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                 .activation(Activation.SOFTMAX)
-                .nIn(last_size)
                 .nOut(params.output_size())
                 .build());
 

@@ -11,11 +11,11 @@ public abstract class ALayerDescriptor implements ISerializable {
         name_ = name;
     }
 
-    public abstract Layer constructLayer(int input_num, IActivation activation);
+    public abstract Layer constructLayer(IActivation activation);
 
-    public abstract String getName();
-
-    public abstract int outputNum();
+    public String getName() {
+        return name_;
+    }
 
     public abstract ALayerDescriptor newInstance();
 }
