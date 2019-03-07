@@ -71,6 +71,7 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
             return new DerivableNode[]{new TanNode()};
         }
     },
+
     EXP {
         @Override
         public DerivableNode[] list() {
@@ -95,10 +96,35 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
             return new DerivableNode[]{new LogNode()};
         }
     },
+
+    ELU {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new ELUNode()};
+        }
+    },
+    GAUSS {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new GaussNode()};
+        }
+    },
+    LRELU {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new LReLUNode()};
+        }
+    },
     RELU {
         @Override
         public DerivableNode[] list() {
             return new DerivableNode[]{new ReLUNode()};
+        }
+    },
+    SELU {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new SELUNode()};
         }
     },
     SIGMOID {
@@ -106,11 +132,28 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
         public DerivableNode[] list() {
             return new DerivableNode[]{new SigmoidNode()};
         }
-    },
-    GAUSS {
+    }, SOFTPLUS {
         @Override
         public DerivableNode[] list() {
-            return new DerivableNode[]{new GaussNode()};
+            return new DerivableNode[]{new SoftPlusNode()};
+        }
+    },
+    SOFTSIGN {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new SoftSignNode()};
+        }
+    },
+    SWISH {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new SwishNode()};
+        }
+    },
+    TANH {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new TanhNode()};
         }
     },
 
@@ -153,7 +196,8 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
     ACTIVATIONS {
         @Override
         public DerivableNode[] list() {
-            return new DerivableNode[]{RELU.list()[0], SIGMOID.list()[0], GAUSS.list()[0]};
+            return new DerivableNode[]{ELU.list()[0], GAUSS.list()[0], LRELU.list()[0], RELU.list()[0], SELU.list()[0],
+                    SIGMOID.list()[0], SOFTPLUS.list()[0], SOFTSIGN.list()[0], SWISH.list()[0], TANH.list()[0]};
         }
     },
 
