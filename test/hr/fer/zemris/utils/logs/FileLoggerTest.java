@@ -1,5 +1,7 @@
 package hr.fer.zemris.utils.logs;
 
+import org.junit.AfterClass;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -13,6 +15,11 @@ public class FileLoggerTest {
         File f = new File(file);
         f.getParentFile().mkdirs();
         log = new FileLogger(file);
+    }
+
+    @AfterClass
+    public static void cleanUp() {
+        new File(file).delete();
     }
 
 
