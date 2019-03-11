@@ -1,8 +1,10 @@
 package hr.fer.zemris.evolveactivationfunction;
 
-import hr.fer.zemris.evolveactivationfunction.activationfunction.DerivableNode;
-import hr.fer.zemris.evolveactivationfunction.activationfunction.DerivableSymbolicTree;
-import hr.fer.zemris.evolveactivationfunction.nodes.*;
+import hr.fer.zemris.evolveactivationfunction.tree.nodes.DerivableNode;
+import hr.fer.zemris.evolveactivationfunction.tree.nodes.*;
+import hr.fer.zemris.evolveactivationfunction.tree.DerivableSymbolicTree;
+import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSetFactory;
+import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSets;
 import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import org.junit.BeforeClass;

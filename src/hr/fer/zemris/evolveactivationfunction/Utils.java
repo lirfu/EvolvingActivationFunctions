@@ -1,6 +1,6 @@
 package hr.fer.zemris.evolveactivationfunction;
 
-import hr.fer.zemris.evolveactivationfunction.nodes.*;
+import hr.fer.zemris.evolveactivationfunction.tree.nodes.*;
 import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 
 public class Utils {

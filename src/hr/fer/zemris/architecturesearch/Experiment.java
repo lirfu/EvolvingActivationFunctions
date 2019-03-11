@@ -1,6 +1,6 @@
 package hr.fer.zemris.architecturesearch;
 
-import hr.fer.zemris.evolveactivationfunction.NetworkArchitecture;
+import hr.fer.zemris.evolveactivationfunction.nn.NetworkArchitecture;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 
 public class Experiment {

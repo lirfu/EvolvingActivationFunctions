@@ -1,19 +1,11 @@
 package hr.fer.zemris.architecturesearch;
 
-import hr.fer.zemris.evolveactivationfunction.CommonModel;
+import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
 import hr.fer.zemris.evolveactivationfunction.Context;
 import hr.fer.zemris.evolveactivationfunction.StorageManager;
-import hr.fer.zemris.evolveactivationfunction.TrainProcedure;
-import hr.fer.zemris.evolveactivationfunction.activationfunction.CustomFunction;
-import hr.fer.zemris.evolveactivationfunction.activationfunction.DerivableSymbolicTree;
-import hr.fer.zemris.evolveactivationfunction.nodes.AddNode;
-import hr.fer.zemris.evolveactivationfunction.nodes.ConstNode;
-import hr.fer.zemris.evolveactivationfunction.nodes.CustomReLUNode;
-import hr.fer.zemris.evolveactivationfunction.nodes.InputNode;
-import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
+import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedure;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
-import hr.fer.zemris.utils.Counter;
 import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Stopwatch;
 import hr.fer.zemris.utils.Utilities;
@@ -27,7 +19,6 @@ import org.nd4j.linalg.activations.impl.ActivationReLU;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 import java.io.IOException;
-import java.util.Random;
 
 public class ArchitectureSearchProgram {
     // Modifying weights (net2net): https://stackoverflow.com/questions/42806761/initialize-custom-weights-in-deeplearning4j

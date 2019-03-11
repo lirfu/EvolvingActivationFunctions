@@ -1,5 +1,7 @@
 package hr.fer.zemris.evolveactivationfunction;
 
+import hr.fer.zemris.evolveactivationfunction.nn.NetworkArchitecture;
+import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSets;
 import hr.fer.zemris.genetics.Crossover;
 import hr.fer.zemris.genetics.Mutation;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;

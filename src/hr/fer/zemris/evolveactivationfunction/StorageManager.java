@@ -4,6 +4,7 @@ package hr.fer.zemris.evolveactivationfunction;
 import hr.fer.zemris.data.Parser;
 import hr.fer.zemris.data.Reader;
 import hr.fer.zemris.data.UnsafeDatasetDescriptor;
+import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.utils.logs.FileLogger;

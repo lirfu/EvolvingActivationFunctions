@@ -1,5 +1,6 @@
 package hr.fer.zemris.evolveactivationfunction;
 
+import hr.fer.zemris.evolveactivationfunction.nn.NetworkArchitecture;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

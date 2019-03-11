@@ -1,6 +1,5 @@
 package hr.fer.zemris.genetics.symboregression;
 
-import hr.fer.zemris.evolveactivationfunction.TreeNodeSetFactory;
 import hr.fer.zemris.genetics.*;
 import hr.fer.zemris.genetics.algorithms.GenerationTabooAlgorithm;
 import hr.fer.zemris.genetics.selectors.RouletteWheelSelector;
@@ -10,7 +9,6 @@ import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapNodes;
 import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtrees;
 import hr.fer.zemris.genetics.symboregression.mut.*;
 import hr.fer.zemris.genetics.symboregression.nodes.ConstNode;
-import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.LogLevel;

@@ -24,11 +24,11 @@ Project is implemented using [DeepLearning4Java](https://deeplearning4j.org/).
 * Various common utilities.
 
 ## Structures and algorithms
-#### `hr.fer.zemris.evolveactivationfunction.CommonModel`
+#### `hr.fer.zemris.evolveactivationfunction.nn.CommonModel`
 * Wrapper for the neural network, used to hide unnecessary features
 * Softly prevents unwanted model modifications (for comparable results).
 
-#### `hr.fer.zemris.evolveactivationfunction.TrainProcedure`
+#### `hr.fer.zemris.evolveactivationfunction.nn.TrainProcedure`
 * Defines the common procedures and structures used for model training.
 * Ensures comparability of experiment results.
 

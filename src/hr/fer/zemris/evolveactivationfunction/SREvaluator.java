@@ -1,7 +1,10 @@
 package hr.fer.zemris.evolveactivationfunction;
 
-import hr.fer.zemris.evolveactivationfunction.activationfunction.CustomFunction;
-import hr.fer.zemris.evolveactivationfunction.activationfunction.DerivableSymbolicTree;
+import hr.fer.zemris.evolveactivationfunction.tree.DerivableSymbolicTree;
+import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
+import hr.fer.zemris.evolveactivationfunction.nn.CustomFunction;
+import hr.fer.zemris.evolveactivationfunction.nn.NetworkArchitecture;
+import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedure;
 import hr.fer.zemris.genetics.AEvaluator;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.utils.Pair;

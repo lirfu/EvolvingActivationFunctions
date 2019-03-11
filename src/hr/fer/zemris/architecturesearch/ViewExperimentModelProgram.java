@@ -1,6 +1,6 @@
 package hr.fer.zemris.architecturesearch;
 
-import hr.fer.zemris.evolveactivationfunction.TrainProcedure;
+import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedure;
 import hr.fer.zemris.utils.commandline.ACommand;
 import hr.fer.zemris.utils.commandline.CommandLine;
 import org.deeplearning4j.ui.api.UIServer;
