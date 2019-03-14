@@ -15,6 +15,7 @@ import java.util.LinkedList;
 public class EvolvingActivationParams extends TrainParams {
     private static ISerializable[] AVAILABLE_OPERATORS;
 
+    private AlgorithmType algorithm_;
     private Integer population_size_;
     private Double mutation_prob_;
     private boolean elitism_;
@@ -35,13 +36,14 @@ public class EvolvingActivationParams extends TrainParams {
     public EvolvingActivationParams() {
     }
 
-    public EvolvingActivationParams(TrainParams train_params, int population_size, double mutation_prob,
+    public EvolvingActivationParams(TrainParams train_params, AlgorithmType algorithm, int population_size, double mutation_prob,
                                     boolean elitism, int taboo_size, int taboo_attempts,
                                     LinkedList<Crossover> crossovers, LinkedList<Mutation> mutations,
                                     StopCondition condition, int worker_num,
                                     NetworkArchitecture architecture, String activation, String[] node_set,
                                     String train_path, String test_path, String experiment_name) {
         super(train_params);
+        algorithm_ = algorithm;
         population_size_ = population_size;
         mutation_prob_ = mutation_prob;
         elitism_ = elitism;
@@ -61,6 +63,10 @@ public class EvolvingActivationParams extends TrainParams {
 
     public static void initialize(ISerializable[] available_nodes) {
         AVAILABLE_OPERATORS = available_nodes;
+    }
+
+    public AlgorithmType getAlgorithm() {
+        return algorithm_;
     }
 
     public int population_size() {
@@ -136,6 +142,7 @@ public class EvolvingActivationParams extends TrainParams {
         if (activation_ != null)
             sb.append("activation").append('\t').append(activation_).append('\n');
         sb.append("\n# GA params\n")
+                .append("algorithm").append('\t').append(algorithm_).append('\n')
                 .append("population_size").append('\t').append(population_size_).append('\n')
                 .append("mutation_prob").append('\t').append(mutation_prob_).append('\n')
                 .append("elitism").append('\t').append(elitism_).append('\n')
@@ -170,6 +177,8 @@ public class EvolvingActivationParams extends TrainParams {
         switch (parts[0]) {
             case "#":
                 return true;
+            case "algorithm":
+                algorithm_ = AlgorithmType.valueOf(parts[1].toUpperCase());
             case "population_size":
                 population_size_ = Integer.parseInt(parts[1]);
                 return true;
@@ -229,7 +238,12 @@ public class EvolvingActivationParams extends TrainParams {
         return false;
     }
 
+    public enum AlgorithmType {
+        GENERATION, GENERATION_TABOO, ELIMINATION
+    }
+
     public static class Builder extends TrainParams.Builder {
+        private AlgorithmType algorithm_ = AlgorithmType.GENERATION_TABOO;
         private int population_size_;
         private double mutation_prob_ = 0.1;
         private boolean elitism_ = true;
@@ -257,10 +271,15 @@ public class EvolvingActivationParams extends TrainParams {
             if (node_set_.isEmpty())
                 throw new IllegalStateException("Node set must be specified!");
 
-            return new EvolvingActivationParams(super.build(), population_size_, mutation_prob_,
+            return new EvolvingActivationParams(super.build(), algorithm_, population_size_, mutation_prob_,
                     elitism_, taboo_size_, taboo_attempts_, crossovers_, mutations_, condition_, worker_num_,
                     architecture_, activation_, node_set_.toArray(new String[]{}),
                     train_path_, test_path_, experiment_name_);
+        }
+
+        public Builder algorithm(AlgorithmType algorithm) {
+            algorithm_ = algorithm;
+            return this;
         }
 
         public Builder population_size(int size) {

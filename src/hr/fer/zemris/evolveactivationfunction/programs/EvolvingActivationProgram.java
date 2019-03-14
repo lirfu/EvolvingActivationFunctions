@@ -10,6 +10,8 @@ import hr.fer.zemris.evolveactivationfunction.tree.DerivableSymbolicTree;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSetFactory;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSets;
 import hr.fer.zemris.genetics.*;
+import hr.fer.zemris.genetics.algorithms.EliminationAlgorithm;
+import hr.fer.zemris.genetics.algorithms.GenerationAlgorithm;
 import hr.fer.zemris.genetics.algorithms.GenerationTabooAlgorithm;
 import hr.fer.zemris.genetics.selectors.RouletteWheelSelector;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
@@ -165,11 +167,29 @@ public class EvolvingActivationProgram {
      */
     private static Algorithm buildAlgorithm(EvolvingActivationParams params, TreeNodeSet set, Initializer init,
                                             SREvaluator eval, Random r, ILogger log) throws IOException {
-        GenerationTabooAlgorithm.Builder b = new GenerationTabooAlgorithm.Builder();
-        b.setTabooAttempts(params.taboo_attempts())
-                .setTabooSize(params.taboo_size())
-                .setElitism(params.isElitism())
-                .setMutationProbability(params.mutation_prob())
+        // Algorithm specific params.
+        Algorithm.Builder a;
+        switch (params.getAlgorithm()) {
+            // TODO GenerationAlgorithm needs some love.
+//            case GENERATION:
+//                a = new GenerationAlgorithm.Builder();
+//                break;
+            case GENERATION_TABOO:
+                a = new GenerationTabooAlgorithm.Builder();
+                ((GenerationTabooAlgorithm.Builder) a)
+                        .setTabooAttempts(params.taboo_attempts())
+                        .setTabooSize(params.taboo_size())
+                        .setElitism(params.isElitism());
+                break;
+            // TODO EliminationAlgorithm needs some love.
+//            case ELIMINATION:
+//                a = new EliminationAlgorithm.Builder();
+//                break;
+            default:
+                throw new IllegalArgumentException("Unknown algorithm: " + params.getAlgorithm());
+        }
+        // Generic algorithm params.
+        a.setMutationProbability(params.mutation_prob())
                 .setPopulationSize(params.population_size())
                 .setTopOptimaNumber(5)
 
@@ -183,10 +203,10 @@ public class EvolvingActivationProgram {
                 .setNumberOfWorkers(params.worker_num())
                 .setRandom(r);
         for (Crossover crx : params.crossovers())
-            b.addCrossover(crx);
+            a.addCrossover(crx);
         for (Mutation mut : params.mutations())
-            b.addMutation(mut);
-        return b.build();
+            a.addMutation(mut);
+        return a.build();
     }
 
     /**

@@ -16,6 +16,7 @@ train_percentage	0.8
 architecture	fc(30)-fc(30)
 
 # GA params
+algorithm GENERATION_TABOO
 population_size	12
 mutation_prob	0.3
 elitism	true
