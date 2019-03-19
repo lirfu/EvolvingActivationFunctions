@@ -3,9 +3,13 @@ package hr.fer.zemris.architecturesearch;
 import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
 import hr.fer.zemris.evolveactivationfunction.Context;
 import hr.fer.zemris.evolveactivationfunction.StorageManager;
+import hr.fer.zemris.evolveactivationfunction.nn.NetworkArchitecture;
 import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedure;
+import hr.fer.zemris.experiments.Experiment;
+import hr.fer.zemris.experiments.GridSearch;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
+import hr.fer.zemris.utils.IBuilder;
 import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Stopwatch;
 import hr.fer.zemris.utils.Utilities;
@@ -21,8 +25,6 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import java.io.IOException;
 
 public class ArchitectureSearchProgram {
-    // Modifying weights (net2net): https://stackoverflow.com/questions/42806761/initialize-custom-weights-in-deeplearning4j
-
     public static void main(String[] args) throws IOException, InterruptedException {
         String train_ds = "res/noiseless/5k/9class/noiseless_9class_5k_train.arff";
         String test_ds = "res/noiseless/5k/9class/noiseless_9class_5k_test.arff";
@@ -30,6 +32,7 @@ public class ArchitectureSearchProgram {
         IActivation common_activation;
         common_activation = new ActivationReLU();
 
+//        // Use custom activation from a tree.
 //        DerivableSymbolicTree tree = (DerivableSymbolicTree) new DerivableSymbolicTree.Builder()
 //                .setNodeSet(new TreeNodeSet(new Random()))
 ////                .add(new ReLUNode())
@@ -38,13 +41,28 @@ public class ArchitectureSearchProgram {
 //                .build();
 //        common_activation = new CustomFunction(tree);
 
+        // Paralelization.
         final WorkArbiter arbiter = new WorkArbiter("Experimenter", 3);
 
-        for (Experiment e : experiments) {
+        // Create a common instance of train params.
+        String experiment_name = "test_gs";
+        TrainParams.Builder common_params = new TrainParams.Builder()
+                .name(experiment_name)
+                .epochs_num(1)
+                .learning_rate(0.001)
+                .regularization_coef(1e-4);
+        String architecture = "fc(30)-fc(30)";
+
+        // Create grid search experiments.
+        Iterable<Experiment<TrainParams>> experiments = new GridSearch<TrainParams>(experiment_name)
+                .buildGridSearchExperiments(common_params, grid_search_modifiers);
+
+        // Run experiments.
+        for (Experiment<TrainParams> e : experiments) {
             arbiter.postWork(() -> {
                 try {
-                    TrainProcedure train_procedure = new TrainProcedure(train_ds, test_ds, e.getParams());
-                    CommonModel model = train_procedure.createModel(e.getArchitecture(), new IActivation[]{common_activation});
+                    TrainProcedure train_procedure = new TrainProcedure(train_ds, test_ds, new TrainParams.Builder().cloneFrom(e.getParams()));
+                    CommonModel model = train_procedure.createModel(new NetworkArchitecture(architecture), new IActivation[]{common_activation});
                     Context context = train_procedure.createContext(e.getName());
 
                     ILogger log = new MultiLogger(new StdoutLogger(), StorageManager.createTrainingLogger(context)); // Log to stdout.
@@ -71,129 +89,61 @@ public class ArchitectureSearchProgram {
         arbiter.waitOn(arbiter.getFinishedCondition());
     }
 
-    private static final Experiment[] experiments = {
-            new Experiment("01_relu_30_30_changedmodel", "fc(30)-fc(30)", new TrainParams.Builder()
-                    .batch_size(32)
-                    .epochs_num(2)
-                    .learning_rate(1e-3))
-//            /* 30-30 */
-//            new Experiment("01_relu_30_30_overfit", new int[]{30, 30}, new TrainParams.Builder()
-//                    .batch_size(32)
-//                    .epochs_num(100)
-//                    .learning_rate(1e-3)),
-////            new Experiment("02_relu_30_30_overfit_normfeat", new int[]{30, 30}, new TrainParams.Builder()
-////                    .batch_size(32)
-////                    .normalize_features(true)
-////                    .epochs_num(100)
-////                    .learning_rate(1e-3)),
-//            new Experiment("03_relu_30_30_overfit_normfeat_shflb", new int[]{30, 30}, new TrainParams.Builder()
-//                    .batch_size(32)
-//                    .normalize_features(true)
-//                    .shuffle_batches(true)
-//                    .epochs_num(100)
-//                    .learning_rate(1e-3)),
-////            new Experiment("04_relu_30_30_l2_long", new int[]{30, 30}, new TrainParams.Builder()
-////                    .batch_size(32)
-////                    .normalize_features(true)
-////                    .shuffle_batches(true)
-////                    .epochs_num(100)
-////                    .learning_rate(1e-3)
-////                    .regularization_coef(1e-4)),
-//            new Experiment("05_relu_30_30_l2", new int[]{30, 30}, new TrainParams.Builder()
-//                    .batch_size(32)
-//                    .normalize_features(true)
-//                    .shuffle_batches(true)
-//                    .epochs_num(80)
-//                    .learning_rate(1e-3)
-//                    .regularization_coef(1e-4)),
-//            new Experiment("06_relu_30_30_l2_decay", new int[]{30, 30}, new TrainParams.Builder()
-//                    .batch_size(64)
-//                    .normalize_features(true)
-//                    .shuffle_batches(true)
-//                    .epochs_num(80)
-//                    .learning_rate(1e-3)
-//                    .regularization_coef(1e-4)
-//                    .decay_rate(1 - 1e-2)
-//                    .decay_step(1)),
-//
-//            /* 50-50 */
-//            new Experiment("07_relu_50_50_overfit", new int[]{50, 50}, new TrainParams.Builder()
-//                    .batch_size(32)
-//                    .epochs_num(100)
-//                    .learning_rate(1e-3)),
-////            new Experiment("08_relu_50_50_overfit_normfeat", new int[]{50, 50}, new TrainParams.Builder()
-////                    .batch_size(32)
-////                    .normalize_features(true)
-////                    .epochs_num(100)
-////                    .learning_rate(1e-3)),
-//            new Experiment("09_relu_50_50_overfit_normfeat_shflb", new int[]{50, 50}, new TrainParams.Builder()
-//                    .batch_size(32)
-//                    .normalize_features(true)
-//                    .shuffle_batches(true)
-//                    .epochs_num(100)
-//                    .learning_rate(1e-3)),
-////            new Experiment("10_relu_50_50_l2_long", new int[]{50, 50}, new TrainParams.Builder()
-////                    .batch_size(32)
-////                    .normalize_features(true)
-////                    .shuffle_batches(true)
-////                    .epochs_num(100)
-////                    .learning_rate(1e-3)
-////                    .regularization_coef(1e-4)),
-//            new Experiment("11_relu_50_50_l2", new int[]{50, 50}, new TrainParams.Builder()
-//                    .batch_size(32)
-//                    .normalize_features(true)
-//                    .shuffle_batches(true)
-//                    .epochs_num(80)
-//                    .learning_rate(1e-3)
-//                    .regularization_coef(1e-4)),
-//            new Experiment("12_relu_50_50_l2_decay", new int[]{50, 50}, new TrainParams.Builder()
-//                    .batch_size(64)
-//                    .normalize_features(true)
-//                    .shuffle_batches(true)
-//                    .epochs_num(80)
-//                    .learning_rate(1e-3)
-//                    .regularization_coef(1e-4)
-//                    .decay_rate(1 - 1e-2)
-//                    .decay_step(1)),
-//
-//            /* 30-50-50 */
-//            new Experiment("13_relu_30_50_30_overfit", new int[]{30, 50, 30}, new TrainParams.Builder()
-//                    .batch_size(32)
-//                    .epochs_num(100)
-//                    .learning_rate(1e-3)),
-////            new Experiment("14_relu_30_50_30_overfit_normfeat", new int[]{30, 50, 30}, new TrainParams.Builder()
-////                    .batch_size(32)
-////                    .normalize_features(true)
-////                    .epochs_num(100)
-////                    .learning_rate(1e-3)),
-//            new Experiment("15_relu_30_50_30_overfit_normfeat_shflb", new int[]{30, 50, 30}, new TrainParams.Builder()
-//                    .batch_size(32)
-//                    .normalize_features(true)
-//                    .shuffle_batches(true)
-//                    .epochs_num(100)
-//                    .learning_rate(1e-3)),
-////            new Experiment("16_relu_30_50_30_l2_long", new int[]{30, 50, 30}, new TrainParams.Builder()
-////                    .batch_size(32)
-////                    .normalize_features(true)
-////                    .shuffle_batches(true)
-////                    .epochs_num(100)
-////                    .learning_rate(1e-3)
-////                    .regularization_coef(1e-4)),
-//            new Experiment("17_relu_30_50_30_l2", new int[]{30, 50, 30}, new TrainParams.Builder()
-//                    .batch_size(32)
-//                    .normalize_features(true)
-//                    .shuffle_batches(true)
-//                    .epochs_num(80)
-//                    .learning_rate(1e-3)
-//                    .regularization_coef(1e-4)),
-//            new Experiment("18_relu_30_50_30_l2_decay", new int[]{30, 50, 30}, new TrainParams.Builder()
-//                    .batch_size(64)
-//                    .normalize_features(true)
-//                    .shuffle_batches(true)
-//                    .epochs_num(80)
-//                    .learning_rate(1e-3)
-//                    .regularization_coef(1e-4)
-//                    .decay_rate(1 - 1e-2)
-//                    .decay_step(1))
+    private static final GridSearch.IModifier[] grid_search_modifiers = {
+            new GridSearch.IModifier<TrainParams>() {
+                @Override
+                public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                    return ((TrainParams.Builder) p).normalize_features((Boolean) value);
+                }
+
+                @Override
+                public Object[] getValues() {
+                    return new Boolean[]{false, true};
+                }
+            },
+            new GridSearch.IModifier<TrainParams>() {
+                @Override
+                public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                    return ((TrainParams.Builder) p).shuffle_batches((Boolean) value);
+                }
+
+                @Override
+                public Object[] getValues() {
+                    return new Boolean[]{false, true};
+                }
+            },
+            new GridSearch.IModifier<TrainParams>() {
+                @Override
+                public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                    return ((TrainParams.Builder) p).batch_norm((Boolean) value);
+                }
+
+                @Override
+                public Object[] getValues() {
+                    return new Boolean[]{false, true};
+                }
+            },
+            new GridSearch.IModifier<TrainParams>() {
+                @Override
+                public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                    return ((TrainParams.Builder) p).regularization_coef((Double) value);
+                }
+
+                @Override
+                public Object[] getValues() {
+                    return new Double[]{0.1, 0.01, 0.001};
+                }
+            },
+            new GridSearch.IModifier<TrainParams>() {
+                @Override
+                public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                    return ((TrainParams.Builder) p).learning_rate((Double) value);
+                }
+
+                @Override
+                public Object[] getValues() {
+                    return new Double[]{0.1, 0.01, 0.001};
+                }
+            }
     };
 }

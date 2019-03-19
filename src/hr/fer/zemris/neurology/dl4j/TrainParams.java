@@ -1,5 +1,6 @@
 package hr.fer.zemris.neurology.dl4j;
 
+import hr.fer.zemris.utils.IBuilder;
 import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Utilities;
 import org.jetbrains.annotations.NotNull;
@@ -218,11 +219,11 @@ public class TrainParams implements ISerializable {
         return serialize();
     }
 
-    public static class Builder {
+    public static class Builder implements IBuilder<TrainParams> {
         private int input_size_ = -1, output_size_ = -1;
         private int epochs_num_ = -1, batch_size_ = 1;
         private boolean shuffle_batches_ = false, normalize_features_ = false, batch_norm_ = false;
-        private double learning_rate_ = 0.1, decay_rate_ = 1;
+        private double learning_rate_ = 1, decay_rate_ = 1;
         private int decay_step_ = 1;
         private double regularization_coef_ = 0, dropout_keep_prob_ = 1;
         private long seed_ = 42;
@@ -237,7 +238,11 @@ public class TrainParams implements ISerializable {
                 throw new IllegalArgumentException("Epochs number must be defined!");
             }
 
-            return new TrainParams(input_size_, output_size_, epochs_num_, batch_size_, normalize_features_, shuffle_batches_, batch_norm_, learning_rate_, decay_rate_, decay_step_, regularization_coef_, dropout_keep_prob_, seed_, name_, train_percentage_);
+            return new TrainParams(input_size_, output_size_, epochs_num_, batch_size_,
+                    normalize_features_, shuffle_batches_, batch_norm_,
+                    learning_rate_, decay_rate_, decay_step_,
+                    regularization_coef_, dropout_keep_prob_,
+                    seed_, name_, train_percentage_);
         }
 
         public Builder input_size(int size) {
