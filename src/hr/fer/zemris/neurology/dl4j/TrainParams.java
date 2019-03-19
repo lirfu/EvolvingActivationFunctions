@@ -1,9 +1,13 @@
 package hr.fer.zemris.neurology.dl4j;
 
+import hr.fer.zemris.experiments.GridSearch;
 import hr.fer.zemris.utils.IBuilder;
 import hr.fer.zemris.utils.ISerializable;
+import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Utilities;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedList;
 
 /**
  * Immutable wrapper for train parameters.
@@ -18,6 +22,8 @@ public class TrainParams implements ISerializable {
     private long seed_;
     private String name_;
     private float train_percentage_;
+
+    protected LinkedList<Pair<String, LinkedList<Object>>> modifiable_params = new LinkedList<>();
 
     /**
      * Create an empty params object. Used when parsing from a string.
@@ -217,6 +223,129 @@ public class TrainParams implements ISerializable {
     @Override
     public String toString() {
         return serialize();
+    }
+
+    public GridSearch.IModifier<TrainParams>[] getModifiers() {
+        GridSearch.IModifier<TrainParams>[] mods = new GridSearch.IModifier[modifiable_params.size()];
+        int i = 0;
+        for (Pair<String, LinkedList<Object>> p : modifiable_params) {
+            GridSearch.IModifier<TrainParams> m;
+            switch (p.getKey()) {
+                case "epochs_num":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).epochs_num((Integer) value);
+                        }
+                    };
+                    break;
+                case "batch_size":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).batch_size((Integer) value);
+                        }
+                    };
+                    break;
+                case "normalize_features":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).normalize_features((Boolean) value);
+                        }
+                    };
+                    break;
+                case "shuffle_batches":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).shuffle_batches((Boolean) value);
+                        }
+                    };
+                    break;
+                case "batch_norm":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).batch_norm((Boolean) value);
+                        }
+                    };
+                    break;
+                case "learning_rate":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).learning_rate((Double) value);
+                        }
+                    };
+                    break;
+                case "decay_rate":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).decay_rate((Double) value);
+                        }
+                    };
+                    break;
+                case "decay_step":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).decay_step((Integer) value);
+                        }
+                    };
+                    break;
+                case "regularization_coef":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).regularization_coef((Double) value);
+                        }
+                    };
+                    break;
+                case "dropout_keep_prob":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).dropout_keep_prob((Double) value);
+                        }
+                    };
+                    break;
+                case "seed":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).seed((Long) value);
+                        }
+                    };
+                    break;
+                case "train_percentage":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((Builder) p).train_percentage((Float) value);
+                        }
+                    };
+                    break;
+                default:
+                    continue;
+            }
+            mods[i++] = m;
+        }
+        return mods;
+    }
+
+    protected static abstract class TrainParamsModifier implements GridSearch.IModifier<TrainParams> {
+        private LinkedList<Object> values;
+
+        public TrainParamsModifier(LinkedList<Object> vals) {
+            values = vals;
+        }
+
+        @Override
+        public Object[] getValues() {
+            return values.toArray();
+        }
     }
 
     public static class Builder implements IBuilder<TrainParams> {

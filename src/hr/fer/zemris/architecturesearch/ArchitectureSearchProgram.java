@@ -142,7 +142,7 @@ public class ArchitectureSearchProgram {
 
                 @Override
                 public Object[] getValues() {
-                    return new Double[]{0.1, 0.01, 0.001};
+                    return new Double[]{0.01, 0.005, 0.001};
                 }
             }
     };

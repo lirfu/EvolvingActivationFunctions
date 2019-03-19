@@ -9,9 +9,9 @@ import hr.fer.zemris.evolveactivationfunction.tree.nodes.ConstNode;
 import hr.fer.zemris.evolveactivationfunction.tree.DerivableSymbolicTree;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSetFactory;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSets;
+import hr.fer.zemris.experiments.Experiment;
+import hr.fer.zemris.experiments.GridSearch;
 import hr.fer.zemris.genetics.*;
-import hr.fer.zemris.genetics.algorithms.EliminationAlgorithm;
-import hr.fer.zemris.genetics.algorithms.GenerationAlgorithm;
 import hr.fer.zemris.genetics.algorithms.GenerationTabooAlgorithm;
 import hr.fer.zemris.genetics.selectors.RouletteWheelSelector;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
@@ -25,6 +25,7 @@ import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapNodes;
 import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtrees;
 import hr.fer.zemris.genetics.symboregression.mut.*;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
+import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Triple;
@@ -75,13 +76,11 @@ public class EvolvingActivationProgram {
                 new MutSRRandomConstantSet(0, 1), new MutSRRandomConstantSetInt(0, 1),
                 new MutSRRandomConstantAdd(1), new MutSRRemoveRoot(), new MutSRRemoveUnary()
         });
-        // Build or load the params.
-        EvolvingActivationParams params;
-        Context c;
 
+        // If params not given, create template and exit.
         if (args.length == 0 || !new File(args[0]).exists()) { // Generate the example params.
-            params = create_example_params(DATASET_PATH, r, set);
-            c = new Context(params.name(), params.experiment_name());
+            EvolvingActivationParams params = create_example_params(DATASET_PATH, r, set);
+            Context c = new Context(params.name(), params.experiment_name());
             StorageManager.storeEvolutionParams(params, c);
 
             System.err.println("Config file not specified!");
@@ -91,16 +90,31 @@ public class EvolvingActivationProgram {
             System.err.println("Before usage, edit the dataset paths!");
             System.err.println("Usage: ./executable <config-file>");
             System.exit(1);
-        } else { // Load from file.
-            params = StorageManager.loadEvolutionParameters(args[0]);
         }
+        // Load common params from file.
+        EvolvingActivationParams common_params = StorageManager.loadEvolutionParameters(args[0]);
 
+        GridSearch.IModifier<TrainParams>[] mods = common_params.getModifiers();
+
+        if (mods.length == 0) { // Just use parameters.
+            run(common_params, set, tree_init, r);
+        } else {// Grid search parameters.
+            GridSearch<TrainParams> s = new GridSearch<>(common_params.experiment_name());
+            Iterable<Experiment<TrainParams>> it = s.buildGridSearchExperiments(
+                    new EvolvingActivationParams.Builder().cloneFrom(common_params), mods);
+            for (Experiment<TrainParams> params : it) {
+                run((EvolvingActivationParams) params.getParams(), set, tree_init, r);
+            }
+        }
+    }
+
+    private static void run(EvolvingActivationParams params, TreeNodeSet set, SRGenericInitializer tree_init, Random r) throws IOException, InterruptedException {
         // Define node set.
         set.load(TreeNodeSetFactory.build(new Random(params.seed()), params.node_set()));
 
         // Define the training procedure.
         TrainProcedure train_proc = new TrainProcedure(params);
-        c = train_proc.createContext(params.experiment_name());
+        Context c = train_proc.createContext(params.experiment_name());
 
         // Store params to experiment result folder.
         StorageManager.storeEvolutionParams(params, c);

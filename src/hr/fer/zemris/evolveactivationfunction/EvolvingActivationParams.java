@@ -2,13 +2,18 @@ package hr.fer.zemris.evolveactivationfunction;
 
 import hr.fer.zemris.evolveactivationfunction.nn.NetworkArchitecture;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSets;
+import hr.fer.zemris.experiments.GridSearch;
 import hr.fer.zemris.genetics.Crossover;
 import hr.fer.zemris.genetics.Mutation;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
+import hr.fer.zemris.utils.IBuilder;
 import hr.fer.zemris.utils.ISerializable;
+import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Utilities;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 
@@ -174,9 +179,8 @@ public class EvolvingActivationParams extends TrainParams {
         if (super.parse(line)) return true;
 
         String[] parts = line.split(Utilities.KEY_VALUE_REGEX);
+        if (parts[0].equals("#")) return true;
         switch (parts[0]) {
-            case "#":
-                return true;
             case "algorithm":
                 algorithm_ = AlgorithmType.valueOf(parts[1].toUpperCase());
             case "population_size":
@@ -236,6 +240,137 @@ public class EvolvingActivationParams extends TrainParams {
         }
 
         return false;
+    }
+
+    @Override
+    public GridSearch.IModifier<TrainParams>[] getModifiers() {
+        GridSearch.IModifier<TrainParams>[] mods = super.getModifiers();
+
+        // Find where it stopped filling modificators.
+        int i;
+        for (i = 0; i < mods.length; i++)
+            if (mods[i] == null)
+                break;
+
+        // If already filled, return.
+        if (i == mods.length - 1) return mods;
+
+        for (Pair<String, LinkedList<Object>> p : modifiable_params) {
+            GridSearch.IModifier<TrainParams> m;
+            switch (p.getKey()) {
+                case "algorithm":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).algorithm(AlgorithmType.valueOf(((String) value).toUpperCase()));
+                        }
+                    };
+                    break;
+                case "population_size":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).population_size((Integer) value);
+                        }
+                    };
+                    break;
+                case "mutation_prob":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).mutation_prob((Double) value);
+                        }
+                    };
+                    break;
+                case "elitism":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).elitism((Boolean) value);
+                        }
+                    };
+                    break;
+                case "taboo_size":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).taboo_size((Integer) value);
+                        }
+                    };
+                    break;
+                case "taboo_attempts":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).taboo_attempts((Integer) value);
+                        }
+                    };
+                    break;
+                case "worker_num":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).worker_num((Integer) value);
+                        }
+                    };
+                    break;
+                case "architecture":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).architecture(new NetworkArchitecture((String) value));
+                        }
+                    };
+                    break;
+                case "activation":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).activation((String) value);
+                        }
+                    };
+                    break;
+                case "node_set":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            EvolvingActivationParams.Builder par = ((EvolvingActivationParams.Builder) p);
+                            par.node_set_ = new LinkedList<>();
+                            par.node_set_.addAll(Arrays.asList((String[]) value));
+                            return par;
+                        }
+                    };
+                    break;
+                case "train_path":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).train_path((String) value);
+                        }
+                    };
+                    break;
+                case "test_path":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).test_path((String) value);
+                        }
+                    };
+                    break;
+                case "experiment_name":
+                    m = new TrainParamsModifier(p.getVal()) {
+                        @Override
+                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                            return ((EvolvingActivationParams.Builder) p).experiment_name((String) value);
+                        }
+                    };
+                    break;
+                default:
+                    continue;
+            }
+            mods[i++] = m;
+        }
+        return mods;
     }
 
     public enum AlgorithmType {
@@ -355,6 +490,29 @@ public class EvolvingActivationParams extends TrainParams {
 
         public Builder worker_num(int num) {
             worker_num_ = num;
+            return this;
+        }
+
+        public Builder cloneFrom(@NotNull EvolvingActivationParams p) {
+            algorithm_ = p.algorithm_;
+            population_size_ = p.population_size_;
+            mutation_prob_ = p.mutation_prob_;
+            elitism_ = p.elitism_;
+            taboo_size_ = p.taboo_size_;
+            taboo_attempts_ = p.taboo_attempts_;
+            crossovers_ = new LinkedList<>(p.crossovers_);
+            mutations_ = new LinkedList<>(p.mutations_);
+            condition_ = p.condition_;
+            architecture_ = p.architecture_;
+            activation_ = p.activation_;
+
+            node_set_ = new LinkedList<>();
+            node_set_.addAll(Arrays.asList(p.node_set_));
+
+            train_path_ = p.train_path_;
+            test_path_ = p.test_path_;
+            experiment_name_ = p.experiment_name_;
+            worker_num_ = p.worker_num_;
             return this;
         }
     }

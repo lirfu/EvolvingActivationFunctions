@@ -13,10 +13,10 @@ public class GridSearch<T> {
         this.name = name;
     }
 
-    private void mod_r(int m_i, IModifier<T>[] mods, Counter ctr, LinkedList<Experiment<T>> exs, IBuilder<T> p) {
+    private void mod_r(int m_i, IModifier<T>[] mods, Counter ctr, LinkedList<Experiment<T>> exs, IBuilder p) {
         if (m_i >= mods.length) {
             ctr.increment();
-            exs.add(new Experiment<>(name + File.separator + ctr.value(), p.build()));
+            exs.add(new Experiment(name + File.separator + ctr.value(), p.build()));
             return;
         }
 
@@ -26,7 +26,7 @@ public class GridSearch<T> {
         }
     }
 
-    public Iterable<Experiment<T>> buildGridSearchExperiments(IBuilder<T> p, IModifier<T>[] modifiers) {
+    public Iterable<Experiment<T>> buildGridSearchExperiments(IBuilder p, IModifier<T>[] modifiers) {
         LinkedList<Experiment<T>> exs = new LinkedList<>();
         mod_r(0, modifiers, new Counter(), exs, p);
         return exs;
