@@ -4,15 +4,13 @@ import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Utilities;
 import org.jetbrains.annotations.NotNull;
 
-import javax.rmi.CORBA.Util;
-
 /**
  * Immutable wrapper for train parameters.
  */
 public class TrainParams implements ISerializable {
     private int input_size_, output_size_;
     private int epochs_num_, batch_size_;
-    private boolean normalize_features_, shuffle_batches_;
+    private boolean normalize_features_, shuffle_batches_, batch_norm_;
     private double learning_rate_, decay_rate_;
     private int decay_step_;
     private double regularization_coef_, dropout_keep_prob_;
@@ -26,13 +24,14 @@ public class TrainParams implements ISerializable {
     public TrainParams() {
     }
 
-    public TrainParams(int input_size, int output_size, int epochs_num, int batch_size, boolean normalize_features, boolean shuffle_batches, double learning_rate, double decay_rate, int decay_step, double regularization_coef, double dropout_keep_prob, long seed, String name, float train_percentage) {
+    public TrainParams(int input_size, int output_size, int epochs_num, int batch_size, boolean normalize_features, boolean shuffle_batches, boolean batch_norm, double learning_rate, double decay_rate, int decay_step, double regularization_coef, double dropout_keep_prob, long seed, String name, float train_percentage) {
         input_size_ = input_size;
         output_size_ = output_size;
         epochs_num_ = epochs_num;
         batch_size_ = batch_size;
         normalize_features_ = normalize_features;
         shuffle_batches_ = shuffle_batches;
+        batch_norm_ = batch_norm;
         learning_rate_ = learning_rate;
         decay_rate_ = decay_rate;
         decay_step_ = decay_step;
@@ -50,6 +49,7 @@ public class TrainParams implements ISerializable {
         batch_size_ = p.batch_size_;
         normalize_features_ = p.normalize_features_;
         shuffle_batches_ = p.shuffle_batches_;
+        batch_norm_ = p.batch_norm_;
         learning_rate_ = p.learning_rate_;
         decay_rate_ = p.decay_rate_;
         decay_step_ = p.decay_step_;
@@ -90,6 +90,10 @@ public class TrainParams implements ISerializable {
 
     public boolean shuffle_batches() {
         return shuffle_batches_;
+    }
+
+    public boolean batch_norm() {
+        return batch_norm_;
     }
 
     public double learning_rate() {
@@ -137,7 +141,7 @@ public class TrainParams implements ISerializable {
      */
     @Override
     public boolean parse(String line) {
-        String[] parts = line.split(Utilities.PARSER_REGEX);
+        String[] parts = line.split(Utilities.KEY_VALUE_REGEX);
         switch (parts[0]) {
             case "input_size":
                 input_size_ = Integer.parseInt(parts[1]);
@@ -156,6 +160,9 @@ public class TrainParams implements ISerializable {
                 return true;
             case "shuffle_batches":
                 shuffle_batches_ = Boolean.parseBoolean(parts[1]);
+                return true;
+            case "batch_norm":
+                batch_norm_ = Boolean.parseBoolean(parts[1]);
                 return true;
             case "learning_rate":
                 learning_rate_ = Double.parseDouble(parts[1]);
@@ -194,6 +201,7 @@ public class TrainParams implements ISerializable {
                 .append("batch_size").append('\t').append(batch_size_).append('\n')
                 .append("normalize_features").append('\t').append(normalize_features_).append('\n')
                 .append("shuffle_batches").append('\t').append(shuffle_batches_).append('\n')
+                .append("batch_norm").append('\t').append(batch_norm_).append('\n')
                 .append("learning_rate").append('\t').append(learning_rate_).append('\n')
                 .append("decay_rate").append('\t').append(decay_rate_).append('\n')
                 .append("decay_step").append('\t').append(decay_step_).append('\n')
@@ -213,7 +221,7 @@ public class TrainParams implements ISerializable {
     public static class Builder {
         private int input_size_ = -1, output_size_ = -1;
         private int epochs_num_ = -1, batch_size_ = 1;
-        private boolean shuffle_batches_ = false, normalize_features_ = false;
+        private boolean shuffle_batches_ = false, normalize_features_ = false, batch_norm_ = false;
         private double learning_rate_ = 0.1, decay_rate_ = 1;
         private int decay_step_ = 1;
         private double regularization_coef_ = 0, dropout_keep_prob_ = 1;
@@ -229,7 +237,7 @@ public class TrainParams implements ISerializable {
                 throw new IllegalArgumentException("Epochs number must be defined!");
             }
 
-            return new TrainParams(input_size_, output_size_, epochs_num_, batch_size_, normalize_features_, shuffle_batches_, learning_rate_, decay_rate_, decay_step_, regularization_coef_, dropout_keep_prob_, seed_, name_, train_percentage_);
+            return new TrainParams(input_size_, output_size_, epochs_num_, batch_size_, normalize_features_, shuffle_batches_, batch_norm_, learning_rate_, decay_rate_, decay_step_, regularization_coef_, dropout_keep_prob_, seed_, name_, train_percentage_);
         }
 
         public Builder input_size(int size) {
@@ -259,6 +267,11 @@ public class TrainParams implements ISerializable {
 
         public Builder shuffle_batches(boolean shuffle) {
             shuffle_batches_ = shuffle;
+            return this;
+        }
+
+        public Builder batch_norm(boolean batch_norm) {
+            batch_norm_ = batch_norm;
             return this;
         }
 
@@ -297,7 +310,7 @@ public class TrainParams implements ISerializable {
             return this;
         }
 
-        public long seed(){
+        public long seed() {
             return seed_;
         }
 
@@ -313,6 +326,7 @@ public class TrainParams implements ISerializable {
             batch_size_ = p.batch_size_;
             normalize_features_ = p.normalize_features_;
             shuffle_batches_ = p.shuffle_batches_;
+            batch_norm_ = p.batch_norm_;
             learning_rate_ = p.learning_rate_;
             decay_rate_ = p.decay_rate_;
             decay_step_ = p.decay_step_;

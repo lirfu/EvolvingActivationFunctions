@@ -5,6 +5,7 @@ import hr.fer.zemris.neurology.dl4j.TrainParams;
 import org.deeplearning4j.nn.conf.CacheMode;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.inputs.InputType;
+import org.deeplearning4j.nn.conf.layers.BatchNormalization;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
@@ -61,17 +62,18 @@ public class CommonModel {
             conf.activation(activations[0]);
         }
 
-        // Define inner layerdescriptors.
+        // Define inner layer descriptors.
         NeuralNetConfiguration.ListBuilder list = conf.list();
-        int index = 0;
+        int a_i = 0, l_i = 0;
         list.setInputType(InputType.feedForward(params.input_size()));
         for (ALayerDescriptor l : architecture.getLayers()) {
-            list.layer(index, l.
-                    constructLayer(common_act ? activations[0] : activations[index]));
-            index++;
+            list.layer(l_i++, l.constructLayer(common_act ? activations[0] : activations[a_i++]));
+            if (params.batch_norm()) {
+                list.layer(l_i++, new BatchNormalization());
+            }
         }
         // Define output layer and loss.
-        list.layer(index, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+        list.layer(l_i, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                 .activation(Activation.SOFTMAX)
                 .nOut(params.output_size())
                 .build());

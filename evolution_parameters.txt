@@ -5,6 +5,7 @@ epochs_num	10
 batch_size	64
 normalize_features	true
 shuffle_batches	true
+batch_norm true
 learning_rate	0.002
 decay_rate	0.99
 decay_step	1
@@ -22,7 +23,7 @@ mutation_prob	0.3
 elitism	true
 taboo_size	36 # Original was 10
 taboo_attempts	1000
-worker_num	2
+worker_num	1
 node_set	ALL
 
 # Stop conditions:
