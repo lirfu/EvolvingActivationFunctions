@@ -7,7 +7,6 @@ import hr.fer.zemris.genetics.symboregression.nodes.ConstNode;
 import hr.fer.zemris.utils.Utilities;
 
 import java.util.LinkedList;
-import java.util.Random;
 
 public class MutSRRandomConstantSet extends Mutation<SymbolicTree> {
     private double min_, delta_;
@@ -38,7 +37,7 @@ public class MutSRRandomConstantSet extends Mutation<SymbolicTree> {
     @Override
     public boolean parse(String line) {
         super.parse(line);
-        String[] p = line.split(Utilities.PARSER_REGEX);
+        String[] p = line.split(Utilities.KEY_VALUE_REGEX);
         if (p[0].equals(getName() + ".min")) {
             min_ = Double.parseDouble(p[1]);
             return true;

@@ -53,7 +53,7 @@ public class StopCondition implements ISerializable {
 
     @Override
     public boolean parse(String line) {
-        String[] parts = line.split(Utilities.PARSER_REGEX);
+        String[] parts = line.split(Utilities.KEY_VALUE_REGEX);
         switch (parts[0]) {
             case "max_iterations":
                 max_iterations_ = Long.parseLong(parts[1]);

@@ -173,7 +173,7 @@ public class EvolvingActivationParams extends TrainParams {
     public boolean parse(String line) {
         if (super.parse(line)) return true;
 
-        String[] parts = line.split(Utilities.PARSER_REGEX);
+        String[] parts = line.split(Utilities.KEY_VALUE_REGEX);
         switch (parts[0]) {
             case "#":
                 return true;
