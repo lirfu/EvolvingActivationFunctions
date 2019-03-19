@@ -3,6 +3,8 @@ package hr.fer.zemris.neurology.demo;
 import hr.fer.zemris.neurology.dl4j.IReport;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.utils.Pair;
+import hr.fer.zemris.utils.Stopwatch;
+import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
 import org.deeplearning4j.nn.conf.CacheMode;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -92,6 +94,8 @@ public class ExampleModel {
 
     public void train(@NotNull DataSetIterator dataset, @NotNull ILogger log) {
         model_.init();
+
+        final Stopwatch s = new Stopwatch();
         model_.setListeners(new BaseTrainingListener() { // Print the score at the start of each epoch.
             private int last_epoch_ = -1;
 
@@ -99,17 +103,19 @@ public class ExampleModel {
             public void iterationDone(org.deeplearning4j.nn.api.Model model, int iteration, int epoch) {
                 if (epoch != last_epoch_) {
                     last_epoch_ = epoch;
-                    log.d("Epoch " + epoch + " has loss: " + model.score());
+                    log.d("Epoch " + epoch + " has loss: " + model.score() + "   (" + Utilities.formatMiliseconds(s.lap()) + ")");
                 }
             }
         });
         log.d("Training...");
+        s.start();
         for (int i = 0; i < params_.epochs_num(); i++) {
             if (dataset.resetSupported()) {
                 dataset.reset();
             }
             model_.fit(dataset);
         }
+        log.d("Done! (" + Utilities.formatMiliseconds(s.stop()) + ")");
     }
 
     public void test(@NotNull DataSetIterator dataset, @NotNull ILogger log, @Nullable IReport report) {
