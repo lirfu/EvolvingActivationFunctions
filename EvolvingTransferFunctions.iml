@@ -126,9 +126,54 @@
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:leptonica:windows-x86:1.76.0-1.4.3" level="project" />
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:leptonica:windows-x86_64:1.76.0-1.4.3" level="project" />
     <orderEntry type="library" name="Maven: org.deeplearning4j:deeplearning4j-ui-components:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.deeplearning4j:deeplearning4j-cuda-9.0:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco:javacpp:1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda-platform:9.0-7.0-1.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:linux-ppc64le:9.0-7.0-1.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:macosx-x86_64:9.0-7.0-1.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:windows-x86_64:9.0-7.0-1.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native-platform:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas-platform:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:android-arm:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:android-arm64:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:android-x86:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:android-x86_64:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:ios-arm64:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:ios-x86_64:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:linux-x86:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:linux-x86_64:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:linux-armhf:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:linux-ppc64le:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:macosx-x86_64:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:windows-x86:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:openblas:windows-x86_64:0.3.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl-platform:2019.0-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl:2019.0-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl:linux-x86:2019.0-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl:linux-x86_64:2019.0-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl:macosx-x86_64:2019.0-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl:windows-x86:2019.0-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl:windows-x86_64:2019.0-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl-dnn-platform:0.16-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl-dnn:0.16-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl-dnn:linux-x86_64:0.16-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl-dnn:macosx-x86_64:0.16-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:mkl-dnn:windows-x86_64:0.16-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:android-arm:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:android-arm64:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:android-x86:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:android-x86_64:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:ios-arm64:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:ios-x86_64:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:linux-x86_64:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:macosx-x86_64:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:windows-x86_64:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:linux-ppc64le:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:linux-armhf:1.0.0-beta3" level="project" />
     <orderEntry type="library" name="Maven: org.nd4j:nd4j-cuda-9.0:1.0.0-beta3" level="project" />
     <orderEntry type="library" name="Maven: org.nd4j:nd4j-cuda-9.0:linux-x86_64:1.0.0-beta3" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco:javacpp:1.4.3" level="project" />
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:9.0-7.0-1.4.1" level="project" />
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:linux-x86_64:9.0-7.0-1.4.1" level="project" />
     <orderEntry type="library" name="Maven: org.nd4j:nd4j-native-api:1.0.0-beta3" level="project" />
