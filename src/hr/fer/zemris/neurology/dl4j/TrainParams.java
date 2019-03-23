@@ -7,7 +7,9 @@ import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Utilities;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
 
 /**
  * Immutable wrapper for train parameters.
@@ -24,6 +26,204 @@ public class TrainParams implements ISerializable {
     private float train_percentage_;
 
     protected LinkedList<Pair<String, LinkedList<Object>>> modifiable_params = new LinkedList<>();
+
+    protected static HashMap<String, TrainParamsModifier> params;
+
+    static {
+        params = new HashMap<>();
+        params.put("epochs_num", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).epochs_num((Integer) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Integer.parseInt(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.epochs_num_ = (int) value;
+            }
+        });
+        params.put("batch_size", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).batch_size((Integer) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Integer.parseInt(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.batch_size_ = (int) value;
+            }
+        });
+        params.put("normalize_features", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).normalize_features((Boolean) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Boolean.parseBoolean(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.normalize_features_ = (boolean) value;
+            }
+        });
+        params.put("shuffle_batches", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).shuffle_batches((Boolean) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Boolean.parseBoolean(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.shuffle_batches_ = (boolean) value;
+            }
+        });
+        params.put("batch_norm", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).batch_norm((Boolean) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Boolean.parseBoolean(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.batch_norm_ = (boolean) value;
+            }
+        });
+        params.put("learning_rate", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).learning_rate((Double) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Double.parseDouble(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.learning_rate_ = (double) value;
+            }
+        });
+        params.put("decay_rate", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).decay_rate((Double) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Double.parseDouble(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.decay_rate_ = (double) value;
+            }
+        });
+        params.put("decay_step", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).decay_step((Integer) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Integer.parseInt(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.decay_step_ = (int) value;
+            }
+        });
+        params.put("regularization_coef", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).regularization_coef((Double) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Double.parseDouble(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.regularization_coef_ = (double) value;
+            }
+        });
+        params.put("dropout_keep_prob", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).dropout_keep_prob((Double) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Double.parseDouble(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.dropout_keep_prob_ = (double) value;
+            }
+        });
+        params.put("seed", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).seed((Long) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Long.parseLong(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.seed_ = (long) value;
+            }
+        });
+        params.put("train_percentage", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).train_percentage((Float) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Float.parseFloat(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.train_percentage_ = (float) value;
+            }
+        });
+    }
 
     /**
      * Create an empty params object. Used when parsing from a string.
@@ -148,55 +348,31 @@ public class TrainParams implements ISerializable {
      */
     @Override
     public boolean parse(String line) {
-        String[] parts = line.split(Utilities.KEY_VALUE_REGEX);
-        switch (parts[0]) {
-            case "input_size":
-                input_size_ = Integer.parseInt(parts[1]);
-                return true;
-            case "output_size":
-                output_size_ = Integer.parseInt(parts[1]);
-                return true;
-            case "epochs_num":
-                epochs_num_ = Integer.parseInt(parts[1]);
-                return true;
-            case "batch_size":
-                batch_size_ = Integer.parseInt(parts[1]);
-                return true;
-            case "normalize_features":
-                normalize_features_ = Boolean.parseBoolean(parts[1]);
-                return true;
-            case "shuffle_batches":
-                shuffle_batches_ = Boolean.parseBoolean(parts[1]);
-                return true;
-            case "batch_norm":
-                batch_norm_ = Boolean.parseBoolean(parts[1]);
-                return true;
-            case "learning_rate":
-                learning_rate_ = Double.parseDouble(parts[1]);
-                return true;
-            case "decay_rate":
-                decay_rate_ = Double.parseDouble(parts[1]);
-                return true;
-            case "decay_step":
-                decay_step_ = Integer.parseInt(parts[1]);
-                return true;
-            case "regularization_coef":
-                regularization_coef_ = Double.parseDouble(parts[1]);
-                return true;
-            case "dropout_keep_prob":
-                dropout_keep_prob_ = Double.parseDouble(parts[1]);
-                return true;
-            case "seed":
-                seed_ = Long.parseLong(parts[1]);
-                return true;
-            case "name":
-                name_ = parts[1];
-                return true;
-            case "train_percentage":
-                train_percentage_ = Float.parseFloat(parts[1]);
-                return true;
+        // Parse key-value pair.
+        Matcher m = Utilities.KEY_VALUE_REGEX.matcher(line);
+        if (!m.find()) // Return false if not parsable.
+            return false;
+
+        String key = m.group(1).trim();
+        String value = m.group(2).trim();
+
+        TrainParamsModifier mod = params.get(key);
+        if (mod == null) // Return false if unknown parameter.
+            return false;
+
+        // Try parsing array.
+        m = Utilities.ARRAY_REGEX.matcher(value);
+        if (m.find()) { // Parse values array.
+            String[] parts = m.group(1).split(Utilities.ARRAY_SEPARATOR);
+            LinkedList<Object> list = new LinkedList<>();
+            for (String s : parts) {
+                list.add(mod.parse(s));
+            }
+            modifiable_params.add(new Pair<>(key, list));
+        } else { // Parse single value.
+            mod.set(this, mod.parse(value));
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -229,108 +405,8 @@ public class TrainParams implements ISerializable {
         GridSearch.IModifier<TrainParams>[] mods = new GridSearch.IModifier[modifiable_params.size()];
         int i = 0;
         for (Pair<String, LinkedList<Object>> p : modifiable_params) {
-            GridSearch.IModifier<TrainParams> m;
-            switch (p.getKey()) {
-                case "epochs_num":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).epochs_num((Integer) value);
-                        }
-                    };
-                    break;
-                case "batch_size":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).batch_size((Integer) value);
-                        }
-                    };
-                    break;
-                case "normalize_features":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).normalize_features((Boolean) value);
-                        }
-                    };
-                    break;
-                case "shuffle_batches":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).shuffle_batches((Boolean) value);
-                        }
-                    };
-                    break;
-                case "batch_norm":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).batch_norm((Boolean) value);
-                        }
-                    };
-                    break;
-                case "learning_rate":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).learning_rate((Double) value);
-                        }
-                    };
-                    break;
-                case "decay_rate":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).decay_rate((Double) value);
-                        }
-                    };
-                    break;
-                case "decay_step":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).decay_step((Integer) value);
-                        }
-                    };
-                    break;
-                case "regularization_coef":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).regularization_coef((Double) value);
-                        }
-                    };
-                    break;
-                case "dropout_keep_prob":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).dropout_keep_prob((Double) value);
-                        }
-                    };
-                    break;
-                case "seed":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).seed((Long) value);
-                        }
-                    };
-                    break;
-                case "train_percentage":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((Builder) p).train_percentage((Float) value);
-                        }
-                    };
-                    break;
-                default:
-                    continue;
-            }
-            mods[i++] = m;
+            TrainParamsModifier m = params.get(p.getKey());
+            if (m != null) mods[i++] = m;
         }
         return mods;
     }
@@ -338,14 +414,21 @@ public class TrainParams implements ISerializable {
     protected static abstract class TrainParamsModifier implements GridSearch.IModifier<TrainParams> {
         private LinkedList<Object> values;
 
-        public TrainParamsModifier(LinkedList<Object> vals) {
-            values = vals;
+        public TrainParamsModifier() {
+        }
+
+        public void setValues(LinkedList<Object> values) {
+            this.values = values;
         }
 
         @Override
         public Object[] getValues() {
             return values.toArray();
         }
+
+        public abstract Object parse(String s);
+
+        public abstract void set(TrainParams p, Object value);
     }
 
     public static class Builder implements IBuilder<TrainParams> {
@@ -363,9 +446,9 @@ public class TrainParams implements ISerializable {
 //            if (input_size_ < 0 || output_size_ < 0) {
 //                throw new IllegalArgumentException("Input and output sizes must be defined!");
 //            }
-            if (epochs_num_ < 0) {
-                throw new IllegalArgumentException("Epochs number must be defined!");
-            }
+//            if (epochs_num_ < 0) {
+//                throw new IllegalArgumentException("Epochs number must be defined!");
+//            }
 
             return new TrainParams(input_size_, output_size_, epochs_num_, batch_size_,
                     normalize_features_, shuffle_batches_, batch_norm_,

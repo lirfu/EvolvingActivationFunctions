@@ -35,7 +35,7 @@ public abstract class Operator<T extends Operator> implements ISerializable {
 
     @Override
     public boolean parse(String line) {
-        String[] p = line.split(Utilities.KEY_VALUE_REGEX);
+        String[] p = line.split(Utilities.KEY_VALUE_REGEX.pattern());
         if (p[0].equals(getName())) {
             if (p.length > 1 && !p[1].isEmpty())
                 importance_ = Integer.parseInt(p[1]);

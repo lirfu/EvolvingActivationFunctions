@@ -37,7 +37,7 @@ public class MutSRRandomConstantSet extends Mutation<SymbolicTree> {
     @Override
     public boolean parse(String line) {
         super.parse(line);
-        String[] p = line.split(Utilities.KEY_VALUE_REGEX);
+        String[] p = line.split(Utilities.KEY_VALUE_REGEX.pattern());
         if (p[0].equals(getName() + ".min")) {
             min_ = Double.parseDouble(p[1]);
             return true;

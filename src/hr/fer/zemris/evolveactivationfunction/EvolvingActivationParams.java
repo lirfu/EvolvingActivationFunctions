@@ -2,14 +2,12 @@ package hr.fer.zemris.evolveactivationfunction;
 
 import hr.fer.zemris.evolveactivationfunction.nn.NetworkArchitecture;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSets;
-import hr.fer.zemris.experiments.GridSearch;
 import hr.fer.zemris.genetics.Crossover;
 import hr.fer.zemris.genetics.Mutation;
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.utils.IBuilder;
 import hr.fer.zemris.utils.ISerializable;
-import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Utilities;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +35,204 @@ public class EvolvingActivationParams extends TrainParams {
     private String train_path_;
     private String test_path_;
     private String experiment_name_;
+
+    static {
+        params.put("algorithm", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return AlgorithmType.valueOf(s.toUpperCase());
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).algorithm_ = (AlgorithmType) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).algorithm((AlgorithmType) value);
+            }
+        });
+        params.put("population_size", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return Integer.parseInt(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).population_size_ = (Integer) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((EvolvingActivationParams.Builder) p).population_size((Integer) value);
+            }
+        });
+        params.put("mutation_prob", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return Double.parseDouble(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).mutation_prob_ = (Double) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((EvolvingActivationParams.Builder) p).mutation_prob((Double) value);
+            }
+        });
+        params.put("elitism", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return Boolean.parseBoolean(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).elitism_ = (boolean) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((EvolvingActivationParams.Builder) p).elitism((Boolean) value);
+            }
+        });
+        params.put("taboo_size", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return Integer.parseInt(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).taboo_size_ = (int) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((EvolvingActivationParams.Builder) p).taboo_size((Integer) value);
+            }
+        });
+        params.put("taboo_attempts", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return Integer.parseInt(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).taboo_attempts_ = (int) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((EvolvingActivationParams.Builder) p).taboo_attempts((Integer) value);
+            }
+        });
+        params.put("worker_num", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return Integer.parseInt(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).worker_num_ = (int) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((EvolvingActivationParams.Builder) p).worker_num((Integer) value);
+            }
+        });
+        params.put("architecture", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return new NetworkArchitecture(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).architecture_ = (NetworkArchitecture) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((EvolvingActivationParams.Builder) p).architecture((NetworkArchitecture) value);
+            }
+        });
+        params.put("activation", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return s;
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).activation_ = (String) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((EvolvingActivationParams.Builder) p).activation((String) value);
+            }
+        });
+        params.put("node_set", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return s.split("-");
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).node_set_ = (String[]) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                EvolvingActivationParams.Builder par = ((EvolvingActivationParams.Builder) p);
+                par.node_set_ = new LinkedList<>();
+                par.node_set_.addAll(Arrays.asList((String[]) value));
+                return par;
+            }
+        });
+        params.put("train_path", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return s;
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).train_path_ = (String) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return null;
+            }
+        });
+        params.put("test_path", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return s;
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).test_path_ = (String) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return null;
+            }
+        });
+    }
 
     public EvolvingActivationParams() {
     }
@@ -178,47 +374,10 @@ public class EvolvingActivationParams extends TrainParams {
     public boolean parse(String line) {
         if (super.parse(line)) return true;
 
-        String[] parts = line.split(Utilities.KEY_VALUE_REGEX);
-        if (parts[0].equals("#")) return true;
-        switch (parts[0]) {
-            case "algorithm":
-                algorithm_ = AlgorithmType.valueOf(parts[1].toUpperCase());
-            case "population_size":
-                population_size_ = Integer.parseInt(parts[1]);
-                return true;
-            case "mutation_prob":
-                mutation_prob_ = Double.parseDouble(parts[1]);
-                return true;
-            case "elitism":
-                elitism_ = Boolean.parseBoolean(parts[1]);
-                return true;
-            case "taboo_size":
-                taboo_size_ = Integer.parseInt(parts[1]);
-                return true;
-            case "taboo_attempts":
-                taboo_attempts_ = Integer.parseInt(parts[1]);
-                return true;
-            case "worker_num":
-                worker_num_ = Integer.parseInt(parts[1]);
-                return true;
-            case "architecture":
-                architecture_ = new NetworkArchitecture();
-                return architecture_.parse(parts[1]);
-            case "activation":
-                activation_ = parts[1];
-                return true;
-            case "node_set":
-                node_set_ = parts[1].split("-");
-                return true;
-            case "train_path":
-                train_path_ = parts[1];
-                return true;
-            case "test_path":
-                test_path_ = parts[1];
-                return true;
-            case "experiment_name":
-                experiment_name_ = parts[1];
-                return true;
+        String[] parts = line.split(Utilities.KEY_VALUE_REGEX.pattern());
+        if (parts[0].equals("experiment_name")) {
+            experiment_name_ = parts[1];
+            return true;
         }
 
         if (condition_.parse(line)) return true;
@@ -240,137 +399,6 @@ public class EvolvingActivationParams extends TrainParams {
         }
 
         return false;
-    }
-
-    @Override
-    public GridSearch.IModifier<TrainParams>[] getModifiers() {
-        GridSearch.IModifier<TrainParams>[] mods = super.getModifiers();
-
-        // Find where it stopped filling modificators.
-        int i;
-        for (i = 0; i < mods.length; i++)
-            if (mods[i] == null)
-                break;
-
-        // If already filled, return.
-        if (i == mods.length - 1) return mods;
-
-        for (Pair<String, LinkedList<Object>> p : modifiable_params) {
-            GridSearch.IModifier<TrainParams> m;
-            switch (p.getKey()) {
-                case "algorithm":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).algorithm(AlgorithmType.valueOf(((String) value).toUpperCase()));
-                        }
-                    };
-                    break;
-                case "population_size":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).population_size((Integer) value);
-                        }
-                    };
-                    break;
-                case "mutation_prob":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).mutation_prob((Double) value);
-                        }
-                    };
-                    break;
-                case "elitism":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).elitism((Boolean) value);
-                        }
-                    };
-                    break;
-                case "taboo_size":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).taboo_size((Integer) value);
-                        }
-                    };
-                    break;
-                case "taboo_attempts":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).taboo_attempts((Integer) value);
-                        }
-                    };
-                    break;
-                case "worker_num":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).worker_num((Integer) value);
-                        }
-                    };
-                    break;
-                case "architecture":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).architecture(new NetworkArchitecture((String) value));
-                        }
-                    };
-                    break;
-                case "activation":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).activation((String) value);
-                        }
-                    };
-                    break;
-                case "node_set":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            EvolvingActivationParams.Builder par = ((EvolvingActivationParams.Builder) p);
-                            par.node_set_ = new LinkedList<>();
-                            par.node_set_.addAll(Arrays.asList((String[]) value));
-                            return par;
-                        }
-                    };
-                    break;
-                case "train_path":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).train_path((String) value);
-                        }
-                    };
-                    break;
-                case "test_path":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).test_path((String) value);
-                        }
-                    };
-                    break;
-                case "experiment_name":
-                    m = new TrainParamsModifier(p.getVal()) {
-                        @Override
-                        public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                            return ((EvolvingActivationParams.Builder) p).experiment_name((String) value);
-                        }
-                    };
-                    break;
-                default:
-                    continue;
-            }
-            mods[i++] = m;
-        }
-        return mods;
     }
 
     public enum AlgorithmType {

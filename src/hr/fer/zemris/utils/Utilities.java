@@ -5,10 +5,12 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
 import java.util.Random;
+import java.util.regex.Pattern;
 
 public class Utilities {
-    public static final String KEY_VALUE_REGEX = "[\t :]+";
-    public static final String ARRAY_REGEX = "\\{ *(.+) *\\}";
+    public static final Pattern KEY_VALUE_REGEX = Pattern.compile("([^\t :]+)[\t :]+(.+)");
+    public static final Pattern ARRAY_REGEX = Pattern.compile("\\{ *(.+) *\\}");
+    public static final String ARRAY_SEPARATOR = " *, *";
 
     public static void permuteArray(@NotNull Object[] array, int n, @Nullable Random rand) {
         if (rand == null) rand = new Random();
