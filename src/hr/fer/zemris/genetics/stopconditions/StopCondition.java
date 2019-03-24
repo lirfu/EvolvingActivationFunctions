@@ -1,8 +1,11 @@
 package hr.fer.zemris.genetics.stopconditions;
 
+import akka.japi.pf.Match;
 import hr.fer.zemris.genetics.Result;
 import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Utilities;
+
+import java.util.regex.Matcher;
 
 public class StopCondition implements ISerializable {
     private Long max_iterations_;
@@ -53,7 +56,7 @@ public class StopCondition implements ISerializable {
 
     @Override
     public boolean parse(String line) {
-        String[] parts = line.split(Utilities.KEY_VALUE_REGEX.pattern());
+        String[] parts = line.split(Utilities.KEY_VALUE_SIMPLE_REGEX);
         switch (parts[0]) {
             case "max_iterations":
                 max_iterations_ = Long.parseLong(parts[1]);

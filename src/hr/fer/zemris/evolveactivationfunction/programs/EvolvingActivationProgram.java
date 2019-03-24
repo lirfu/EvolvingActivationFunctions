@@ -102,8 +102,9 @@ public class EvolvingActivationProgram {
             GridSearch<TrainParams> s = new GridSearch<>(common_params.experiment_name());
             Iterable<Experiment<TrainParams>> it = s.buildGridSearchExperiments(
                     new EvolvingActivationParams.Builder().cloneFrom(common_params), mods);
-            for (Experiment<TrainParams> params : it) {
-                run((EvolvingActivationParams) params.getParams(), set, tree_init, r);
+            for (Experiment<TrainParams> experiment : it) {
+                ((EvolvingActivationParams) experiment.getParams()).experiment_name(experiment.getName());
+                run((EvolvingActivationParams) experiment.getParams(), set, tree_init, r);
             }
         }
     }

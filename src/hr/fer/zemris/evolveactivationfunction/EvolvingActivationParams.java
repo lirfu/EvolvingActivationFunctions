@@ -334,6 +334,10 @@ public class EvolvingActivationParams extends TrainParams {
         return experiment_name_;
     }
 
+    public void experiment_name(String name) {
+        experiment_name_ = name;
+    }
+
     @Override
     public String serialize() {
         StringBuilder sb = new StringBuilder("# NN params\n" + super.serialize());
@@ -374,8 +378,8 @@ public class EvolvingActivationParams extends TrainParams {
     public boolean parse(String line) {
         if (super.parse(line)) return true;
 
-        String[] parts = line.split(Utilities.KEY_VALUE_REGEX.pattern());
-        if (parts[0].equals("experiment_name")) {
+        String[] parts = line.split(Utilities.KEY_VALUE_SIMPLE_REGEX);
+        if (parts.length == 2 && parts[0].equals("experiment_name")) {
             experiment_name_ = parts[1];
             return true;
         }

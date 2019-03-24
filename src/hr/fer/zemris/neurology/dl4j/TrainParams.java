@@ -25,7 +25,7 @@ public class TrainParams implements ISerializable {
     private String name_;
     private float train_percentage_;
 
-    protected LinkedList<Pair<String, LinkedList<Object>>> modifiable_params = new LinkedList<>();
+    protected LinkedList<TrainParamsModifier> modifiable_params = new LinkedList<>();
 
     protected static HashMap<String, TrainParamsModifier> params;
 
@@ -348,6 +348,10 @@ public class TrainParams implements ISerializable {
      */
     @Override
     public boolean parse(String line) {
+        line = line.trim();
+        if (line.charAt(0) == '#') // Skip comments.
+            return true;
+
         // Parse key-value pair.
         Matcher m = Utilities.KEY_VALUE_REGEX.matcher(line);
         if (!m.find()) // Return false if not parsable.
@@ -368,7 +372,8 @@ public class TrainParams implements ISerializable {
             for (String s : parts) {
                 list.add(mod.parse(s));
             }
-            modifiable_params.add(new Pair<>(key, list));
+            mod.setValues(list);
+            modifiable_params.add(mod);
         } else { // Parse single value.
             mod.set(this, mod.parse(value));
         }
@@ -402,13 +407,7 @@ public class TrainParams implements ISerializable {
     }
 
     public GridSearch.IModifier<TrainParams>[] getModifiers() {
-        GridSearch.IModifier<TrainParams>[] mods = new GridSearch.IModifier[modifiable_params.size()];
-        int i = 0;
-        for (Pair<String, LinkedList<Object>> p : modifiable_params) {
-            TrainParamsModifier m = params.get(p.getKey());
-            if (m != null) mods[i++] = m;
-        }
-        return mods;
+        return modifiable_params.toArray(new TrainParamsModifier[]{});
     }
 
     protected static abstract class TrainParamsModifier implements GridSearch.IModifier<TrainParams> {

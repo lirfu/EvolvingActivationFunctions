@@ -8,7 +8,8 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 public class Utilities {
-    public static final Pattern KEY_VALUE_REGEX = Pattern.compile("([^\t :]+)[\t :]+(.+)");
+    public static final String KEY_VALUE_SIMPLE_REGEX = "[\t :]+";
+    public static final Pattern KEY_VALUE_REGEX = Pattern.compile("([^\t :]+)[\t :]+([^#]+)#*.*");
     public static final Pattern ARRAY_REGEX = Pattern.compile("\\{ *(.+) *\\}");
     public static final String ARRAY_SEPARATOR = " *, *";
 
