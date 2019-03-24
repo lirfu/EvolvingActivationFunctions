@@ -13,3 +13,5 @@ out
 # DL4J memory crash dumps
 dl4j-memory-crash-dump*
 
+# Python binaries
+*.pyc
