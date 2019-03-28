@@ -132,7 +132,8 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
         public DerivableNode[] list() {
             return new DerivableNode[]{new SigmoidNode()};
         }
-    }, SOFTPLUS {
+    },
+    SOFTPLUS {
         @Override
         public DerivableNode[] list() {
             return new DerivableNode[]{new SoftPlusNode()};
