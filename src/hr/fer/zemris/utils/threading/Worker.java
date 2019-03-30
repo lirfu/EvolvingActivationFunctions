@@ -7,15 +7,15 @@ import java.util.LinkedList;
 public class Worker implements Comparable<Worker> {
     private boolean is_alive_ = true;
     private long wait_time_ = 500;
-    private final String ID_;
+    private final String name_;
     private final Thread thread_;
     private final LinkedList<Work> queue_;
 
     /**
      * Creates a new worker and starts the internal thread.
      */
-    public Worker(String id) {
-        ID_ = id;
+    public Worker(String name) {
+        name_ = name;
         queue_ = new LinkedList<>();
 
         thread_ = new Thread(() -> {
@@ -42,6 +42,7 @@ public class Worker implements Comparable<Worker> {
                 }
             }
         });
+        thread_.setName(name);
         thread_.setDaemon(true);
         thread_.start();
     }
@@ -65,8 +66,8 @@ public class Worker implements Comparable<Worker> {
     /**
      * Returns workers' name.
      */
-    public final String getID() {
-        return ID_;
+    public final String getName() {
+        return name_;
     }
 
     /**

@@ -67,7 +67,7 @@ public class WorkArbiter {
     public String getStatus() {
         StringBuilder sb = new StringBuilder();
         for (Worker w : workers_) {
-            sb.append(w.getID()).append(": ").append(w.getWorkCount()).append('\n');
+            sb.append(w.getName()).append(": ").append(w.getWorkCount()).append('\n');
         }
         return sb.toString();
     }
@@ -76,6 +76,10 @@ public class WorkArbiter {
     protected void finalize() throws Throwable {
         kill();
         super.finalize();
+    }
+
+    public static String getCurrentWorkerName() {
+        return Thread.currentThread().getName();
     }
 
     public interface WaitCondition {
