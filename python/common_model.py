@@ -19,14 +19,16 @@ class CommonModel:
             layer = self.X
             for l in params['architecture']:
                 layer = l.construct(layer)
-                layer = params['activation'].construct(layer)
+                layer = params['activation'].build(layer)
                 if params['batch_norm']:
                     layer = layers.batch_norm(layer)
 
         # Output is fully connected with softmax.
-        self.outputs = layers.fully_connected(layer, params['output_size'], activation_fn=None, scope='outputs')
+        out = layers.fully_connected(layer, params['output_size'], activation_fn=None)
+        self.outputs = tf.argmax(out)
+
         self.loss = tf.nn.softmax_cross_entropy_with_logits_v2(labels=tf.one_hot(self.Y, params['output_size']),
-                                                               logits=self.outputs)
+                                                               logits=self.out)
         if params['regularization_coef'] > 0:
             self.loss = tf.add(self.loss, params['regularization_coef'] *
                                tf.sum(tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)))
@@ -48,29 +50,23 @@ class CommonModel:
         # TODO Implement model training
 
     def transform(self, features):
-        pass # TODO Implement transform method
+        dataset = tf.data.Dataset.from_tensors(features)
+        dataset = dataset.batch(self.params['batch_size'])
+        iterator = dataset.make_one_shot_iterator()
+        next_X = iterator.get_next()
+
+        predictions = []
+        try:
+            while True:
+                predictions.append(self.sess.run([self.outputs, self.train_step], {self.X: next_X})) # TODO test this iterator thingy
+        except tf.errors.OutOfRangeError:
+            pass
+        return predictions
 
 
     def score(self, features, labels, bridge):
         predictions = self.transform(features)
         pass # TODO Implement model scoring (metrics)
-
-
-class LayerDescriptor:
-    def __init__(self, size):
-        self.size = size
-
-    def construct(self, input):
-        raise Exception("Not implemented!")
-
-class FCDescriptor(LayerDescriptor):
-    def construct(self, input):
-        return layers.fully_connected(input, self.size, activation_fn=None)
-
-
-class Activation:
-    def construct(self, input):
-        raise Exception("Not implemented!")
 
 
 if __name__ == "__main__":

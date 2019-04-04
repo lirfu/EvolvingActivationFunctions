@@ -2,7 +2,7 @@ import sklearn
 from sklearn.preprocessing import Normalizer
 from sklearn.model_selection import train_test_split
 
-from data import load, parse_params
+from data import load_data, parse_params
 from java_bridge import JavaBridge
 from common_model import CommonModel
 
@@ -14,8 +14,8 @@ ps = bridge.read()
 params = parse_params(ps)
 
 # Load data from file.
-train_X, train_Y = load(params['train_path'])
-test_X, test_Y = load(params['test_path'])
+train_X, train_Y = load_data(params['train_path'])
+test_X, test_Y = load_data(params['test_path'])
 
 # Normalize datasets.
 if params['normalize_features']:
