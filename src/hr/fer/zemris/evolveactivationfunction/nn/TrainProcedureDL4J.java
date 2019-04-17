@@ -40,7 +40,7 @@ import java.util.Random;
  */
 public class TrainProcedureDL4J implements ITrainProcedure {
 
-    private DataSet train_set_, test_set_, validation_set_ = null;
+    private DataSet train_set_, validation_set_ = null, test_set_;
     private TrainParams params_;
 
     /**
@@ -120,28 +120,19 @@ public class TrainProcedureDL4J implements ITrainProcedure {
     private void initialize() {
         boolean split = params_.train_percentage() > 0 && params_.train_percentage() < 1;
 
-        if (split) {
-            validation_set_ = test_set_; // Use testset as validation.
-
-            if (params_.normalize_features()) {  // Normalize validation set on entire train before splitting.
-                NormalizerStandardize norm = new NormalizerStandardize();
-                norm.fit(train_set_);
-                norm.transform(validation_set_);
-            }
-
-            // Split trainset into train and test
-            train_set_.shuffle(params_.seed());
-            SplitTestAndTrain splitter = train_set_.splitTestAndTrain(params_.train_percentage());
-            train_set_ = splitter.getTrain();
-            test_set_ = splitter.getTest();
-        }
-
-        // Normalize train and test datasets.
+        // Normalize both sets on entire train before splitting.
         if (params_.normalize_features()) {
             NormalizerStandardize norm = new NormalizerStandardize();
             norm.fit(train_set_);
             norm.transform(train_set_);
             norm.transform(test_set_);
+        }
+
+        if (split) { // Split train set into train and validation
+            train_set_.shuffle(params_.seed());
+            SplitTestAndTrain splitter = train_set_.splitTestAndTrain(params_.train_percentage());
+            train_set_ = splitter.getTrain();
+            validation_set_ = splitter.getTest();
         }
     }
 
@@ -188,9 +179,9 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         StringBuilder sb = new StringBuilder();
         sb.append("  Classes: ").append(Arrays.toString(labels)).append('\n');
         sb.append("Train set: ").append(Arrays.toString(train_labels)).append('\n');
-        sb.append(" Test set: ").append(Arrays.toString(test_labels)).append('\n');
         if (val_labels != null)
             sb.append("Valid set: ").append(Arrays.toString(val_labels)).append('\n');
+        sb.append(" Test set: ").append(Arrays.toString(test_labels)).append('\n');
         sb.append("    Total: ").append(Arrays.toString(total_labels)).append('\n');
         sb.append("Total inp: ").append(total_instances).append('\n');
         return sb.toString();
@@ -268,9 +259,9 @@ public class TrainProcedureDL4J implements ITrainProcedure {
     public void train_joined(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
         LinkedList<DataSet> dss = new LinkedList<>();
         dss.add(train_set_);
-        dss.add(test_set_);
-        DataSet joined = DataSet.merge(dss);
-        train_internal(model, log, stats_storage, joined);
+        if (validation_set_ != null)
+            dss.add(validation_set_);
+        train_internal(model, log, stats_storage, DataSet.merge(dss));
     }
 
     private Pair<ModelReport, Object> test_internal(@NotNull IModel model, DataSet dataset) {
@@ -289,12 +280,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
     }
 
     @Override
-    public Pair<ModelReport, Object> test(@NotNull IModel model) {
-        return test_internal(model, test_set_);
-
-    }
-
-    @Override
+    /** Validates current model on validation set. If validation set isn't defined, returns result of method <code>test()</code>. */
     public Pair<ModelReport, Object> validate(@NotNull IModel model) {
         if (validation_set_ != null)
             return test_internal(model, validation_set_);
@@ -302,10 +288,9 @@ public class TrainProcedureDL4J implements ITrainProcedure {
     }
 
     @Override
-    public Pair<ModelReport, Object> createAndRun(NetworkArchitecture architecture, IActivation[] activations, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
-        IModel model = createModel(architecture, activations);
-        train(model, log, stats_storage);
-        return test(model);
+    public Pair<ModelReport, Object> test(@NotNull IModel model) {
+        return test_internal(model, test_set_);
+
     }
 
     @Override

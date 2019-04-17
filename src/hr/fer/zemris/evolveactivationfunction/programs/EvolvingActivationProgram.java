@@ -24,12 +24,11 @@ import hr.fer.zemris.genetics.symboregression.crx.CrxSRSwapSubtrees;
 import hr.fer.zemris.genetics.symboregression.mut.*;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
-import hr.fer.zemris.utils.ISerializable;
-import hr.fer.zemris.utils.Pair;
-import hr.fer.zemris.utils.Triple;
+import hr.fer.zemris.utils.*;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
+import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -149,12 +148,21 @@ public class EvolvingActivationProgram {
 //        };
 
         // Retrain the best model.
-        evo_logger.i("===> Retraining best: " + best + "  (" + best.getFitness() + ")");
+        evo_logger.i("===> Retrain and validate best: " + best + "  (" + best.getFitness() + ")");
         best.setResult(null);  // Do this for unknown reasons (dl4j serialization error otherwise).
-        Pair<ModelReport, Object> result = evaluator.evaluateModel(best, StorageManager.createStatsLogger(c), best.serialize());
-        IModel model = evaluator.buildModelFrom(best);
+        // Build activations
+        IActivation[] activations = new IActivation[params.architecture().layersNum()];
+        for (int i = 0; i < activations.length; i++)
+            activations[i] = new CustomFunction(best.copy());
+        // Retrain.
+        Stopwatch timer = new Stopwatch();
+        timer.start();
+        IModel model = train_proc.createModel(params.architecture(), activations);
+        train_proc.train_joined(model, evo_logger, StorageManager.createStatsLogger(c)); // Train on joined train-val set.
+        Pair<ModelReport, Object> result = train_proc.test(model); // Use test set for final results.
+        evo_logger.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + best.serialize());
+        // Store results.
         train_proc.storeResults(model, c, result);
-        evo_logger.i("Done!\n");
         evo_logger.i("===> Final best: \n" + best + "  (" + best.getFitness() + ")");
         evo_logger.i(result.getKey().serialize());
 

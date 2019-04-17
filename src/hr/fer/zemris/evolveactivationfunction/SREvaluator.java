@@ -72,7 +72,9 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
             activations[i] = new CustomFunction(g.copy());
 
         timer.start();
-        Pair<ModelReport, Object> res = tmpl_procedure_.createAndRun(architecture_, activations, log_, storage);
+        IModel model = tmpl_procedure_.createModel(architecture_, activations);
+        tmpl_procedure_.train(model, log_, storage);
+        Pair<ModelReport, Object> res = tmpl_procedure_.validate(model);
         log_.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + name);
         return res;
     }

@@ -18,15 +18,26 @@ public interface ITrainProcedure {
 
     public IModel createModel(NetworkArchitecture architecture, IActivation[] activations);
 
+    /**
+     * Trains model on train set.
+     */
     public void train(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage);
 
+    /**
+     * Trains model on joined train and validation set.
+     */
     public void train_joined(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage);
 
-    public Pair<ModelReport, Object> test(@NotNull IModel model);
 
+    /**
+     * Validates current model on validation set.
+     */
     public Pair<ModelReport, Object> validate(@NotNull IModel model);
 
-    Pair<ModelReport, Object> createAndRun(NetworkArchitecture architecture, IActivation[] activations, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage);
+    /**
+     * Tests the final model on test set.
+     */
+    public Pair<ModelReport, Object> test(@NotNull IModel model);
 
     public void storeResults(IModel model, Context context, Pair<ModelReport, Object> result) throws IOException;
 }

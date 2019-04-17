@@ -71,7 +71,7 @@ public class ArchitectureSearchProgram {
 
                     timer.start();
                     log.d("Training...");
-                    train_procedure.train(model, log, stat_storage);
+                    train_procedure.train_joined(model, log, stat_storage);
                     log.d("Testing...");
                     Pair<ModelReport, Object> result = train_procedure.test(model);
                     log.d(result.getKey().toString());
