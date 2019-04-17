@@ -145,6 +145,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         }
     }
 
+    @Override
     public String describeDatasets() {
         int[] labels = new int[train_set_.numOutcomes()];
         for (int i = 0; i < labels.length; i++)
@@ -171,15 +172,31 @@ public class TrainProcedureDL4J implements ITrainProcedure {
             total_instances++;
         }
 
+        int[] val_labels = null;
+        if (validation_set_ != null) {
+            val_labels = new int[validation_set_.numOutcomes()];
+            arr = validation_set_.getLabels().argMax(1);
+            for (int i = 0; i < validation_set_.numExamples(); i++) {
+                int l = arr.getInt(i);
+                val_labels[l]++;
+                total_labels[l]++;
+                total_instances++;
+            }
+        }
+
+
         StringBuilder sb = new StringBuilder();
         sb.append("  Classes: ").append(Arrays.toString(labels)).append('\n');
         sb.append("Train set: ").append(Arrays.toString(train_labels)).append('\n');
         sb.append(" Test set: ").append(Arrays.toString(test_labels)).append('\n');
+        if (val_labels != null)
+            sb.append("Valid set: ").append(Arrays.toString(val_labels)).append('\n');
         sb.append("    Total: ").append(Arrays.toString(total_labels)).append('\n');
         sb.append("Total inp: ").append(total_instances).append('\n');
         return sb.toString();
     }
 
+    @Override
     public Context createContext(String experiment_name) {
         return new Context(params_.name(), experiment_name);
     }
@@ -190,6 +207,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
      * @param architecture Network architecture.
      * @param activations  Array of activation functions. Must define either one function per layer or a single common activation function.
      */
+    @Override
     public CommonModel createModel(NetworkArchitecture architecture, IActivation[] activations) {
         return new CommonModel(params_, architecture, activations);
     }
@@ -238,6 +256,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         }
     }
 
+    @Override
     public void train(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
         train_internal(model, log, stats_storage, train_set_);
     }
@@ -245,6 +264,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
     /**
      * Trains on joined train and test dataset.
      */
+    @Override
     public void train_joined(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
         LinkedList<DataSet> dss = new LinkedList<>();
         dss.add(train_set_);
@@ -268,12 +288,13 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         return new Pair<>(report, m.output(dataset.getFeatures()));
     }
 
-
+    @Override
     public Pair<ModelReport, Object> test(@NotNull IModel model) {
         return test_internal(model, test_set_);
 
     }
 
+    @Override
     public Pair<ModelReport, Object> validate(@NotNull IModel model) {
         if (validation_set_ != null)
             return test_internal(model, validation_set_);
@@ -287,6 +308,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         return test(model);
     }
 
+    @Override
     public void storeResults(IModel model, Context context, Pair<ModelReport, Object> result) throws IOException {
         StorageManager.storeModel(((CommonModel) model), context);
         StorageManager.storeTrainParameters(params_, context);

@@ -20,7 +20,11 @@ public interface ITrainProcedure {
 
     public void train(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage);
 
+    public void train_joined(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage);
+
     public Pair<ModelReport, Object> test(@NotNull IModel model);
+
+    public Pair<ModelReport, Object> validate(@NotNull IModel model);
 
     Pair<ModelReport, Object> createAndRun(NetworkArchitecture architecture, IActivation[] activations, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage);
 
