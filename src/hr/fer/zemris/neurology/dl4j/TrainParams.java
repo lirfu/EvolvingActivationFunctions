@@ -23,7 +23,7 @@ public class TrainParams implements ISerializable {
     private double regularization_coef_, dropout_keep_prob_;
     private long seed_;
     private String name_;
-    private float train_percentage_;
+    private float train_percentage_ = -1;
 
     protected LinkedList<TrainParamsModifier> modifiable_params = new LinkedList<>();
 

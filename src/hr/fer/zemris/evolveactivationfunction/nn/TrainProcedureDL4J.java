@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.evaluation.classification.ROCMultiClass;
 import org.nd4j.linalg.activations.IActivation;
+import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
@@ -27,9 +28,11 @@ import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.iterator.TestDataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
+import org.nd4j.linalg.factory.Nd4j;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Random;
 
 /**
@@ -37,8 +40,7 @@ import java.util.Random;
  */
 public class TrainProcedureDL4J implements ITrainProcedure {
 
-    private DataNormalization norm_;
-    private final DataSet train_set_, test_set_;
+    private DataSet train_set_, test_set_, validation_set_ = null;
     private TrainParams params_;
 
     /**
@@ -49,76 +51,98 @@ public class TrainProcedureDL4J implements ITrainProcedure {
      * @param params_builder
      */
     public TrainProcedureDL4J(@NotNull String train_set_path, @NotNull String test_set_path, @NotNull TrainParams.Builder params_builder) throws IOException, InterruptedException {
+        // Set double precision globally.
+        Nd4j.setDataType(DataBuffer.Type.DOUBLE);
+
         train_set_ = train_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_set_path) : StorageManager.loadEntireCsvDataset(train_set_path);
         test_set_ = test_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(test_set_path) : StorageManager.loadEntireCsvDataset(test_set_path);
-        initialize(StorageManager.dsNameFromPath(train_set_path, false), params_builder);
-    }
 
-    /**
-     * Use given dataset and create a train-test split using given ratio.
-     *
-     * @param dataset_name
-     * @param params_builder
-     */
-    public TrainProcedureDL4J(@NotNull String dataset_name, @NotNull TrainParams.Builder params_builder, float train_percentage) throws IOException, InterruptedException {
-        DataSet ds = dataset_name.endsWith(".arff") ? StorageManager.loadEntireArffDataset(dataset_name) : StorageManager.loadEntireCsvDataset(dataset_name);
-        ds.shuffle(params_builder.seed());
-        SplitTestAndTrain split = ds.splitTestAndTrain(train_percentage);
-        train_set_ = split.getTrain();
-        test_set_ = split.getTest();
-
-        params_builder.train_percentage(train_percentage);
-        initialize(StorageManager.dsNameFromPath(dataset_name, false), params_builder);
-    }
-
-    private void initialize(String dataset_name, TrainParams.Builder params_builder) {
         params_ = params_builder
-                .name(dataset_name)
+                .name(StorageManager.dsNameFromPath(train_set_path, false))
                 .input_size(train_set_.numInputs())
                 .output_size(train_set_.numOutcomes())
                 .build();
 
-        // Normalize dataset.
-        if (params_.normalize_features()) {
-            norm_ = new NormalizerStandardize();
-            norm_.fit(train_set_);
-            norm_.transform(train_set_);
-            norm_.transform(test_set_);
-        }
+        initialize();
     }
 
     public TrainProcedureDL4J(EvolvingActivationParams params) throws IOException, InterruptedException {
-        String trainset_path = params.train_path();
-        DataSet trainset = trainset_path.endsWith(".arff") ?
-                StorageManager.loadEntireArffDataset(trainset_path) :
-                StorageManager.loadEntireCsvDataset(trainset_path);
+        // Set double precision globally.
+        Nd4j.setDataType(DataBuffer.Type.DOUBLE);
 
-        if (params.test_path() == null) { // Split.
-            trainset.shuffle(params.seed());
-            SplitTestAndTrain split = trainset.splitTestAndTrain(params.train_percentage());
-            train_set_ = split.getTrain();
-            test_set_ = split.getTest();
-        } else {
-            train_set_ = trainset;
-            String testset_path = params.test_path();
-            test_set_ = testset_path.endsWith(".arff") ?
-                    StorageManager.loadEntireArffDataset(testset_path) :
-                    StorageManager.loadEntireCsvDataset(testset_path);
-        }
+        String train_path = params.train_path(), test_path = params.test_path();
+        train_set_ = train_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_path) : StorageManager.loadEntireCsvDataset(train_path);
+        test_set_ = test_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(test_path) : StorageManager.loadEntireCsvDataset(test_path);
 
-        // Automatically populate necessary parameters.
-        params.name(StorageManager.dsNameFromPath(trainset_path, false));
+        // Automatically define necessary parameters.
+        params.name(StorageManager.dsNameFromPath(train_path, false));
         params.input_size(train_set_.numInputs());
         params.output_size(train_set_.numOutcomes());
-
-        // Normalize dataset.
-        if (params.normalize_features()) {
-            norm_ = new NormalizerStandardize();
-            norm_.fit(train_set_);
-            norm_.transform(train_set_);
-            norm_.transform(test_set_);
-        }
         params_ = params;
+
+        initialize();
+
+//        DataSet trainset = params.train_path().endsWith(".arff") ?
+//                StorageManager.loadEntireArffDataset(params.train_path()) :
+//                StorageManager.loadEntireCsvDataset(params.train_path());
+//
+//        if (params.test_path() == null) { // Split.
+//            trainset.shuffle(params.seed());
+//            SplitTestAndTrain split = trainset.splitTestAndTrain(params.train_percentage());
+//            train_set_ = split.getTrain();
+//            test_set_ = split.getTest();
+//        } else {
+//            train_set_ = trainset;
+//            String testset_path = params.test_path();
+//            test_set_ = testset_path.endsWith(".arff") ?
+//                    StorageManager.loadEntireArffDataset(testset_path) :
+//                    StorageManager.loadEntireCsvDataset(testset_path);
+//        }
+//
+//        // Automatically populate necessary parameters.
+//        params.name(StorageManager.dsNameFromPath(params.train_path(), false));
+//        params.input_size(train_set_.numInputs());
+//        params.output_size(train_set_.numOutcomes());
+//
+//        // Normalize dataset.
+//        if (params.normalize_features()) {
+//            NormalizerStandardize norm_test_ = new NormalizerStandardize();
+//            norm_test_.fit(train_set_);
+//            norm_test_.transform(train_set_);
+//            norm_test_.transform(test_set_);
+//        }
+//        params_ = params;
+    }
+
+    /**
+     * Splits train dataset if necessary and applies feature normalization if necessary.
+     */
+    private void initialize() {
+        boolean split = params_.train_percentage() > 0 && params_.train_percentage() < 1;
+
+        if (split) {
+            validation_set_ = test_set_; // Use testset as validation.
+
+            if (params_.normalize_features()) {  // Normalize validation set on entire train before splitting.
+                NormalizerStandardize norm = new NormalizerStandardize();
+                norm.fit(train_set_);
+                norm.transform(validation_set_);
+            }
+
+            // Split trainset into train and test
+            train_set_.shuffle(params_.seed());
+            SplitTestAndTrain splitter = train_set_.splitTestAndTrain(params_.train_percentage());
+            train_set_ = splitter.getTrain();
+            test_set_ = splitter.getTest();
+        }
+
+        // Normalize train and test datasets.
+        if (params_.normalize_features()) {
+            NormalizerStandardize norm = new NormalizerStandardize();
+            norm.fit(train_set_);
+            norm.transform(train_set_);
+            norm.transform(test_set_);
+        }
     }
 
     public String describeDatasets() {
@@ -170,7 +194,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         return new CommonModel(params_, architecture, activations);
     }
 
-    public void train(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
+    private void train_internal(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage, @NotNull DataSet dataset) {
         MultiLayerNetwork m = ((CommonModel) model).getModel();
         m.init();
         final Stopwatch timer = new Stopwatch();
@@ -197,11 +221,11 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         Random random = new Random(params_.seed());
         DataSet set;
 //        if (params_.shuffle_batches()) {
-        synchronized (train_set_) {
-            set = train_set_.copy();
+        synchronized (dataset) {
+            set = dataset.copy();
         }
 //        } else {
-//            set = train_set_; // No need for copying.
+//            set = dataset; // No need for copying.
 //        }
 
         timer.start();
@@ -214,9 +238,24 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         }
     }
 
-    public Pair<ModelReport, Object> test(@NotNull IModel model) {
+    public void train(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
+        train_internal(model, log, stats_storage, train_set_);
+    }
+
+    /**
+     * Trains on joined train and test dataset.
+     */
+    public void train_joined(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
+        LinkedList<DataSet> dss = new LinkedList<>();
+        dss.add(train_set_);
+        dss.add(test_set_);
+        DataSet joined = DataSet.merge(dss);
+        train_internal(model, log, stats_storage, joined);
+    }
+
+    private Pair<ModelReport, Object> test_internal(@NotNull IModel model, DataSet dataset) {
         MultiLayerNetwork m = ((CommonModel) model).getModel();
-        DataSetIterator it = new TestDataSetIterator(test_set_, params_.batch_size());
+        DataSetIterator it = new TestDataSetIterator(dataset, params_.batch_size());
 
         Evaluation eval = new Evaluation(params_.output_size());
         ROCMultiClass roc = new ROCMultiClass(0);
@@ -226,7 +265,19 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         ModelReport report = new ModelReport();
         report.build(params_, m, eval, roc);
 
-        return new Pair<>(report, m.output(test_set_.getFeatures()));
+        return new Pair<>(report, m.output(dataset.getFeatures()));
+    }
+
+
+    public Pair<ModelReport, Object> test(@NotNull IModel model) {
+        return test_internal(model, test_set_);
+
+    }
+
+    public Pair<ModelReport, Object> validate(@NotNull IModel model) {
+        if (validation_set_ != null)
+            return test_internal(model, validation_set_);
+        return test(model);
     }
 
     @Override

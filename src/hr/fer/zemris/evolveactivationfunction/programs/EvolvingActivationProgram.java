@@ -30,18 +30,19 @@ import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
+import org.nd4j.linalg.api.buffer.DataBuffer;
+import org.nd4j.linalg.factory.Nd4j;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class EvolvingActivationProgram {
     private static final String DATASET_PATH = "<dataset-path>";
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        // Set double precision globally.
-//        Nd4j.setDataType(DataBuffer.Type.DOUBLE);
         Random r = new Random(42);
 
         // Override deserialization of numerical nodes.
@@ -117,6 +118,7 @@ public class EvolvingActivationProgram {
 
         /* NEUROEVOLUTION */
         ILogger evo_logger = new MultiLogger(StorageManager.createEvolutionLogger(c), new StdoutLogger());
+        evo_logger.i("===> Timestamp:\n" + new Timestamp(new Date().getTime()));
         evo_logger.d("===> Parameters:\n" + params.serialize());
         evo_logger.i("===> Dataset distributions:\n" + train_proc.describeDatasets());
 
