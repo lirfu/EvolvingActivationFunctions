@@ -6,12 +6,18 @@ class Tree:
     def __init__(self, string):
         self.__parse_tree(string)
 
+    def __init__(self, tree):
+        self.root = tree.root.clone()
+
     def get(self, index):
         i = [index]
         return self.root.get(i)
 
     def build(self, input):
         return self.root.build(input)
+
+    def size(self):
+        return self.root.size()
 
     def __add_node(self, parent, node):
         for i in range(parent.children_num):
@@ -45,18 +51,36 @@ class Node:
         self.children = [None]*children_num
         self.build_method = build_method
 
+    def clone(self):
+        n = Node(self.name, self.children_num, self.build_method)
+        n.children = []
+        for c in self.children:
+            n.children.append(c.clone())
+
     def get(self, index):
         if index[0] == 0:
             return self
         index[0] -= 1
         for c in self.children:
-            v = c.get(index):
+            v = c.get(index)
             if v:
                 return v
         return None
 
+    def swap(self, node):
+        self.name, node.name = node.name, self.name
+        self.children_num, node.children_num = node.children_num, self.children_num
+        self.children, node.children = node.children, self.children
+        self.build_method, node.build_method = node.build_method, self.build_method
+
     def build(self, input):
         return self.build_method(self.children, input)
+
+    def size(self):
+        s = 1
+        for c in self.children:
+            s += c.size()
+        return s
 
     def to_string(self):
         if len(self.children) == 0:
@@ -76,6 +100,10 @@ class ConstNode(Node):
         super().__init__("const", 0, lambda c, input: tf.constant(value))
         self.value = value
 
+    def swap(self, node):
+        super().swap(node)
+        self.value, node.value = node.value, self.value
+
     def to_string(self):
         return str(self.value)
 
@@ -89,6 +117,11 @@ class LearnableNode(Node):
         super().__init__('l'+str(value), 0, lambda c, input: tf.get_variable("acti_var" + str(self.var_index), shape=input.get_shape()[-1],
                                          initializer=tf.constant_initializer(0.0), dtype=tf.float32))
         self.value = value
+
+    def swap(self, node):
+        super().swap(node)
+        self.var_index, node.var_index = node.var_index, self.var_index
+        self.value, node.value = node.value, self.value
 
     def to_string(self):
         return 'l'+str(self.value)
@@ -164,5 +197,5 @@ if __name__ == '__main__':
     print("Before:", s)
     t = Tree(s)
     print("After: ", t.to_string())
-    print(t.get(0))
-    print(t.get(3))
+    print(t.get(0).name)
+    print(t.get(5).name)
