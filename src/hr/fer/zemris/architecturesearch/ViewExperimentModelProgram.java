@@ -1,6 +1,6 @@
 package hr.fer.zemris.architecturesearch;
 
-import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedure;
+import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedureDL4J;
 import hr.fer.zemris.utils.commandline.ACommand;
 import hr.fer.zemris.utils.commandline.CommandLine;
 import org.deeplearning4j.ui.api.UIServer;
@@ -11,7 +11,7 @@ import java.io.File;
 public class ViewExperimentModelProgram {
     public static void main(String[] args) {
         if (args.length == 1) {
-            TrainProcedure.displayTrainStats(new FileStatsStorage(new File(args[0])));
+            TrainProcedureDL4J.displayTrainStats(new FileStatsStorage(new File(args[0])));
         } else {
             CommandLine cmd = new CommandLine();
             cmd.addCommand(new ACommand("display", "Runs the dl4j server for displaying model results in the given file. Usage: displayRuns <file-path>") {
@@ -22,7 +22,7 @@ public class ViewExperimentModelProgram {
                         System.out.println("File not found: " + parameters);
                         return;
                     }
-                    TrainProcedure.displayTrainStats(new FileStatsStorage(f));
+                    TrainProcedureDL4J.displayTrainStats(new FileStatsStorage(f));
                 }
             });
             cmd.addCommand(new ACommand("quit", "Stops the server and exits the command line.") {

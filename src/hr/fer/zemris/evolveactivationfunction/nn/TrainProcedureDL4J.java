@@ -35,7 +35,7 @@ import java.util.Random;
 /**
  * A common procedure for learning on a particular dataset.
  */
-public class TrainProcedure {
+public class TrainProcedureDL4J implements ITrainProcedure {
 
     private DataNormalization norm_;
     private final DataSet train_set_, test_set_;
@@ -48,7 +48,7 @@ public class TrainProcedure {
      * @param test_set_path
      * @param params_builder
      */
-    public TrainProcedure(@NotNull String train_set_path, @NotNull String test_set_path, @NotNull TrainParams.Builder params_builder) throws IOException, InterruptedException {
+    public TrainProcedureDL4J(@NotNull String train_set_path, @NotNull String test_set_path, @NotNull TrainParams.Builder params_builder) throws IOException, InterruptedException {
         train_set_ = train_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_set_path) : StorageManager.loadEntireCsvDataset(train_set_path);
         test_set_ = test_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(test_set_path) : StorageManager.loadEntireCsvDataset(test_set_path);
         initialize(StorageManager.dsNameFromPath(train_set_path, false), params_builder);
@@ -60,7 +60,7 @@ public class TrainProcedure {
      * @param dataset_name
      * @param params_builder
      */
-    public TrainProcedure(@NotNull String dataset_name, @NotNull TrainParams.Builder params_builder, float train_percentage) throws IOException, InterruptedException {
+    public TrainProcedureDL4J(@NotNull String dataset_name, @NotNull TrainParams.Builder params_builder, float train_percentage) throws IOException, InterruptedException {
         DataSet ds = dataset_name.endsWith(".arff") ? StorageManager.loadEntireArffDataset(dataset_name) : StorageManager.loadEntireCsvDataset(dataset_name);
         ds.shuffle(params_builder.seed());
         SplitTestAndTrain split = ds.splitTestAndTrain(train_percentage);
@@ -87,7 +87,7 @@ public class TrainProcedure {
         }
     }
 
-    public TrainProcedure(EvolvingActivationParams params) throws IOException, InterruptedException {
+    public TrainProcedureDL4J(EvolvingActivationParams params) throws IOException, InterruptedException {
         String trainset_path = params.train_path();
         DataSet trainset = trainset_path.endsWith(".arff") ?
                 StorageManager.loadEntireArffDataset(trainset_path) :
@@ -170,8 +170,8 @@ public class TrainProcedure {
         return new CommonModel(params_, architecture, activations);
     }
 
-    public void train(@NotNull CommonModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
-        MultiLayerNetwork m = model.getModel();
+    public void train(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
+        MultiLayerNetwork m = ((CommonModel) model).getModel();
         m.init();
         final Stopwatch timer = new Stopwatch();
         final boolean[] running_good = {true};
@@ -214,8 +214,8 @@ public class TrainProcedure {
         }
     }
 
-    public Pair<ModelReport, INDArray> test(@NotNull CommonModel model) {
-        MultiLayerNetwork m = model.getModel();
+    public Pair<ModelReport, Object> test(@NotNull IModel model) {
+        MultiLayerNetwork m = ((CommonModel) model).getModel();
         DataSetIterator it = new TestDataSetIterator(test_set_, params_.batch_size());
 
         Evaluation eval = new Evaluation(params_.output_size());
@@ -229,11 +229,18 @@ public class TrainProcedure {
         return new Pair<>(report, m.output(test_set_.getFeatures()));
     }
 
-    public void storeResults(CommonModel model, Context context, Pair<ModelReport, INDArray> result) throws IOException {
-        StorageManager.storeModel(model, context);
+    @Override
+    public Pair<ModelReport, Object> createAndRun(NetworkArchitecture architecture, IActivation[] activations, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
+        IModel model = createModel(architecture, activations);
+        train(model, log, stats_storage);
+        return test(model);
+    }
+
+    public void storeResults(IModel model, Context context, Pair<ModelReport, Object> result) throws IOException {
+        StorageManager.storeModel(((CommonModel) model), context);
         StorageManager.storeTrainParameters(params_, context);
         StorageManager.storeResults(result.getKey(), context);
-        StorageManager.storePredictions(result.getVal(), context);
+        StorageManager.storePredictions((INDArray) result.getVal(), context);
     }
 
     /**

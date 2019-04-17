@@ -1,10 +1,8 @@
 package hr.fer.zemris.evolveactivationfunction.programs;
 
 import hr.fer.zemris.evolveactivationfunction.*;
-import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
-import hr.fer.zemris.evolveactivationfunction.nn.NetworkArchitecture;
+import hr.fer.zemris.evolveactivationfunction.nn.*;
 import hr.fer.zemris.evolveactivationfunction.SREvaluator;
-import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedure;
 import hr.fer.zemris.evolveactivationfunction.tree.nodes.ConstNode;
 import hr.fer.zemris.evolveactivationfunction.tree.DerivableSymbolicTree;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSetFactory;
@@ -32,9 +30,6 @@ import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
-import org.nd4j.linalg.api.buffer.DataBuffer;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -46,7 +41,7 @@ public class EvolvingActivationProgram {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Set double precision globally.
-        Nd4j.setDataType(DataBuffer.Type.DOUBLE);
+//        Nd4j.setDataType(DataBuffer.Type.DOUBLE);
         Random r = new Random(42);
 
         // Override deserialization of numerical nodes.
@@ -114,7 +109,7 @@ public class EvolvingActivationProgram {
         set.load(TreeNodeSetFactory.build(new Random(params.seed()), params.node_set()));
 
         // Define the training procedure.
-        TrainProcedure train_proc = new TrainProcedure(params);
+        ITrainProcedure train_proc = new TrainProcedureDL4J(params);
         Context c = train_proc.createContext(params.experiment_name());
 
         // Store params to experiment result folder.
@@ -154,8 +149,8 @@ public class EvolvingActivationProgram {
         // Retrain the best model.
         evo_logger.i("===> Retraining best: " + best + "  (" + best.getFitness() + ")");
         best.setResult(null);  // Do this for unknown reasons (dl4j serialization error otherwise).
-        CommonModel model = evaluator.buildModelFrom(best);
-        Pair<ModelReport, INDArray> result = evaluator.evaluateModel(model, StorageManager.createStatsLogger(c), best.serialize());
+        Pair<ModelReport, Object> result = evaluator.evaluateModel(best, StorageManager.createStatsLogger(c), best.serialize());
+        IModel model = evaluator.buildModelFrom(best);
         train_proc.storeResults(model, c, result);
         evo_logger.i("Done!\n");
         evo_logger.i("===> Final best: \n" + best + "  (" + best.getFitness() + ")");

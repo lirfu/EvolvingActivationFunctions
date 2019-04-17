@@ -20,7 +20,7 @@ import org.nd4j.linalg.schedule.StepSchedule;
 /**
  * Convenience wrapper for reducing temptation of unwanted modifying the model. Defines and builds the common model for all experiments.
  */
-public class CommonModel {
+public class CommonModel implements IModel {
     private MultiLayerNetwork model_;
 
     /**

@@ -4,7 +4,7 @@ import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
 import hr.fer.zemris.evolveactivationfunction.Context;
 import hr.fer.zemris.evolveactivationfunction.StorageManager;
 import hr.fer.zemris.evolveactivationfunction.nn.NetworkArchitecture;
-import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedure;
+import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedureDL4J;
 import hr.fer.zemris.experiments.Experiment;
 import hr.fer.zemris.experiments.GridSearch;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
@@ -61,7 +61,7 @@ public class ArchitectureSearchProgram {
         for (Experiment<TrainParams> e : experiments) {
             arbiter.postWork(() -> {
                 try {
-                    TrainProcedure train_procedure = new TrainProcedure(train_ds, test_ds, new TrainParams.Builder().cloneFrom(e.getParams()));
+                    TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(train_ds, test_ds, new TrainParams.Builder().cloneFrom(e.getParams()));
                     CommonModel model = train_procedure.createModel(new NetworkArchitecture(architecture), new IActivation[]{common_activation});
                     Context context = train_procedure.createContext(e.getName());
 
@@ -73,7 +73,7 @@ public class ArchitectureSearchProgram {
                     log.d("Training...");
                     train_procedure.train(model, log, stat_storage);
                     log.d("Testing...");
-                    Pair<ModelReport, INDArray> result = train_procedure.test(model);
+                    Pair<ModelReport, Object> result = train_procedure.test(model);
                     log.d(result.getKey().toString());
                     log.d("Elapsed time: " + Utilities.formatMiliseconds(timer.stop()));
                     train_procedure.storeResults(model, context, result);

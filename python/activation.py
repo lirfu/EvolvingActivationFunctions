@@ -4,7 +4,11 @@ import re
 
 class Tree:
     def __init__(self, string):
-        self._parse_tree(string)
+        self.__parse_tree(string)
+
+    def get(self, index):
+        i = [index]
+        return self.root.get(i)
 
     def build(self, input):
         return self.root.build(input)
@@ -17,7 +21,7 @@ class Tree:
             if self.__add_node(parent.children[i], node):  # Recurse into children.
                 return True
 
-    def _parse_tree(self, string):  # Recursive tree parsing
+    def __parse_tree(self, string):  # Recursive tree parsing
         string = string.strip()
         if string.find('[') < 0:  # Leaf root
             self.root = parse_node(string)
@@ -40,6 +44,16 @@ class Node:
         self.children_num = children_num
         self.children = [None]*children_num
         self.build_method = build_method
+
+    def get(self, index):
+        if index[0] == 0:
+            return self
+        index[0] -= 1
+        for c in self.children:
+            v = c.get(index):
+            if v:
+                return v
+        return None
 
     def build(self, input):
         return self.build_method(self.children, input)
@@ -150,3 +164,5 @@ if __name__ == '__main__':
     print("Before:", s)
     t = Tree(s)
     print("After: ", t.to_string())
+    print(t.get(0))
+    print(t.get(3))

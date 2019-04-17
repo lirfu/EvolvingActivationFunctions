@@ -3,7 +3,8 @@ package hr.fer.zemris.evolveactivationfunction.programs;
 import hr.fer.zemris.evolveactivationfunction.*;
 import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
 import hr.fer.zemris.evolveactivationfunction.SREvaluator;
-import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedure;
+import hr.fer.zemris.evolveactivationfunction.nn.IModel;
+import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedureDL4J;
 import hr.fer.zemris.evolveactivationfunction.tree.DerivableSymbolicTree;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSetFactory;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSets;
@@ -50,7 +51,7 @@ public class ReTestingProgram {
             experiment = "00_retraining";
         }
 
-        TrainProcedure proc = new TrainProcedure(params);
+        TrainProcedureDL4J proc = new TrainProcedureDL4J(params);
         Context c = proc.createContext(experiment);
         ILogger evo_logger = new MultiLogger(StorageManager.createEvolutionLogger(c), new StdoutLogger());
 
@@ -60,11 +61,11 @@ public class ReTestingProgram {
 
         SREvaluator evaluator = new SREvaluator(proc, params.architecture(), new StdoutLogger(), true);
         DerivableSymbolicTree best = new DerivableSymbolicTree(SymbolicTree.parse(function, set));
-        CommonModel model = evaluator.buildModelFrom(best);
 
-        Pair<ModelReport, INDArray> result = evaluator.evaluateModel(model, null, best.serialize());
+        Pair<ModelReport, Object> result = evaluator.evaluateModel(best, null, best.serialize());
         System.out.println(result.getKey());
 
+        IModel model = evaluator.buildModelFrom(best);
         proc.storeResults(model, proc.createContext(""), result);
     }
 }
