@@ -81,7 +81,7 @@ public class NNSRTest {
                     Math.abs(x - input.getDouble(0)) <= REQUIRED_PRECISION
                             && Math.abs(0.1 * x - input.getDouble(1)) <= REQUIRED_PRECISION);
 
-            assertTrue("[" + n.getName() + "] should derivative correctly: " + p + "!=" + t,
+            assertTrue("[" + n.getName() + "] should derivate correctly for " + x + ": " + p + "!=" + t,
                     Math.abs(t.getDouble(0) - p.getDouble(0)) <= REQUIRED_PRECISION
                             && Math.abs(t.getDouble(1) - p.getDouble(1)) <= REQUIRED_PRECISION);
         }
@@ -133,6 +133,7 @@ public class NNSRTest {
         testNodeEval(initNode(new SigmoidNode()), x -> 1. / (1 + Math.exp(-x)), -1, 1);
         testNodeEval(initNode(new GaussNode()), x -> Math.exp(-x * x), -3, 3);
 
+        testNodeEval(initNode(new AbsNode()), Math::abs, -3, 3);
         /* DERIVATIONS */
 
         // Input node.
@@ -159,6 +160,8 @@ public class NNSRTest {
         testNodeDeriv(initNode(new ReLUNode()), x -> x > 0 ? 1 : 0, -1, 1);
         testNodeDeriv(initNode(new SigmoidNode()), x -> 1. / (2 + Math.exp(-x) + Math.exp(x)), -1, 1);
         testNodeDeriv(initNode(new GaussNode()), x -> Math.exp(-x * x) * (-2 * x), -3, 3);
+
+        testNodeDeriv(initNode(new AbsNode()), x -> (Math.abs(x) / (x + AbsNode.STABILITY_CONST)), -3, 3);
     }
 
     @Test

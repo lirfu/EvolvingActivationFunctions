@@ -96,7 +96,12 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
             return new DerivableNode[]{new LogNode()};
         }
     },
-
+    ABS {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new AbsNode()};
+        }
+    },
     ELU {
         @Override
         public DerivableNode[] list() {
