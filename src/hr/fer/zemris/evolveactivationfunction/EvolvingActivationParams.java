@@ -526,6 +526,7 @@ public class EvolvingActivationParams extends TrainParams {
         }
 
         public Builder cloneFrom(@NotNull EvolvingActivationParams p) {
+            super.cloneFrom(p);
             algorithm_ = p.algorithm_;
             population_size_ = p.population_size_;
             mutation_prob_ = p.mutation_prob_;
