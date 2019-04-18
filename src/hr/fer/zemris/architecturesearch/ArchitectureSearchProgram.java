@@ -36,8 +36,8 @@ import java.util.Random;
 
 public class ArchitectureSearchProgram {
     public static void main(String[] args) throws IOException, InterruptedException {
-        String train_ds = "res/noiseless_data/noiseless_all_training_9class.arff";
-        String test_ds = "res/noiseless_data/noiseless_all_testing_9class.arff";
+//        String train_ds = "res/noiseless_data/noiseless_all_training_256class.arff";
+//        String test_ds = "res/noiseless_data/noiseless_all_testing_256class.arff";
 
 //        IActivation common_activation;
 //        common_activation = new ActivationReLU();
@@ -52,14 +52,14 @@ public class ArchitectureSearchProgram {
 //        common_activation = new CustomFunction(tree);
 
         // Paralelization.
-        final WorkArbiter arbiter = new WorkArbiter("Experimenter", 3);
+        final WorkArbiter arbiter = new WorkArbiter("Experimenter", 2);
 
         // Create a common instance of train params.
         String experiment_name = "common_functions";
         TrainParams.Builder common_params = new TrainParams.Builder()
                 .name(experiment_name)
                 .epochs_num(10)
-                .batch_size(64)
+                .batch_size(256)
                 .normalize_features(true)
                 .shuffle_batches(true)
                 .batch_norm(true)
@@ -67,7 +67,6 @@ public class ArchitectureSearchProgram {
                 .decay_step(1)
                 .dropout_keep_prob(1)
                 .seed(42);
-        String architecture = "fc(30)-fc(30)";
 
         // Run experiments.
         TreeNodeSet set = TreeNodeSetFactory.build(new Random(), TreeNodeSets.ALL);
@@ -77,10 +76,9 @@ public class ArchitectureSearchProgram {
         activations.add(new ActivationELU());
         activations.add(new ActivationSELU());
         activations.add(new ActivationLReLU());
-        activations.add(new ActivationRReLU());
+//        activations.add(new ActivationRReLU());
         activations.add(new ActivationThresholdedReLU());
         activations.add(new ActivationSwish());
-        activations.add(new ActivationCube());
         activations.add(new ActivationSigmoid());
         activations.add(new ActivationHardSigmoid());
         activations.add(new ActivationTanH());
@@ -97,41 +95,46 @@ public class ArchitectureSearchProgram {
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow2[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow3[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("gauss[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("log[abs[x]]", set))));
-        for (IActivation acti : activations) {
-            System.out.println(acti);
-            // Create grid search experiments.
-            Iterable<Experiment<TrainParams>> experiments =
-                    new GridSearch<TrainParams>(experiment_name + '_' + architecture + '_' + acti.toString())
-                            .buildGridSearchExperiments(common_params, grid_search_modifiers);
 
-            for (Experiment<TrainParams> e : experiments) {
-                arbiter.postWork(() -> {
-                    try {
-                        TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(train_ds, test_ds, new TrainParams.Builder().cloneFrom(e.getParams()));
-                        CommonModel model = train_procedure.createModel(new NetworkArchitecture(architecture), new IActivation[]{acti});
-                        Context context = train_procedure.createContext(e.getName());
+        for (String[] ds : new String[][]{
+                new String[]{"res/noiseless_data/noiseless_all_training_9class.arff", "res/noiseless_data/noiseless_all_testing_9class.arff"},
+                new String[]{"res/noiseless_data/noiseless_all_training_256class.arff", "res/noiseless_data/noiseless_all_testing_256class.arff"}}) {
+            for (String architecture : new String[]{"fc(30)-fc(30)", "fc(50)-fc(50)", "fc(30)-fc(30)-fc(30)"})
+                for (IActivation acti : activations) {
+                    System.out.println(acti);
+                    // Create grid search experiments.
+                    Iterable<Experiment<TrainParams>> experiments =
+                            new GridSearch<TrainParams>(experiment_name + '_' + architecture + '_' + acti.toString())
+                                    .buildGridSearchExperiments(common_params, grid_search_modifiers);
 
-                        ILogger log = new MultiLogger(new StdoutLogger(), StorageManager.createTrainingLogger(context)); // Log to stdout.
-                        FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
+                    for (Experiment<TrainParams> e : experiments) {
+                        arbiter.postWork(() -> {
+                            try {
+                                TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(ds[0], ds[1], new TrainParams.Builder().cloneFrom(e.getParams()));
+                                CommonModel model = train_procedure.createModel(new NetworkArchitecture(architecture), new IActivation[]{acti});
+                                Context context = train_procedure.createContext(e.getName());
 
-                        log.d("===> Architecture: " + architecture);
-                        log.d("===> Activation function: " + acti.toString());
-                        log.d("===> Parameters:");
-                        log.d(e.getParams().toString());
+                                ILogger log = new MultiLogger(new StdoutLogger(), StorageManager.createTrainingLogger(context)); // Log to stdout.
+                                FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
 
-                        Stopwatch timer = new Stopwatch();
-                        timer.start();
-                        train_procedure.train_joined(model, log, stat_storage);
-                        Pair<ModelReport, Object> result = train_procedure.test(model);
-                        log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().serialize());
-                        train_procedure.storeResults(model, context, result);
+                                log.d("===> Architecture: " + architecture);
+                                log.d("===> Activation function: " + acti.toString());
+                                log.d("===> Parameters:");
+                                log.d(e.getParams().toString());
+
+                                Stopwatch timer = new Stopwatch();
+                                timer.start();
+                                train_procedure.train_joined(model, log, stat_storage);
+                                Pair<ModelReport, Object> result = train_procedure.test(model);
+                                log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().serialize());
+                                train_procedure.storeResults(model, context, result);
 //                    train_procedure.displayTrainStats(stat_storage);
-                    } catch (IOException | InterruptedException e1) {
-                        e1.printStackTrace();
+                            } catch (IOException | InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
+                        });
                     }
-                });
-            }
+                }
         }
 
         System.out.println("Pending:\n" + arbiter.getStatus());
@@ -148,7 +151,7 @@ public class ArchitectureSearchProgram {
 
                 @Override
                 public Object[] getValues() {
-                    return new Double[]{/*1e-2, 1e-3,*/ 1e-4};
+                    return new Double[]{1e-3, 1e-4};
                 }
             },
             new GridSearch.IModifier<TrainParams>() {
@@ -159,7 +162,7 @@ public class ArchitectureSearchProgram {
 
                 @Override
                 public Object[] getValues() {
-                    return new Double[]{2e-3 /*1e-2, 5e-3, 1e-3*/};
+                    return new Double[]{2e-3, 1e-3};
                 }
             },
             new GridSearch.IModifier<TrainParams>() {
@@ -170,7 +173,7 @@ public class ArchitectureSearchProgram {
 
                 @Override
                 public Object[] getValues() {
-                    return new Integer[]{10 /*5, 10, 15*/};
+                    return new Integer[]{5, 10};
                 }
             }
     };
