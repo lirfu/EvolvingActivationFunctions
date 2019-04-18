@@ -550,6 +550,7 @@ public class TrainParams implements ISerializable {
             dropout_keep_prob_ = p.dropout_keep_prob_;
             seed_ = p.seed_;
             name_ = p.name_;
+            train_percentage_ = p.train_percentage_;
             return this;
         }
     }
