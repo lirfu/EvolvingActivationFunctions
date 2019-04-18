@@ -20,7 +20,7 @@ public class CustomFunction extends BaseActivationFunction implements Serializab
         NeuralNetConfiguration.registerLegacyCustomClassesForJSON(CustomFunction.class);
     }
 
-    private transient DerivableSymbolicTree tree_; // Don't serialize this structure.
+    private transient DerivableSymbolicTree tree_; // Don't object serialize this structure.
     private String serialized;
 
     public CustomFunction() {
@@ -31,8 +31,10 @@ public class CustomFunction extends BaseActivationFunction implements Serializab
         serialized = tree.serialize();
     }
 
-    /** Initialize the tree from serialized string. Used after object deserialization. */
-    public void initialize(){
+    /**
+     * Initialize the tree from serialized string. Used after object deserialization.
+     */
+    public void initialize() {
         tree_ = new DerivableSymbolicTree(DerivableSymbolicTree.parse(serialized, TreeNodeSetFactory.build(new Random(), TreeNodeSets.ALL)));
     }
 
@@ -71,5 +73,10 @@ public class CustomFunction extends BaseActivationFunction implements Serializab
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         initialize();
+    }
+
+    @Override
+    public String toString() {
+        return tree_.serialize();
     }
 }
