@@ -96,9 +96,10 @@ public class ArchitectureSearchProgram {
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("exp[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow2[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow3[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("log[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("gauss[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("log[abs[x]]", set))));
         for (IActivation acti : activations) {
+            System.out.println(acti);
             // Create grid search experiments.
             Iterable<Experiment<TrainParams>> experiments =
                     new GridSearch<TrainParams>(experiment_name + '_' + architecture + '_' + acti.toString())
