@@ -1,6 +1,6 @@
 package hr.fer.zemris.data.primitives;
 
-import com.sun.istack.internal.NotNull;
+import com.sun.istack.NotNull;
 import hr.fer.zemris.utils.Pair;
 import org.tensorflow.Tensor;
 import org.tensorflow.Tensors;

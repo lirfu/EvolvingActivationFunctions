@@ -1,6 +1,6 @@
 package hr.fer.zemris.data.modifiers;
 
-import com.sun.istack.internal.NotNull;
+import com.sun.istack.NotNull;
 import hr.fer.zemris.data.primitives.DataPair;
 import hr.fer.zemris.utils.Utilities;
 

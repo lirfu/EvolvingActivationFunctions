@@ -1,6 +1,6 @@
 package hr.fer.zemris.neurology.tf.descendmethods;
 
-import com.sun.istack.internal.NotNull;
+import com.sun.istack.NotNull;
 import hr.fer.zemris.neurology.tf.TFContext;
 import org.tensorflow.Operand;
 import org.tensorflow.op.Ops;

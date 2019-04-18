@@ -1,7 +1,6 @@
 package hr.fer.zemris.genetics.symboregression;
 
 import org.jetbrains.annotations.NotNull;
-import sun.reflect.generics.tree.Tree;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

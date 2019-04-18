@@ -1,6 +1,6 @@
 package hr.fer.zemris.neurology.tf;
 
-import com.sun.istack.internal.NotNull;
+import com.sun.istack.NotNull;
 import org.tensorflow.Operand;
 
 import java.util.List;

@@ -1,9 +1,9 @@
 package hr.fer.zemris.utils;
 
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import hr.fer.zemris.genetics.symboregression.IInstantiable;
+import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.*;
