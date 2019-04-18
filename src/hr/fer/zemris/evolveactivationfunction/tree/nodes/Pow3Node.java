@@ -9,7 +9,7 @@ import org.nd4j.linalg.api.ops.impl.transforms.gradient.CubeDerivative;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class Pow3Node extends DerivableNode {
-    public static final String NAME = "^3";
+    public static final String NAME = "pow3";
 
     public Pow3Node() {
         super(NAME, 1);

@@ -8,7 +8,7 @@ import org.nd4j.linalg.api.ops.impl.transforms.Square;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class Pow2Node extends DerivableNode {
-    public static final String NAME = "^2";
+    public static final String NAME = "pow2";
 
     public Pow2Node() {
         super(NAME, 1);
