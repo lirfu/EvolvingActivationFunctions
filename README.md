@@ -2,6 +2,9 @@
 This project attempts evolving transfer functions for neural networks using symbolic regression.
 Project is implemented using [DeepLearning4Java](https://deeplearning4j.org/).
 
+# Installation procedure
+The installation procedure can be found [here](/DL4J_setup_procedure.md)
+
 # Main components
 ## Packages
 #### `hr.fer.zemris.evolveactivationfunction`
