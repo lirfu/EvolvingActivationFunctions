@@ -1,0 +1,141 @@
+\documentclass[times, utf8, diplomski]{fer}
+\usepackage{booktabs}
+
+\begin{document}
+
+\thesisnumber{1966}
+
+\title{Optimizirane izlazne funkcije klasifikatora temeljenog na umjetnim neuronskim mrežama u domeni implementacijskih napada na kriptografske uređaje}
+
+\author{Juraj Fulir}
+
+\maketitle
+
+% Ispis stranice s napomenom o umetanju izvornika rada. Uklonite naredbu \izvornik ako želite izbaciti tu stranicu.
+\izvornik
+
+\zahvala{ZAHVALA'n'STUFF}
+
+\tableofcontents
+
+\chapter{Uvod}
+Opis problema 
+
+\chapter{Implementacijski napadi na kriptografske uređaje}
+
+\section{Side-channel napadi}
+Postoji nekoliko vrsta.
+
+Ovdje se obrađuje DPA.
+
+\section{Izvedba napada}
+Uštekaj uređaj, osciloskop na to i to mjesto i snimaj
+
+Provjeri mogućnosti i zaključi najvjerojatniju
+
+Problem netraktabilnosti postupka -> neuralke <3
+
+\section{DPA skupovi podataka}
+Ima HW i ovaj pravi
+
+Nabaci i PCA redukcije i statistike iz jn
+
+Mjere dobrote klasifikacije
+
+Ne zaboravi referencu na stranicu!
+
+\chapter{Klasifikator temeljen na umjetnim neuronskim mrežama}
+
+\section{Umjetne neuronske mreže}
+Svojstva kompresije i generalizacije
+
+Problem odabira arhitekture, hiperparametara i optimizacije
+
+\section{Izlazne funkcije}
+Nomenklatura izlazne/prijenosne fje (ona 2 cool rada)
+
+Bitka za odabir akrivacijske fje (nađi onaj rad di pljuje po sigmoidi i relu (elu rad?))
+
+\chapter{Optimizacija simboličkom regresijom (tehnički genetskim programiranjem...)}
+
+\section{Simbolička regresija}
+Opis i svojstva SR
+
+Utjecaj i brojnost parametara u GA (moš linkat i svoj završni rad :P)
+
+\section{Taboo evolucijski algoritam}
+Problem konvergencije i stohastičnosti GP-a
+
+EA oplemenjen taboo listom iz algoritma Taboo pretraživanja
+
+\section{Korišteni čvorovi i operatori}
+Popis čvorova
+
+Popis operatora (un/bin)
+
+\chapter{Implementacija}
+???
+
+\chapter{Rezultati}
+
+\section{9class}
+
+\subsection{Uobičajene izlazne funkcije}
+Opis postupka pretrage
+
+Tablica
+
+Komentar
+
+\subsection{Utjecaj parametra veličine taboo liste}
+Tablica
+
+Komentar
+
+\section{256class}
+
+\subsection{Uobičajene izlazne funkcije}
+Opis postupka pretrage
+
+Tablica
+
+Komentar
+
+% Hoće bit vremena za ovo?
+\subsection{Utjecaj parametra veličine taboo liste}
+Tablica
+
+Komentar
+
+\chapter{Buduća istraživanja}
+Primjena CNN na vremenskim uzorcima po uzoru na onaj rad
+
+Ispitivanje učinkovitosti korištene optimizacije na ostalim problemima
+
+Paralelna evolucija arhitekture i aktivacijskih fja
+
+\chapter{Zaključak}
+Radi/Ne radi. 
+
+Pronađene zanimljivosti. 
+
+Pouka za doma.
+
+\bibliography{literatura}
+\bibliographystyle{fer}
+
+\begin{sazetak}
+Proučiti postojeće metode u izgradnji izlaznih funkcija u umjetnim neuronskim mrežama. Posebnu pažnju posvetiti evolucijskim algoritmima simboličke regresije za izgradnju ciljanih funkcija. Ustanoviti moguće nedostatke postojećih algoritama ili mogućnost poboljšanja. Primijeniti evoluirane izlazne funkcije u homogenoj ili heterogenoj umjetnoj neuronskoj mreži na skupovima DPAv2 i DPAv4 te odrediti mjere kvalitete izgrađenog klasifikatora: točnost, preciznost, odziv te F mjere. Usporediti učinkovitost ostvarenih postupaka s postojećim rješenjima iz literature. Radu priložiti izvorne tekstove programa, dobivene rezultate uz potrebna objašnjenja i korištenu literaturu.
+
+\kljucnerijeci{Ključne riječi, odvojene zarezima.}
+\end{sazetak}
+
+% TODO: Navedite naslov na engleskom jeziku.
+\engtitle{Title}
+\begin{abstract}
+Abstract.
+
+\keywords{Keywords.}
+\end{abstract}
+
+\end{document}
