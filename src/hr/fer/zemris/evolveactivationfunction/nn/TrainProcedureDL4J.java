@@ -12,6 +12,7 @@ import hr.fer.zemris.utils.logs.ILogger;
 import org.deeplearning4j.api.storage.StatsStorageRouter;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.api.BaseTrainingListener;
+import org.deeplearning4j.optimize.api.TrainingListener;
 import org.deeplearning4j.ui.api.UIServer;
 import org.deeplearning4j.ui.stats.StatsListener;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
@@ -290,15 +291,29 @@ public class TrainProcedureDL4J implements ITrainProcedure {
     @Override
     public Pair<ModelReport, Object> test(@NotNull IModel model) {
         return test_internal(model, test_set_);
+    }
 
+    public Pair<ModelReport, Object> test_custom(@NotNull IModel model, int batch_size) {
+        MultiLayerNetwork m = ((CommonModel) model).getModel();
+        DataSetIterator it = new TestDataSetIterator(test_set_, batch_size);
+
+        Evaluation eval = new Evaluation(params_.output_size());
+        ROCMultiClass roc = new ROCMultiClass(0);
+
+        m.doEvaluation(it, eval, roc);
+
+        ModelReport report = new ModelReport();
+        report.build(params_, m, eval, roc);
+
+        return new Pair<>(report, m.output(test_set_.getFeatures()));
     }
 
     @Override
     public void storeResults(IModel model, Context context, Pair<ModelReport, Object> result) throws IOException {
-        StorageManager.storeModel(((CommonModel) model), context);
+//        StorageManager.storeModel(((CommonModel) model), context);
         StorageManager.storeTrainParameters(params_, context);
         StorageManager.storeResults(result.getKey(), context);
-        StorageManager.storePredictions((INDArray) result.getVal(), context);
+//        StorageManager.storePredictions((INDArray) result.getVal(), context);
     }
 
     /**
