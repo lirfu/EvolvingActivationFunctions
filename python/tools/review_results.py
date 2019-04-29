@@ -28,24 +28,47 @@ if len(sys.argv) > 2 or (len(sys.argv) > 1 and arg_i == 1):  # Filter out those 
 	experiments = [x for x in experiments if re.match(pattern, x)]
 
 l_i = 2
-u_i = 7
+u_i = 5
 for e in experiments:
 	print('Experiment:', e)
-	print('Accuracy | Precision | Recall | F1 | AUC | AUC prob.')
+#	print('Accuracy | Precision | Recall | F1 | AUC | AUC prob.')
 	variants = os.listdir(path.join(root_dir, e))
 	variants.sort()
 
+	tabl = []
 	for v in variants:
 #		print('--> Variant:', v)
 		res = path.join(root_dir, e, v, 'results.txt')
-		with open(res, 'r') as f:
-			i = 0
-			for l in f:
-				if i < l_i or i > u_i:
+		try:		
+			with open(res, 'r') as f:
+				i = 0
+				var = []
+				for l in f:
+					if i < l_i or i > u_i:
+						i += 1
+						continue
+					if i > l_i:
+	#					print(' | ', sep='', end='', flush=False)
+						pass
+					value = round(float(l.split('\t')[1].strip()), 3)
+					var.append(value)
+					#print('{:.3f}'.format(value), sep='', end='', flush=False)
 					i += 1
-					continue
-				if i > l_i:
-					print(' | ', sep='', end='', flush=False)
-				print('{:.3f}'.format(round(float(l.split('\t')[1].strip()), 3)), sep='', end='', flush=False)
-				i += 1
-		print('')
+				tabl.append(var)
+		except FileNotFoundError:
+			print('NO RESULTS FOUND FOR:', v)
+#		print('')
+#	print('MAXIMA:')
+	m = max([r[-1] for r in tabl])
+	if float(m) < 0.5:
+		continue
+#	print(m)
+#	print(tabl)
+	for i in range(len(tabl)):
+		if tabl[i][-1] == m:
+			print(' | '.join(['{:.3f}'.format(x) for x in tabl[i]]), '|', i+1)
+	input()
+#	if os.name == 'nt':
+#		os.system('cls')
+#	else:
+#		os.system('clear')
