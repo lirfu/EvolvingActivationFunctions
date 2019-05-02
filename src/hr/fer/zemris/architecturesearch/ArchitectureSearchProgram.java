@@ -21,6 +21,7 @@ import hr.fer.zemris.utils.Stopwatch;
 import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
+import hr.fer.zemris.utils.logs.SlackLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
 import hr.fer.zemris.utils.threading.WorkArbiter;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
@@ -31,8 +32,8 @@ import org.nd4j.linalg.cpu.nativecpu.NDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Random;
+import java.text.DecimalFormat;
+import java.util.*;
 
 public class ArchitectureSearchProgram {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -50,6 +51,8 @@ public class ArchitectureSearchProgram {
 //                .add(new InputNode())
 //                .build();
 //        common_activation = new CustomFunction(tree);
+
+        Stopwatch stopwatch = new Stopwatch();
 
         // Paralelization.
         final WorkArbiter arbiter = new WorkArbiter("Experimenter", 2);
@@ -90,24 +93,32 @@ public class ArchitectureSearchProgram {
         activations.add(new ActivationSoftSign());
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("sin[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("cos[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("tan[x]", set))));
+//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("tan[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("exp[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow2[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow3[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("gauss[x]", set))));
 
+
+        final Pair<Double, String>[] best_results = new Pair[10];
+        final Random rand = new Random(42);
+
         for (String[] ds : new String[][]{
-                new String[]{"res/noiseless_data/noiseless_all_training_9class.arff", "res/noiseless_data/noiseless_all_testing_9class.arff"},
-                new String[]{"res/noiseless_data/noiseless_all_training_256class.arff", "res/noiseless_data/noiseless_all_testing_256class.arff"}}) {
-            for (String architecture : new String[]{"fc(30)-fc(30)", "fc(50)-fc(50)", "fc(30)-fc(30)-fc(30)"})
+//                new String[]{"res/noiseless_data/noiseless_all_training_9class.arff", "res/noiseless_data/noiseless_all_testing_9class.arff"}
+                new String[]{"res/noiseless_data/noiseless_all_training_256class.arff", "res/noiseless_data/noiseless_all_testing_256class.arff"}
+        }) {
+
+            for (String architecture : new String[]{"fc(50)-fc(50)-fc(50)", "fc(300)-fc(300)-fc(300)", "fc(500)-fc(500)-fc(500)"}) {
+
                 for (IActivation acti : activations) {
-                    System.out.println(acti);
+
                     // Create grid search experiments.
                     Iterable<Experiment<TrainParams>> experiments =
                             new GridSearch<TrainParams>(experiment_name + '_' + architecture + '_' + acti.toString())
                                     .buildGridSearchExperiments(common_params, grid_search_modifiers);
 
                     for (Experiment<TrainParams> e : experiments) {
+
                         arbiter.postWork(() -> {
                             try {
                                 TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(ds[0], ds[1], new TrainParams.Builder().cloneFrom(e.getParams()));
@@ -128,18 +139,58 @@ public class ArchitectureSearchProgram {
                                 Pair<ModelReport, Object> result = train_procedure.test(model);
                                 log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().serialize());
                                 train_procedure.storeResults(model, context, result);
-//                    train_procedure.displayTrainStats(stat_storage);
+                                train_procedure.displayTrainStats(stat_storage);
+
+                                ModelReport r = result.getKey();
+
+                                synchronized (best_results) {
+                                    for (int i = best_results.length - 1; i >= 0; i--) {
+                                        if (best_results[i] == null || best_results[i].getKey() < r.f1()) {
+                                            StringBuilder sb = new StringBuilder();
+                                            new Formatter(sb).format("%-23s  %-15s  %.3f  %.3f  %.3f",
+                                                    architecture,
+                                                    acti.toString().substring(0, Math.min(15, acti.toString().length())),
+                                                    r.accuracy(),
+                                                    r.f1()
+                                                    , r.f1_micro()
+                                            );
+                                            best_results[i] = new Pair<>(r.f1(), sb.toString()
+                                            );
+                                            break;
+                                        }
+                                    }
+                                    Arrays.sort(best_results, (a, b) -> {
+                                        if (a == null && b == null)
+                                            return 0;
+                                        if (a == null)
+                                            return 1;
+                                        if (b == null)
+                                            return -1;
+                                        return -a.getKey().compareTo(b.getKey());
+                                    });
+                                }
                             } catch (IOException | InterruptedException e1) {
                                 e1.printStackTrace();
                             }
                         });
                     }
                 }
+            }
         }
 
         System.out.println("Pending:\n" + arbiter.getStatus());
 
         arbiter.waitOn(arbiter.getFinishedCondition());
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("DONE! (").append(Utilities.formatMiliseconds(stopwatch.stop())).append(")");
+        sb.append("\nArchitecture             Function         Acc    F1     F1 (micro)");
+        for (Pair<Double, String> p : best_results)
+            if (p != null)
+                sb.append('\n').append(p.getVal());
+
+        System.out.println(sb.toString());
+        new SlackLogger("lirfu_laptop", "slack_webhook.txt").d(sb.toString());
     }
 
     private static final GridSearch.IModifier[] grid_search_modifiers = {
