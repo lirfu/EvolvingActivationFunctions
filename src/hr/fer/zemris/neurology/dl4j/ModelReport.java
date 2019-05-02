@@ -1,6 +1,7 @@
 package hr.fer.zemris.neurology.dl4j;
 
 import hr.fer.zemris.utils.ISerializable;
+import hr.fer.zemris.utils.Utilities;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.evaluation.EvaluationAveraging;
 import org.nd4j.evaluation.classification.Evaluation;
@@ -97,7 +98,7 @@ public class ModelReport implements IReport, ISerializable {
                 continue;
             }
 
-            String[] parts = line.split("\t ,:");
+            String[] parts = line.split(Utilities.KEY_VALUE_SIMPLE_REGEX);
             switch (parts[0]) {
                 case "name":
                     name_ = parts[1];
