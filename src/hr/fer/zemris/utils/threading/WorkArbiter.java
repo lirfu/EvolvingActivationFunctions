@@ -74,7 +74,7 @@ public class WorkArbiter {
     public String getStatus() {
         StringBuilder sb = new StringBuilder();
         sb.append("Work to do: ").append(queue_.size());
-        sb.append("Workers: ");
+        sb.append("\nWorkers: ");
         int i = 0;
         for (Worker w : workers_) {
             if (i > 0) sb.append(", ");
