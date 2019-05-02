@@ -29,41 +29,58 @@
     </properties>
 
     <dependencies>
+        <!--TENSORFLOW STUFF-->
+
+        <!--Tensorflow library for Java-->
         <dependency>
             <groupId>org.tensorflow</groupId>
             <artifactId>libtensorflow</artifactId>
             <version>1.12.0</version>
         </dependency>
+        <!--Tensorflow support for GPU-->
         <dependency>
             <groupId>org.tensorflow</groupId>
             <artifactId>libtensorflow_jni_gpu</artifactId>
             <version>1.12.0</version>
         </dependency>
+
+        <!--DL4J STUFF-->
+
+        <!--Main DL4J library (deep learning)-->
         <dependency>
             <groupId>org.deeplearning4j</groupId>
             <artifactId>deeplearning4j-core</artifactId>
             <version>1.0.0-beta3</version>
         </dependency>
-        <dependency>
-            <groupId>org.deeplearning4j</groupId>
-            <artifactId>deeplearning4j-cuda-9.0</artifactId>
-            <version>1.0.0-beta3</version>
-        </dependency>
+        <!--Main ND4J library (linear algebra)-->
         <dependency>
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j-native-platform</artifactId>
             <version>1.0.0-beta3</version>
         </dependency>
+
+        <!--DL4J support for Cuda 9.0-->
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-cuda-9.0</artifactId>
+            <version>1.0.0-beta3</version>
+        </dependency>
+        <!--ND4J support for Cuda 9.0-->
         <dependency>
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j-cuda-9.0</artifactId>
             <version>1.0.0-beta3</version>
         </dependency>
+        <!--DL4J support for displaying training statistics UI-->
         <dependency>
             <groupId>org.deeplearning4j</groupId>
             <artifactId>deeplearning4j-ui_2.10</artifactId>
             <version>1.0.0-beta3</version>
         </dependency>
+
+        <!--TESTS-->
+
+        <!--Unit tests-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
