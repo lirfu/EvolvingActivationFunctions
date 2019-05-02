@@ -14,22 +14,23 @@ public class Worker implements Comparable<Worker> {
     /**
      * Creates a new worker and starts the internal thread.
      */
-    public Worker(String name) {
+    public Worker(String name, LinkedList<Work> queue) {
         name_ = name;
-        queue_ = new LinkedList<>();
+        queue_ = queue;
 
         thread_ = new Thread(() -> {
             while (is_alive_) {
                 // Deplete the queue.
                 while (queue_.size() > 0) {
                     Work w;
-                    synchronized (Worker.this) {
-                        w = queue_.getFirst();
+                    synchronized (queue_) {
+                        if (queue_.size() == 0) continue;
+                        w = queue_.removeFirst();
                     }
                     w.work();
-                    synchronized (Worker.this) {
-                        queue_.removeFirst();
-                    }
+//                    synchronized (queue_) {
+//                        queue_.removeFirst();
+//                    }
                 }
 
                 // Wait for changes in queue or timeout.
@@ -50,10 +51,12 @@ public class Worker implements Comparable<Worker> {
     /**
      * Enqueues work to workers' queue. If worker is dead, work is dropped.
      */
-    public final synchronized void enqueueWork(Work work) {
-        if (!is_alive_) return;
-        queue_.addLast(work);
-        notify();
+    public final void enqueueWork(Work work) {
+        synchronized (queue_) {
+            if (!is_alive_) return;
+            queue_.addLast(work);
+            notify();
+        }
     }
 
     /**

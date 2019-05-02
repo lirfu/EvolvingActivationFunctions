@@ -1,21 +1,28 @@
 package hr.fer.zemris.utils.threading;
 
-import hr.fer.zemris.genetics.Utils;
+import java.util.LinkedList;
 
 public class WorkArbiter {
     private final String name_;
     private Worker[] workers_;
+    private LinkedList<Work> queue_;
 
     public WorkArbiter(String name, int worker_number) {
         name_ = name;
+        queue_ = new LinkedList<>();
         workers_ = new Worker[worker_number];
         for (int i = 0; i < worker_number; i++)
-            workers_[i] = new Worker(name + '_' + i);
+            workers_[i] = new Worker(name + '_' + i, queue_);
     }
 
     public void postWork(Work work) {
         // Selects the worker with the smallest queue.
-        Utils.findLowest(workers_).enqueueWork(work);
+        //Utils.findLowest(workers_).enqueueWork(work);
+
+        // Add to joined queue.
+        synchronized (queue_) {
+            queue_.addLast(work);
+        }
 
         // Select workers in the defined order, distributing load uniformly.
 //        workers_[mCurrentIndex].enqueueWork(work);
@@ -66,8 +73,13 @@ public class WorkArbiter {
 
     public String getStatus() {
         StringBuilder sb = new StringBuilder();
+        sb.append("Work to do: ").append(queue_.size());
+        sb.append("Workers: ");
+        int i = 0;
         for (Worker w : workers_) {
-            sb.append(w.getName()).append(": ").append(w.getWorkCount()).append('\n');
+            if (i > 0) sb.append(", ");
+            sb.append(w.getName());
+            i++;
         }
         return sb.toString();
     }

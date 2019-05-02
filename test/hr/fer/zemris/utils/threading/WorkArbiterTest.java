@@ -20,12 +20,15 @@ public class WorkArbiterTest {
                 }
             }
             synchronized (i) {
-                System.out.println(" " + i[0]);
+                System.out.println('[' + Thread.currentThread().getName() + "] " + i[0]);
                 i[0]++;
             }
         };
 
-        int T = 10 / 2;
+        System.out.println("STATUS");
+        System.out.println(arbiter_.getStatus());
+
+        int T = 500 / 2;
 
         // Generate rapidly.
         for (int t = 0; t < T; t++)
@@ -45,7 +48,7 @@ public class WorkArbiterTest {
             arbiter_.postWork(w);
             synchronized (this) {
                 try {
-                    wait(500);
+                    wait((long) (1L + 200L * r.nextDouble()));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -53,15 +56,7 @@ public class WorkArbiterTest {
         }
 
         // Wait until all finish.
-        synchronized (this) {
-            try {
-                while (i[0] < 2 * T) {
-                    wait(500);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        arbiter_.waitOn(() -> i[0] == 2 * T);
 
         System.out.println("Done!");
     }
