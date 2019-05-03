@@ -15,3 +15,6 @@ dl4j-memory-crash-dump*
 
 # Python binaries
 *.pyc
+
+# Slack webhook file
+slack_webhook.txt
