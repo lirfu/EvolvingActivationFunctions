@@ -30,6 +30,7 @@ import org.nd4j.linalg.dataset.api.iterator.TestDataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 import org.nd4j.linalg.factory.Nd4j;
+import sun.misc.GC;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -40,7 +41,6 @@ import java.util.Random;
  * A common procedure for learning on a particular dataset.
  */
 public class TrainProcedureDL4J implements ITrainProcedure {
-
     private DataSet train_set_, validation_set_ = null, test_set_;
     private TrainParams params_;
 
@@ -135,6 +135,22 @@ public class TrainProcedureDL4J implements ITrainProcedure {
             train_set_ = splitter.getTrain();
             validation_set_ = splitter.getTest();
         }
+    }
+
+    /**
+     * Limit periodicity of calls for garbage collector.
+     *
+     * @param period Period of GC calls (in milliseconds). Using 0 or negative disables this option.
+     */
+    public TrainProcedureDL4J callGCPeriod(int period) {
+        if (period > 0) {
+            Nd4j.getMemoryManager().setAutoGcWindow(period);
+            Nd4j.getMemoryManager().togglePeriodicGc(true);
+        } else {
+            Nd4j.getMemoryManager().setAutoGcWindow(0);
+            Nd4j.getMemoryManager().togglePeriodicGc(false);
+        }
+        return this;
     }
 
     @Override

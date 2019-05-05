@@ -121,7 +121,7 @@ public class ArchitectureSearchProgram {
 
                         arbiter.postWork(() -> {
                             try {
-                                TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(ds[0], ds[1], new TrainParams.Builder().cloneFrom(e.getParams()));
+                                TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(ds[0], ds[1], new TrainParams.Builder().cloneFrom(e.getParams())).callGCPeriod(-1);
                                 CommonModel model = train_procedure.createModel(new NetworkArchitecture(architecture), new IActivation[]{acti});
                                 Context context = train_procedure.createContext(e.getName());
 

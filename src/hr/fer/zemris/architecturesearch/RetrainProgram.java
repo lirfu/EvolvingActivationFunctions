@@ -47,7 +47,7 @@ public class RetrainProgram {
         TrainParams p = StorageManager.loadTrainParameters(new Context("noiseless_all_training_256class","common_functions_fc(50)-fc(50)_sin[x]/6"));
         TrainParams.Builder pb = new TrainParams.Builder().cloneFrom(p);
 
-        TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(ds[0], ds[1], pb);
+        TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(ds[0], ds[1], pb).callGCPeriod(-1);
         CommonModel model = train_procedure.createModel(new NetworkArchitecture(architecture), new IActivation[]{acti});
         Context context = train_procedure.createContext(experiment_name);
 
