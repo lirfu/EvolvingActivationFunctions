@@ -28,6 +28,7 @@ import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.iterator.TestDataSetIterator;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 public class RetrainProgram {
@@ -54,6 +55,7 @@ public class RetrainProgram {
 //        FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
         FileStatsStorage stat_storage = null;
 
+        log.d("===> Timestamp: " + LocalDateTime.now().toString());
         log.d("===> Architecture: " + architecture);
         log.d("===> Activation function: " + acti.toString());
         log.d("===> Parameters:");
@@ -62,8 +64,10 @@ public class RetrainProgram {
         Stopwatch timer = new Stopwatch();
         timer.start();
         train_procedure.train_joined(model, log, stat_storage);
-//        Pair<ModelReport, Object> result = train_procedure.test(model);
-        Pair<ModelReport, Object> result = train_procedure.test_custom(model, 4);
+        System.out.println("===> (" + Utilities.formatMiliseconds(timer.lap()) + ") Training done!");
+
+        timer.start();
+        Pair<ModelReport, Object> result = train_procedure.test(model);
         log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().serialize());
 
         StorageManager.storeTrainParameters(p, context);

@@ -33,6 +33,7 @@ import org.nd4j.linalg.factory.Nd4j;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class ArchitectureSearchProgram {
@@ -101,7 +102,6 @@ public class ArchitectureSearchProgram {
 
 
         final Pair<Double, String>[] best_results = new Pair[10];
-        final Random rand = new Random(42);
 
         for (String[] ds : new String[][]{
 //                new String[]{"res/noiseless_data/noiseless_all_training_9class.arff", "res/noiseless_data/noiseless_all_testing_9class.arff"}
@@ -128,6 +128,7 @@ public class ArchitectureSearchProgram {
                                 ILogger log = new MultiLogger(new StdoutLogger(), StorageManager.createTrainingLogger(context)); // Log to stdout.
                                 FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
 
+                                log.d("===> Timestamp: " + LocalDateTime.now().toString());
                                 log.d("===> Architecture: " + architecture);
                                 log.d("===> Activation function: " + acti.toString());
                                 log.d("===> Parameters:");
