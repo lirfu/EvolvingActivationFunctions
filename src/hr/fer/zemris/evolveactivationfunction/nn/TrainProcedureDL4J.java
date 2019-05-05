@@ -12,7 +12,6 @@ import hr.fer.zemris.utils.logs.ILogger;
 import org.deeplearning4j.api.storage.StatsStorageRouter;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.api.BaseTrainingListener;
-import org.deeplearning4j.optimize.api.TrainingListener;
 import org.deeplearning4j.ui.api.UIServer;
 import org.deeplearning4j.ui.stats.StatsListener;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
@@ -27,10 +26,8 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.iterator.TestDataSetIterator;
-import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 import org.nd4j.linalg.factory.Nd4j;
-import sun.misc.GC;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -147,7 +144,8 @@ public class TrainProcedureDL4J implements ITrainProcedure {
             Nd4j.getMemoryManager().setAutoGcWindow(period);
             Nd4j.getMemoryManager().togglePeriodicGc(true);
         } else {
-            Nd4j.getMemoryManager().setAutoGcWindow(0);
+            // Assertion error in DL4J.
+            //  Nd4j.getMemoryManager().setAutoGcWindow(0);
             Nd4j.getMemoryManager().togglePeriodicGc(false);
         }
         return this;
