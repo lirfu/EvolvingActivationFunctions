@@ -265,9 +265,9 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         train_internal(model, log, stats_storage, DataSet.merge(dss));
     }
 
-    private Pair<ModelReport, Object> test_internal(@NotNull IModel model, DataSet dataset) {
+    private Pair<ModelReport, Object> test_internal(@NotNull IModel model, DataSet dataset, int batch_size) {
         MultiLayerNetwork m = ((CommonModel) model).getModel();
-        DataSetIterator it = new TestDataSetIterator(dataset, params_.batch_size());
+        DataSetIterator it = new TestDataSetIterator(dataset, batch_size);
 
         Evaluation eval = new Evaluation(params_.output_size());
         ROCMultiClass roc = new ROCMultiClass(0);
@@ -284,28 +284,17 @@ public class TrainProcedureDL4J implements ITrainProcedure {
     /** Validates current model on validation set. If validation set isn't defined, returns result of method <code>test()</code>. */
     public Pair<ModelReport, Object> validate(@NotNull IModel model) {
         if (validation_set_ != null)
-            return test_internal(model, validation_set_);
+            return test_internal(model, validation_set_, params_.batch_size());
         return test(model);
     }
 
     @Override
     public Pair<ModelReport, Object> test(@NotNull IModel model) {
-        return test_internal(model, test_set_);
+        return test_internal(model, test_set_, params_.batch_size());
     }
 
-    public Pair<ModelReport, Object> test_custom(@NotNull IModel model, int batch_size) {
-        MultiLayerNetwork m = ((CommonModel) model).getModel();
-        DataSetIterator it = new TestDataSetIterator(test_set_, batch_size);
-
-        Evaluation eval = new Evaluation(params_.output_size());
-        ROCMultiClass roc = new ROCMultiClass(0);
-
-        m.doEvaluation(it, eval, roc);
-
-        ModelReport report = new ModelReport();
-        report.build(params_, m, eval, roc);
-
-        return new Pair<>(report, m.output(test_set_.getFeatures()));
+    public Pair<ModelReport, Object> test(@NotNull IModel model, int batch_size) {
+        return test_internal(model, test_set_, batch_size);
     }
 
     @Override
