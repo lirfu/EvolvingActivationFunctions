@@ -34,17 +34,17 @@ import java.util.Random;
 public class RetrainProgram {
     public static void main(String[] args) throws IOException, InterruptedException {
         String[] ds = new String[]{
-          "res/noiseless_data/noiseless_all_training_256class.arff",
-          "res/noiseless_data/noiseless_all_testing_256class.arff"
+                "res/noiseless_data/noiseless_all_training_256class.arff",
+                "res/noiseless_data/noiseless_all_testing_256class.arff"
         };
-        String experiment_name = "Retrain_50-50";
+        String experiment_name = "OptimizeTestingTime";
 
-        String architecture = "fc(50)-fc(50)";
+        String architecture = "fc(200)-fc(200)";
 
         TreeNodeSet set = TreeNodeSetFactory.build(new Random(), TreeNodeSets.ALL);
         IActivation acti = new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("sin[x]", set)));
 
-        TrainParams p = StorageManager.loadTrainParameters(new Context("noiseless_all_training_256class","common_functions_fc(50)-fc(50)_sin[x]/6"));
+        TrainParams p = StorageManager.loadTrainParameters(new Context("noiseless_all_training_256class", "common_functions_fc(50)-fc(50)_sin[x]/6"));
         TrainParams.Builder pb = new TrainParams.Builder().cloneFrom(p);
 
         TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(ds[0], ds[1], pb).callGCPeriod(-1);
@@ -72,6 +72,6 @@ public class RetrainProgram {
 
         StorageManager.storeTrainParameters(p, context);
         StorageManager.storeResults(result.getKey(), context);
-        StorageManager.storePredictions((INDArray) result.getVal(), context);
+//        StorageManager.storePredictions((INDArray) result.getVal(), context);
     }
 }
