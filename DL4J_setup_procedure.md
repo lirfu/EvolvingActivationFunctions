@@ -4,6 +4,18 @@ I hope this procedure will help get you to on track swiftly and help you to unde
 
 This procedure was written in `April 2019.`.
 
+## (Preamble) IntelliJ setup
+If you want to open this project in IntelliJ you need to set some things up. 
+The easiest way is to make a new project in IntelliJ by cloning the repository (`Checkout from version control`).
+
+IntelliJ probably generated its own `.iml` file so you need to tell it where it can find the sources and test files. 
+Right clicking on the `src` or `res` directory, under `Mark directory as` select `Sources Root` and `Test Sources Root` respectably.
+
+This project also uses a 'submodule' library for drawing graphs. 
+At this point, if you tried to compile it probably got a lot of 'missing import' errors (due to missing libraries).
+To get the sources of this library, simply run `git submodule update --init`, find its' directory (probably still called `LirfuGraph`) and mark its `src` directory as source (same as before).
+
+
 ## 1. Install DL4J prerequisites
 The most important prerequisite is Maven, as it's used to download all 
 DL4J packages and libs.
@@ -13,6 +25,7 @@ the official 'Quickstart: Prerequisites' guide.
 At the time of writting, this was the guide: 
 [Quickstart](https://deeplearning4j.org/docs/latest/deeplearning4j-quickstart)
 
+> If you want to use GPUs, make sure you have a 64-bit version of JDK installed. I used OpenJDK 11.0.2 on Windows and OpenJDK 1.8.0_191 on Ubuntu.
 
 ## 2. Configure the pom.xml file
 This file specifies all the dependencies needed for your project, including DL4J.
@@ -47,7 +60,7 @@ This should be enough to run an example solely on CPU.
 To utilize GPUs you need to install the CUDA library. You can do this by installing
 the CUDA Toolkit: [CUDA Downloads](https://developer.nvidia.com/cuda-downloads).
 
-Installer will also install your graphics' driver so you don't have to worry about that.
+> Sometimes you have to additionally manually install your GPU drivers.
 
 On Ubuntu 16.04 I installed version `7.5.17` and on Windows 10 I installed version `10.1.105`.
 
