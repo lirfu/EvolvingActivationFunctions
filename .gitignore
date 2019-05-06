@@ -16,5 +16,8 @@ dl4j-memory-crash-dump*
 # Python binaries
 *.pyc
 
+# Jupyter Notebook cache files
+.ipynb_checkpoints
+
 # Slack webhook file
 slack_webhook.txt
