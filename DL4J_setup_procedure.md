@@ -5,10 +5,12 @@ I hope this procedure will help get you to on track swiftly and help you to unde
 This procedure was written in `April 2019.`.
 
 ## (Preamble) IntelliJ setup
-If you want to open this project in IntelliJ you need to set some things up. 
+This project was built using IntelliJ IDEA. On Ubuntu I used IntelliJ Ultimate 2017.2.5 (free for students) and on Windows I used IntelliJ Community 2019.1.1 (free for all).
+
+If you want to open this project in IntelliJ you need to set some things up.
 The easiest way is to make a new project in IntelliJ by cloning the repository (`Checkout from version control`).
 
-IntelliJ probably generated its own `.iml` file so you need to tell it where it can find the sources and test files. 
+IntelliJ probably generated its own `.iml` file so you need to tell it where it can find the sources and test files.
 Right clicking on the `src` or `res` directory, under `Mark directory as` select `Sources Root` and `Test Sources Root` respectably.
 
 This project also uses a 'submodule' library for drawing graphs. 
