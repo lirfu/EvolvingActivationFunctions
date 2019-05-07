@@ -27,6 +27,7 @@ import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.utils.*;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
+import hr.fer.zemris.utils.logs.SlackLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.buffer.DataBuffer;
@@ -40,6 +41,7 @@ import java.util.*;
 
 public class EvolvingActivationProgram {
     private static final String DATASET_PATH = "<dataset-path>";
+    private static SlackLogger slack = new SlackLogger("lirfu", "slack_webhook.txt");
 
     public static void main(String[] args) throws IOException, InterruptedException {
         Random r = new Random(42);
@@ -128,7 +130,9 @@ public class EvolvingActivationProgram {
 
         try {
             algo.run(new Algorithm.LogParams(false, true));
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
+            evo_logger.e("GA ended with exception!\n" + e);
+            slack.d(":fire: GA ended with exception!\n" + e);
             // Use results from previous iteration (is they exist).
         }
 
@@ -150,10 +154,12 @@ public class EvolvingActivationProgram {
         // Retrain the best model.
         evo_logger.i("===> Retrain and validate best: " + best + "  (" + best.getFitness() + ")");
         best.setResult(null);  // Do this for unknown reasons (dl4j serialization error otherwise).
+
         // Build activations
         IActivation[] activations = new IActivation[params.architecture().layersNum()];
         for (int i = 0; i < activations.length; i++)
             activations[i] = new CustomFunction(best.copy());
+
         // Retrain.
         Stopwatch timer = new Stopwatch();
         timer.start();
@@ -161,6 +167,7 @@ public class EvolvingActivationProgram {
         train_proc.train_joined(model, evo_logger, StorageManager.createStatsLogger(c)); // Train on joined train-val set.
         Pair<ModelReport, Object> result = train_proc.test(model); // Use test set for final results.
         evo_logger.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + best.serialize());
+
         // Store results.
         train_proc.storeResults(model, c, result);
         evo_logger.i("===> Final best: \n" + best + "  (" + best.getFitness() + ")");
@@ -177,9 +184,13 @@ public class EvolvingActivationProgram {
         }
 
         // Create function images.
-        BufferedImage[] imgs = ViewActivationFunction.displayResult(best, top);
-        StorageManager.writeImageOfBest(imgs[0], c);
-        StorageManager.writeImageOfTop(imgs[1], c);
+//        BufferedImage[] imgs = ViewActivationFunction.displayResult(best, top);
+//        StorageManager.writeImageOfBest(imgs[0], c);
+//        StorageManager.writeImageOfTop(imgs[1], c);
+
+        // Report result on Slack.
+        slack.d("[taboo=" + params.taboo_size() + "][seed=" + params.seed() + "] Result: "
+                + best + "  (" + best.getFitness() + ") :ant:");
     }
 
     /**
@@ -211,7 +222,7 @@ public class EvolvingActivationProgram {
         // Generic algorithm params.
         a.setMutationProbability(params.mutation_prob())
                 .setPopulationSize(params.population_size())
-                .setTopOptimaNumber(5)
+                .setTopOptimaNumber(10)
 
                 .setInitializer(init)
                 .setEvaluator(eval)

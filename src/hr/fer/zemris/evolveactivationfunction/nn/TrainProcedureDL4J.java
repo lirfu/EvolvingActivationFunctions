@@ -79,37 +79,6 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         params_ = params;
 
         initialize();
-
-//        DataSet trainset = params.train_path().endsWith(".arff") ?
-//                StorageManager.loadEntireArffDataset(params.train_path()) :
-//                StorageManager.loadEntireCsvDataset(params.train_path());
-//
-//        if (params.test_path() == null) { // Split.
-//            trainset.shuffle(params.seed());
-//            SplitTestAndTrain split = trainset.splitTestAndTrain(params.train_percentage());
-//            train_set_ = split.getTrain();
-//            test_set_ = split.getTest();
-//        } else {
-//            train_set_ = trainset;
-//            String testset_path = params.test_path();
-//            test_set_ = testset_path.endsWith(".arff") ?
-//                    StorageManager.loadEntireArffDataset(testset_path) :
-//                    StorageManager.loadEntireCsvDataset(testset_path);
-//        }
-//
-//        // Automatically populate necessary parameters.
-//        params.name(StorageManager.dsNameFromPath(params.train_path(), false));
-//        params.input_size(train_set_.numInputs());
-//        params.output_size(train_set_.numOutcomes());
-//
-//        // Normalize dataset.
-//        if (params.normalize_features()) {
-//            NormalizerStandardize norm_test_ = new NormalizerStandardize();
-//            norm_test_.fit(train_set_);
-//            norm_test_.transform(train_set_);
-//            norm_test_.transform(test_set_);
-//        }
-//        params_ = params;
     }
 
     /**
@@ -127,7 +96,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         }
 
         if (split) { // Split train set into train and validation
-            train_set_.shuffle(params_.seed());
+            train_set_.shuffle(42);
             SplitTestAndTrain splitter = train_set_.splitTestAndTrain(params_.train_percentage());
             train_set_ = splitter.getTrain();
             validation_set_ = splitter.getTest();
@@ -242,7 +211,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
             }
         });
 
-        Random random = new Random(params_.seed());
+        Random random = new Random(42);
         DataSet set;
 //        if (params_.shuffle_batches()) {
         synchronized (dataset) {

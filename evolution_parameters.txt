@@ -2,32 +2,32 @@
 input_size	50  # Generated
 output_size	9  # Generated
 epochs_num	10
-batch_size	64
+batch_size	256
 normalize_features	true
 shuffle_batches	true
 batch_norm true
-learning_rate	0.002
+learning_rate	0.001
 decay_rate	0.99
 decay_step	1
 regularization_coef	1.0E-4
 dropout_keep_prob	1.0
-seed	42
+seed	{42,43,44,45,46,47,48,49,50,51,52,53}
 name	noiseless_all_training_9class  # Generated
 train_percentage	0.8
-architecture	fc(30)-fc(30)
+architecture	fc(200)-fc(200)
 
 # GA params
 algorithm GENERATION_TABOO
 population_size	12
 mutation_prob	0.3
 elitism	true
-taboo_size	48
+taboo_size	{0,12,24,36,48,60}
 taboo_attempts	1000
-worker_num	1
+worker_num	2
 node_set	ALL
 
 # Stop conditions:
-max_iterations	30
+max_iterations	50
 min_fitness	-1.0
 
 # GA operators
@@ -36,7 +36,7 @@ crx.swap_nodes		    1
 crx.swap_constants	    1
 crx.mean_constants	    1
 crx.return_random	    1
-mut.insert_root		    2
+mut.insert_root		    1
 mut.insert_terminal	    1
 mut.random_constant_set	1
 mut.random_constant_set.min	-1.0
@@ -47,6 +47,6 @@ mut.remove_root		    1
 mut.swap_order		    1
 
 # Dataset
-train_path	res/noiseless_data/noiseless_all_training_9class.arff
-test_path	res/noiseless_data/noiseless_all_testing_9class.arff
-experiment_name	20_train80_taboo_4gen
+train_path	res/noiseless_data/noiseless_all_training_256class.arff
+test_path	res/noiseless_data/noiseless_all_testing_256class.arff
+experiment_name	gp_activation_taboo0
