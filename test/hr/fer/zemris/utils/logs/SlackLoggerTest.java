@@ -12,6 +12,6 @@ public class SlackLoggerTest {
         String url = "slack_webhook.txt";
         SlackLogger log = new SlackLogger("test_logger", url, ":ant:");
 
-        log.d("This is a test message!");
+        log.d("This is a test message! :ant:");
     }
 }

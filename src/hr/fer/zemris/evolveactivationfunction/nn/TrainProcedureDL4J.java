@@ -280,6 +280,10 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         return test_internal(model, test_set_, batch_size);
     }
 
+    public void release_train() {
+        train_set_ = null;
+    }
+
     @Override
     public void storeResults(IModel model, Context context, Pair<ModelReport, Object> result) throws IOException {
 //        StorageManager.storeModel(((CommonModel) model), context);

@@ -92,7 +92,7 @@ public class SlackLogger implements ILogger {
 
     @Override
     public void d(String s) {
-        sendMessage(s);
+        sendMessage(":ant: " + s);
     }
 
     @Override
@@ -102,17 +102,17 @@ public class SlackLogger implements ILogger {
 
     @Override
     public void w(String s) {
-        sendMessage(s);
+        sendMessage(":warning: " + s);
     }
 
     @Override
     public void e(String s) {
-        sendMessage(s);
+        sendMessage(":fire: " + s);
     }
 
     @Override
     public void o(Object o) {
-        sendMessage(o.toString());
+        sendMessage(":package: " + o.toString());
     }
 
 

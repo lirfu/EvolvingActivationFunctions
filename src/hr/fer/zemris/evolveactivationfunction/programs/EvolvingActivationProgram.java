@@ -29,6 +29,7 @@ import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.SlackLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
+import org.bytedeco.javacv.FrameFilter;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.factory.Nd4j;
@@ -94,14 +95,22 @@ public class EvolvingActivationProgram {
         GridSearch.IModifier<TrainParams>[] mods = common_params.getModifiers();
 
         if (mods.length == 0) { // Just use parameters.
-            run(common_params, set, tree_init, r);
+            try {
+                run(common_params, set, tree_init, r);
+            } catch (Exception e) {
+                slack.e("Exception in experiment '" + common_params.name() + "'!");
+            }
         } else {// Grid search parameters.
             GridSearch<TrainParams> s = new GridSearch<>(common_params.experiment_name());
             Iterable<Experiment<TrainParams>> it = s.buildGridSearchExperiments(
                     new EvolvingActivationParams.Builder().cloneFrom(common_params), mods);
             for (Experiment<TrainParams> experiment : it) {
                 ((EvolvingActivationParams) experiment.getParams()).experiment_name(experiment.getName());
-                run((EvolvingActivationParams) experiment.getParams(), set, tree_init, r);
+                try {
+                    run((EvolvingActivationParams) experiment.getParams(), set, tree_init, r);
+                } catch (Exception e) {
+                    slack.e("Exception in experiment '" + experiment.getName() + "'!");
+                }
             }
         }
     }
@@ -111,7 +120,7 @@ public class EvolvingActivationProgram {
         set.load(TreeNodeSetFactory.build(new Random(params.seed()), params.node_set()));
 
         // Define the training procedure.
-        ITrainProcedure train_proc = new TrainProcedureDL4J(params);
+        TrainProcedureDL4J train_proc = new TrainProcedureDL4J(params).callGCPeriod(10000);
         Context c = train_proc.createContext(params.experiment_name());
 
         // Store params to experiment result folder.
@@ -132,8 +141,8 @@ public class EvolvingActivationProgram {
             algo.run(new Algorithm.LogParams(false, true));
         } catch (Exception e) {
             evo_logger.e("GA ended with exception!\n" + e);
-            slack.d(":fire: GA ended with exception!\n" + e);
-            // Use results from previous iteration (is they exist).
+            slack.e("GA ended with exception!");
+            throw e;
         }
 
         /* RESULTS */
@@ -163,9 +172,11 @@ public class EvolvingActivationProgram {
         // Retrain.
         Stopwatch timer = new Stopwatch();
         timer.start();
+        train_proc.callGCPeriod(-1);
         IModel model = train_proc.createModel(params.architecture(), activations);
         train_proc.train_joined(model, evo_logger, StorageManager.createStatsLogger(c)); // Train on joined train-val set.
-        Pair<ModelReport, Object> result = train_proc.test(model); // Use test set for final results.
+        train_proc.release_train();
+        Pair<ModelReport, Object> result = train_proc.test(model, 64); // Use test set for final results.
         evo_logger.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + best.serialize());
 
         // Store results.
@@ -190,7 +201,7 @@ public class EvolvingActivationProgram {
 
         // Report result on Slack.
         slack.d("[taboo=" + params.taboo_size() + "][seed=" + params.seed() + "] Result: "
-                + best + "  (" + best.getFitness() + ") :ant:");
+                + best + "  (" + best.getFitness() + ")");
     }
 
     /**
