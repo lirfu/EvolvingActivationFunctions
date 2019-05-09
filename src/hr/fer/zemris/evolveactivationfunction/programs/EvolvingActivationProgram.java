@@ -120,7 +120,7 @@ public class EvolvingActivationProgram {
         set.load(TreeNodeSetFactory.build(new Random(params.seed()), params.node_set()));
 
         // Define the training procedure.
-        TrainProcedureDL4J train_proc = new TrainProcedureDL4J(params).callGCPeriod(10000);
+        TrainProcedureDL4J train_proc = new TrainProcedureDL4J(params);
         Context c = train_proc.createContext(params.experiment_name());
 
         // Store params to experiment result folder.
@@ -172,11 +172,9 @@ public class EvolvingActivationProgram {
         // Retrain.
         Stopwatch timer = new Stopwatch();
         timer.start();
-        train_proc.callGCPeriod(-1);
         IModel model = train_proc.createModel(params.architecture(), activations);
         train_proc.train_joined(model, evo_logger, StorageManager.createStatsLogger(c)); // Train on joined train-val set.
-        train_proc.release_train();
-        Pair<ModelReport, Object> result = train_proc.test(model, 64); // Use test set for final results.
+        Pair<ModelReport, Object> result = train_proc.test(model); // Use test set for final results.
         evo_logger.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + best.serialize());
 
         // Store results.

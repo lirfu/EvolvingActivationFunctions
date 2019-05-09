@@ -253,12 +253,13 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         DataSetIterator it = new TestDataSetIterator(dataset, batch_size);
 
         Evaluation eval = new Evaluation(params_.output_size());
-        ROCMultiClass roc = new ROCMultiClass(0);
+//        ROCMultiClass roc = new ROCMultiClass(0);
 
-        m.doEvaluation(it, eval, roc);
+        m.doEvaluation(it, eval/*, roc*/);
+
 
         ModelReport report = new ModelReport();
-        report.build(params_, m, eval, roc);
+        report.build(params_, m, eval, null);
 
         return new Pair<>(report, m.output(dataset.getFeatures()));
     }

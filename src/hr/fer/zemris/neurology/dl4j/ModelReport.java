@@ -33,8 +33,11 @@ public class ModelReport implements IReport, ISerializable {
         recall_micro_ = eval.recall(EvaluationAveraging.Micro);
         f1_micro_ = eval.f1(EvaluationAveraging.Micro);
 
-        auc_ = roc.calculateAverageAUC();
-        aucpr_ = roc.calculateAverageAUCPR();
+        if (roc != null) {
+            auc_ = roc.calculateAverageAUC();
+            aucpr_ = roc.calculateAverageAUCPR();
+        }
+
         confusion_matrix_ = eval.confusionMatrix();
     }
 
