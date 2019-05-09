@@ -229,6 +229,9 @@ public class TrainProcedureDL4J implements ITrainProcedure {
             }
             m.fit(iter);
         }
+        if (!running_good[0]) {
+            log.d("Training aborted! Model score became non-finite. " + m.score());
+        }
     }
 
     @Override
