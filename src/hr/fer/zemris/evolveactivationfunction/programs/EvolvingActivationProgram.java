@@ -113,6 +113,7 @@ public class EvolvingActivationProgram {
                 }
             }
         }
+        slack.i("Finished! :blush:");
     }
 
     private static void run(EvolvingActivationParams params, TreeNodeSet set, SRGenericInitializer tree_init, Random r) throws IOException, InterruptedException {
