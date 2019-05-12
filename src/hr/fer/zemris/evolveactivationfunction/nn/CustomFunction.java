@@ -3,10 +3,14 @@ package hr.fer.zemris.evolveactivationfunction.nn;
 import hr.fer.zemris.evolveactivationfunction.tree.DerivableSymbolicTree;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSetFactory;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSets;
+import javassist.bytecode.SignatureAttribute;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.workspace.ArrayType;
+import org.deeplearning4j.nn.workspace.LayerWorkspaceMgr;
 import org.nd4j.linalg.activations.BaseActivationFunction;
 import org.nd4j.linalg.api.memory.MemoryWorkspace;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.primitives.Pair;
 
 import java.io.IOException;
@@ -43,16 +47,18 @@ public class CustomFunction extends BaseActivationFunction implements Serializab
         if (tree_ == null) { // Because DL4J uses some hidden magic to serialize objects to JSON, I'm forced to put first-time initialization here.
             initialize();
         }
-        MemoryWorkspace ws = input.data().getParentWorkspace();
-        try (MemoryWorkspace w = ws.notifyScopeBorrowed()) {
+        try (MemoryWorkspace ws = input.isAttached() ?
+                input.data().getParentWorkspace().notifyScopeBorrowed() :
+                Nd4j.getWorkspaceManager().scopeOutOfWorkspaces()) {
             return tree_.execute(input);
         }
     }
 
     @Override
     public Pair<INDArray, INDArray> backprop(INDArray input, INDArray epsilon) {
-        MemoryWorkspace ws = input.data().getParentWorkspace();
-        try (MemoryWorkspace w = ws.notifyScopeBorrowed()) {
+        try (MemoryWorkspace ws = input.isAttached() ?
+                input.data().getParentWorkspace().notifyScopeBorrowed() :
+                Nd4j.getWorkspaceManager().scopeOutOfWorkspaces()) {
             INDArray dLds = tree_.derivate(input);
             dLds.muli(epsilon);
             return new Pair<>(dLds, epsilon);
