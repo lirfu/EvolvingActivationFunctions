@@ -149,8 +149,7 @@ public class EvolvingActivationProgram {
         } catch (Exception e) {
             evo_logger.e("GA ended with exception!\n" + e);
 //            slack.e("GA ended with exception!");
-//            throw e;
-            return;
+            throw e;
         }
         System.gc();
 
