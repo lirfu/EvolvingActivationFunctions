@@ -111,6 +111,7 @@ public class EvolvingActivationProgram {
                 } catch (Exception e) {
                     slack.e("Exception in experiment '" + experiment.getName() + "'!");
                 }
+                System.gc();
             }
         }
         slack.i("Finished! :blush:");
@@ -145,6 +146,7 @@ public class EvolvingActivationProgram {
             slack.e("GA ended with exception!");
             throw e;
         }
+        System.gc();
 
         /* RESULTS */
 

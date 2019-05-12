@@ -175,6 +175,8 @@ public abstract class Algorithm {
             // Update internals;
             elapsed_time_ = System.currentTimeMillis() - startingTime;
             updateOptimaList();
+
+            System.gc();
         }
 
         log_.i("===> Algorithm ended!");
