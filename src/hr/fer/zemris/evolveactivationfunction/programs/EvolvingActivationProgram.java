@@ -45,10 +45,8 @@ public class EvolvingActivationProgram {
     private static SlackLogger slack = new SlackLogger("lirfu", "slack_webhook.txt");
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        Random r = new Random(42);
-
         // Override deserialization of numerical nodes.
-        TreeNodeSet set = new TreeNodeSet(r) {
+        TreeNodeSet set = new TreeNodeSet(new Random(42)) {
             @Override
             public TreeNode getNode(String node_name) {
                 TreeNode node = super.getNode(node_name);
@@ -77,7 +75,7 @@ public class EvolvingActivationProgram {
 
         // If params not given, create template and exit.
         if (args.length == 0 || !new File(args[0]).exists()) { // Generate the example params.
-            EvolvingActivationParams params = create_example_params(DATASET_PATH, r, set);
+            EvolvingActivationParams params = create_example_params(DATASET_PATH, new Random(), set);
             Context c = new Context(params.name(), params.experiment_name());
             StorageManager.storeEvolutionParams(params, c);
 
@@ -96,18 +94,23 @@ public class EvolvingActivationProgram {
 
         if (mods.length == 0) { // Just use parameters.
             try {
-                run(common_params, set, tree_init, r);
+                run(common_params, set, tree_init);
             } catch (Exception e) {
                 slack.e("Exception in experiment '" + common_params.name() + "'!");
             }
         } else {// Grid search parameters.
+            final int skip = 0;
+            int ex_i = 0;
+
             GridSearch<TrainParams> s = new GridSearch<>(common_params.experiment_name());
             Iterable<Experiment<TrainParams>> it = s.buildGridSearchExperiments(
                     new EvolvingActivationParams.Builder().cloneFrom(common_params), mods);
             for (Experiment<TrainParams> experiment : it) {
+                if (ex_i++ < skip) continue;
+
                 ((EvolvingActivationParams) experiment.getParams()).experiment_name(experiment.getName());
                 try {
-                    run((EvolvingActivationParams) experiment.getParams(), set, tree_init, r);
+                    run((EvolvingActivationParams) experiment.getParams(), set, tree_init);
                 } catch (Exception e) {
                     slack.e("Exception in experiment '" + experiment.getName() + "'!");
                 }
@@ -117,9 +120,11 @@ public class EvolvingActivationProgram {
         slack.i("Finished! :blush:");
     }
 
-    private static void run(EvolvingActivationParams params, TreeNodeSet set, SRGenericInitializer tree_init, Random r) throws IOException, InterruptedException {
+    private static void run(EvolvingActivationParams params, TreeNodeSet set, SRGenericInitializer tree_init) throws IOException, InterruptedException {
+        Random rand = new Random(params.seed());
+
         // Define node set.
-        set.load(TreeNodeSetFactory.build(new Random(params.seed()), params.node_set()));
+        set.load(TreeNodeSetFactory.build(rand, params.node_set()));
 
         // Define the training procedure.
         TrainProcedureDL4J train_proc = new TrainProcedureDL4J(params);
@@ -137,14 +142,15 @@ public class EvolvingActivationProgram {
         SREvaluator evaluator = new SREvaluator(train_proc, params.architecture(), evo_logger, true);
 
         // Build and run the algorithm.
-        Algorithm algo = buildAlgorithm(params, set, tree_init, evaluator, r, evo_logger);
+        Algorithm algo = buildAlgorithm(params, set, tree_init, evaluator, rand, evo_logger);
 
         try {
             algo.run(new Algorithm.LogParams(false, true));
         } catch (Exception e) {
             evo_logger.e("GA ended with exception!\n" + e);
-            slack.e("GA ended with exception!");
-            throw e;
+//            slack.e("GA ended with exception!");
+//            throw e;
+            return;
         }
         System.gc();
 
