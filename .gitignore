@@ -21,3 +21,10 @@ dl4j-memory-crash-dump*
 
 # Slack webhook file
 slack_webhook.txt
+
+# Latex files
+*.aux
+*.bbl
+*.blg
+*.synctex.gz
+*.toc
