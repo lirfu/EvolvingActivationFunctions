@@ -29,20 +29,20 @@ import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.SlackLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
-import org.bytedeco.javacv.FrameFilter;
 import org.nd4j.linalg.activations.IActivation;
-import org.nd4j.linalg.api.buffer.DataBuffer;
-import org.nd4j.linalg.factory.Nd4j;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Timestamp;
 import java.util.*;
 
 public class EvolvingActivationProgram {
     private static final String DATASET_PATH = "<dataset-path>";
     private static SlackLogger slack = new SlackLogger("lirfu", "slack_webhook.txt");
+    private static Process child_process = null;
+
+    private static final String MAX_MEMORY_JVM = "-Xmx4g";
+    private static final String MAX_MEMORY_PHYSICAL = "-Dorg.bytedeco.javacpp.maxbytes=3g";
+
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Override deserialization of numerical nodes.
@@ -87,16 +87,33 @@ public class EvolvingActivationProgram {
             System.err.println("Usage: ./executable <config-file>");
             System.exit(1);
         }
+
+        // Second argument places the program in 'process' mode. Children processes will be run to do the evaluation.
+        boolean process_mode = args.length == 2;
+        String jar_path = null;
+        if (!new File(args[1]).exists()) {
+            System.err.println("File " + args[1] + " not found! Please provide a valid path to executable.");
+            System.exit(1);
+        } else if (process_mode) {
+            jar_path = args[1];
+        }
+
         // Load common params from file.
         EvolvingActivationParams common_params = StorageManager.loadEvolutionParameters(args[0]);
-
+        // Get modifiers.
         GridSearch.IModifier<TrainParams>[] mods = common_params.getModifiers();
 
         if (mods.length == 0) { // Just use parameters.
             try {
-                run(common_params, set, tree_init);
+                if (process_mode)
+                    run_child_process(common_params, jar_path);
+                else
+                    run(common_params, set, tree_init);
             } catch (Exception e) {
                 slack.e("Exception in experiment '" + common_params.name() + "'!");
+                synchronized (DATASET_PATH) { // Pause to give parent a chance to catch this child death.
+                    DATASET_PATH.wait(1000);
+                }
             }
         } else {// Grid search parameters.
             final int skip = 0;
@@ -110,14 +127,60 @@ public class EvolvingActivationProgram {
 
                 ((EvolvingActivationParams) experiment.getParams()).experiment_name(experiment.getName());
                 try {
-                    run((EvolvingActivationParams) experiment.getParams(), set, tree_init);
+                    if (process_mode)
+                        run_child_process((EvolvingActivationParams) experiment.getParams(), jar_path);
+                    else
+                        run((EvolvingActivationParams) experiment.getParams(), set, tree_init);
                 } catch (Exception e) {
                     slack.e("Exception in experiment '" + experiment.getName() + "'!");
                 }
                 System.gc();
             }
         }
-        slack.i("Finished! :blush:");
+        if (process_mode)  // Only main process sends this.
+            slack.i("Finished! :blush:");
+    }
+
+    private static void run_child_process(EvolvingActivationParams params, String jar_path) {
+        String temp_file = ".temp_params.txt";
+        // Create the temp file.
+        File params_file = new File(temp_file);
+        params_file.delete();  // Remove previous.
+        try {
+            FileWriter writer = new FileWriter(params_file);
+            writer.write(params.serialize());
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        // Run and wait for the process to finish.
+        try {
+            child_process = new ProcessBuilder("java",
+                    "-Dname=lirfu_experiment",
+                    MAX_MEMORY_JVM,  // Max JVM memory
+                    MAX_MEMORY_PHYSICAL,  // Max physical memory
+                    "-jar", jar_path,  // Executable path.
+                    temp_file)  // Temporary parameters file
+                    // Redirect child IO to parent.
+                    .redirectInput(ProcessBuilder.Redirect.INHERIT)
+                    .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                    // Create and start the process.
+                    .start();
+            int status = child_process.waitFor();
+            System.out.println("Process ended with status: " + status);
+            // Paranoid cleanup.
+            if (child_process.isAlive())
+                child_process.destroyForcibly();
+            child_process = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        // Remove the temp file.
+        params_file.delete();
     }
 
     private static void run(EvolvingActivationParams params, TreeNodeSet set, SRGenericInitializer tree_init) throws IOException, InterruptedException {
@@ -170,7 +233,6 @@ public class EvolvingActivationProgram {
 
         // Retrain the best model.
         evo_logger.i("===> Retrain and validate best: " + best + "  (" + best.getFitness() + ")");
-        best.setResult(null);  // Do this for unknown reasons (dl4j serialization error otherwise).
 
         // Build activations
         IActivation[] activations = new IActivation[params.architecture().layersNum()];
@@ -305,5 +367,15 @@ public class EvolvingActivationProgram {
                 .decay_rate(1 - 1e-2)
                 .decay_step(1)
                 .build();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        // Destroy child process if present.
+        if (child_process != null && child_process.isAlive()) {
+            System.out.println("Destroying child: " + child_process);
+            child_process.destroyForcibly();
+        }
     }
 }
