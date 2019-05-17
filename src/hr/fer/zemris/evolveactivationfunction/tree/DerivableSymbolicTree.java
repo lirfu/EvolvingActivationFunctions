@@ -9,8 +9,6 @@ import hr.fer.zemris.utils.Pair;
 import org.nd4j.linalg.api.ndarray.INDArray;
 
 public class DerivableSymbolicTree extends SymbolicTree<INDArray, INDArray> {
-    private Pair<ModelReport, INDArray> result_;
-
     public DerivableSymbolicTree(SymbolicTree<INDArray, INDArray> tree) {
         super(tree);
     }
@@ -33,15 +31,6 @@ public class DerivableSymbolicTree extends SymbolicTree<INDArray, INDArray> {
     @Override
     public DerivableSymbolicTree copy() {
         DerivableSymbolicTree t = new DerivableSymbolicTree(super.copy());
-        t.result_ = result_;
         return t;
-    }
-
-    public Pair<ModelReport, INDArray> getResult() {
-        return result_;
-    }
-
-    public void setResult(Pair<ModelReport, INDArray> result) {
-        result_ = result;
     }
 }
