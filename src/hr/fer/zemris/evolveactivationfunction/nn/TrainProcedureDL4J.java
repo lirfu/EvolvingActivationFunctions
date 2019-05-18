@@ -10,6 +10,8 @@ import hr.fer.zemris.utils.Stopwatch;
 import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
 import org.deeplearning4j.api.storage.StatsStorageRouter;
+import org.deeplearning4j.earlystopping.trainer.EarlyStoppingGraphTrainer;
+import org.deeplearning4j.earlystopping.trainer.EarlyStoppingTrainer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.api.BaseTrainingListener;
 import org.deeplearning4j.ui.api.UIServer;
@@ -161,13 +163,12 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 
 
         StringBuilder sb = new StringBuilder();
-        sb.append("  Classes: ").append(Arrays.toString(labels)).append('\n');
-        sb.append("Train set: ").append(Arrays.toString(train_labels)).append('\n');
+        sb.append("  Classes (").append(labels.length).append("): ").append(Arrays.toString(labels)).append('\n');
+        sb.append("Train set (").append(train_set_.numExamples()).append("): ").append(Arrays.toString(train_labels)).append('\n');
         if (val_labels != null)
-            sb.append("Valid set: ").append(Arrays.toString(val_labels)).append('\n');
-        sb.append(" Test set: ").append(Arrays.toString(test_labels)).append('\n');
-        sb.append("    Total: ").append(Arrays.toString(total_labels)).append('\n');
-        sb.append("Total inp: ").append(total_instances).append('\n');
+            sb.append("Valid set (").append(validation_set_.numExamples()).append("): ").append(Arrays.toString(val_labels)).append('\n');
+        sb.append(" Test set (").append(test_set_.numExamples()).append("): ").append(Arrays.toString(test_labels)).append('\n');
+        sb.append("    Total (").append(total_instances).append("): ").append(Arrays.toString(total_labels)).append('\n');
         return sb.toString();
     }
 
