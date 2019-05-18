@@ -5,6 +5,7 @@ import hr.fer.zemris.utils.IBuilder;
 
 import java.io.File;
 import java.util.LinkedList;
+import java.util.List;
 
 public class GridSearch<T> {
     private String name;
@@ -26,7 +27,7 @@ public class GridSearch<T> {
         }
     }
 
-    public Iterable<Experiment<T>> buildGridSearchExperiments(IBuilder p, IModifier<T>[] modifiers) {
+    public List<Experiment<T>> buildGridSearchExperiments(IBuilder p, IModifier<T>[] modifiers) {
         LinkedList<Experiment<T>> exs = new LinkedList<>();
         mod_r(0, modifiers, new Counter(), exs, p);
         return exs;

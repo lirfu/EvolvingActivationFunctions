@@ -15,10 +15,7 @@ import hr.fer.zemris.experiments.GridSearch;
 import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
-import hr.fer.zemris.utils.IBuilder;
-import hr.fer.zemris.utils.Pair;
-import hr.fer.zemris.utils.Stopwatch;
-import hr.fer.zemris.utils.Utilities;
+import hr.fer.zemris.utils.*;
 import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.SlackLogger;
@@ -56,7 +53,7 @@ public class ArchitectureSearchProgram {
         Stopwatch stopwatch = new Stopwatch();
 
         // Paralelization.
-        final WorkArbiter arbiter = new WorkArbiter("Experimenter", 2);
+        final WorkArbiter arbiter = new WorkArbiter("Experimenter", 1);
 
         // Create a common instance of train params.
         String experiment_name = "common_functions";
@@ -70,6 +67,7 @@ public class ArchitectureSearchProgram {
                 .decay_rate(0.99)
                 .decay_step(1)
                 .dropout_keep_prob(1)
+                .train_percentage(0.8f)
                 .seed(42);
 
         // Run experiments.
@@ -101,80 +99,96 @@ public class ArchitectureSearchProgram {
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("gauss[x]", set))));
 
 
-        final Pair<Double, String>[] best_results = new Pair[10];
+        final LinkedList<String> top_results = new LinkedList<>();
 
         for (String[] ds : new String[][]{
 //                new String[]{"res/noiseless_data/noiseless_all_training_9class.arff", "res/noiseless_data/noiseless_all_testing_9class.arff"}
                 new String[]{"res/noiseless_data/noiseless_all_training_256class.arff", "res/noiseless_data/noiseless_all_testing_256class.arff"}
         }) {
 
-            for (String architecture : new String[]{"fc(50)-fc(50)-fc(50)", "fc(300)-fc(300)-fc(300)", "fc(500)-fc(500)-fc(500)"}) {
+            for (String architecture : new String[]{"fc(200)-fc(200)"}) {
 
                 for (IActivation acti : activations) {
 
                     // Create grid search experiments.
-                    Iterable<Experiment<TrainParams>> experiments =
+                    List<Experiment<TrainParams>> experiments =
                             new GridSearch<TrainParams>(experiment_name + '_' + architecture + '_' + acti.toString())
                                     .buildGridSearchExperiments(common_params, grid_search_modifiers);
+
+                    final ModelReport[] best_result = new ModelReport[]{null};
+                    final Experiment<TrainParams>[] best_experiment = new Experiment[]{null};
+                    Counter ctr = new Counter(0);
 
                     for (Experiment<TrainParams> e : experiments) {
 
                         arbiter.postWork(() -> {
                             try {
-                                TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(ds[0], ds[1], new TrainParams.Builder().cloneFrom(e.getParams())).callGCPeriod(10000);
-                                CommonModel model = train_procedure.createModel(new NetworkArchitecture(architecture), new IActivation[]{acti});
-                                Context context = train_procedure.createContext(e.getName());
+                                ModelReport r = run_experiment(ds, architecture, acti, e, true);
 
-                                ILogger log = new MultiLogger(new StdoutLogger(), StorageManager.createTrainingLogger(context)); // Log to stdout.
-                                FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
-
-                                log.d("===> Timestamp: " + LocalDateTime.now().toString());
-                                log.d("===> Architecture: " + architecture);
-                                log.d("===> Activation function: " + acti.toString());
-                                log.d("===> Parameters:");
-                                log.d(e.getParams().toString());
-
-                                Stopwatch timer = new Stopwatch();
-                                timer.start();
-                                train_procedure.train_joined(model, log, stat_storage);
-                                Pair<ModelReport, Object> result = train_procedure.test(model);
-                                log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().serialize());
-                                train_procedure.storeResults(model, context, result);
-                                train_procedure.displayTrainStats(stat_storage);
-
-                                ModelReport r = result.getKey();
-
-                                synchronized (best_results) {
-                                    for (int i = best_results.length - 1; i >= 0; i--) {
-                                        if (best_results[i] == null || best_results[i].getKey() < r.f1()) {
-                                            StringBuilder sb = new StringBuilder();
-                                            new Formatter(sb).format("%-23s  %-15s  %.3f  %.3f  %.3f",
-                                                    architecture,
-                                                    acti.toString().substring(0, Math.min(15, acti.toString().length())),
-                                                    r.accuracy(),
-                                                    r.f1()
-                                                    , r.f1_micro()
-                                            );
-                                            best_results[i] = new Pair<>(r.f1(), sb.toString()
-                                            );
-                                            break;
-                                        }
-                                    }
-                                    Arrays.sort(best_results, (a, b) -> {
-                                        if (a == null && b == null)
-                                            return 0;
-                                        if (a == null)
-                                            return 1;
-                                        if (b == null)
-                                            return -1;
-                                        return -a.getKey().compareTo(b.getKey());
-                                    });
+                                // Update best result.
+                                if (best_result[0] == null
+                                        || best_result[0].f1() < r.f1()
+                                        || (best_result[0].f1() == r.f1() && best_result[0].accuracy() < r.accuracy())) {
+                                    best_result[0] = r;
+                                    best_experiment[0] = e;
                                 }
-                            } catch (IOException | InterruptedException e1) {
-                                e1.printStackTrace();
+
+                                // Update top results.
+//                                synchronized (top_results) {
+//                                    // Update top results.
+//                                    for (int i = top_results.length - 1; i >= 0; i--) {
+//                                        if (top_results[i] == null || top_results[i].getKey() < r.f1()) {
+//                                            StringBuilder sb = new StringBuilder();
+//                                            new Formatter(sb).format("%-23s  %-15s  %.3f  %.3f  %.3f",
+//                                                    architecture,
+//                                                    acti.toString().substring(0, Math.min(15, acti.toString().length())),
+//                                                    r.accuracy(),
+//                                                    r.f1()
+//                                                    , r.f1_micro()
+//                                            );
+//                                            top_results[i] = new Pair<>(r.f1(), sb.toString()
+//                                            );
+//                                            break;
+//                                        }
+//                                    }
+//                                    Arrays.sort(top_results, (a, b) -> {
+//                                        if (a == null && b == null)
+//                                            return 0;
+//                                        if (a == null)
+//                                            return 1;
+//                                        if (b == null)
+//                                            return -1;
+//                                        return -a.getKey().compareTo(b.getKey());
+//                                    });
+//                                }
+
+                                // Update wait condition.
+                                synchronized (ctr) {
+                                    ctr.increment();
+                                }
+                            } catch (IOException | InterruptedException exc) {
+                                exc.printStackTrace();
                             }
                         });
                     }
+
+                    // Wait for all experiments to finish.
+                    arbiter.waitOn(() -> ctr.value() == experiments.size());
+
+                    // Retrain with best hyperparameters.
+                    best_experiment[0] = new Experiment<>(best_experiment[0].getName() + "_BEST", best_experiment[0].getParams());
+                    ModelReport result = run_experiment(ds, architecture, acti, best_experiment[0], false);
+
+                    // Update top results.
+                    StringBuilder sb = new StringBuilder();
+                    new Formatter(sb).format("%-23s  %-15s  %.3f  %.3f  %.3f",
+                            architecture,
+                            acti.toString().substring(0, Math.min(15, acti.toString().length())),
+                            result.accuracy(), result.f1(), result.f1_micro()
+                    );
+                    top_results.addLast(sb.toString());
+                    if (top_results.size() > 10)
+                        top_results.removeLast();
                 }
             }
         }
@@ -185,13 +199,47 @@ public class ArchitectureSearchProgram {
 
         StringBuilder sb = new StringBuilder();
         sb.append("DONE! (").append(Utilities.formatMiliseconds(stopwatch.stop())).append(")");
+        sb.append("\nTop " + top_results.size() + " results:");
         sb.append("\nArchitecture             Function         Acc    F1     F1 (micro)");
-        for (Pair<Double, String> p : best_results)
-            if (p != null)
-                sb.append('\n').append(p.getVal());
+        for (String s : top_results)
+            sb.append('\n').append(s);
 
         System.out.println(sb.toString());
         new SlackLogger("lirfu_laptop", "slack_webhook.txt").d(sb.toString());
+    }
+
+    private static ModelReport run_experiment(String[] ds, String architecture, IActivation acti, Experiment<TrainParams> e, boolean validating) throws IOException, InterruptedException {
+        TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(ds[0], ds[1], new TrainParams.Builder().cloneFrom(e.getParams()));
+        CommonModel model = train_procedure.createModel(new NetworkArchitecture(architecture), new IActivation[]{acti});
+        Context context = train_procedure.createContext(e.getName());
+
+        ILogger log = new MultiLogger(new StdoutLogger(), StorageManager.createTrainingLogger(context)); // Log to stdout.
+        FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
+        log.i(train_procedure.describeDatasets());
+
+        log.d("===> Timestamp: " + LocalDateTime.now().toString());
+        log.d("===> Architecture: " + architecture);
+        log.d("===> Activation function: " + acti.toString());
+        log.d("===> Parameters:");
+        log.d(e.getParams().toString());
+
+        Stopwatch timer = new Stopwatch();
+        timer.start();
+
+        Pair<ModelReport, Object> result;
+        if (validating) {
+            train_procedure.train(model, log, stat_storage);
+            result = train_procedure.validate(model);
+        } else {
+            train_procedure.train_joined(model, log, stat_storage);
+            result = train_procedure.test(model);
+        }
+
+        log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().serialize());
+        train_procedure.storeResults(model, context, result);
+        train_procedure.displayTrainStats(stat_storage);
+
+        return result.getKey();
     }
 
     private static final GridSearch.IModifier[] grid_search_modifiers = {
