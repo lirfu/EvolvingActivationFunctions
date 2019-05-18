@@ -91,10 +91,11 @@ public class EvolvingActivationProgram {
         // Second argument places the program in 'process' mode. Children processes will be run to do the evaluation.
         boolean process_mode = args.length == 2;
         String jar_path = null;
-        if (!new File(args[1]).exists()) {
-            System.err.println("File " + args[1] + " not found! Please provide a valid path to executable.");
-            System.exit(1);
-        } else if (process_mode) {
+        if (process_mode) {
+            if (!new File(args[1]).exists()) {
+                System.err.println("File " + args[1] + " not found! Please provide a valid path to executable.");
+                System.exit(1);
+            }
             jar_path = args[1];
         }
 
