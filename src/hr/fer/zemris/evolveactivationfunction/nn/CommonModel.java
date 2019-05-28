@@ -123,9 +123,4 @@ public class CommonModel implements IModel {
     public List<Double> getTestLosses() {
         return testLosses_;
     }
-
-    @Override
-    public double getScore() {
-        return model_.score();
-    }
 }

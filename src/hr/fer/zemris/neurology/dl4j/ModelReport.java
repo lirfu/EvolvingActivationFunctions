@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class ModelReport implements IReport, ISerializable {
     private String name_, confusion_matrix_;
-    private double score_, accuracy_, auc_, aucpr_;
+    private double accuracy_, auc_, aucpr_;
     private double precision_macro_, recall_macro_, f1_macro_;
     private double precision_micro_, recall_micro_, f1_micro_;
     private List<Double> train_losses_, test_losses_;
@@ -28,7 +28,6 @@ public class ModelReport implements IReport, ISerializable {
     @Override
     public void build(TrainParams params, IModel model, Evaluation eval, ROCMultiClass roc) {
         name_ = params.name();
-        score_ = model.getScore();
         accuracy_ = eval.accuracy();
 
         precision_macro_ = eval.precision(EvaluationAveraging.Macro);
@@ -55,10 +54,6 @@ public class ModelReport implements IReport, ISerializable {
 
     public String confusion_matrix() {
         return confusion_matrix_;
-    }
-
-    public double score() {
-        return score_;
     }
 
     public double accuracy() {
@@ -122,9 +117,6 @@ public class ModelReport implements IReport, ISerializable {
                 case "name":
                     name_ = parts[1];
                     break;
-                case "score":
-                    score_ = Double.parseDouble(parts[1]);
-                    break;
                 case "accuracy":
                     accuracy_ = Double.parseDouble(parts[1]);
                     break;
@@ -178,7 +170,6 @@ public class ModelReport implements IReport, ISerializable {
     public String serialize() {
         return new StringBuilder()
                 .append("name").append('\t').append(name_).append('\n')
-                .append("score").append('\t').append(score_).append('\n')
                 .append("accuracy").append('\t').append(accuracy_).append('\n')
                 .append("precision").append('\t').append(precision_macro_).append('\n')
                 .append("recall").append('\t').append(recall_macro_).append('\n')

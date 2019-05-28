@@ -10,6 +10,4 @@ public interface IModel {
     public List<Double> getTrainLosses();
 
     public List<Double> getTestLosses();
-
-    public double getScore();
 }

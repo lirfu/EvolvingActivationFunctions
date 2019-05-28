@@ -215,7 +215,7 @@ public class ArchitectureSearchProgram {
 
                 @Override
                 public Object[] getValues() {
-                    return new Double[]{1e-2, 1e-3, 1e-4};
+                    return new Double[]{5e-3, 1e-3, 5e-4};
                 }
             }
     };
