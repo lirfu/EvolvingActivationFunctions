@@ -21,6 +21,7 @@ import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.SlackLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
 import hr.fer.zemris.utils.threading.WorkArbiter;
+import org.bytedeco.javacv.FrameFilter;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.activations.impl.*;
@@ -30,17 +31,27 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class ArchitectureSearchProgram {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    private static SlackLogger slack = new SlackLogger("lirfu", "slack_webhook.txt");
+
+    public static void main(String[] args) {
+        try {
+            run();
+        } catch (Exception e) {
+            slack.e("Exception in architecture search!");
+        }
+    }
+
+    private static void run() throws IOException, InterruptedException {
         Stopwatch stopwatch = new Stopwatch();
 
         // Paralelization.
-        final WorkArbiter arbiter = new WorkArbiter("Experimenter", 2);
+        final WorkArbiter arbiter = new WorkArbiter("W", 4);
 
         // Create a common instance of train params.
-        String experiment_name = "test_earlystop";
+        String experiment_name = "common_functions_v2";
         TrainParams.Builder common_params = new TrainParams.Builder()
                 .name(experiment_name)
-                .epochs_num(50)
+                .epochs_num(40)
                 .train_patience(5)
                 .convergence_delta(1e-2)
                 .batch_size(256)
@@ -146,7 +157,7 @@ public class ArchitectureSearchProgram {
             }
         }
 
-        System.out.println("Pending:\n" + arbiter.getStatus());
+//        System.out.println("Pending:\n" + arbiter.getStatus());
 
         arbiter.waitOn(arbiter.getFinishedCondition());
 
@@ -158,7 +169,7 @@ public class ArchitectureSearchProgram {
             sb.append('\n').append(s);
 
         System.out.println(sb.toString());
-        new SlackLogger("lirfu_laptop", "slack_webhook.txt").d(sb.toString());
+        slack.d(sb.toString());
     }
 
     private static ModelReport run_experiment(String[] ds, String architecture, IActivation acti, Experiment<TrainParams> e, boolean validating) throws IOException, InterruptedException {
