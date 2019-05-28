@@ -166,9 +166,8 @@ public class ModelReport implements IReport, ISerializable {
         return true;
     }
 
-    @Override
-    public String serialize() {
-        return new StringBuilder()
+    private String serialize_internal(boolean cfm) {
+        StringBuilder sb = new StringBuilder()
                 .append("name").append('\t').append(name_).append('\n')
                 .append("accuracy").append('\t').append(accuracy_).append('\n')
                 .append("precision").append('\t').append(precision_macro_).append('\n')
@@ -182,13 +181,19 @@ public class ModelReport implements IReport, ISerializable {
                 .append("train_losses").append('\t').append(train_losses_ == null ? null :
                         Joiner.on(',').join(train_losses_)).append('\n')
                 .append("test_losses").append('\t').append(test_losses_ == null ? null :
-                        Joiner.on(',').join(test_losses_)).append('\n')
-                .append("confusion_matrix").append('\n').append(confusion_matrix_).append('\n')
-                .toString();
+                        Joiner.on(',').join(test_losses_)).append('\n');
+        if (cfm)
+            sb.append("confusion_matrix").append('\n').append(confusion_matrix_).append('\n');
+        return sb.toString();
+    }
+
+    @Override
+    public String serialize() {
+        return serialize_internal(true);
     }
 
     @Override
     public String toString() {
-        return serialize();
+        return serialize_internal(false);
     }
 }

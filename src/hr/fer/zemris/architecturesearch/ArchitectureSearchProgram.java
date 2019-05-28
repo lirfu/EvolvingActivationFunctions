@@ -200,7 +200,7 @@ public class ArchitectureSearchProgram {
             result = train_procedure.test(model);
         }
 
-        log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().serialize());
+        log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().toString());
         train_procedure.storeResults(model, context, result);
 
         return result.getKey();

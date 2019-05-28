@@ -251,7 +251,7 @@ public class EvolvingActivationProgram {
         // Store results.
         train_proc.storeResults(model, c, result);
         evo_logger.i("===> Final best: \n" + best + "  (" + best.getFitness() + ")");
-        evo_logger.i(result.getKey().serialize());
+        evo_logger.i(result.getKey().toString());
 
         // Extract tops to display.
         LinkedList<Triple<Long, String, Double>> optima = algo.getResultBundle().getOptimumHistory();
