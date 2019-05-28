@@ -1,5 +1,6 @@
 package hr.fer.zemris.neurology.demo;
 
+import hr.fer.zemris.evolveactivationfunction.nn.IModel;
 import hr.fer.zemris.neurology.dl4j.IReport;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.utils.Pair;
@@ -30,8 +31,9 @@ import org.nd4j.linalg.schedule.StepSchedule;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
-public class ExampleModel {
+public class ExampleModel implements IModel {
     private TrainParams params_;
     private MultiLayerNetwork model_;
 
@@ -132,7 +134,7 @@ public class ExampleModel {
             roc.eval(next.getLabels(), output);
         }
         if (report != null) {
-            report.build(params_, model_, eval, roc);
+            report.build(params_, this, eval, roc);
         }
     }
 
@@ -161,5 +163,27 @@ public class ExampleModel {
 
     public ExampleModel clone() {
         return new ExampleModel(this);
+    }
+
+    @Override
+    public void setModel(MultiLayerNetwork m) {
+        model_ = m;
+    }
+
+    @Override
+    public List<Double> getTrainLosses() {
+        // TODO Auto generated block.
+        return null;
+    }
+
+    @Override
+    public List<Double> getTestLosses() {
+        // TODO Auto generated block.
+        return null;
+    }
+
+    @Override
+    public double getScore() {
+        return model_.score();
     }
 }

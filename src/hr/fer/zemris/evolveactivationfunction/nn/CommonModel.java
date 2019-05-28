@@ -17,11 +17,16 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.nd4j.linalg.schedule.ScheduleType;
 import org.nd4j.linalg.schedule.StepSchedule;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Convenience wrapper for reducing temptation of unwanted modifying the model. Defines and builds the common model for all experiments.
  */
 public class CommonModel implements IModel {
     private MultiLayerNetwork model_;
+    private List<Double> trainLosses_;
+    private List<Double> testLosses_;
 
     /**
      * Defines and builds the model.
@@ -101,5 +106,26 @@ public class CommonModel implements IModel {
     @Override
     public void setModel(MultiLayerNetwork m) {
         model_ = m;
+    }
+
+    public void setTrainLosses(List<Double> trainLosses) {
+        this.trainLosses_ = trainLosses;
+    }
+
+    public void setTestLosses(List<Double> trainGeneralization) {
+        this.testLosses_ = trainGeneralization;
+    }
+
+    public List<Double> getTrainLosses() {
+        return trainLosses_;
+    }
+
+    public List<Double> getTestLosses() {
+        return testLosses_;
+    }
+
+    @Override
+    public double getScore() {
+        return model_.score();
     }
 }
