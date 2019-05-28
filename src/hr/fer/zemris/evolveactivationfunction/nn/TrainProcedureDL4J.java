@@ -1,5 +1,6 @@
 package hr.fer.zemris.evolveactivationfunction.nn;
 
+import hr.fer.zemris.Holder;
 import hr.fer.zemris.evolveactivationfunction.Context;
 import hr.fer.zemris.evolveactivationfunction.EvolvingActivationParams;
 import hr.fer.zemris.evolveactivationfunction.StorageManager;
@@ -185,57 +186,56 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         return new CommonModel(params_, architecture, activations);
     }
 
-    private void train_internal(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage, @NotNull DataSet dataset) {
+    private void train_internal(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage, @NotNull DataSet train, @NotNull DataSet test) {
         MultiLayerNetwork m = ((CommonModel) model).getModel();
         m.init();
         final Stopwatch timer = new Stopwatch();
-        final boolean[] running_good = {true};
 
-        if (stats_storage != null) {
+        if (stats_storage != null) {  // Attach DL4J stats listener.
             m.addListeners(new StatsListener(stats_storage));
         }
-        m.addListeners(new BaseTrainingListener() { // Print the score at the start of each epoch.
-            private int last_epoch_ = -1;
 
-            @Override
-            public void iterationDone(org.deeplearning4j.nn.api.Model model, int iteration, int epoch) {
-                if (!Double.isFinite(model.score())) { // End training if network misbehaves.
-                    running_good[0] = false;
-                }
-                if (epoch != last_epoch_) {
-                    last_epoch_ = epoch;
-                    log.d("Epoch " + (epoch + 1) + " has loss: " + model.score() + "   (" + Utilities.formatMiliseconds(timer.lap()) + ")");
-                }
-            }
-        });
-
+        // Dataset copying in case of shuffling.
         Random random = new Random(42);
         DataSet set;
-//        if (params_.shuffle_batches()) {
-        synchronized (dataset) {
-            set = dataset.copy();
+        if (params_.shuffle_batches()) {
+            synchronized (train) {  // Shuffle dataset.
+                set = train.copy();
+            }
+        } else {
+            set = train; // No need for copying.
         }
-//        } else {
-//            set = dataset; // No need for copying.
-//        }
 
-        timer.start();
+        LinkedList<Double> train_losses = new LinkedList<>();
+        LinkedList<Double> test_losses = new LinkedList<>();
+
         DataSetIterator iter = new TestDataSetIterator(set, params_.batch_size());
-        for (int i = 0; i < params_.epochs_num() && running_good[0]; i++) {
+        timer.start();
+
+        for (int i = 0; i < params_.epochs_num(); i++) {
             if (params_.shuffle_batches()) {
                 set.shuffle(random.nextLong());
             }
             m.fit(iter);
+            double train_loss = m.score(train_set_);
+            double test_loss = m.score(validation_set_);
+            train_losses.add(train_loss);
+            test_losses.add(test_loss);
+            log.d("Epoch " + (i + 1) + " has losses: " + train_loss + " - " + test_loss + "   (" + Utilities.formatMiliseconds(timer.lap()) + ")");
+
+            if (!Double.isFinite(train_loss)) { // End training if network misbehaves.
+                log.d("Training aborted! Model score became non-finite. " + train_loss);
+                break;
+            }
         }
-        if (!running_good[0]) {
-            log.d("Training aborted! Model score became non-finite. " + m.score());
-        }
+
+        ((CommonModel) model).setTrainLosses(train_losses);
+        ((CommonModel) model).setTestLosses(test_losses);
     }
 
     @Override
     public void train(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
-//        train_internal(model, log, stats_storage, train_set_);
-        earlystop_internal(model, log, stats_storage, train_set_, validation_set_ != null ? validation_set_ : test_set_);
+        train_internal(model, log, stats_storage, train_set_, validation_set_ != null ? validation_set_ : test_set_);
     }
 
     /**
@@ -248,8 +248,112 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         if (validation_set_ != null)
             dss.add(validation_set_);
         DataSet joined_ds = DataSet.merge(dss);
-//        train_internal(model, log, stats_storage, joined_ds);
-        earlystop_internal(model, log, stats_storage, joined_ds, test_set_);
+        train_internal(model, log, stats_storage, joined_ds, test_set_);
+    }
+
+    /**
+     * Trains the model and chooses the model and iteration where the test error was best.
+     * Trains until max epochs done or convergence/overfitting detected.
+     * Remembers the network with the best test loss and sets it to the given model.
+     *
+     * @return Optimal number of iterations.
+     */
+    public int train_itersearch(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
+        MultiLayerNetwork m = ((CommonModel) model).getModel();
+        m.init();
+        final Stopwatch timer = new Stopwatch();
+
+        if (stats_storage != null) {  // Attach DL4J stats listener.
+            m.addListeners(new StatsListener(stats_storage));
+        }
+
+        // Dataset copying in case of shuffling.
+        Random random = new Random(42);
+        DataSet set;
+        if (params_.shuffle_batches()) {
+            synchronized (train_set_) {
+                set = train_set_.copy();
+            }
+        } else {
+            set = train_set_; // No need for copying.
+        }
+
+        int impatience = 0;
+        int best_epoch = 0;
+        double best_train_loss = Double.MAX_VALUE;
+        double best_test_loss = Double.MAX_VALUE;
+        MultiLayerNetwork best_net = null;
+        LinkedList<Double> train_losses = new LinkedList<>();
+        LinkedList<Double> test_losses = new LinkedList<>();
+
+        DataSetIterator train_iter = new TestDataSetIterator(set, params_.batch_size());
+        timer.start();
+
+        int i;
+        for (i = 0; i < params_.epochs_num() && impatience < params_.train_patience(); i++) {
+            if (params_.shuffle_batches()) {  // Shuffle dataset.
+                set.shuffle(random.nextLong());
+            }
+
+            m.fit(train_iter);
+            double train_loss = m.score(train_set_);
+            double test_loss = m.score(validation_set_);
+            train_losses.add(train_loss);
+            test_losses.add(test_loss);
+            log.d("Epoch " + (i + 1) + " has losses: " + train_loss + " - " + test_loss + "   (" + Utilities.formatMiliseconds(timer.lap()) + ")");
+
+            if (!Double.isFinite(train_loss)) { // End training if network misbehaves.
+                log.d("Training aborted! Model score became non-finite: " + train_loss);
+                break;
+            }
+
+            boolean[] ts = new boolean[4];
+            if (Math.abs((train_loss - best_train_loss) / best_train_loss) <= params_.convergence_delta()) {  // Convergence detection (relative difference).
+                ts[0] = true;
+                ts[1] = true;
+            }
+            if (train_loss > best_train_loss) {  // Divergence detection.
+                ts[0] = true;
+                ts[2] = true;
+            }
+            if (test_loss >= best_test_loss) {  // Overfitting detection.
+                ts[0] = true;
+                ts[3] = true;
+            }
+            if (ts[0]) {
+                impatience++;
+                log.d("Becoming impatient ("
+                        + (ts[1] ? "cvg" : "___") + ","
+                        + (ts[2] ? "dvg" : "___") + ","
+                        + (ts[3] ? "overfit" : "_______")
+                        + "): " + impatience);
+            } else {
+                impatience = 0;
+            }
+
+            if (train_loss < best_train_loss) {  // Update best train loss.
+                best_train_loss = train_loss;
+            }
+
+            if (test_loss < best_test_loss) {  // Update best model over test loss.
+                best_epoch = i;
+                best_test_loss = test_loss;
+                best_net = m.clone();
+            }
+        }
+
+        if (i >= params_.epochs_num()) {
+            log.d("Training ended! Max iterations achieved!");
+        }
+        if (impatience >= params_.train_patience()) {
+            log.d("Training aborted! Lost my patience!");
+        }
+
+        ((CommonModel) model).setTrainLosses(train_losses);
+        ((CommonModel) model).setTestLosses(test_losses);
+        model.setModel(best_net);  // Update with best model.
+
+        return best_epoch;  // Return the optimal epoch number.
     }
 
     private Pair<ModelReport, Object> test_internal(@NotNull IModel model, DataSet dataset, int batch_size) {
@@ -261,9 +365,8 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 
         m.doEvaluation(it, eval/*, roc*/);
 
-
         ModelReport report = new ModelReport();
-        report.build(params_, m, eval, null);
+        report.build(params_, model, eval, null);
 
         return new Pair<>(report, m.output(dataset.getFeatures()));
     }
@@ -311,15 +414,15 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 
         timer.start();
         int patience = 0;
-        ModelReport best_res = null;
+        double best_res = Double.MAX_VALUE;
         MultiLayerNetwork best_net = null;
         DataSetIterator iter = new TestDataSetIterator(train, params_.batch_size());
 
-        for (int i = 0; i < params_.epochs_num() && patience < params_.earlystop_epochs() && running_good[0]; i++) {
+        for (int i = 0; i < params_.epochs_num() && patience < params_.train_patience() && running_good[0]; i++) {
             m.fit(iter);
+            double res = m.score(test);
 
-            ModelReport res = test_internal(model, test, params_.batch_size()).getKey();
-            if (best_res == null || res.f1() > best_res.f1()) {
+            if (res < best_res) {
                 best_res = res;
                 best_net = m.clone();
 

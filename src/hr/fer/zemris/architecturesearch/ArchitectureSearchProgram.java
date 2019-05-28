@@ -1,5 +1,6 @@
 package hr.fer.zemris.architecturesearch;
 
+import hr.fer.zemris.Holder;
 import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
 import hr.fer.zemris.evolveactivationfunction.Context;
 import hr.fer.zemris.evolveactivationfunction.StorageManager;
@@ -9,7 +10,6 @@ import hr.fer.zemris.evolveactivationfunction.nn.TrainProcedureDL4J;
 import hr.fer.zemris.evolveactivationfunction.tree.DerivableSymbolicTree;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSetFactory;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSets;
-import hr.fer.zemris.evolveactivationfunction.tree.nodes.CosNode;
 import hr.fer.zemris.experiments.Experiment;
 import hr.fer.zemris.experiments.GridSearch;
 import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
@@ -24,47 +24,28 @@ import hr.fer.zemris.utils.threading.WorkArbiter;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.activations.impl.*;
-import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.cpu.nativecpu.NDArray;
-import org.nd4j.linalg.factory.Nd4j;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class ArchitectureSearchProgram {
     public static void main(String[] args) throws IOException, InterruptedException {
-//        String train_ds = "res/noiseless_data/noiseless_all_training_256class.arff";
-//        String test_ds = "res/noiseless_data/noiseless_all_testing_256class.arff";
-
-//        IActivation common_activation;
-//        common_activation = new ActivationReLU();
-
-//        // Use custom activation from a tree.
-//        DerivableSymbolicTree tree = (DerivableSymbolicTree) new DerivableSymbolicTree.Builder()
-//                .setNodeSet(new TreeNodeSet(new Random()))
-////                .add(new ReLUNode())
-//                .add(new CustomReLUNode())
-//                .add(new InputNode())
-//                .build();
-//        common_activation = new CustomFunction(tree);
-
         Stopwatch stopwatch = new Stopwatch();
 
         // Paralelization.
-        final WorkArbiter arbiter = new WorkArbiter("Experimenter", 3);
+        final WorkArbiter arbiter = new WorkArbiter("Experimenter", 2);
 
         // Create a common instance of train params.
         String experiment_name = "test_earlystop";
         TrainParams.Builder common_params = new TrainParams.Builder()
                 .name(experiment_name)
                 .epochs_num(50)
-                .earlystop_epochs(10)
-                .convergence_delta(1e-5)
+                .train_patience(5)
+                .convergence_delta(1e-2)
                 .batch_size(256)
                 .normalize_features(true)
-                .shuffle_batches(true)
+                .shuffle_batches(false)
                 .batch_norm(true)
                 .decay_rate(0.99)
                 .decay_step(1)
@@ -80,7 +61,6 @@ public class ArchitectureSearchProgram {
         activations.add(new ActivationELU());
         activations.add(new ActivationSELU());
         activations.add(new ActivationLReLU());
-//        activations.add(new ActivationRReLU());
         activations.add(new ActivationThresholdedReLU());
         activations.add(new ActivationSwish());
         activations.add(new ActivationSigmoid());
@@ -94,7 +74,6 @@ public class ArchitectureSearchProgram {
         activations.add(new ActivationSoftSign());
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("sin[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("cos[x]", set))));
-//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("tan[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("exp[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow2[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow3[x]", set))));
@@ -117,9 +96,9 @@ public class ArchitectureSearchProgram {
                             new GridSearch<TrainParams>(experiment_name + '_' + architecture + '_' + acti.toString())
                                     .buildGridSearchExperiments(common_params, grid_search_modifiers);
 
-                    final ModelReport[] best_result = new ModelReport[]{null};
-                    final Experiment<TrainParams>[] best_experiment = new Experiment[]{null};
-                    Counter ctr = new Counter(0);
+                    final Holder<ModelReport> best_result = new Holder<>();
+                    final Holder<Experiment<TrainParams>> best_experiment = new Holder<>();
+                    final Counter ctr = new Counter(0);
 
                     for (Experiment<TrainParams> e : experiments) {
 
@@ -128,46 +107,18 @@ public class ArchitectureSearchProgram {
                                 ModelReport r = run_experiment(ds, architecture, acti, e, true);
 
                                 // Update best result.
-                                if (best_result[0] == null
-                                        || best_result[0].f1() < r.f1()
-                                        || (best_result[0].f1() == r.f1() && best_result[0].accuracy() < r.accuracy())) {
-                                    best_result[0] = r;
-                                    best_experiment[0] = e;
+                                synchronized (best_result) {
+                                    if (!best_result.isDefined()
+                                            || best_result.get().f1() < r.f1()
+                                            || (best_result.get().f1() == r.f1()
+                                            && best_result.get().accuracy() < r.accuracy())) {
+                                        best_result.set(r);
+                                        best_experiment.set(e);
+                                    }
                                 }
-
-                                // Update top results.
-//                                synchronized (top_results) {
-//                                    // Update top results.
-//                                    for (int i = top_results.length - 1; i >= 0; i--) {
-//                                        if (top_results[i] == null || top_results[i].getKey() < r.f1()) {
-//                                            StringBuilder sb = new StringBuilder();
-//                                            new Formatter(sb).format("%-23s  %-15s  %.3f  %.3f  %.3f",
-//                                                    architecture,
-//                                                    acti.toString().substring(0, Math.min(15, acti.toString().length())),
-//                                                    r.accuracy(),
-//                                                    r.f1()
-//                                                    , r.f1_micro()
-//                                            );
-//                                            top_results[i] = new Pair<>(r.f1(), sb.toString()
-//                                            );
-//                                            break;
-//                                        }
-//                                    }
-//                                    Arrays.sort(top_results, (a, b) -> {
-//                                        if (a == null && b == null)
-//                                            return 0;
-//                                        if (a == null)
-//                                            return 1;
-//                                        if (b == null)
-//                                            return -1;
-//                                        return -a.getKey().compareTo(b.getKey());
-//                                    });
-//                                }
 
                                 // Update wait condition.
-                                synchronized (ctr) {
-                                    ctr.increment();
-                                }
+                                ctr.increment();
                             } catch (IOException | InterruptedException exc) {
                                 exc.printStackTrace();
                             }
@@ -178,8 +129,8 @@ public class ArchitectureSearchProgram {
                     arbiter.waitOn(() -> ctr.value() == experiments.size());
 
                     // Retrain with best hyperparameters.
-                    best_experiment[0] = new Experiment<>(best_experiment[0].getName() + "_BEST", best_experiment[0].getParams());
-                    ModelReport result = run_experiment(ds, architecture, acti, best_experiment[0], false);
+                    best_experiment.get().setName(best_experiment.get().getName() + "_BEST");
+                    ModelReport result = run_experiment(ds, architecture, acti, best_experiment.get(), false);
 
                     // Update top results.
                     StringBuilder sb = new StringBuilder();
@@ -230,7 +181,8 @@ public class ArchitectureSearchProgram {
 
         Pair<ModelReport, Object> result;
         if (validating) {
-            train_procedure.train(model, log, stat_storage);
+            int opti_epoch = train_procedure.train_itersearch(model, log, stat_storage);
+            e.getParams().epochs_num(opti_epoch);  // Set optimal number of epochs.
             result = train_procedure.validate(model);
         } else {
             train_procedure.train_joined(model, log, stat_storage);
@@ -239,7 +191,6 @@ public class ArchitectureSearchProgram {
 
         log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().serialize());
         train_procedure.storeResults(model, context, result);
-//        train_procedure.displayTrainStats(stat_storage);
 
         return result.getKey();
     }
@@ -264,7 +215,7 @@ public class ArchitectureSearchProgram {
 
                 @Override
                 public Object[] getValues() {
-                    return new Double[]{1e-3, 5e-4, 1e-4};
+                    return new Double[]{1e-2, 1e-3, 1e-4};
                 }
             }
     };

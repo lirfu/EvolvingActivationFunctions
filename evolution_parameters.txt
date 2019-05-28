@@ -2,7 +2,7 @@
 input_size	50  # Generated
 output_size	9  # Generated
 epochs_num	10
-earlystop_epochs    3
+train_patience    3
 convergence_delta   1e-5
 batch_size	256
 normalize_features	true
