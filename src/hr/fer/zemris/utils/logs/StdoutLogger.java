@@ -14,28 +14,32 @@ public class StdoutLogger implements ILogger {
         level_ = level;
     }
 
+    private String thread_info() {
+        return '[' + Thread.currentThread().getName() + "] ";
+    }
+
     @Override
     public void d(String s) {
-        if (level_.debug()) System.out.println(s);
+        if (level_.debug()) System.out.println(thread_info() + s);
     }
 
     @Override
     public void i(String s) {
-        if (level_.info()) System.out.println(s);
+        if (level_.info()) System.out.println(thread_info() + s);
     }
 
     @Override
     public void w(String s) {
-        if (level_.warning()) System.out.println(s);
+        if (level_.warning()) System.out.println(thread_info() + s);
     }
 
     @Override
     public void e(String s) {
-        if (level_.error()) System.err.println(s);
+        if (level_.error()) System.err.println(thread_info() + s);
     }
 
     @Override
     public void o(Object o) {
-        if (level_.info()) System.out.println(o.toString());
+        if (level_.info()) System.out.println(thread_info() + o.toString());
     }
 }
