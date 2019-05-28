@@ -53,13 +53,15 @@ public class ArchitectureSearchProgram {
         Stopwatch stopwatch = new Stopwatch();
 
         // Paralelization.
-        final WorkArbiter arbiter = new WorkArbiter("Experimenter", 1);
+        final WorkArbiter arbiter = new WorkArbiter("Experimenter", 3);
 
         // Create a common instance of train params.
-        String experiment_name = "common_functions";
+        String experiment_name = "test_earlystop";
         TrainParams.Builder common_params = new TrainParams.Builder()
                 .name(experiment_name)
-                .epochs_num(10)
+                .epochs_num(50)
+                .earlystop_epochs(10)
+                .convergence_delta(1e-5)
                 .batch_size(256)
                 .normalize_features(true)
                 .shuffle_batches(true)
@@ -237,7 +239,7 @@ public class ArchitectureSearchProgram {
 
         log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().serialize());
         train_procedure.storeResults(model, context, result);
-        train_procedure.displayTrainStats(stat_storage);
+//        train_procedure.displayTrainStats(stat_storage);
 
         return result.getKey();
     }
@@ -251,7 +253,7 @@ public class ArchitectureSearchProgram {
 
                 @Override
                 public Object[] getValues() {
-                    return new Double[]{1e-3, 1e-4};
+                    return new Double[]{1e-3, 1e-4, 1e-5};
                 }
             },
             new GridSearch.IModifier<TrainParams>() {
@@ -262,18 +264,7 @@ public class ArchitectureSearchProgram {
 
                 @Override
                 public Object[] getValues() {
-                    return new Double[]{2e-3, 1e-3};
-                }
-            },
-            new GridSearch.IModifier<TrainParams>() {
-                @Override
-                public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
-                    return ((TrainParams.Builder) p).epochs_num((Integer) value);
-                }
-
-                @Override
-                public Object[] getValues() {
-                    return new Integer[]{5, 10};
+                    return new Double[]{1e-3, 5e-4, 1e-4};
                 }
             }
     };
