@@ -11,12 +11,12 @@ public class Counter {
         ctr_ = value;
     }
 
-    public Counter increment() {
+    public synchronized Counter increment() {
         ctr_++;
         return this;
     }
 
-    public Counter decrement() {
+    public synchronized Counter decrement() {
         ctr_--;
         return this;
     }
