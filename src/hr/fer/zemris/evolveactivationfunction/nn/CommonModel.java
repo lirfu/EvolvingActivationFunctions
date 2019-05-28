@@ -97,4 +97,9 @@ public class CommonModel implements IModel {
     public CommonModel clone() {
         return new CommonModel(this);
     }
+
+    @Override
+    public void setModel(MultiLayerNetwork m) {
+        model_ = m;
+    }
 }

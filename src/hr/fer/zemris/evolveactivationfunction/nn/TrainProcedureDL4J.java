@@ -10,8 +10,6 @@ import hr.fer.zemris.utils.Stopwatch;
 import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
 import org.deeplearning4j.api.storage.StatsStorageRouter;
-import org.deeplearning4j.earlystopping.trainer.EarlyStoppingGraphTrainer;
-import org.deeplearning4j.earlystopping.trainer.EarlyStoppingTrainer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.api.BaseTrainingListener;
 import org.deeplearning4j.ui.api.UIServer;
@@ -20,7 +18,6 @@ import org.deeplearning4j.ui.storage.FileStatsStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.nd4j.evaluation.classification.Evaluation;
-import org.nd4j.evaluation.classification.ROCMultiClass;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -52,7 +49,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
      */
     public TrainProcedureDL4J(@NotNull String train_set_path, @NotNull String test_set_path, @NotNull TrainParams.Builder params_builder) throws IOException, InterruptedException {
         // Set double precision globally.
-        Nd4j.setDataType(DataBuffer.Type.DOUBLE);
+        Nd4j.setDataType(DataBuffer.Type.FLOAT);
 
         train_set_ = train_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_set_path) : StorageManager.loadEntireCsvDataset(train_set_path);
         test_set_ = test_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(test_set_path) : StorageManager.loadEntireCsvDataset(test_set_path);
@@ -68,7 +65,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 
     public TrainProcedureDL4J(EvolvingActivationParams params) throws IOException, InterruptedException {
         // Set double precision globally.
-        Nd4j.setDataType(DataBuffer.Type.DOUBLE);
+        Nd4j.setDataType(DataBuffer.Type.FLOAT);
 
         String train_path = params.train_path(), test_path = params.test_path();
         train_set_ = train_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_path) : StorageManager.loadEntireCsvDataset(train_path);
@@ -237,7 +234,8 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 
     @Override
     public void train(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
-        train_internal(model, log, stats_storage, train_set_);
+//        train_internal(model, log, stats_storage, train_set_);
+        earlystop_internal(model, log, stats_storage, train_set_, validation_set_ != null ? validation_set_ : test_set_);
     }
 
     /**
@@ -249,7 +247,9 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         dss.add(train_set_);
         if (validation_set_ != null)
             dss.add(validation_set_);
-        train_internal(model, log, stats_storage, DataSet.merge(dss));
+        DataSet joined_ds = DataSet.merge(dss);
+//        train_internal(model, log, stats_storage, joined_ds);
+        earlystop_internal(model, log, stats_storage, joined_ds, test_set_);
     }
 
     private Pair<ModelReport, Object> test_internal(@NotNull IModel model, DataSet dataset, int batch_size) {
@@ -283,6 +283,63 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 
     public Pair<ModelReport, Object> test(@NotNull IModel model, int batch_size) {
         return test_internal(model, test_set_, batch_size);
+    }
+
+    private void earlystop_internal(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage, @NotNull DataSet train, @NotNull DataSet test) {
+        MultiLayerNetwork m = ((CommonModel) model).getModel();
+        m.init();
+        final Stopwatch timer = new Stopwatch();
+        final boolean[] running_good = {true};
+
+        if (stats_storage != null) {
+            m.addListeners(new StatsListener(stats_storage));
+        }
+        m.addListeners(new BaseTrainingListener() { // Print the score at the start of each epoch.
+            private int last_epoch_ = -1;
+
+            @Override
+            public void iterationDone(org.deeplearning4j.nn.api.Model model, int iteration, int epoch) {
+                if (!Double.isFinite(model.score())) { // End training if network misbehaves.
+                    running_good[0] = false;
+                }
+                if (epoch != last_epoch_) {
+                    last_epoch_ = epoch;
+                    log.d("Epoch " + (epoch + 1) + " has loss: " + model.score() + "   (" + Utilities.formatMiliseconds(timer.lap()) + ")");
+                }
+            }
+        });
+
+        timer.start();
+        int patience = 0;
+        ModelReport best_res = null;
+        MultiLayerNetwork best_net = null;
+        DataSetIterator iter = new TestDataSetIterator(train, params_.batch_size());
+
+        for (int i = 0; i < params_.epochs_num() && patience < params_.earlystop_epochs() && running_good[0]; i++) {
+            m.fit(iter);
+
+            ModelReport res = test_internal(model, test, params_.batch_size()).getKey();
+            if (best_res == null || res.f1() > best_res.f1()) {
+                best_res = res;
+                best_net = m.clone();
+
+                if (Math.abs(m.score() - best_net.score()) <= params_.convergence_delta()) {  // Convergence detected.
+                    patience++;
+                    log.d("Patience (convergence): " + patience);
+                } else {
+                    patience = 0;
+                }
+            } else {  // Overfitting detected.
+                patience++;
+                log.d("Patience (overfitting): " + patience);
+            }
+        }
+
+        if (!running_good[0]) {
+            log.d("Training aborted! Model score became non-finite. " + m.score());
+        }
+
+        model.setModel(best_net);
     }
 
     public void release_train() {

@@ -24,6 +24,8 @@ public class TrainParams implements ISerializable {
     private long seed_;
     private String name_;
     private float train_percentage_ = -1;
+    private int earlystop_epochs_;
+    private double convergence_delta_;
 
     protected LinkedList<TrainParamsModifier> modifiable_params = new LinkedList<>();
 
@@ -223,6 +225,38 @@ public class TrainParams implements ISerializable {
                 p.train_percentage_ = (float) value;
             }
         });
+        params.put("earlystop_epochs", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).earlystop_epochs((Integer) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Integer.parseInt(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.earlystop_epochs_ = (int) value;
+            }
+        });
+        params.put("convergence_delta", new TrainParamsModifier() {
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((Builder) p).convergence_delta((Double) value);
+            }
+
+            @Override
+            public Object parse(String s) {
+                return Double.parseDouble(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                p.convergence_delta_ = (double) value;
+            }
+        });
     }
 
     /**
@@ -231,7 +265,7 @@ public class TrainParams implements ISerializable {
     public TrainParams() {
     }
 
-    public TrainParams(int input_size, int output_size, int epochs_num, int batch_size, boolean normalize_features, boolean shuffle_batches, boolean batch_norm, double learning_rate, double decay_rate, int decay_step, double regularization_coef, double dropout_keep_prob, long seed, String name, float train_percentage) {
+    public TrainParams(int input_size, int output_size, int epochs_num, int batch_size, boolean normalize_features, boolean shuffle_batches, boolean batch_norm, double learning_rate, double decay_rate, int decay_step, double regularization_coef, double dropout_keep_prob, long seed, String name, float train_percentage, int earlystop_epochs, double convergence_delta) {
         input_size_ = input_size;
         output_size_ = output_size;
         epochs_num_ = epochs_num;
@@ -247,6 +281,8 @@ public class TrainParams implements ISerializable {
         seed_ = seed;
         name_ = name;
         train_percentage_ = train_percentage;
+        earlystop_epochs_ = earlystop_epochs;
+        convergence_delta_ = convergence_delta;
     }
 
     public TrainParams(TrainParams p) {
@@ -265,6 +301,8 @@ public class TrainParams implements ISerializable {
         seed_ = p.seed_;
         name_ = p.name_;
         train_percentage_ = p.train_percentage_;
+        earlystop_epochs_ = p.earlystop_epochs_;
+        convergence_delta_ = p.convergence_delta_;
     }
 
     public int input_size() {
@@ -343,6 +381,14 @@ public class TrainParams implements ISerializable {
         return train_percentage_;
     }
 
+    public int earlystop_epochs() {
+        return earlystop_epochs_;
+    }
+
+    public double convergence_delta() {
+        return convergence_delta_;
+    }
+
     /**
      * Parses entire text line-by-line and populates <code>this</code> with parameters.
      */
@@ -398,6 +444,8 @@ public class TrainParams implements ISerializable {
                 .append("seed").append('\t').append(seed_).append('\n')
                 .append("name").append('\t').append(name_).append("  # Generated").append('\n')
                 .append("train_percentage").append('\t').append(train_percentage_).append('\n')
+                .append("earlystop_epochs").append('\t').append(earlystop_epochs_).append('\n')
+                .append("convergence_delta").append('\t').append(convergence_delta_).append('\n')
                 .toString();
     }
 
@@ -440,6 +488,8 @@ public class TrainParams implements ISerializable {
         private long seed_ = 42;
         private String name_ = "Name";
         private float train_percentage_;
+        private int earlystop_epochs_ = Integer.MAX_VALUE;
+        private double convergence_delta_ = 0;
 
         public TrainParams build() {
 //            if (input_size_ < 0 || output_size_ < 0) {
@@ -453,7 +503,7 @@ public class TrainParams implements ISerializable {
                     normalize_features_, shuffle_batches_, batch_norm_,
                     learning_rate_, decay_rate_, decay_step_,
                     regularization_coef_, dropout_keep_prob_,
-                    seed_, name_, train_percentage_);
+                    seed_, name_, train_percentage_, earlystop_epochs_, convergence_delta_);
         }
 
         public Builder input_size(int size) {
@@ -521,6 +571,16 @@ public class TrainParams implements ISerializable {
             return this;
         }
 
+        public Builder earlystop_epochs(int patient_epochs) {
+            earlystop_epochs_ = patient_epochs;
+            return this;
+        }
+
+        public Builder convergence_delta(double delta) {
+            convergence_delta_ = delta;
+            return this;
+        }
+
         public Builder seed(long value) {
             seed_ = value;
             return this;
@@ -551,6 +611,8 @@ public class TrainParams implements ISerializable {
             seed_ = p.seed_;
             name_ = p.name_;
             train_percentage_ = p.train_percentage_;
+            earlystop_epochs_ = p.earlystop_epochs_;
+            convergence_delta_ = p.convergence_delta_;
             return this;
         }
     }
