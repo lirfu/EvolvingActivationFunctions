@@ -181,9 +181,4 @@ public class ExampleModel implements IModel {
         // TODO Auto generated block.
         return null;
     }
-
-    @Override
-    public double getScore() {
-        return model_.score();
-    }
 }
