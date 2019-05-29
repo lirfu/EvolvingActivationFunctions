@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class ArchitectureSearchProgram {
-    private static SlackLogger slack = new SlackLogger("lirfu", "slack_webhook.txt");
+    private static SlackLogger slack = new SlackLogger("Logger", "slack_webhook.txt");
 
     public static void main(String[] args) {
         try {
@@ -226,7 +226,7 @@ public class ArchitectureSearchProgram {
 
                 @Override
                 public Object[] getValues() {
-                    return new Double[]{5e-3, 1e-3, 5e-4};
+                    return new Double[]{1e-3, 5e-4, 1e-4};
                 }
             }
     };
