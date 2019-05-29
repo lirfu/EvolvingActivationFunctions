@@ -351,7 +351,9 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 
         ((CommonModel) model).setTrainLosses(train_losses);
         ((CommonModel) model).setTestLosses(test_losses);
-        model.setModel(best_net);  // Update with best model.
+
+        if (best_net != null)  // Update with best model.
+            model.setModel(best_net);
 
         return best_epoch;  // Return the optimal epoch number.
     }
