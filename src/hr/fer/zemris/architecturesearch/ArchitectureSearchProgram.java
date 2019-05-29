@@ -41,7 +41,7 @@ public class ArchitectureSearchProgram {
         }
     }
 
-    private static void run() throws IOException, InterruptedException {
+    private static void run() throws Exception {
         Stopwatch stopwatch = new Stopwatch();
 
         // Paralelization.
