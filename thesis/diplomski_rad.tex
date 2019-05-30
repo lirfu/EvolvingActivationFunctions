@@ -3,11 +3,20 @@
 \usepackage{cite}
 \usepackage{graphicx}
 \usepackage{xcolor}
+\usepackage[]{algorithm2e}
 
 \graphicspath{ {./img/} }
 
+% Math
 \def\mat#1{\underline{#1}}
-\def\TODO#1{\noindent\textcolor{red}{TODO: #1}\newline}
+\def\expect{\mathbb{E}}
+\def\pfrac#1#2{\frac{\partial #1}{\partial #2}}
+\def\dfrac#1#2{\frac{d #1}{d #2}}
+
+% TODO notes
+\def\TODO#1{\noindent\textcolor{red}{TODO: \textit{#1}}\newline}
+\def\todo#1{\TODO{#1}}
+\def\todoimg#1{\begin{center} \textcolor{red}{IMAGE: \textit{#1}} \end{center}}
 
 \begin{document}
 
@@ -27,24 +36,36 @@
 \tableofcontents
 
 \chapter{Uvod}
-\TODO{ Opis problema }
+\todo{ Opis problema }
 
 \chapter{Implementacijski napadi na kriptografske uređaje}
 
 \section{Side-channel napadi}
-\TODO{ Postoji nekoliko vrsta.}
-\TODO{ Ovdje se obrađuje DPA.}
+\todo{ Postoji nekoliko vrsta.}
+\todo{ Ovdje se obrađuje DPA.}
 
 \section{Izvedba napada}
-\TODO{ Uštekaj uređaj, osciloskop na to i to mjesto i snimaj}
-\TODO{ Provjeri mogućnosti i zaključi najvjerojatniju}
-\TODO{ Problem netraktabilnosti postupka -> neuralke <3}
+\todo{ Uštekaj uređaj, osciloskop na to i to mjesto i snimaj}
+\todo{ Provjeri mogućnosti i zaključi najvjerojatniju}
+\todo{ Problem netraktabilnosti postupka -> neuralke <3}
 
 \section{DPA skupovi podataka}
-\TODO{ Ima HW i ovaj pravi}
-\TODO{ Nabaci i PCA redukcije i statistike iz jn}
-\TODO{ Mjere dobrote klasifikacije}
-\TODO{ Ne zaboravi referencu na stranicu!}
+\todo{Tko i cilj*}
+\todo{Ne zaboravi referencu na stranicu!}
+
+\subsection{DPAv2}
+\todo{Kada je napravljen i ko ga je radil}
+\todo{Jel HW ili onaj pravi}
+\todoimg{PCA redukcija iz jn}
+\todoimg{Statistike iz jn}
+\todo{Mjere dobrote klasifikacije}
+
+\subsection{DPAv4}
+\todo{Kada je napravljen i ko ga je radil}
+\todo{Jel HW ili onaj pravi}
+\todoimg{PCA redukcija iz jn}
+\todoimg{Statistike iz jn}
+\todo{Mjere dobrote klasifikacije}
 
 \chapter{Klasifikator temeljen na umjetnim neuronskim mrežama}
 
@@ -54,7 +75,7 @@ Umjetne neuronske mreže (nadalje „neuronske mreže“) koristimo za modeliran
 \subsection{Građa}
 Neuronske mreže građene su od međusobno povezanih jedinica, tzv. neurona, modeliranih prema pojednostavljenom modelu biološkog neurona. Neuron očitava ulazne značajke sustava ili izlaze drugih neurona te ažurira svoje unutarnje stanje (aktivaciju) i stvara odziv (izlaz). Utjecaj ulaza na neuron vrednuje se težinama \engl{weights} koje definiraju kako se neuron ponaša u ovisnosti o pojedinim ulazima. Aktivacijski prag neurona \engl{bias} određuje jedinstvenu osjetljivost neurona na jačinu podražaja. Težine i prag neurona nazivamo parametrima neurona.
 
-\TODO{Što sve biolozi vele o neuronima? https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3812748/}
+\todo{Što sve biolozi vele o neuronima? https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3812748/}
 
 \begin{figure}[h]
 \centering
@@ -69,8 +90,8 @@ Afina funkcija je skalarni produkt vektora ulaza s vektorom težina neurona uz d
 f(\vec{x};\mat{W},\vec{b})=\mat{W}^T \cdot \vec{x} + \vec{b}
 \end{equation}
 
-\TODO{Spomeni distance based aktivacije (ANFIS?)}
-\TODO{Spomeni i složenije metode: \citep{network_in_network}}
+\todo{Spomeni distance based aktivacije (ANFIS?)}
+\todo{Spomeni i složenije metode: \citep{network_in_network}}
 
 Pretvorbu aktivacije neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Aktivacijska i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona \citep{function_survey}. U praksi se pojam aktivacijske i prijenosne vrlo često ekvivalentno koristi na mjestu pojma izlazne funkcije, no ovaj rad se drži prethodno navedene i jasnije notacije.
 \begin{equation}
@@ -81,54 +102,177 @@ Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i g
 
 Potpuno povezana arhitektura je najjednostavnija arhitektura za zadatak klasifikacije. Svaki neuron u potpuno povezanom sloju aktivira se pomoću svih izlaza iz prethodnog sloja. Za naučeni potpuno povezani sloj kažemo da vrši ekstrakciju značajki iz svojih ulaza. Geometrijski gledano, svaki neuron vrši mapiranje značajki iz dimenzije prethodnog sloja u novu dimenziju s ciljem modeliranja boljih značajki.
 
-Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Ulaz za takav model je definiran n-dimenzijskim tenzorom, a neuron uzima samo jedan pod-tenzor ulaza (vidljiva regija) i nad njime računa skalarni produkt s n-dimenzijskim tenzorom težina (jezgrom). Kada su ulazi slike u boji ulazni tenzor ima 3 dimenzije (visina, širina, RGB kanali) pa stoga i jezgra ima 3 dimenzije, no znantno manje visine i širine. Unakrsna korelacija prozvana je konvolucijom jer radi na istom principu, a jedina razlika je da se elementi jezgre indeksiraju zrcaljeno po obje osi. S obzirom da se parametri jezgre uče automatski, nije nam bitno definirati orijentaciju jezgre.
+\todo{Daj neki dokaz za ovo gore.}
+
+Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Ulaz za takav model je definiran n-dimenzijskim tenzorom, a neuron uzima samo jedan pod-tenzor ulaza (vidljiva regija) i nad njime računa skalarni produkt s n-dimenzijskim tenzorom parametara (jezgrom). Kada su ulazi slike u boji ulazni tenzor ima 3 dimenzije (visina, širina, RGB kanali) pa stoga i jezgra ima 3 dimenzije, no znantno manje visine i širine. Unakrsna korelacija prozvana je konvolucijom jer radi na istom principu, a jedina razlika je da se elementi jezgre indeksiraju zrcaljeno po obje osi. S obzirom da se parametri jezgre uče automatski, nije nam bitno definirati orijentaciju jezgre.
 \begin{equation}
 f(\mat{X};\mat{W})=\mat{X} \circledast \mat{W}
 \end{equation}
 
-\TODO{Je li uopće potrebna konvolucija?}
-\TODO{Raspisat konvoluciju po elementima?}
+\todo{Je li uopće potrebno spominjat konvoluciju?}
+\todo{Raspisat konvoluciju po elementima?}
 
-\subsection{Postupak optimizacije umjetne neuronske mreže}
-Optimizacijom težina neuronska mreža prilagođava se danom zadatku, odnosno kažemo da mreža 'uči'. Optimizaciju težina najčešće izvodimo gradijentnim spustom, uz pretpostavku derivabilnosti svih komponenata neuronske mreže. Kada ta pretpostavka ne vrijedi koriste se algoritmi pretrage poput evolucijskih algoritama. U ovom radu optimizacija se vrši gradijentnim spustom.
+\subsection{Optimizacija umjetne neuronske mreže}
+Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno kažemo da mreža 'uči'. Optimizaciju parametara najčešće izvodimo gradijentnim spustom, uz pretpostavku derivabilnosti svih komponenata neuronske mreže. Kada ta pretpostavka ne vrijedi koriste se algoritmi kombinatorne optimizacije poput evolucijskih algoritama. U ovom radu optimizacija se vrši gradijentnim spustom.
 
-\subsubsection{Inicijalizacija težina}
-* važnost dobre inicijalizacije
-[slika dobre i loše inicijalizacije]
-* Xavier
+\subsubsection{Gradijentni spust}
 
-\subsection{Funkcija gubitka}
+\todoimg{gradijentni spust unimodalna vs višemodalna (gdje preskoći brdo i uleti u bolji optimum)}
+\label{fig:gradientni_spust}
 
-\subsection{Optimizacija širenjem unatrag}
+Gradijentni spust je algoritam pronalaska minimuma funkcije vođen gradijentom te funkcije. Za zadanu početnu točku iterativno se pomiče u smjeru suprotnom od gradijenta funkcije u toj točki dok ne zadovolji neki od uvijeta zaustavljanja. Na strmim funkcijama gradijent je često prevelik i može izazvati oscilaciju ili divergenciju (slika \ref{fig:oscilira_divergira}). Stoga se gradijent pri pomaku skalira s koeficijentom pomaka $\mu$. Dobro odabran koeficijent pomaka može osigurati bržu konvergenciju, a kod višemodalnih funkcija i pronalazak boljeg optimuma (slika \ref{fig:gradientni_spust}).
+
+\todo{spomeni negdje da generalno ne znamo koji je globalni optimum}
+
+\begin{algorithm}[H]
+\KwData{funkcija $f(x)$}
+\KwData{koeficijent pomaka $\mu$}
+\KwData{početna točka $x_0$}
+\KwResult{optimalna točka $x^*$}
+\For{uvijet nije zadovoljen}
+aaa
+\EndFor
+\caption{Gradijentni spust}
+\label{alg:grad_spust}
+\end{algorithm}
+
+
+Početna točka utječe na ishod algoritma. Kod višemodalnih funkcija s optimumima različitih kvaliteta, početna točka može definirati u koji će lokalni optimum algoritam konvergirati (slika \ref{fig:pocetna_tocka}). 
+
+\todoimg{graidjentni spust stope spuštanja (velka, mala, taman)}
+\label{fig:oscilira_divergira}
+
+Broj iteracija definira koliko se puta pomičemo iz početne točke, što definira i trajanje algoritma. Generalno želimo skratiti vrijeme pretraživanja te povećati koeficijent spusta kako bismo koristili manje pomaka. No u praksi najčešće nailazimo na višemodalne funkcije sa strmim regijama koje izazivaju oscilacije i mogu izazvati divergenciju. Stoga se češće koriste manji pomaci kroz više iteracija. Dodatno se mogu dodati modifikacije gradijenta koje nude ograničavaju veličinu gradijenta (odsijecanje gradijenta i sl.).
+
+\todoimg{gradijentni spust sa početnim točkama (jedna ode u lok, jedna ode u glob, jedna zapne desno na platou)}
+\label{fig:pocetna_tocka}
+
+Problem se javlja ako algoritam "odluta" u visoravan na kojoj su gradijenti vrlo mali, a sama regija je s obzirom na pomake ogromna (slika \ref{fig:pocetna_tocka}). Kad gradijent postane neupotrebljivo malen kažemo da je "\textit{iščeznuo}". U takvim slučajevima pomaže dodavanje momenta koji se akumulira kroz više iteracija i dodaje vektoru gradijenta. Kad algoritam naiđe na regiju s vrlo malim gradijentima, moment pokušava izvuči algoritam iz visoravni pomičući ga u smjeru koji je akumuliran. Kako moment ne bi izvukao algoritam iz optimuma, dodaje mu se koeficijent "\textit{zaboravljanja}" kojim se stari vektor momenta djelomično zaboravlja u korist novog vektora pomaka (jednadžba \ref{eq:moment_update}). Moment može pomoći i pri zaobilaženju lokalnih optimuma (slika \ref{fig:pocetna_tocka}).
+
+\begin{equation}
+\label{eq:moment_update}
+\begin{split}
+v \gets \alpha \cdot v - \mu \cdot g \\
+x \gets x + v
+\end{split}
+\end{equation}
+
+\todoimg{moment prije i na visoravni, moment za savladavanje brda}
+\label{fig:visoravan}
+
+Algoritam je primijenjiv na funkcije proizvoljne dimenzionalnosti uz pretpostavku derivabilnosti u svakoj točki. Za proizvoljnu realnu funkciju, uz dobro odabrane hiperparametre, algoritam će konvergirati u jedan od lokalnih optimuma, no algoritam generalno nema garanciju konvergencije u globalni optimum. Garanciju pronalaska globalnog optimuma nudi jedino za unimodalne funkcije uz odgovarajuće hiperparametre algoritma (slika \ref{fig:gradientni_spust}).
+
+\subsubsection{Funkcija gubitka}
+Pri učenju umjetnih neuronskih mreža potrebno je definirati funkciju gubitka. Funkcija gubitka, za dani ulaz, uspoređuje predikciju mreže sa željenim vrijednostima te dodjeljuja magnitudu pogreške (realan broj). Funkciju gubitka potrebno je pažljivo odabrati jer ona definira što je ishod učenja te utječe na učenje svakog parametra (kao što je opisano u poglavlju \ref{sec:backprop}). Funkcija gubitka često je usko vezana uz vrstu problema koji se rješava i izlaznu funkciju posljednjeg sloja neuronske mreže.
+
+\todo{oba imaju neg.log.izglednost, no pretpostavljaju razl. distribucije da dobiješ kvadratni ili ovaj drugi loss}
+
+U problemima regresije, najčešće se koristi funkcija kvadratnog gubitka koja računa odstupanje izlaza neuronske mreže od željenih vrijednosti. Uz ovaj gubitak najčešće se koristi funkcija identiteta u izlaznom sloju. Ova funkcija je brza i jednostavna
+\begin{equation}
+L(\theta) = \frac{1}{N} \sum_{(\vec{x},\vec{y})\in (X,Y)} \sum_{i}^{|\vec{y}|} (f(\vec{x};\theta)_i - \vec{y}_i)^2
+\end{equation}
+
+U problemima klasifikacije, koristi se funkcija negativne logaritamske izglednosti. 
+\begin{equation}
+L(\theta) = -\expect ...
+\end{equation}
+
+\subsubsection{Optimizacija širenjem unatrag}
 \label{sec:backprop}
+Funkcija gubitka opisuje pogrešku čitave mreže te ovisi o svakom ugodljivom parametru mreže. Takva formulacija problema omogućuje nam da svaki parametrar mreže ugađamo gradijentnim spustom. Dakle, za parametriziranu funkciju $f(x;\theta)$ tražimo one parametre $\theta^*$ za koje je gubitak najmanji na danim parovima ulaznih i izlaznih podataka.
+\begin{equation}
+\theta^* = argmin_\theta L(x,y; \theta), \quad \forall (x,y) \in (X,Y)
+\end{equation}
+
+S obzirom da se mreža sastoji od ulančanih nelinearnih neurona s parametrima, gubitak moramo proslijediti sekvencijalno širenjem unazad (prema ulazima u mrežu). Pri tome koristi se pravilo ulančavanja parcijalne derivacije kompozicije funkcija.
+\begin{equation}
+\dfrac{}{x} f(g(x)) = \pfrac{f(g(x))}{g(x)} \cdot \pfrac{g(x)}{x}
+\end{equation}
+
+Pojedini neuron je parametrizirana funkcija i može se prikazati grafom. Vidimo da se ulazni gradijent prolaskom kroz neuron širi na ostale elemente i na ulaze neurona koji vode do prethodnih neurona. Primijetimo i da se širi u suprotnom smjeru od podatkovnog toka. Iz toga proizlazi naziv "\textit{širenjem unazad}".
+
+\todoimg{neuron kao graf + tok gradijenata}
+\label{fig:neuron_grad}
+
+Želimo li učiti mrežu gradijentnim spustom, svaki parametar mreže treba imati pristup gradijentu. S obzirom da je neuron parametrizirana funkcija, kojom ulančavanjem gradimo mrežu, dovoljno je pokazati da pojedini neuron osigurava svojim parametrima pristup gradijentu te da gradijent šalje svojim prethodnicima s kojima je povezan. Na slici \ref{fig:neuron_grad} vidimo da je to ostvarivo, što dokazuju i formule:
+\begin{align}
+\begin{split}
+\pfrac{L(x,y;\theta)}{s(x;w)} &= \pfrac{L(x,y;\theta)}{o(x;w)} \cdot \pfrac{o(x;w)}{s(x;w)} \\
+&= \pfrac{L(x,y;\theta)}{o(x;w)} \cdot f'(x)
+\end{split}
+\end{align}
+
+\begin{align}
+\begin{split}
+\pfrac{L(x,y;\theta)}{x_i} &= \pfrac{L(x,y;\theta)}{s(x;w)} \cdot \pfrac{s(x;w)}{x_i} \\
+&= \pfrac{L(x,y;\theta)}{o(x;w)} \cdot f'(x) \cdot w_i
+\end{split}
+\end{align}
+
+\begin{align} \label{eq:w_update}
+\begin{split}
+\pfrac{L(x,y;\theta)}{w_i} &= \pfrac{L(x,y;\theta)}{s(x;w)} \cdot \pfrac{s(x;w)}{w_i} \\
+&= \pfrac{L(x,y;\theta)}{o(x;w)} \cdot f'(x) \cdot x_i
+\end{split}
+\end{align}
+
+\begin{align}
+\begin{split}
+\pfrac{L(x,y;\theta)}{w_0} &= \pfrac{L(x,y;\theta)}{s(x;w)} \cdot \pfrac{s(x;w)}{w_0} \\
+&= \pfrac{L(x,y;\theta)}{o(x;w)} \cdot f'(x) \cdot 1
+\end{split}
+\end{align}
+
+\subsubsection{Stohastički gradijentni spust}
 
 \subsubsection{Optimizator}
-* geometrijski značaj optimizacije
-[slika podnaučena, generalizira, prenaučena]
+Gradijentni spust (algoritam \ref{alg:grad_spust}) 
 
-\subsubsection{Perturbacije ulaznih podataka}
+\todo{uporaba momenta i momenta na kvadrat (interpretacija)}
+\todo{Adam}
+
+\subsubsection{Inicijalizacija parametara}
+Inicijalizacija parametara mreže je sinonim za odabir početne točke pri gradijentnom spustu.
+
+\todo{važnost dobre inicijalizacije}
+\todo{Xavier}
+
+\subsubsection{Regularizacija}
+\todo{geometrijski opis deciziske granice}
+\todo{podnaučena, generalizira, prenaučena}
+\todoimg{podnaučena, generalizira, prenaučena}
+\todo{L1}
+\todo{L2}
+\todo{Spomeni pokoju još}
 
 \subsection{Svojstva}
-* Svojstva kompresije, generalizacije, univerzalne aproksimacije
-
+\todo{kompresija}
+\todo{generalizacija}
+\todo{univerzalna aproksimacija}
 
 \subsection{Problemi}
-* Problem odabira arhitekture, hiperparametara i optimizacije
-* Problem pretreniranosti + adversarial primjeri
+\todo{Problem odabira arhitekture, aktivacijske funkcije i hiperparametara}
+\todo{Problem pretreniranosti + neprijateljski primjeri}
 
-Arhitektura, prijenosne funkcije i težine definiraju neuronsku mrežu te njihov odabir značajno utjeće na performanse neuronske mreže. Učenje 
+Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov odabir značajno utjeće na performanse neuronske mreže. Učenje 
 
-Derivabilne neuronske mreže optimiziraju se optimizatorom koji određuje kako se mijenjaju težine.Za ugađanje težina najčešće se koristi gradijentni spust, uz pretpostavku derivabilnosti čitave neuronske mreže. Kada pretpostavka ne vrijedi najčešće se koriste evolucijski algoritmi.
+Derivabilne neuronske mreže optimiziraju se optimizatorom koji određuje kako se mijenjaju parametri. Za ugađanje parametara najčešće se koristi gradijentni spust, uz pretpostavku derivabilnosti čitave neuronske mreže. Kada pretpostavka ne vrijedi najčešće se koriste evolucijski algoritmi.
 
 \section{Izlazne funkcije}
 \label{sec:izlazne_fje}
-\TODO{Bitka za odabir izlazne fje (nađi onaj rad di pljuje po sigmoidi i relu (elu rad?))}
-\TODO{Usporedbe funkcije i derivacije}
-\TODO{Navedene su funkcije koje su razmatrane}
+\todo{Bitka za odabir izlazne fje (nađi onaj rad di pljuje po sigmoidi i relu (elu rad?))}
+\todo{Usporedbe funkcije i derivacije}
+\todo{Navedene su funkcije koje su razmatrane}
+
+\subsection{Funkcija identiteta}
+\engl{Identity function}
+
+\todo{Dokaz da cijela mreža postaje linearna}
 
 \subsection*{Ispravljena linearna jedinica (ReLU)}
 \engl{Rectified linear unit}
-* bez i sa cutoff
+
+\todo{bez i sa cutoff}
 
 \begin{equation}
 \begin{split}
@@ -191,6 +335,7 @@ f'(x) =
 \end{equation}
 
 \subsection*{(RReLU)}
+\engl{Randomized leaky ReLU}
 
 \subsection*{Eksponencijalno-linearna jedinica (ELU)}
 \engl{Exponential linear unit}
@@ -235,6 +380,7 @@ f'(x) = \lambda
 \end{equation}
 
 \subsection*{(GELU)}
+\engl{Gaussian error linear unit}
 
 \subsection*{Sigmoida ($\sigma $)}
 \engl{Sigmoid}
@@ -315,7 +461,9 @@ f'(x) =
 
 \subsection*{Racionalna aproksimacija tanh}
 \engl{Rational tanh}
-??????????????????
+
+\todo{DL4J ima bug u derivaciji ove fje}
+
 \begin{equation}
 f(x) = 1.7159 \cdot tanh(\frac{2}{3}x)\text{,\quad gdje }
 tanh(x) \approx sgn(x)(1 - \frac{1}{1 + |x| + x^2 + 1.41645 \cdot x^4}) \\

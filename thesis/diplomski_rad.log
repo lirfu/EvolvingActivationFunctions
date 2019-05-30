@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.2.5)  28 MAY 2019 00:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.2.5)  29 MAY 2019 16:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -582,23 +582,76 @@ Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1358.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
 )
-(./diplomski_rad.aux)
+(/usr/share/texlive/texmf-dist/tex/latex/algorithm2e/algorithm2e.sty
+Package: algorithm2e 2013/01/06 v5.00 algorithms environments
+\c@AlgoLine=\count112
+\algocf@hangindent=\skip49
+
+(/usr/share/texlive/texmf-dist/tex/latex/tools/xspace.sty
+Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/relsize/relsize.sty
+Package: relsize 2013/03/29 ver 4.1
+)
+********************************************************
+Package `algorithm2e' Release 5.1 -- october 19 2015 --
+- algorithm2e-announce@lirmm.fr mailing list for announcement about releases
+- algorithm2e-discussion@lirmm.fr mailing list for discussion about package
+subscribe by emailing sympa@lirmm.fr with 'subscribe <list> <firstname name>'
+- Author: Christophe Fiorio (christophe.fiorio@umontpellier.fr)
+********************************************************
+\skiptotal=\skip50
+\skiplinenumber=\skip51
+\skiprule=\skip52
+\skiphlne=\skip53
+\skiptext=\skip54
+\skiplength=\skip55
+\algomargin=\skip56
+\skipalgocfslide=\skip57
+\algowidth=\dimen145
+\inoutsize=\dimen146
+\inoutindent=\dimen147
+\interspacetitleruled=\dimen148
+\interspacealgoruled=\dimen149
+\interspacetitleboxruled=\dimen150
+\algocf@ruledwidth=\skip58
+\algocf@inoutbox=\box29
+\algocf@inputbox=\box30
+\AlCapSkip=\skip59
+\AlCapHSkip=\skip60
+\algoskipindent=\skip61
+\algocf@nlbox=\box31
+\algocf@hangingbox=\box32
+\algocf@untilbox=\box33
+\algocf@skipuntil=\skip62
+\algocf@capbox=\box34
+\algoheightruledefault=\skip63
+\algoheightrule=\skip64
+\algotitleheightruledefault=\skip65
+\algotitleheightrule=\skip66
+\c@algocfline=\count113
+\c@algocfproc=\count114
+\c@algocf=\count115
+\algocf@algoframe=\box35
+\algocf@algobox=\box36
+) (./diplomski_rad.aux)
 \openout1 = `diplomski_rad.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 12.
-LaTeX Font Info:    ... okay on input line 12.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 12.
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 21.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
 *geometry* driver: auto-detecting
@@ -637,16 +690,16 @@ File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count112
-\scratchdimen=\dimen145
-\scratchbox=\box29
-\nofMPsegments=\count113
-\nofMParguments=\count114
+\scratchcounter=\count116
+\scratchdimen=\dimen151
+\scratchbox=\box37
+\nofMPsegments=\count117
+\nofMParguments=\count118
 \everyMPshowfont=\toks25
-\MPscratchCnt=\count115
-\MPscratchDim=\dimen146
-\MPnumerator=\count116
-\makeMPintoPDFobject=\count117
+\MPscratchCnt=\count119
+\MPscratchDim=\dimen152
+\MPnumerator=\count120
+\makeMPintoPDFobject=\count121
 \everyMPtoPDFconversion=\toks26
 ) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
@@ -694,32 +747,32 @@ e
 ))
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Try loading font information for T1+phv on input line 20.
+LaTeX Font Info:    Try loading font information for T1+phv on input line 29.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 )
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 20.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 29.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 20.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 29.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 20.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 29.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 20.
-LaTeX Font Info:    Try loading font information for U+msa on input line 20.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 29.
+LaTeX Font Info:    Try loading font information for U+msa on input line 29.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 20.
+LaTeX Font Info:    Try loading font information for U+msb on input line 29.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 23.
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 32.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
@@ -728,7 +781,7 @@ File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 2.
 
-Overfull \hbox (18.21915pt too wide) in paragraph at lines 19--19
+Overfull \hbox (18.21915pt too wide) in paragraph at lines 24--24
  [] []\T1/ptm/b/n/12 Optimizacija sim-bo-li£-kom re-gre-si-jom (teh-ni£ki ge-ne
 t-skim pro-gra-mi-ra-njem...) []  
  []
@@ -742,7 +795,7 @@ t-skim pro-gra-mi-ra-njem...) []
  [5]
 Poglavlje 1.
 
-Underfull \hbox (badness 10000) in paragraph at lines 30--31
+Underfull \hbox (badness 10000) in paragraph at lines 39--40
 
  []
 
@@ -751,71 +804,160 @@ Underfull \hbox (badness 10000) in paragraph at lines 30--31
 ]
 Poglavlje 2.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 34.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 43.
 
-Underfull \hbox (badness 10000) in paragraph at lines 35--37
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 39--42
+Underfull \hbox (badness 10000) in paragraph at lines 44--46
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 44--48
+Underfull \hbox (badness 10000) in paragraph at lines 48--51
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 53--55
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 57--59
 
  []
 
 [2
 
 ]
+Underfull \hbox (badness 10000) in paragraph at lines 61--62
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 64--66
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 68--69
+
+ []
+
+[3]
 Poglavlje 3.
 
-Overfull \hbox (67.71863pt too wide) in paragraph at lines 57--58
-[]\T1/ptm/m/n/12 TODO: ’to sve bi-olozi vele o ne-uro-nima? ht-tps://www.ncbi.n
-lm.nih.gov/pmc/articles/PMC3812748/[] 
+Overfull \hbox (65.45038pt too wide) in paragraph at lines 78--79
+[]\T1/ptm/m/n/12 TODO: \T1/ptm/m/it/12 ’to sve bi-olozi vele o ne-uro-nima? ht-
+tps://www.ncbi.nlm.nih.gov/pmc/articles/PMC3812748/[] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 57--58
+Underfull \hbox (badness 10000) in paragraph at lines 78--79
 
  []
 
-<./img/Neuron.pdf, id=32, 424.4658pt x 168.63pt>
+<./img/Neuron.pdf, id=35, 424.4658pt x 168.63pt>
 File: ./img/Neuron.pdf Graphic file (type pdf)
  <use ./img/Neuron.pdf>
-Package pdftex.def Info: ./img/Neuron.pdf used on input line 61.
+Package pdftex.def Info: ./img/Neuron.pdf used on input line 82.
 (pdftex.def)             Requested size: 297.12402pt x 118.04018pt.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 62.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 83.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[3
+[4
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 72--74
+Underfull \hbox (badness 10000) in paragraph at lines 93--95
 
  []
 
-[4 <./img/Neuron.pdf
+[5 <./img/Neuron.pdf
 
 pdfTeX warning: pdflatex (file ./img/Neuron.pdf): PDF inclusion: invalid other 
 resource which is no dict (key 'ProcSets', type <array>); ignored.
 >]
-Underfull \hbox (badness 10000) in paragraph at lines 89--90
+Underfull \hbox (badness 10000) in paragraph at lines 105--106
 
  []
 
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 124--127
+
+Underfull \hbox (badness 10000) in paragraph at lines 112--114
 
  []
 
-[6] [7]
-Overfull \hbox (37.05222pt too wide) detected at line 322
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 125--126
+
+ []
+
+! Undefined control sequence.
+l.134 \EndFor
+             
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 168--169
+
+ []
+
+[8] [9]
+Underfull \hbox (badness 10000) in paragraph at lines 231--233
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 237--239
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 241--243
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 244--247
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 249--252
+
+ []
+
+[10]
+Underfull \hbox (badness 10000) in paragraph at lines 254--256
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 263--266
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 270--271
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 275--276
+
+ []
+
+[11] [12]
+Underfull \hbox (badness 10000) in paragraph at lines 465--466
+
+ []
+
+
+Overfull \hbox (37.05222pt too wide) detected at line 471
 \OML/cmm/m/it/12 f\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x\OT1/cmr/m/n/12 ) = 1\OML/
 cmm/m/it/12 :\OT1/cmr/m/n/12 7159 \OMS/cmsy/m/n/12 ^^A \OML/cmm/m/it/12 tanh\OT
 1/cmr/m/n/12 ([]\OML/cmm/m/it/12 x\OT1/cmr/m/n/12 )[]\OML/cmm/m/it/12 tanh\OT1/
@@ -825,25 +967,25 @@ cmr/m/n/12 (\OML/cmm/m/it/12 x\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 ^^Y \OML/cmm/m
 /12 x\OT1/cmr/m/n/12 ) =
  []
 
-[8] [9]
+[13] [14] [15]
 Poglavlje 4.
-[10
+[16
 
 ]
 Poglavlje 5.
-[11
+[17
 
 ]
 Poglavlje 6.
-[12
+[18
 
 ]
 Poglavlje 7.
-[13
+[19
 
 ]
 Poglavlje 8.
-(./diplomski_rad.bbl [14
+(./diplomski_rad.bbl [20
 
 ]
 Underfull \hbox (badness 2846) in paragraph at lines 49--56
@@ -881,17 +1023,17 @@ Overfull \hbox (99.48195pt too wide) in paragraph at lines 49--56
 ]neural-[]networks .
  []
 
-[15
+[21
 
-]) [16] [17] (./diplomski_rad.aux) ) 
+]) [22] [23] (./diplomski_rad.aux) ) 
 Here is how much of TeX's memory you used:
- 6525 strings out of 493029
- 88792 string characters out of 6136235
- 174372 words of memory out of 5000000
- 9908 multiletter control sequences out of 15000+600000
+ 7451 strings out of 493029
+ 103779 string characters out of 6136235
+ 200939 words of memory out of 5000000
+ 10823 multiletter control sequences out of 15000+600000
  64248 words of font info for 87 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 43i,23n,40p,1192b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 43i,23n,40p,1192b,402s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dv
 ips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
 mex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.
@@ -904,17 +1046,18 @@ mf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist
 ype1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
 lic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
 sfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-symbols/msam10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8
-a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/ur
-w/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.
-pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on diplomski_rad.pdf (22 pages, 232536 bytes).
+symbols/msam10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/s
+ymbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb></usr/s
+hare/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on diplomski_rad.pdf (28 pages, 253992 bytes).
 PDF statistics:
- 199 PDF objects out of 1000 (max. 8388607)
- 126 compressed objects within 2 object streams
+ 222 PDF objects out of 1000 (max. 8388607)
+ 142 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
