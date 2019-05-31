@@ -18,11 +18,11 @@ public class ConvLayerDescriptor extends ALayerDescriptor {
     }
 
     @Override
-    public Layer constructLayer(IActivation activation) {
+    public Layer constructLayer() {
         return new ConvolutionLayer.Builder(kernel_height_, kernel_width_)
                 .nOut(kernels_num_)
                 .stride(stride_y_, stride_x_)
-                .activation(activation)
+//                .activation(activation)
                 .convolutionMode(ConvolutionMode.Same) // Force no padding.
                 .build();
     }

@@ -5,6 +5,7 @@ import hr.fer.zemris.neurology.dl4j.TrainParams;
 import org.deeplearning4j.nn.conf.CacheMode;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.inputs.InputType;
+import org.deeplearning4j.nn.conf.layers.ActivationLayer;
 import org.deeplearning4j.nn.conf.layers.BatchNormalization;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -12,6 +13,7 @@ import org.deeplearning4j.nn.weights.WeightInit;
 import org.jetbrains.annotations.NotNull;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.activations.IActivation;
+import org.nd4j.linalg.activations.impl.ActivationIdentity;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.nd4j.linalg.schedule.ScheduleType;
@@ -72,10 +74,11 @@ public class CommonModel implements IModel {
         int a_i = 0, l_i = 0;
         list.setInputType(InputType.feedForward(params.input_size()));
         for (ALayerDescriptor l : architecture.getLayers()) {
-            list.layer(l_i++, l.constructLayer(common_act ? activations[0] : activations[a_i++]));
+            list.layer(l_i++, l.constructLayer());
             if (params.batch_norm()) {
-                list.layer(l_i++, new BatchNormalization());
+                list.layer(l_i++, new BatchNormalization.Builder(false).build());
             }
+            list.layer(l_i++, new ActivationLayer(common_act ? activations[0] : activations[a_i++]));
         }
         // Define output layer and loss.
         list.layer(l_i, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)

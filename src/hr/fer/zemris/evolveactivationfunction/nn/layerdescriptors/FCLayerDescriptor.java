@@ -16,10 +16,10 @@ public class FCLayerDescriptor extends ALayerDescriptor {
     }
 
     @Override
-    public Layer constructLayer(IActivation activation) {
+    public Layer constructLayer() {
         return new DenseLayer.Builder()
                 .nOut(neurons_num_)
-                .activation(activation)
+//                .activation(activation)
                 .build();
     }
 

@@ -11,7 +11,7 @@ public abstract class ALayerDescriptor implements ISerializable {
         name_ = name;
     }
 
-    public abstract Layer constructLayer(IActivation activation);
+    public abstract Layer constructLayer();
 
     public String getName() {
         return name_;
