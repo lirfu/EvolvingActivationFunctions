@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.2.5)  29 MAY 2019 16:48
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.2.5)  31 MAY 2019 11:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -637,19 +637,19 @@ subscribe by emailing sympa@lirmm.fr with 'subscribe <list> <firstname name>'
 ) (./diplomski_rad.aux)
 \openout1 = `diplomski_rad.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 21.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 22.
+LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 22.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
@@ -747,32 +747,32 @@ e
 ))
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Try loading font information for T1+phv on input line 29.
+LaTeX Font Info:    Try loading font information for T1+phv on input line 30.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 )
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 29.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 30.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 29.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 30.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 29.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 30.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 29.
-LaTeX Font Info:    Try loading font information for U+msa on input line 29.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 30.
+LaTeX Font Info:    Try loading font information for U+msa on input line 30.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 29.
+LaTeX Font Info:    Try loading font information for U+msb on input line 30.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 32.
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 33.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
@@ -781,7 +781,7 @@ File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 2.
 
-Overfull \hbox (18.21915pt too wide) in paragraph at lines 24--24
+Overfull \hbox (18.21915pt too wide) in paragraph at lines 32--32
  [] []\T1/ptm/b/n/12 Optimizacija sim-bo-li£-kom re-gre-si-jom (teh-ni£ki ge-ne
 t-skim pro-gra-mi-ra-njem...) []  
  []
@@ -795,7 +795,7 @@ t-skim pro-gra-mi-ra-njem...) []
  [5]
 Poglavlje 1.
 
-Underfull \hbox (badness 10000) in paragraph at lines 39--40
+Underfull \hbox (badness 10000) in paragraph at lines 41--42
 
  []
 
@@ -804,64 +804,64 @@ Underfull \hbox (badness 10000) in paragraph at lines 39--40
 ]
 Poglavlje 2.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 43.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 46.
 
-Underfull \hbox (badness 10000) in paragraph at lines 44--46
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 48--51
+Underfull \hbox (badness 10000) in paragraph at lines 47--49
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 53--55
+Underfull \hbox (badness 10000) in paragraph at lines 51--54
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 57--59
+Underfull \hbox (badness 10000) in paragraph at lines 56--58
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 60--62
 
  []
 
 [2
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 61--62
+Underfull \hbox (badness 10000) in paragraph at lines 64--65
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 64--66
+Underfull \hbox (badness 10000) in paragraph at lines 67--69
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 68--69
+Underfull \hbox (badness 10000) in paragraph at lines 71--72
 
  []
 
 [3]
 Poglavlje 3.
 
-Overfull \hbox (65.45038pt too wide) in paragraph at lines 78--79
+Overfull \hbox (65.45038pt too wide) in paragraph at lines 82--83
 []\T1/ptm/m/n/12 TODO: \T1/ptm/m/it/12 ’to sve bi-olozi vele o ne-uro-nima? ht-
 tps://www.ncbi.nlm.nih.gov/pmc/articles/PMC3812748/[] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 78--79
+Underfull \hbox (badness 10000) in paragraph at lines 82--83
 
  []
 
 <./img/Neuron.pdf, id=35, 424.4658pt x 168.63pt>
 File: ./img/Neuron.pdf Graphic file (type pdf)
  <use ./img/Neuron.pdf>
-Package pdftex.def Info: ./img/Neuron.pdf used on input line 82.
+Package pdftex.def Info: ./img/Neuron.pdf used on input line 86.
 (pdftex.def)             Requested size: 297.12402pt x 118.04018pt.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 83.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 87.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -869,7 +869,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 [4
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 93--95
+Underfull \hbox (badness 10000) in paragraph at lines 97--99
 
  []
 
@@ -878,86 +878,162 @@ Underfull \hbox (badness 10000) in paragraph at lines 93--95
 pdfTeX warning: pdflatex (file ./img/Neuron.pdf): PDF inclusion: invalid other 
 resource which is no dict (key 'ProcSets', type <array>); ignored.
 >]
-Underfull \hbox (badness 10000) in paragraph at lines 105--106
+Underfull \hbox (badness 10000) in paragraph at lines 109--110
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 112--114
+Underfull \hbox (badness 10000) in paragraph at lines 116--118
 
  []
 
-[6]
-Underfull \hbox (badness 10000) in paragraph at lines 125--126
-
- []
-
-! Undefined control sequence.
-l.134 \EndFor
-             
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-[7]
-Underfull \hbox (badness 10000) in paragraph at lines 168--169
-
- []
-
-[8] [9]
-Underfull \hbox (badness 10000) in paragraph at lines 231--233
+[6] [7] [8]
+Underfull \hbox (badness 10000) in paragraph at lines 179--180
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 237--239
+Underfull \hbox (badness 10000) in paragraph at lines 193--194
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 241--243
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 244--247
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 249--252
+[9]
+Underfull \hbox (badness 10000) in paragraph at lines 248--253
 
  []
 
 [10]
-Underfull \hbox (badness 10000) in paragraph at lines 254--256
+Underfull \hbox (badness 10000) in paragraph at lines 257--260
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 263--266
+Underfull \hbox (badness 10000) in paragraph at lines 264--266
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 270--271
+Underfull \hbox (badness 10000) in paragraph at lines 268--270
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 275--276
-
- []
-
-[11] [12]
-Underfull \hbox (badness 10000) in paragraph at lines 465--466
+Underfull \hbox (badness 10000) in paragraph at lines 273--276
 
  []
 
 
-Overfull \hbox (37.05222pt too wide) detected at line 471
+Underfull \hbox (badness 10000) in paragraph at lines 278--280
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 282--284
+
+ []
+
+[11]
+Underfull \hbox (badness 10000) in paragraph at lines 295--296
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 307--308
+
+ []
+
+[12]
+Underfull \hbox (badness 10000) in paragraph at lines 313--316
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 320--321
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 322--325
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 329--332
+
+ []
+
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 353--356
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 380--383
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 407--410
+
+ []
+
+[14]
+Underfull \hbox (badness 10000) in paragraph at lines 416--419
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 443--446
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 470--473
+
+ []
+
+[15]
+Underfull \hbox (badness 10000) in paragraph at lines 479--482
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 498--501
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 521--524
+
+ []
+
+[16]
+Underfull \hbox (badness 10000) in paragraph at lines 540--543
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 558--561
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 587--590
+
+ []
+
+[17]
+Underfull \hbox (badness 10000) in paragraph at lines 594--595
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 598--601
+
+ []
+
+
+Overfull \hbox (37.05222pt too wide) detected at line 606
 \OML/cmm/m/it/12 f\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 x\OT1/cmr/m/n/12 ) = 1\OML/
 cmm/m/it/12 :\OT1/cmr/m/n/12 7159 \OMS/cmsy/m/n/12 ^^A \OML/cmm/m/it/12 tanh\OT
 1/cmr/m/n/12 ([]\OML/cmm/m/it/12 x\OT1/cmr/m/n/12 )[]\OML/cmm/m/it/12 tanh\OT1/
@@ -967,25 +1043,164 @@ cmr/m/n/12 (\OML/cmm/m/it/12 x\OT1/cmr/m/n/12 ) \OMS/cmsy/m/n/12 ^^Y \OML/cmm/m
 /12 x\OT1/cmr/m/n/12 ) =
  []
 
-[13] [14] [15]
+
+Underfull \hbox (badness 10000) in paragraph at lines 608--611
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 617--620
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 635--638
+
+ []
+
+[18]
+Underfull \hbox (badness 10000) in paragraph at lines 653--656
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 671--674
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 689--692
+
+ []
+
+[19]
+Underfull \hbox (badness 10000) in paragraph at lines 707--710
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 725--728
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 743--746
+
+ []
+
+[20]
+Underfull \hbox (badness 10000) in paragraph at lines 761--764
+
+ []
+
+[21]
 Poglavlje 4.
-[16
 
-]
+Underfull \hbox (badness 10000) in paragraph at lines 769--771
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 773--775
+
+ []
+
+[22
+
+] [23]
 Poglavlje 5.
-[17
+
+Underfull \hbox (badness 10000) in paragraph at lines 829--832
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 834--837
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 839--841
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 844--846
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 849--851
+
+ []
+
+[24
 
 ]
+Underfull \hbox (badness 10000) in paragraph at lines 853--854
+
+ []
+
+[25]
 Poglavlje 6.
-[18
+
+Underfull \hbox (badness 10000) in paragraph at lines 861--864
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 866--868
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 872--875
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 877--879
+
+ []
+
+[26
 
 ]
 Poglavlje 7.
-[19
+
+Underfull \hbox (badness 10000) in paragraph at lines 883--885
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 887--889
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 891--892
+
+ []
+
+[27
 
 ]
 Poglavlje 8.
-(./diplomski_rad.bbl [20
+
+Underfull \hbox (badness 10000) in paragraph at lines 895--898
+
+ []
+
+[28
+
+]
+Poglavlje 9.
+
+Underfull \hbox (badness 10000) in paragraph at lines 901--904
+
+ []
+
+(./diplomski_rad.bbl [29
 
 ]
 Underfull \hbox (badness 2846) in paragraph at lines 49--56
@@ -1023,14 +1238,14 @@ Overfull \hbox (99.48195pt too wide) in paragraph at lines 49--56
 ]neural-[]networks .
  []
 
-[21
+[30
 
-]) [22] [23] (./diplomski_rad.aux) ) 
+]) [31] [32] (./diplomski_rad.aux) ) 
 Here is how much of TeX's memory you used:
- 7451 strings out of 493029
- 103779 string characters out of 6136235
- 200939 words of memory out of 5000000
- 10823 multiletter control sequences out of 15000+600000
+ 7456 strings out of 493029
+ 103861 string characters out of 6136235
+ 200980 words of memory out of 5000000
+ 10828 multiletter control sequences out of 15000+600000
  64248 words of font info for 87 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  43i,23n,40p,1192b,402s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1045,19 +1260,20 @@ mf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
 lic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
-symbols/msam10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/s
-ymbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a
-.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive
-/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
-/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on diplomski_rad.pdf (28 pages, 253992 bytes).
+sfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols
+/msam10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/
+msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrro8a.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
+utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on diplomski_rad.pdf (37 pages, 275419 bytes).
 PDF statistics:
- 222 PDF objects out of 1000 (max. 8388607)
- 142 compressed objects within 2 object streams
+ 257 PDF objects out of 1000 (max. 8388607)
+ 167 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

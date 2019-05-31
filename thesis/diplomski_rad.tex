@@ -10,6 +10,7 @@
 % Math
 \def\mat#1{\underline{#1}}
 \def\expect{\mathbb{E}}
+\def\realnum{\mathbb{R}}
 \def\pfrac#1#2{\frac{\partial #1}{\partial #2}}
 \def\dfrac#1#2{\frac{d #1}{d #2}}
 
@@ -35,9 +36,11 @@
 
 \tableofcontents
 
+%--------------------------------------------------------------------------------------%
 \chapter{Uvod}
 \todo{ Opis problema }
 
+%--------------------------------------------------------------------------------------%
 \chapter{Implementacijski napadi na kriptografske uređaje}
 
 \section{Side-channel napadi}
@@ -67,6 +70,7 @@
 \todoimg{Statistike iz jn}
 \todo{Mjere dobrote klasifikacije}
 
+%--------------------------------------------------------------------------------------%
 \chapter{Klasifikator temeljen na umjetnim neuronskim mrežama}
 
 \section{Umjetne neuronske mreže}
@@ -120,24 +124,23 @@ Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno
 \todoimg{gradijentni spust unimodalna vs višemodalna (gdje preskoći brdo i uleti u bolji optimum)}
 \label{fig:gradientni_spust}
 
-Gradijentni spust je algoritam pronalaska minimuma funkcije vođen gradijentom te funkcije. Za zadanu početnu točku iterativno se pomiče u smjeru suprotnom od gradijenta funkcije u toj točki dok ne zadovolji neki od uvijeta zaustavljanja. Na strmim funkcijama gradijent je često prevelik i može izazvati oscilaciju ili divergenciju (slika \ref{fig:oscilira_divergira}). Stoga se gradijent pri pomaku skalira s koeficijentom pomaka $\mu$. Dobro odabran koeficijent pomaka može osigurati bržu konvergenciju, a kod višemodalnih funkcija i pronalazak boljeg optimuma (slika \ref{fig:gradientni_spust}).
+Gradijentni spust je algoritam pronalaska minimuma funkcije vođen gradijentom te funkcije. Za zadanu početnu točku iterativno se pomiče u smjeru suprotnom od gradijenta funkcije u toj točki dok ne zadovolji neki od uvijeta zaustavljanja. Na strmim funkcijama gradijent je često prevelik i može izazvati oscilaciju ili divergenciju (slika \ref{fig:oscilira_divergira}). Stoga se gradijent pri pomaku skalira koeficijentom pomaka $\mu$. Dobro odabran koeficijent pomaka može osigurati bržu konvergenciju, a kod višemodalnih funkcija i pronalazak boljeg optimuma (slika \ref{fig:gradientni_spust}).
 
-\todo{spomeni negdje da generalno ne znamo koji je globalni optimum}
+Početna točka utječe na ishod algoritma. Kod višemodalnih funkcija s optimumima različitih kvaliteta, početna točka može definirati u koji će lokalni optimum algoritam konvergirati (slika \ref{fig:pocetna_tocka}). 
 
 \begin{algorithm}[H]
-\KwData{funkcija $f(x)$}
-\KwData{koeficijent pomaka $\mu$}
-\KwData{početna točka $x_0$}
-\KwResult{optimalna točka $x^*$}
-\For{uvijet nije zadovoljen}
-aaa
-\EndFor
+\KwIn{funkcija $f(\vec{x})$}
+\KwIn{početna točka $\vec{x_0}$}
+\KwIn{koeficijent pomaka $\eta$}
+\KwIn{broj iteracija $n$}
+\For{n iteracija}{
+$\vec{g_i} \gets \vec{\nabla}_{\vec{x}} f(\vec{x_i})$ \;
+$\vec{x_{i+1}} \gets \vec{x_i} - \eta \cdot \vec{g_i}$
+}
+\KwResult{konačna točka $\vec{x_i}$ je pronađeni optimum}
 \caption{Gradijentni spust}
 \label{alg:grad_spust}
 \end{algorithm}
-
-
-Početna točka utječe na ishod algoritma. Kod višemodalnih funkcija s optimumima različitih kvaliteta, početna točka može definirati u koji će lokalni optimum algoritam konvergirati (slika \ref{fig:pocetna_tocka}). 
 
 \todoimg{graidjentni spust stope spuštanja (velka, mala, taman)}
 \label{fig:oscilira_divergira}
@@ -152,30 +155,42 @@ Problem se javlja ako algoritam "odluta" u visoravan na kojoj su gradijenti vrlo
 \begin{equation}
 \label{eq:moment_update}
 \begin{split}
-v \gets \alpha \cdot v - \mu \cdot g \\
-x \gets x + v
+\vec{v} &\gets \alpha \cdot \vec{v} - \eta \cdot \vec{g} \\
+\vec{x} &\gets \vec{x} + \vec{v}
 \end{split}
 \end{equation}
 
 \todoimg{moment prije i na visoravni, moment za savladavanje brda}
 \label{fig:visoravan}
 
-Algoritam je primijenjiv na funkcije proizvoljne dimenzionalnosti uz pretpostavku derivabilnosti u svakoj točki. Za proizvoljnu realnu funkciju, uz dobro odabrane hiperparametre, algoritam će konvergirati u jedan od lokalnih optimuma, no algoritam generalno nema garanciju konvergencije u globalni optimum. Garanciju pronalaska globalnog optimuma nudi jedino za unimodalne funkcije uz odgovarajuće hiperparametre algoritma (slika \ref{fig:gradientni_spust}).
+Algoritam je primijenjiv na funkcije proizvoljne dimenzionalnosti uz pretpostavku derivabilnosti u svakoj točki. Za proizvoljnu realnu funkciju, uz dobro odabrane hiperparametre, algoritam će konvergirati u jedan od lokalnih optimuma, no algoritam generalno nema garanciju konvergencije u globalni optimum. Garanciju pronalaska globalnog optimuma nudi jedino za trivijalne unimodalne funkcije uz odgovarajuće hiperparametre algoritma (slika \ref{fig:gradientni_spust}).
+
+Problem odabira hiperparametara proizlazi iz činjenice da u generalno praksi nemamo definiranu funkciju koju minimiziramo (već samo skup uzoraka te funkcije) i/ili ju ne možemo jasno vizualizirati (kada radimo s funkcijama visoke dimenzionalnosti). Čak i da imamo definiranu funkciju najčešće ne znamo koju vrijednost poprima globalni optimum, a pohlepna pretraga je netraktabilna. Unatoč tome, gradijentni spust efikasno i učinkovito pronalazi optimume koji su dovoljno dobri za većinu praktičnih primjena \citep{yolo}.
 
 \subsubsection{Funkcija gubitka}
-Pri učenju umjetnih neuronskih mreža potrebno je definirati funkciju gubitka. Funkcija gubitka, za dani ulaz, uspoređuje predikciju mreže sa željenim vrijednostima te dodjeljuja magnitudu pogreške (realan broj). Funkciju gubitka potrebno je pažljivo odabrati jer ona definira što je ishod učenja te utječe na učenje svakog parametra (kao što je opisano u poglavlju \ref{sec:backprop}). Funkcija gubitka često je usko vezana uz vrstu problema koji se rješava i izlaznu funkciju posljednjeg sloja neuronske mreže.
+Pri učenju umjetnih neuronskih mreža potrebno je definirati funkciju gubitka. Funkcija gubitka, za dani ulaz, uspoređuje predikciju mreže sa željenim vrijednostima te dodjeljuje magnitudu pogreške (realan broj). Funkciju gubitka potrebno je pažljivo odabrati jer ona definira što je ishod učenja te utječe na učenje svakog parametra (kao što je opisano u poglavlju \ref{sec:backprop}). 
 
-\todo{oba imaju neg.log.izglednost, no pretpostavljaju razl. distribucije da dobiješ kvadratni ili ovaj drugi loss}
+Najčešće ne znamo definiciju funkcije gubitka na čitavoj promatranoj domeni već posjedujemo samo uzorke te funkcije u podatcima koje smo izmjerili i koje smatramo reprezentativnim. Ovdje pretpostavljamo da će neuronska mreža ostvariti svojstvo generalizacije, koje je detaljnije objašnjeno u poglavlju \ref{sec:svojstva}. Stoga se u narednim formulama koristi notacija sumiranja.
+
+Funkcija gubitka često je usko vezana uz vrstu problema koji se rješava (klasifikacija, regresija i ostali), način učenja (nadzirano, polu-nadzirano, nenadzirano, podržano) i izlaznu funkciju posljednjeg sloja neuronske mreže. U ovom radu vrši se klasifikacija nadziranim učenjem, no u nastavku se navodi i primjer funkcije gubitka za regresiju.
+
+Uobičajeno se za funkciju gubitka koristi negativna logaritamska izglednost ...
+
+\todo{oba imaju neg.log.izglednost, no pretpostavljaju razl. distribucije da dobiješ kvadratni (gauss) ili ovaj drugi loss (kategorička ilitiga Bernoullijeva)}
 
 U problemima regresije, najčešće se koristi funkcija kvadratnog gubitka koja računa odstupanje izlaza neuronske mreže od željenih vrijednosti. Uz ovaj gubitak najčešće se koristi funkcija identiteta u izlaznom sloju. Ova funkcija je brza i jednostavna
 \begin{equation}
-L(\theta) = \frac{1}{N} \sum_{(\vec{x},\vec{y})\in (X,Y)} \sum_{i}^{|\vec{y}|} (f(\vec{x};\theta)_i - \vec{y}_i)^2
+\label{eq:loss_regression}
+L(\theta) = \expect_{(\vec{x},\vec{y})\in (X,Y)???} \sum_{i}^{|\vec{y}|} (f(\vec{x};\theta)_i - \vec{y}_i)^2
 \end{equation}
 
 U problemima klasifikacije, koristi se funkcija negativne logaritamske izglednosti. 
 \begin{equation}
+\label{eq:loss_classification}
 L(\theta) = -\expect ...
 \end{equation}
+
+\todo{prebaci očekivanja u SGD, ovdje spomeni samo fje gubitka}
 
 \subsubsection{Optimizacija širenjem unatrag}
 \label{sec:backprop}
@@ -184,17 +199,22 @@ Funkcija gubitka opisuje pogrešku čitave mreže te ovisi o svakom ugodljivom p
 \theta^* = argmin_\theta L(x,y; \theta), \quad \forall (x,y) \in (X,Y)
 \end{equation}
 
-S obzirom da se mreža sastoji od ulančanih nelinearnih neurona s parametrima, gubitak moramo proslijediti sekvencijalno širenjem unazad (prema ulazima u mrežu). Pri tome koristi se pravilo ulančavanja parcijalne derivacije kompozicije funkcija.
+Optimiranje gradijentnim spustom zahtjeva derivabilnost funkcije koju optimiziramo po ulazima, što izrazi \eqref{eq:loss_regression} i \eqref{eq:loss_classification} zadovoljavaju. Pri tome koristi se pravilo ulančavanja parcijalne derivacije kompozicije funkcija.
 \begin{equation}
 \dfrac{}{x} f(g(x)) = \pfrac{f(g(x))}{g(x)} \cdot \pfrac{g(x)}{x}
 \end{equation}
 
-Pojedini neuron je parametrizirana funkcija i može se prikazati grafom. Vidimo da se ulazni gradijent prolaskom kroz neuron širi na ostale elemente i na ulaze neurona koji vode do prethodnih neurona. Primijetimo i da se širi u suprotnom smjeru od podatkovnog toka. Iz toga proizlazi naziv "\textit{širenjem unazad}".
+Derivacijom funkcije gubitka za regresiju \eqref{eq:loss_regression} po ulazima, uz pretpostavku derivabilnosti čitave neuronske mreže po ulazima, dobivamo sljedeći izraz:
+\begin{equation}
+tODO
+\end{equation}
+
+S obzirom da se mreža sastoji od ulančanih nelinearnih neurona s parametrima, gradijent gubitka moramo proslijediti sekvencijalno širenjem unazad (prema ulazima u mrežu). Pojedini neuron možemo smatrati parametriziranom funkcijom koju je moguće prikazati grafom \ref{fig:neuron_grad}. Vidimo da se ulazni gradijent prolaskom kroz neuron širi na ostale elemente i na ulaze neurona koji vode do prethodnih neurona. Primijetimo i da se širi u suprotnom smjeru od toka podataka. Iz toga proizlazi naziv "\textit{širenjem unazad}" \engl{backpropagation}.
 
 \todoimg{neuron kao graf + tok gradijenata}
 \label{fig:neuron_grad}
 
-Želimo li učiti mrežu gradijentnim spustom, svaki parametar mreže treba imati pristup gradijentu. S obzirom da je neuron parametrizirana funkcija, kojom ulančavanjem gradimo mrežu, dovoljno je pokazati da pojedini neuron osigurava svojim parametrima pristup gradijentu te da gradijent šalje svojim prethodnicima s kojima je povezan. Na slici \ref{fig:neuron_grad} vidimo da je to ostvarivo, što dokazuju i formule:
+Želimo li učiti mrežu gradijentnim spustom, svaki parametar mreže treba imati pristup gradijentu funkcije gubitka. S obzirom da je neuron parametrizirana funkcija, pomoću koje ulančavanjem gradimo mrežu, dovoljno je pokazati da pojedini neuron osigurava svojim parametrima pristup gradijentu te da gradijent šalje svojim prethodnicima s kojima je povezan. Na slici \ref{fig:neuron_grad} vidimo da je to ostvarivo, što dokazuju i izrazi:
 \begin{align}
 \begin{split}
 \pfrac{L(x,y;\theta)}{s(x;w)} &= \pfrac{L(x,y;\theta)}{o(x;w)} \cdot \pfrac{o(x;w)}{s(x;w)} \\
@@ -225,11 +245,18 @@ Pojedini neuron je parametrizirana funkcija i može se prikazati grafom. Vidimo 
 
 \subsubsection{Stohastički gradijentni spust}
 
+\todo{ne možemo čitav ds odjednom jer je prevelik}
+\todo{ne možemo stohastički jer je prešumovito, a i skupo na gpu}
+\todo{all hail the mini-batch, aproksimacija taman šumovita da pomaže, spomeni usrednjavanje gradijenta po batchu}
+\todo{može i sampliranjem, ali ako imamo dataset kako znamo koliko koje semplirat -> bolje po epohama}
+\todo{algoritam SGD}
+
 \subsubsection{Optimizator}
-Gradijentni spust (algoritam \ref{alg:grad_spust}) 
+U prethodnim poglavljima opisan je postupak stohastičkog gradijentnog spusta i definicije gradijenta po parametrima, koji su potrebni za ispravno računanje
 
 \todo{uporaba momenta i momenta na kvadrat (interpretacija)}
 \todo{Adam}
+\todo{smanjivanje stope učenja}
 
 \subsubsection{Inicijalizacija parametara}
 Inicijalizacija parametara mreže je sinonim za odabir početne točke pri gradijentnom spustu.
@@ -241,20 +268,43 @@ Inicijalizacija parametara mreže je sinonim za odabir početne točke pri gradi
 \todo{geometrijski opis deciziske granice}
 \todo{podnaučena, generalizira, prenaučena}
 \todoimg{podnaučena, generalizira, prenaučena}
+
+\paragraph{Regularizacija parametara}
 \todo{L1}
 \todo{L2}
-\todo{Spomeni pokoju još}
+\todo{Spomeni pokoju još (adversarial iz Hintona, one za style transfer, ...)}
+
+\paragraph{Regularizacija šumom}
+\todo{inherentno zbog šumovitih ulaznih podataka}
+\todo{može povećati dataset}
+
+\subsubsection{Odabir hiperparametara}
+\todo{nepristranost}
+\todo{pretraživanje po rešetci}
 
 \subsection{Svojstva}
-\todo{kompresija}
-\todo{generalizacija}
+\label{sec:svojstva}
+
+\subsubsection{Univerzalna aproksimacija}
 \todo{univerzalna aproksimacija}
+\todo{VC dimenzija}
+\todo{proizvoljna složenost}
+Metoda optimizacije širenjem unazad nam omogućava izgradnju neuronskih mreža proizvoljne složenosti i raznovrsnih arhitektura \citep{alexnet,resnet,densenet}.
+
+\subsubsection{Kompresija}
+\todo{kompresija}
+
+\subsubsection{Generalizacija}
+\todo{generalizacija}
+Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu (npr. automobil) postoji neprebrojivo mogućih slika s različitim modelom, bojom ili kutom gledanja automobila. No mi raspolažemo sa svega nekoliko stotina tisuća uzoraka koje smatramo reprezentativnim za tu klasu i želimo izgraditi klasifikator koji je robustan na većinu perturbacija slike.
 
 \subsection{Problemi}
+\subsubsection{Odabir hiperparametara}
 \todo{Problem odabira arhitekture, aktivacijske funkcije i hiperparametara}
-\todo{Problem pretreniranosti + neprijateljski primjeri}
-
 Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov odabir značajno utjeće na performanse neuronske mreže. Učenje 
+
+\subsubsection{Pretreniranost i neprijateljski primjeri}
+\todo{Problem pretreniranosti + neprijateljski primjeri}
 
 Derivabilne neuronske mreže optimiziraju se optimizatorom koji određuje kako se mijenjaju parametri. Za ugađanje parametara najčešće se koristi gradijentni spust, uz pretpostavku derivabilnosti čitave neuronske mreže. Kada pretpostavka ne vrijedi najčešće se koriste evolucijski algoritmi.
 
@@ -269,10 +319,18 @@ Derivabilne neuronske mreže optimiziraju se optimizatorom koji određuje kako s
 
 \todo{Dokaz da cijela mreža postaje linearna}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Ispravljena linearna jedinica (ReLU)}
 \engl{Rectified linear unit}
 
 \todo{bez i sa cutoff}
+\todo{mrtvi neuroni}
+\todo{i dalje nije loša}
+
+\todoimg{}
 
 \begin{equation}
 \begin{split}
@@ -292,8 +350,14 @@ f'(x) =
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Propusna ispravljena linearna jedinica (LReLU)}
 \engl{Leaky ReLU}
+
+\todoimg{}
 
 \begin{equation}
 \begin{split}
@@ -313,8 +377,14 @@ f'(x) =
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Ispravljena linearna jedinica s pragom (ThReLU)}
 \engl{Thresholded ReLU}
+
+\todoimg{}
 
 \begin{equation}
 \begin{split}
@@ -334,11 +404,23 @@ f'(x) =
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{(RReLU)}
 \engl{Randomized leaky ReLU}
 
+\todoimg{}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Eksponencijalno-linearna jedinica (ELU)}
 \engl{Exponential linear unit}
+
+\todoimg{}
 
 \begin{equation}
 \begin{split}
@@ -358,8 +440,14 @@ f'(x) =
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Skalirana eksponencijalno-linearna jedinica (SELU)}
 \engl{Scaled exponential linear unit}
+
+\todoimg{}
 
 \begin{equation}
 \begin{split}
@@ -379,11 +467,23 @@ f'(x) = \lambda
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{(GELU)}
 \engl{Gaussian error linear unit}
 
+\todoimg{}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Sigmoida ($\sigma $)}
 \engl{Sigmoid}
+
+\todoimg{}
 
 \begin{equation}
 \begin{split}
@@ -395,8 +495,14 @@ f'(x) = \sigma(x)(1-\sigma(x))
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Tvrda sigmoida}
 \engl{Hard sigmoid}
+
+\todoimg{}
 
 \begin{equation}
 \begin{split}
@@ -412,7 +518,14 @@ f'(x) =
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Swish}
+
+\todoimg{}
+
 \begin{equation}
 \begin{split}
 f(x) = x \sigma(\beta x)
@@ -424,7 +537,13 @@ f'(x) &= \sigma(\beta x) + \beta x \cdot \sigma(\beta x)(1-\sigma(\beta x)) \\
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Tangens hiperbolni (tanh)}
+
+\todoimg{}
 
 \begin{equation}
 \begin{split}
@@ -436,8 +555,14 @@ f'(x) = 1 - tanh^2(x)
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Tvrdi tangens hiperbolni}
 \engl{Hard tanh}
+
+\todoimg{}
 
 \begin{equation}
 \begin{split}
@@ -459,10 +584,20 @@ f'(x) =
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Racionalna aproksimacija tanh}
 \engl{Rational tanh}
 
 \todo{DL4J ima bug u derivaciji ove fje}
+
+\todoimg{}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
 
 \begin{equation}
 f(x) = 1.7159 \cdot tanh(\frac{2}{3}x)\text{,\quad gdje }
@@ -470,10 +605,23 @@ tanh(x) \approx sgn(x)(1 - \frac{1}{1 + |x| + x^2 + 1.41645 \cdot x^4}) \\
 f'(x) =
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Ispravljeni tanh}
 \engl{Rectified tanh}
 
+\todoimg{}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Softmax}
+
+\todoimg{}
+
 \begin{equation}
 \begin{split}
 f(\vec{x}) = \frac{e^{\vec{x}}}{\sum_ie^{\vec{x_i}}}
@@ -484,7 +632,14 @@ f'(x) = \frac{e^x}{1+e^x}
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Softplus}
+
+\todoimg{}
+
 \begin{equation}
 \begin{split}
 f(x) = log(1+e^x)
@@ -495,7 +650,14 @@ f'(x) = \frac{e^x}{1+e^x}
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Softsign}
+
+\todoimg{}
+
 \begin{equation}
 \begin{split}
 f(x) = \frac{x}{1+|x|}
@@ -506,7 +668,14 @@ f'(x) = \frac{1}{(1+|x|)^2}
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Sinus (sin)}
+
+\todoimg{}
+
 \begin{equation}
 \begin{split}
 f(x) = sin(x)
@@ -517,7 +686,14 @@ f'(x) = cos(x)
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Kosinus (cos)}
+
+\todoimg{}
+
 \begin{equation}
 \begin{split}
 f(x) = cos(x)
@@ -528,7 +704,14 @@ f'(x) = -sin(x)
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Parabola $x^2$}
+
+\todoimg{}
+
 \begin{equation}
 \begin{split}
 f(x) = x^2
@@ -539,7 +722,14 @@ f'(x) = 2x
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Kubna parabola $x^3$}
+
+\todoimg{}
+
 \begin{equation}
 \begin{split}
 f(x) = x^3
@@ -550,7 +740,14 @@ f'(x) = 3x^2
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Gauss}
+
+\todoimg{}
+
 \begin{equation}
 \begin{split}
 f(x) = e^{-x^2}
@@ -561,56 +758,149 @@ f'(x) = -2x \cdot f(x)
 \end{split}
 \end{equation}
 
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
+%--------------------------------------------------------------------------------------%
 \chapter{Optimizacija simboličkom regresijom (tehnički genetskim programiranjem...)}
 
 \section{Simbolička regresija}
-* Opis i svojstva SR
-* Utjecaj i brojnost parametara u GA (moš linkat i svoj završni rad :P)
+\todo{Opis i svojstva SR}
+\todo{Utjecaj i brojnost parametara u GA (moš linkat i svoj završni rad :P)}
 
 \section{Taboo evolucijski algoritam}
-* Problem konvergencije i stohastičnosti GP-a
-* EA oplemenjen taboo listom iz algoritma Taboo pretraživanja
+\todo{Problem konvergencije i stohastičnosti GP-a}
+\todo{EA oplemenjen taboo listom iz algoritma Taboo pretraživanja}
 
-\section{Korišteni čvorovi i operatori (prostor pretraživanja)}
-* Popis čvorova
-* Popis operatora (un/bin)
+\section{Korišteni čvorovi (prostor pretraživanja)}
+U nastavku je dan popis čvorova koji ujedno definiraju prostor pretraživanja.
 
+\begin{table}
+\begin{tabular}[t]{lr}
+\begin{tabular}[t]{l|c|r}
+\textbf{Naziv} & \textbf{Funkcija} & \textbf{Broj ulaza} \\
+\hline
+x		& $x$					& 0 \\
+const	& $c \in \realnum$		& 0 \\
+\hline
++		& $x + y$				& 2 \\
+-		& $x - y$				& 2 \\
+*		& $x \cdot y$			& 2 \\
+/		& $\frac{x}{y + 1e-12}$	& 2 \\
+\hline
+min		& $min(x, y)$			& 2 \\
+max		& $max(x, y)$			& 2 \\
+abs		& $|x|$					& 1 \\
+\hline
+sin		& $sin(x)$				& 1 \\
+cos		& $cos(x)$				& 1 \\
+tan		& $tan(x)$				& 1 \\
+\hline
+exp		& $e^x$					& 1 \\
+log		& $log_e(x)$				& 1 \\
+pow2		& $x^2$					& 1 \\
+pow3		& $x^3$					& 1 \\
+pow		& $x^y$					& 2 \\
+\end{tabular}
+& \quad
+\begin{tabular}[t]{l|c|r}
+\textbf{Naziv} & \textbf{Funkcija} & \textbf{Broj ulaza} \\
+\hline
+elu		& $ELU(x)$				& 1 \\
+gauss	& $e^{x^2}$				& 1 \\
+lrelu	& $LReLU(x)$				& 1 \\
+relu		& $ReLU(x)$				& 1 \\
+selu		& $SELU(x)$				& 1 \\
+sigmoid	& $\frac{1}{1+e^{-x}}$	& 1 \\
+softmax	& $Softmax(x)$			& 1 \\
+sotplus	& $Softplus(x)$			& 1 \\
+softsign	& $Softsign(x)$			& 1 \\
+swish	& $Swish(x)$				& 1 \\
+tanh		& $tanh(x)$				& 1 \\
+\end{tabular}
+\end{tabular}
+\caption{Popis korištenih čvorova}
+\end{table}
+
+%--------------------------------------------------------------------------------------%
 \chapter{Implementacija}
-???
+\section{Razvojna okolina i alati}
+\todo{tulavi DL4J}
+\todo{IntelliJ <3 <3 <3}
+\todo{funkcije iscrtavam u jn}
 
+\section{Parametri}
+\todo{da, možeš definirat parametre u datoteki}
+\todo{dodavanje parametara}
+\todo{grid search mehanizam}
+
+\section{Evolucijski algoritmi}
+\todo{in-house EA okolina}
+\todo{glavne komponente koda}
+\todoimg{IntelliJ generirna UML paketa genetics}
+
+\section{Neuronske mreže}
+\todo{glavne komponente}
+\todo{automatizirana pohrana rezultata}
+\todoimg{IntelliJ generirna UML paketa neurology}
+
+\section{Paralelizacija}
+\todo{workarbiter <3}
+\todo{sinkronizacija u GA i pomoćne klase/metode}
+
+\section{Loggovi}
+\todo{kaj sve imaš i kak se koristi}
+
+%--------------------------------------------------------------------------------------%
 \chapter{Rezultati}
 
 \section{9class}
 
 \subsection{Uobičajene izlazne funkcije}
-* Opis postupka pretrage
-* Tablica
-* Komentar
+\todo{Opis postupka pretrage}
+\todo{Tablica}
+\todo{Komentar}
 
 \subsection{Utjecaj parametra veličine taboo liste}
-* Tablica
-* Komentar
+\todo{Tablica}
+\todo{Komentar}
 
 \section{256class}
 
 \subsection{Uobičajene izlazne funkcije}
-* Opis postupka pretrage
-* Tablica
-* Komentar
+\todo{Opis postupka pretrage}
+\todo{Tablica}
+\todo{Komentar}
 
 \subsection{Utjecaj parametra veličine taboo liste}
-* Tablica
-* Komentar
+\todo{Tablica}
+\todo{Komentar}
 
+%--------------------------------------------------------------------------------------%
+\chapter{Stvari koje sam probao, ali nisu ispale korisne}
+\subsubsection{Učeći parametri}
+\todo{dokaz da na korištene funkcije nema utjecaja (stopi se s težinama ili biasom)}
+\todo{pokazati primjer fje gdje bi se mogao koristiti}
+
+\subsubsection{Dropout}
+\todo{zahtjeva previše iteracija, što nije baš korisno u EA okruženju}
+\todo{probati maxout?}
+
+\subsubsection{Tensorflow Java API}
+\todo{probo, ali je još u razvoju (puno toga je falilo)}
+
+%--------------------------------------------------------------------------------------%
 \chapter{Buduća istraživanja}
-* Primjena CNN na vremenskim uzorcima po uzoru na onaj rad
-* Ispitivanje učinkovitosti korištene optimizacije na ostalim problemima
-* Paralelna evolucija arhitekture i aktivacijskih fja
+\todo{Primjena CNN na vremenskim uzorcima po uzoru na onaj rad}
+\todo{Ispitivanje učinkovitosti korištene optimizacije na ostalim problemima}
+\todo{Paralelna evolucija arhitekture i aktivacijskih fja}
 
+%--------------------------------------------------------------------------------------%
 \chapter{Zaključak}
-* Radi/Ne radi. 
-* Pronađene zanimljivosti. 
-* Pouka za doma.
+\todo{Radi/Ne radi}
+\todo{Pronađene zanimljivosti}
+\todo{Pouka za doma}
 
 \bibliography{literatura}
 \bibliographystyle{fer}
