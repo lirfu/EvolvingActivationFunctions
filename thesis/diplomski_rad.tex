@@ -4,6 +4,9 @@
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage[]{algorithm2e}
+\usepackage{bbm}
+\usepackage{multirow}
+\usepackage{float}
 
 \graphicspath{ {./img/} }
 
@@ -13,11 +16,12 @@
 \def\realnum{\mathbb{R}}
 \def\pfrac#1#2{\frac{\partial #1}{\partial #2}}
 \def\dfrac#1#2{\frac{d #1}{d #2}}
+\def\F1{F$_1$}
 
 % TODO notes
 \def\TODO#1{\noindent\textcolor{red}{TODO: \textit{#1}}\newline}
 \def\todo#1{\TODO{#1}}
-\def\todoimg#1{\begin{center} \textcolor{red}{IMAGE: \textit{#1}} \end{center}}
+\def\todoimg#1{\begin{center} \textcolor{red}{\big[ IMAGE: \textit{#1} \big]} \end{center}}
 
 \begin{document}
 
@@ -120,6 +124,7 @@ f(\mat{X};\mat{W})=\mat{X} \circledast \mat{W}
 Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno kažemo da mreža 'uči'. Optimizaciju parametara najčešće izvodimo gradijentnim spustom, uz pretpostavku derivabilnosti svih komponenata neuronske mreže. Kada ta pretpostavka ne vrijedi koriste se algoritmi kombinatorne optimizacije poput evolucijskih algoritama. U ovom radu optimizacija se vrši gradijentnim spustom.
 
 \subsubsection{Gradijentni spust}
+\label{sec:gradijentni_spust}
 
 \todoimg{gradijentni spust unimodalna vs višemodalna (gdje preskoći brdo i uleti u bolji optimum)}
 \label{fig:gradientni_spust}
@@ -165,10 +170,10 @@ Problem se javlja ako algoritam "odluta" u visoravan na kojoj su gradijenti vrlo
 
 Algoritam je primijenjiv na funkcije proizvoljne dimenzionalnosti uz pretpostavku derivabilnosti u svakoj točki. Za proizvoljnu realnu funkciju, uz dobro odabrane hiperparametre, algoritam će konvergirati u jedan od lokalnih optimuma, no algoritam generalno nema garanciju konvergencije u globalni optimum. Garanciju pronalaska globalnog optimuma nudi jedino za trivijalne unimodalne funkcije uz odgovarajuće hiperparametre algoritma (slika \ref{fig:gradientni_spust}).
 
-Problem odabira hiperparametara proizlazi iz činjenice da u generalno praksi nemamo definiranu funkciju koju minimiziramo (već samo skup uzoraka te funkcije) i/ili ju ne možemo jasno vizualizirati (kada radimo s funkcijama visoke dimenzionalnosti). Čak i da imamo definiranu funkciju najčešće ne znamo koju vrijednost poprima globalni optimum, a pohlepna pretraga je netraktabilna. Unatoč tome, gradijentni spust efikasno i učinkovito pronalazi optimume koji su dovoljno dobri za većinu praktičnih primjena \citep{yolo}.
+Problem odabira hiperparametara proizlazi iz činjenice da u generalno praksi nemamo definiranu funkciju koju minimiziramo (već samo skup primjera te funkcije) i/ili ju ne možemo jasno vizualizirati (kada radimo s funkcijama visoke dimenzionalnosti). Čak i da imamo definiranu funkciju najčešće ne znamo koju vrijednost poprima globalni optimum, a pohlepna pretraga je netraktabilna. Unatoč tome, gradijentni spust efikasno i učinkovito pronalazi optimume koji su dovoljno dobri za većinu praktičnih primjena \citep{yolo}.
 
 \subsubsection{Funkcija gubitka}
-Pri učenju umjetnih neuronskih mreža potrebno je definirati funkciju gubitka. Funkcija gubitka, za dani ulaz, uspoređuje predikciju mreže sa željenim vrijednostima te dodjeljuje magnitudu pogreške (realan broj). Funkciju gubitka potrebno je pažljivo odabrati jer ona definira što je ishod učenja te utječe na učenje svakog parametra (kao što je opisano u poglavlju \ref{sec:backprop}). 
+Pri učenju umjetnih neuronskih mreža potrebno je definirati funkciju gubitka. Funkcija gubitka, za dani ulaz, uspoređuje predikciju mreže sa željenim vrijednostima te dodjeljuje iznos pogreške (realan broj). Potrebno je pažljivo odabrati funkciju gubitka jer utječe na učenje svakog parametra (kao što je opisano u poglavlju \ref{sec:backprop}) te definira što je ishod učenja. 
 
 Najčešće ne znamo definiciju funkcije gubitka na čitavoj promatranoj domeni već posjedujemo samo uzorke te funkcije u podatcima koje smo izmjerili i koje smatramo reprezentativnim. Ovdje pretpostavljamo da će neuronska mreža ostvariti svojstvo generalizacije, koje je detaljnije objašnjeno u poglavlju \ref{sec:svojstva}. Stoga se u narednim formulama koristi notacija sumiranja.
 
@@ -258,13 +263,21 @@ U prethodnim poglavljima opisan je postupak stohastičkog gradijentnog spusta i 
 \todo{Adam}
 \todo{smanjivanje stope učenja}
 
+\subsubsection{Promijenjiva stopa učenja}
+\todo{zbog nekonveksnih izbočina tam dolje, stopa može biti prejaka}
+\todoimg{konveksasta fja u kojoj skok u višljim regijama stvara manje problema od skokova u nižim}
+
+\todo{koristim step reduction}
+\todo{postoji množenje faktorom pri detekciji konvergencije, ali ne želim ga jer ne znam kada konvergira (stepeničasto učenje)}
+
 \subsubsection{Inicijalizacija parametara}
 Inicijalizacija parametara mreže je sinonim za odabir početne točke pri gradijentnom spustu.
 
 \todo{važnost dobre inicijalizacije}
 \todo{Xavier}
 
-\subsubsection{Regularizacija}
+\subsection{Regularizacija}
+\label{sec:regularizacija}
 \todo{geometrijski opis deciziske granice}
 \todo{podnaučena, generalizira, prenaučena}
 \todoimg{podnaučena, generalizira, prenaučena}
@@ -278,30 +291,132 @@ Inicijalizacija parametara mreže je sinonim za odabir početne točke pri gradi
 \todo{inherentno zbog šumovitih ulaznih podataka}
 \todo{može povećati dataset}
 
-\subsubsection{Odabir hiperparametara}
-\todo{nepristranost}
-\todo{pretraživanje po rešetci}
+\subsection{Odabir hiperparametara}
+Do ovdje su navedeni hiperparametri koji se koriste pri spomenutim tehnikama optimizacije neuronske mreže (poglavlja \ref{sec:gradijentni_spust} - \ref{sec:regularizacija}). No neuronska mreža ima i strukturalne hiperparametre.
+
+Arhitektura mreže je vrlo bitan hiperparametar koji određuje složenost modela te utječe na brzinu inferencije i učenja modela. Razvijene su razne arhitekture koje koriste preskočne veze za postizanje vrlo dubokih arhitektura \citep{resnet, densenet}. Preskočne veze omogućavaju direktniji prijenos gradijenta što pomaže kod problema iščezavajućeg gradijenta u dubokim mrežama (poglavlje \ref{sec:iscezavajuci_grad}). Arhitektura može omogućiti dodatnu paralelizaciju inferencije i učenja tako da se teške operacije raspodijele na više uređaja, a rezultati spoje samo kada je to nužno \citep{alexnet}.
+
+\todo{Izlazne funkcije}
+
+\subsubsection{Procjena generalizacije i odabir modela}
+Skup podataka kojim učimo model najčešće ne opisuje stvarnu funkciju potpuno, već sadrži primjere koje smatramo reprezentativnim i koji su dovoljni za njeno modeliranje. Kako bismo procjenili koliko dobro naš model procjenjuje stvarnu funkciju ispitujemo model na podatcima koji nisu korišteni prilikom učenja, odnosno na neviđenim podatcima. Ta se metoda zove \textbf{unakrsna validacija}, a skupove nazivamo \textbf{skupom za učenje} i \textbf{skupom za testiranje}. Dakako, važno je pobrinuti se da su oba skupa reprezentativna stvarnoj funkciji, ali da ne sadrže iste primjere. U suprotnom mreža će naučiti pogrešnu funkciju što može dati lažno pesimistične rezultate ili ćemo nepotpuno ili pristrano testirati što može dovesti do lažno optimističnih rezultata.
+
+Svojstvo modela da dobro modelira na neviđenim primjerima naziva se generalizacija i detaljnije je opisano u poglavlju \ref{sec:generalizacija}. Pri odabiru hiperparametara ili pri odabiru modela potrebno je usporediti generalizaciju svakog pomoću zajedničke mjere. U problemima regresije najčešće se koristi ukupna vrijednost funkcije gubitka na čitavom skupu za testiranje.
+
+\begin{equation}
+\label{eq:mat_zabune_bin}
+\begin{tabular}{|c|c|c|} \hline
+\large{$_{\hat{y}} \setminus ^y$} & $\top$ & $\bot$ \\ \hline
+$\top$	& TP & FP \\ \hline
+$\bot$	& FN & TN \\ \hline
+\end{tabular}
+\end{equation}
+
+Pri \textbf{binarnoj klasifikaciji} definiramo \textbf{matricu zabune} \eqref{eq:mat_zabune_bin} koja sadrži četiri elementa \eqref{eq:true_groups} koji definiraju vrstu pogodka i pogreške.
+\begin{align}
+\label{eq:true_groups}
+\begin{split}
+\text{Stvarno pozitivni:} \quad TP &= \sum_{(x,y)\in\mathbb{D}} \mathbbm{1} \{h(x) = \top \wedge y = \top \} \\
+\text{Stvarno negativni:} \quad TN &= \sum_{(x,y)\in\mathbb{D}} \mathbbm{1} \{h(x) = \bot \wedge y = \bot \} \\
+\text{Lažno pozitivni:}   \quad FP &= \sum_{(x,y)\in\mathbb{D}} \mathbbm{1} \{h(x) = \top \wedge y = \bot \} \\
+\text{Lažno negativni:}   \quad FN &= \sum_{(x,y)\in\mathbb{D}} \mathbbm{1} \{h(x) = \bot \wedge y = \top \}
+\end{split}
+\end{align}
+
+Iz tih skupova tada gradimo složenije mjere. \textbf{Točnost} je mjera kojom iskazujemo postotak točno pogođenih primjera:
+\begin{equation}
+Acc = \frac{TP+TN}{TP+TN+FP+FN}
+\end{equation}
+
+Točnost je dobra mjera, no samo ako je brojnost klasa u podatkovnom skupu balansiran. Ako je brojnost jedne klase puno veća od druge tada će trivijalan klasifikator, koji sve primjere klasificira u tu klasu, davati veliku točnost i razlika naspram ispravnijeg klasifikatora biti će nezamjetna. Stoga se kod nebalansiranih setova češće koristi \textbf{\F1 mjera}, koja uzima u obzir \textbf{preciznost} klasifikatora u razlikovanju pozitivnih primjera od negativnih \eqref{eq:precision} i njegov \textbf{odziv} odnosno obuhvat svih pozitivnih primjera testnog skupa \eqref{eq:recall}. \F1 mjera je definirana kao hamonijska sredina između preciznosti i odziva \eqref{eq:f_measure}. Postoji i generalizirana mjera F$_\beta$ koja dodjeljuje veću težinu preciznosti ili odzivu \eqref{eq:f_beta}, no u ovom radu koristi se samo \F1 koja pridijeljuje jednaku težinu. Harmonijska sredina se koristi jer je najstroža između Pitagorinih mjera za sredinu kao što prokazuje slika \ref{fig:sredine}.
+\begin{align}
+\text{Preciznost:} \quad P &= \frac{TP}{TP+FP} \label{eq:precision} \\
+\text{Odziv:} \quad R &= \frac{TP}{TP+FN} \label{eq:recall} \\
+\text{F}_1: \quad F_1 &= 2 \cdot \frac{P \cdot R}{P + R} \label{eq:f_measure} \\
+\text{F}_\beta: \quad F_\beta &= (1 + \beta^2) \cdot \frac{P \cdot R}{\beta ^2 \cdot P + R} \label{eq:f_beta}
+\end{align}
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{Pitagorine_sredine.pdf}
+\centering
+\caption{Pitagorine mjere za sredinu između dviju vrijednosti}
+\label{fig:sredine}
+\end{figure}
+
+Mjere binarne klasifikacije možemo primijeniti pri \textbf{višeklasnoj klasifikaciji}, no matrica zabune je dimenzija $C\times C$ gdje je $C$ broj klasa. Elementi matrice računaju se slično kao i kod binarne klasifikacije, ali za svaku klasu posebno.
+\begin{align}
+\label{eq:true_groups}
+\begin{split}
+\text{Stvarno pozitivni:} \quad TP_i &= \sum_{(x,y)\in\mathbb{D}} \mathbbm{1} \{h(x) =  C_i \wedge y = C_i \} \\
+\text{Stvarno negativni:} \quad TN_i &= \sum_{(x,y)\in\mathbb{D}} \mathbbm{1} \{h(x) \neq C_i \wedge y \neq C_i \} \\
+\text{Lažno pozitivni:} \quad FP_i &= \sum_{(x,y)\in\mathbb{D}} \mathbbm{1} \{h(x) = C_i \wedge y \neq C_i \} \\
+\text{Lažno negativni:} \quad FN_i &= \sum_{(x,y)\in\mathbb{D}} \mathbbm{1} \{h(x) \neq C_i \wedge y = C_i \}
+\end{split}
+\end{align}
+
+Za izračun složenijih mjera poput točnosti i \F1 mjere moramo računati prosjek po klasama. Razlikujemo dva pristupa računanju prosjeka: makro i mikro. \textbf{Makro prosjekom} se prvo izračunaju mjere svake klase naspram svih ostalih te se uzme njihov prosjek. Ova mjera pretpostavlja jednak utjecaj svih klasa nez obzira na njihovu veličinu \citep{ml_probabilistic}.
+\begin{equation}
+\begin{split}
+Acc^M = \sum_{i=1}^K \frac{Acc_i}{K}
+\end{split} \quad
+\begin{split}
+P^M = \sum_{i=1}^K \frac{P_i}{K}
+\end{split} \quad
+\begin{split}
+R^M = \sum_{i=1}^K \frac{R_i}{K}
+\end{split} \quad
+\begin{split}
+F_1^M = \sum_{i=1}^K \frac{F_{1;i}}{K}
+\end{split}
+\end{equation}
+
+\textbf{Mikro prosjekom} se prvo zbroje matrice zabune po pojedinim klasama, a zatim se nad zbrojenom matricom računaju mjere. Na mikro prosjek više utječe veličina klasa i koristi se u nebalansiranim skupovima.
+
+\begin{align}
+\begin{split}
+Acc^\mu &= \frac{\sum_i (TP_i+TN_i)}{\sum_i (TP_i+TN_i+FP_i+FN_i)} = Acc^M \\
+FP = FN \implies P^\mu &= R^\mu = F_1^\mu = \frac{\sum_i TP_i}{\sum_i (TP_i+FP_i)}
+\end{split}
+\end{align}
+
+\subsubsection{Pretraživanje po rešetci}
+Najjednostavniji način za pretraživanje hiperparametara je pretraživanje po rešetci. Za svaki hiperparametar koji optimiziramo definiramo vrijednosti koje želimo ispitati. Algoritam tada evaluira dani model za svaku kombinaciju hiperparametara i vraća kombinaciju ili model koji ostvaruje najbolje rezultate.
+
+Iako se optimalni hipermarametri mogu nalaziti izvan zadanih skupova i neće biti pronađeni, postupak je brz i daje dovoljno dobre rezultate za praktičnu primjenu. Često je dovoljno da pronađe kombinaciju hiperparametara za koju model ne divergira niti prestaje učiti određen broj iteracija.
 
 \subsection{Svojstva}
 \label{sec:svojstva}
 
 \subsubsection{Univerzalna aproksimacija}
-\todo{univerzalna aproksimacija}
+Teorem univerzalne aproksimacije tvrdi da unaprijedna neuronska mreža može modelirati proizvoljnu Borel mjerljivu funkcju proizvoljno dobro uz nekoliko uvijeta: mora imati linearni izlaz, barem jedan nelinearni skriveni sloj koji koristi sažimajuću funkciju i "dovoljan" broj skrivenih neurona. Dakle, postoji arhitektura i postoje parametri kojima neuronska mreža može modelirati zadani podatkovni skup. No, teorem ne iskazuje kako doći do tih parametara što optimizaciju neuronske mreže čini vrlo teškom. \citep{goodfellowbook}
+
+\subsubsection{Dubina}
+Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skriveni sloj za predstavljanje proizvoljne Borel mjerljive funkcije, gornja granica veličine tog sloja je eksponencijalno velika naspram broja ulaza što je netraktabilno. Dodavanjem dubine moguće je iskoristiti pravilnosti u funkciji koju aproksimiramo kako bismo smanjili potreban broj neurona. Primjer su funkcije simetrične oko neke osi. Ako skriveni slojevi mreže vrše preklapanje te funkcije preko same sebe, uzastopnim preklapanjem dobiva se sve jednostavnija funkcija. Preklapanje mogu vršiti po-dijelovima-linearne izlazne funkcije poput ReLU i Maxout. Dakako, ne postoji garancija da stvarna funkcija zadovoljava svojstvo simetrije, no u praksi dublje mreže generaliziraju bolje \citep{alexnet, highwaynet, resnet, densenet}. Postoje i druge interpretacije utjecaja dubine, poput svojstva dekompozicije zadatka na manje cjeline ili interpretacija neuronske mreže ako računalnog programa koje nadilaze temu ovog rada \citep{goodfellowbook}.
+
 \todo{VC dimenzija}
-\todo{proizvoljna složenost}
-Metoda optimizacije širenjem unazad nam omogućava izgradnju neuronskih mreža proizvoljne složenosti i raznovrsnih arhitektura \citep{alexnet,resnet,densenet}.
 
 \subsubsection{Kompresija}
 \todo{kompresija}
+\todo{https://www.quantamagazine.org/new-theory-cracks-open-the-black-box-of-deep-learning-20170921/}
 
 \subsubsection{Generalizacija}
+\label{sec:generalizacija}
+\todoimg{underfit-fit-overfit}
 \todo{generalizacija}
-Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu (npr. automobil) postoji neprebrojivo mogućih slika s različitim modelom, bojom ili kutom gledanja automobila. No mi raspolažemo sa svega nekoliko stotina tisuća uzoraka koje smatramo reprezentativnim za tu klasu i želimo izgraditi klasifikator koji je robustan na većinu perturbacija slike.
+\todoimg{train-test U curve}
+
+Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu (npr. automobil) postoji neprebrojivo mogućih slika s različitim modelom, bojom ili kutom gledanja automobila. No mi raspolažemo sa svega nekoliko stotina tisuća primjera koje smatramo reprezentativnim za tu klasu i želimo izgraditi klasifikator koji je robustan na većinu perturbacija slike.
+
+\todo{negdje spomeni da su neuralke zapravo vrlo ograničene jer ograničavamo prostor mogućnosti zadavanjem fiksnih izlaznih fja, arhitekture i načina optimizacije (induktivna pristranost ograničavanjem skupa hipoteza). leži negdje između GP i ručno izgrađenih modela (jer je neuralka samo stablo funkcija kao u TF). CGP unosi ograničenje strukture što je bliže neuralki i daje zanimljive rezultate (atari cgp). Čini se da im godi balans između strukture i nasumičnosti.}
 
 \subsection{Problemi}
 \subsubsection{Odabir hiperparametara}
 \todo{Problem odabira arhitekture, aktivacijske funkcije i hiperparametara}
 Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov odabir značajno utjeće na performanse neuronske mreže. Učenje 
+
+\subsubsection{Isčezavajući gradijent}
+\label{sec:iscezavajuci_grad}
+\todo{Problem dubokih arhitektura}
 
 \subsubsection{Pretreniranost i neprijateljski primjeri}
 \todo{Problem pretreniranosti + neprijateljski primjeri}
@@ -310,27 +425,53 @@ Derivabilne neuronske mreže optimiziraju se optimizatorom koji određuje kako s
 
 \section{Izlazne funkcije}
 \label{sec:izlazne_fje}
+Izlazna funkcija služi unošenju nelinearnosti u neuronsku mrežu i ima utjecaj na njeno učenje. Prilikom inferencije izlazna funkcija stvara nelinearnosti u decizijskoj granici koje su parametrizirane parametrima neurona na koji se primijenjuje. U slojevitim arhitekturama izlazne funkcije se primijenjuju uzastopno s različitim parametrima i vrše nelinearne projekcije iz jedne dimenzije u drugu.
+
+Prilikom učenja neuronske mreže važan nam je utjecaj derivacije izlazne funkcije na gradijent pri širenju unatrag. Prolaskom unazad gradijent se množi s parametrima slojeva koji se mogu zapisati matricom težina $\mat{W}$. Uzastopnom primijenom matrica težina, ako su loše kondicionirane, može doći do "\textit{isćezavanja}" ili "\textit{eksplozije}" gradijenta.
+
 \todo{Bitka za odabir izlazne fje (nađi onaj rad di pljuje po sigmoidi i relu (elu rad?))}
-\todo{Usporedbe funkcije i derivacije}
-\todo{Navedene su funkcije koje su razmatrane}
+
+U nastavku su navedene izlazne funkcije koje je autor pronašao u literaturi i koje su isprobane u ovom radu. Za svaku funkciju napisana je formula i iscrtan izgled funkcije i njene derivacije te navedena neka poznata svojstva.
 
 \subsection{Funkcija identiteta}
 \engl{Identity function}
 
-\todo{Dokaz da cijela mreža postaje linearna}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Identity.pdf}
+\centering
+\caption{Funkcija identiteta i njena derivacija}
+\label{fig:identity}
+\end{figure}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+\begin{equation}
+\begin{split}
+f(x) = x
+\end{split}
+\qquad
+\begin{split}
+f'(x) = 1
+\end{split}
+\end{equation}
+
+Funkcija identiteta je jednostavna i brza, no njome neuronska mreža može naučiti samo linearne funkcije. Ako primijenimo funkciju na dva uzastopna sloja vidimo da je konačna funkcija ponovno linearna što znači da ne možemo naučiti mrežu na nelinearnim podatcima:
+\begin{align}
+\begin{split}
+f_l(x) &= w_l \cdot x + b_l \\
+f_1(f_2(x)) &= w_1 \cdot (w_2 \cdot x + b_2) + b_1 \\
+&= \underline{w_1 \cdot w_2} \cdot x + \underline{w_1 \cdot b_2 + b_1} \\
+&= w_{1,2} \cdot x + b_{1,2}
+\end{split}
+\end{align}
 
 \subsection*{Ispravljena linearna jedinica (ReLU)}
 \engl{Rectified linear unit}
 
-\todo{bez i sa cutoff}
-\todo{mrtvi neuroni}
-\todo{i dalje nije loša}
-
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{ReLU.pdf}
+\centering
+\caption{Funkcija ReLU i njena derivacija}
+\label{fig:relu}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -350,6 +491,10 @@ f'(x) =
 \end{split}
 \end{equation}
 
+\todo{bez i sa cutoff}
+\todo{mrtvi neuroni}
+\todo{i dalje nije loša}
+
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
@@ -357,7 +502,12 @@ f'(x) =
 \subsection*{Propusna ispravljena linearna jedinica (LReLU)}
 \engl{Leaky ReLU}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{LReLU.pdf}
+\centering
+\caption{Funkcija LReLU i njena derivacija za $\alpha=0.1$}
+\label{fig:lrelu}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -381,10 +531,76 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
+\subsection*{Parametrizirana ispravljena linearna jedinica (PReLU)}
+\engl{Parametric ReLU}
+
+\todoimg{}
+
+
+\begin{equation}
+\begin{split}
+f(x) &= 
+\begin{cases}
+x,			& \text{ako } x > 0 \\
+\alpha x,	& \text{inače}
+\end{cases}
+\end{split}
+\qquad
+\begin{split}
+f'(x) = 
+\begin{cases}
+1,		& \text{ako } x > 0 \\
+\alpha,	& \text{inače}
+\end{cases}
+\end{split}
+\end{equation}
+\begin{equation*}
+\alpha \text{ je učeći parametar}
+\end{equation*}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
+\subsection*{Nasumična ispravljena linearna jedinica (RReLU)}
+\engl{Randomized leaky ReLU}
+
+\todoimg{}
+
+\begin{equation}
+\begin{split}
+f(x) &= 
+\begin{cases}
+x,			& \text{ako } x > 0 \\
+\alpha x,	& \text{inače}
+\end{cases}
+\end{split}
+\qquad
+\begin{split}
+f'(x) = 
+\begin{cases}
+1,		& \text{ako } x > 0 \\
+\alpha,	& \text{inače}
+\end{cases}
+\end{split}
+\end{equation}
+\begin{equation}
+\alpha \sim U(l,u),\quad l,u \in [0,1]
+\end{equation}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Ispravljena linearna jedinica s pragom (ThReLU)}
 \engl{Thresholded ReLU}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{ThReLU.pdf}
+\centering
+\caption{Funkcija ThReLU i njena derivacija}
+\label{fig:threlu}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -408,10 +624,14 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{(RReLU)}
-\engl{Randomized leaky ReLU}
+\subsection*{(DReLU)}
+\engl{Dual ReLU}
 
 \todoimg{}
+
+\begin{equation}
+???
+\end{equation}
 
 \todo{koji problem rješava}
 \todo{svojstva}
@@ -420,7 +640,12 @@ f'(x) =
 \subsection*{Eksponencijalno-linearna jedinica (ELU)}
 \engl{Exponential linear unit}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{ELU.pdf}
+\centering
+\caption{Funkcija ELU i njena derivacija}
+\label{fig:elu}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -447,7 +672,12 @@ f'(x) =
 \subsection*{Skalirana eksponencijalno-linearna jedinica (SELU)}
 \engl{Scaled exponential linear unit}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{SELU.pdf}
+\centering
+\caption{Funkcija SELU i njena derivacija}
+\label{fig:selu}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -483,7 +713,12 @@ f'(x) = \lambda
 \subsection*{Sigmoida ($\sigma $)}
 \engl{Sigmoid}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Sigmoid.pdf}
+\centering
+\caption{Sigmoida i njena derivacija}
+\label{fig:sigmoid}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -502,7 +737,12 @@ f'(x) = \sigma(x)(1-\sigma(x))
 \subsection*{Tvrda sigmoida}
 \engl{Hard sigmoid}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Hard_sigmoid.pdf}
+\centering
+\caption{Tvrda sigmoida i njena derivacija}
+\label{fig:hard_sigmoid}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -524,7 +764,12 @@ f'(x) =
 
 \subsection*{Swish}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Swish.pdf}
+\centering
+\caption{Funkcija Swish i njena derivacija}
+\label{fig:swish}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -543,7 +788,12 @@ f'(x) &= \sigma(\beta x) + \beta x \cdot \sigma(\beta x)(1-\sigma(\beta x)) \\
 
 \subsection*{Tangens hiperbolni (tanh)}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{tanh.pdf}
+\centering
+\caption{Funkcija tanh i njena derivacija}
+\label{fig:tanh}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -562,7 +812,12 @@ f'(x) = 1 - tanh^2(x)
 \subsection*{Tvrdi tangens hiperbolni}
 \engl{Hard tanh}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Hard_tanh.pdf}
+\centering
+\caption{Tvrdi tanh i njegova derivacija}
+\label{fig:hard_tanh}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -636,6 +891,37 @@ f'(x) = \frac{e^x}{1+e^x}
 \todo{svojstva}
 \todo{problemi}
 
+\subsection*{Hierarchical softmax}
+
+\todoimg{}
+
+\begin{equation}
+???
+\end{equation}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
+
+\subsection*{Maxout}
+
+\todoimg{}
+
+\begin{equation}
+\begin{split}
+f(\vec{x}) = 
+\end{split}
+\qquad
+\begin{split}
+f'(x) = 
+\end{split}
+\end{equation}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection*{Softplus}
 
 \todoimg{}
@@ -648,6 +934,18 @@ f(x) = log(1+e^x)
 \begin{split}
 f'(x) = \frac{e^x}{1+e^x}
 \end{split}
+\end{equation}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
+\subsection*{Noisy softplus}
+
+\todoimg{}
+
+\begin{equation}
+???
 \end{equation}
 
 \todo{koji problem rješava}
@@ -866,6 +1164,8 @@ tanh		& $tanh(x)$				& 1 \\
 \todo{Tablica}
 \todo{Komentar}
 
+\todoimg{boxplot}
+
 \section{256class}
 
 \subsection{Uobičajene izlazne funkcije}
@@ -876,6 +1176,8 @@ tanh		& $tanh(x)$				& 1 \\
 \subsection{Utjecaj parametra veličine taboo liste}
 \todo{Tablica}
 \todo{Komentar}
+
+\todoimg{boxplot}
 
 %--------------------------------------------------------------------------------------%
 \chapter{Stvari koje sam probao, ali nisu ispale korisne}
@@ -911,10 +1213,9 @@ Proučiti postojeće metode u izgradnji izlaznih funkcija u umjetnim neuronskim 
 \kljucnerijeci{Ključne riječi, odvojene zarezima.}
 \end{sazetak}
 
-% TODO: Navedite naslov na engleskom jeziku.
-\engtitle{Title}
+\engtitle{Optimized output functions for classifiers based on artificial neural networks in the domain of implementation attacks on cryptographic devices}
 \begin{abstract}
-Abstract.
+Examine existing methods in building output functions in artificial neural networks. Give special attention to evolutionary algorithms of symbolic regression for constructing target functions. Apply evolved output functions in a homogeneous or heterogeneous artificial neural network on datasets DPAv2 and DPAv4 and examine quality measures of the built classifier: accuracy, precision, recall and F measures. Compare the efficiency of acquired methods with existing solutions from the literature. Alongside thesis attach source code of programs, acquired results with necessarry discussion and literature used.
 
 \keywords{Keywords.}
 \end{abstract}
