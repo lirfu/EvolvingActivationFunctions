@@ -336,7 +336,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
             }
 
             if (test_loss < best_test_loss) {  // Update best model over test loss.
-                best_epoch = i;
+                best_epoch = i + 1;
                 best_test_loss = test_loss;
                 best_net = m.clone();
             }
