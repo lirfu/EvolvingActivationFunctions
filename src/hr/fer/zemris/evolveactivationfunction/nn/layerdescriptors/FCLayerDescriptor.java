@@ -1,8 +1,7 @@
 package hr.fer.zemris.evolveactivationfunction.nn.layerdescriptors;
 
-import org.deeplearning4j.nn.conf.layers.DenseLayer;
+import hr.fer.zemris.evolveactivationfunction.nn.MyDenseLayerConf;
 import org.deeplearning4j.nn.conf.layers.Layer;
-import org.nd4j.linalg.activations.IActivation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,9 +16,8 @@ public class FCLayerDescriptor extends ALayerDescriptor {
 
     @Override
     public Layer constructLayer() {
-        return new DenseLayer.Builder()
+        return new MyDenseLayerConf.Builder()
                 .nOut(neurons_num_)
-//                .activation(activation)
                 .build();
     }
 

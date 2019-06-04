@@ -11,6 +11,7 @@ import hr.fer.zemris.utils.Stopwatch;
 import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
 import org.deeplearning4j.api.storage.StatsStorageRouter;
+import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.api.BaseTrainingListener;
 import org.deeplearning4j.ui.api.UIServer;
@@ -32,6 +33,7 @@ import org.nd4j.linalg.factory.Nd4j;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -186,7 +188,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         return new CommonModel(params_, architecture, activations);
     }
 
-    private void train_internal(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage, @NotNull DataSet train, @NotNull DataSet test) {
+    private void train_internal(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage, @NotNull DataSet train) {
         MultiLayerNetwork m = ((CommonModel) model).getModel();
         m.init();
         final Stopwatch timer = new Stopwatch();
@@ -235,7 +237,15 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 
     @Override
     public void train(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
-        train_internal(model, log, stats_storage, train_set_, validation_set_ != null ? validation_set_ : test_set_);
+        train_internal(model, log, stats_storage, train_set_);
+    }
+
+    private DataSet construct_joined_dataset() {
+        LinkedList<DataSet> dss = new LinkedList<>();
+        dss.add(train_set_);
+        if (validation_set_ != null)
+            dss.add(validation_set_);
+        return DataSet.merge(dss);
     }
 
     /**
@@ -243,12 +253,8 @@ public class TrainProcedureDL4J implements ITrainProcedure {
      */
     @Override
     public void train_joined(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage) {
-        LinkedList<DataSet> dss = new LinkedList<>();
-        dss.add(train_set_);
-        if (validation_set_ != null)
-            dss.add(validation_set_);
-        DataSet joined_ds = DataSet.merge(dss);
-        train_internal(model, log, stats_storage, joined_ds, test_set_);
+        DataSet joined_ds = construct_joined_dataset();
+        train_internal(model, log, stats_storage, joined_ds);
     }
 
     /**
@@ -445,6 +451,55 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         }
 
         model.setModel(best_net);
+    }
+
+
+    private void collectModelActivations_internal(CommonModel model, Context c, DataSet ds) throws IOException {
+        MultiLayerNetwork m = model.getModel();
+        DataSetIterator iter = new TestDataSetIterator(ds, params_.batch_size());
+
+        // Prepare layers for measuring.
+        for (Layer l : m.getLayers()) {
+            if (params_.batch_norm() && l instanceof MyBatchNormalization
+                    || !params_.batch_norm() && l instanceof MyDenseLayer) {
+                ((IOpenLayer) l).setMeasuring(true);
+            }
+        }
+
+        int batch_index = 0;
+        while (iter.hasNext()) {
+            DataSet batch = iter.next();
+            m.output(batch.getFeatures());  // Forward propagate to store activations.
+
+            LinkedList<INDArray> layer_wise = new LinkedList<>();
+            for (Layer l : m.getLayers()) {
+                if (params_.batch_norm() && l instanceof MyBatchNormalization
+                        || !params_.batch_norm() && l instanceof MyDenseLayer) {
+                    layer_wise.add(((IOpenLayer) l).getActivation());
+                }
+            }
+            StorageManager.storeActivations(layer_wise, c, batch_index++);
+        }
+
+        // Close layers for measuring.
+        for (Layer l : m.getLayers()) {
+            if (params_.batch_norm() && l instanceof MyBatchNormalization
+                    || !params_.batch_norm() && l instanceof MyDenseLayer) {
+                ((IOpenLayer) l).setMeasuring(false);
+            }
+        }
+    }
+
+    public void collectModelActivationsOnTrain(CommonModel model, Context c) throws IOException {
+        collectModelActivations_internal(model, c, train_set_);
+    }
+
+    public void collectModelActivationsOnTrainJoined(CommonModel model, Context c) throws IOException {
+        collectModelActivations_internal(model, c, construct_joined_dataset());
+    }
+
+    public void collectModelActivationsOnTest(CommonModel model, Context c) throws IOException {
+        collectModelActivations_internal(model, c, test_set_);
     }
 
     public void release_train() {

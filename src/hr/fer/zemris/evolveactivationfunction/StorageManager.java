@@ -21,6 +21,7 @@ import org.nd4j.linalg.factory.Nd4j;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.List;
 
 /**
  * Manages the structure of resources and solution.
@@ -29,12 +30,17 @@ import java.io.*;
  * sol<br>
  * - dataset1_name<br>
  * - - experiment1_name<br>
+ * - - - - activations<br>
+ * - - - - - L1.txt<br>
+ * - - - - - L2.txt<br>
  * - - - - model.zip<br>
  * - - - - parameters.txt<br>
  * - - - - predictions.txt<br>
  * - - - - results.txt<br>
  * - - - - train.log<br>
  * - - experiment2_name<br>
+ * - - - - activations<br>
+ * - - - - - L1.txt<br>
  * - - - - model.zip<br>
  * - - - - parameters.txt<br>
  * - - - - predictions.txt<br>
@@ -52,6 +58,7 @@ public class StorageManager {
     public static final String sol_dir_name_ = current_dir_ + "sol" + File.separator;
     public static final String tmp_dir_name_ = current_dir_ + "tmp" + File.separator;
     public static final String sol_model_name_ = "model.zip";
+    public static final String sol_activations_dir_ = "activations";
     public static final String sol_predictions_name_ = "predictions.txt";
     public static final String sol_result_name_ = "results.txt";
     public static final String sol_stats_name_ = "stats.dl4jlog";
@@ -162,6 +169,15 @@ public class StorageManager {
      */
     public static INDArray loadPredictions(Context c) throws IOException {
         return Nd4j.readTxt(createExperimentPath(c) + sol_predictions_name_);
+    }
+
+    /**
+     * Stores the predictions of the given context.
+     */
+    public static void storeActivations(List<INDArray> activations, Context c, int batch_index) throws IOException {
+        for (int i = 1; i <= activations.size(); i++) {
+            Nd4j.writeTxt(activations.get(i - 1), createFile(createExperimentPath(c) + sol_activations_dir_ + File.separator + 'L' + i + '_' + batch_index).getPath());
+        }
     }
 
     /**

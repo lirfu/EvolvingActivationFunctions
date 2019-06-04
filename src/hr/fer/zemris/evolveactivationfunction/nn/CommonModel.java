@@ -76,7 +76,7 @@ public class CommonModel implements IModel {
         for (ALayerDescriptor l : architecture.getLayers()) {
             list.layer(l_i++, l.constructLayer());
             if (params.batch_norm()) {
-                list.layer(l_i++, new BatchNormalization.Builder(false).build());
+                list.layer(l_i++, new MyBatchNormalizationConf.Builder(false).build());
             }
             list.layer(l_i++, new ActivationLayer(common_act ? activations[0] : activations[a_i++]));
         }
