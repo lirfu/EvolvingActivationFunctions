@@ -9,6 +9,7 @@ tmp
 sol
 test/gen
 out
+.ignore
 
 # DL4J memory crash dumps
 dl4j-memory-crash-dump*
