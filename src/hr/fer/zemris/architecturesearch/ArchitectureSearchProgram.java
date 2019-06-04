@@ -178,7 +178,8 @@ public class ArchitectureSearchProgram {
         Context context = train_procedure.createContext(e.getName());
 
         ILogger log = new MultiLogger(new StdoutLogger(), StorageManager.createTrainingLogger(context)); // Log to stdout.
-        FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
+//        FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
+        FileStatsStorage stat_storage = null;
         log.i(train_procedure.describeDatasets());
 
         log.d("===> Timestamp: " + LocalDateTime.now().toString());
