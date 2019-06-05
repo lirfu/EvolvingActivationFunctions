@@ -17,11 +17,16 @@
 \def\pfrac#1#2{\frac{\partial #1}{\partial #2}}
 \def\dfrac#1#2{\frac{d #1}{d #2}}
 \def\F1{F$_1$}
+\def\normal{\mathcal{N}}
+\def\probsep{\ |\ }
+\def\dataset{\mathcal{D}}
+\def\minibatch{\mathcal{M}}
 
 % TODO notes
 \def\TODO#1{\noindent\textcolor{red}{TODO: \textit{#1}}\newline}
 \def\todo#1{\TODO{#1}}
 \def\todoimg#1{\begin{center} \textcolor{red}{\big[ IMAGE: \textit{#1} \big]} \end{center}}
+\def\todoeq#1{\textcolor{red}{\begin{equation}\text{\big[EQ: \textit{#1}\big]}\end{equation}}}
 
 \begin{document}
 
@@ -57,6 +62,7 @@
 \todo{ Problem netraktabilnosti postupka -> neuralke <3}
 
 \section{DPA skupovi podataka}
+\label{sec:dpa_datasets}
 \todo{Tko i cilj*}
 \todo{Ne zaboravi referencu na stranicu!}
 
@@ -98,6 +104,15 @@ Afina funkcija je skalarni produkt vektora ulaza s vektorom težina neurona uz d
 f(\vec{x};\mat{W},\vec{b})=\mat{W}^T \cdot \vec{x} + \vec{b}
 \end{equation}
 
+Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Ulaz za takav model je definiran n-dimenzijskim tenzorom, a neuron uzima samo jednu regiju tenzora (vidljivu regiju) i nad njime računa skalarni produkt s n-dimenzijskim tenzorom parametara (jezgrom). Kada su ulazi slike u boji ulazni tenzor ima 3 dimenzije (visina, širina i RGB kanali) pa stoga i svaka jezgra ima 3 dimenzije, no znantno manje visine i širine. Unakrsna korelacija prozvana je konvolucijom jer radi na istom principu, a jedina razlika je da se elementi jezgre indeksiraju zrcaljeno po obje osi. S obzirom da se parametri jezgre uče automatski, nije nam bitno definirati orijentaciju jezgre. Unakrsna korelacija koristi iste parametre za svaku vidljivu regiju što ju čini štedljivijom od afine funkcije te ostvaruje neosjetljivost na translaciju, što je vrlo korisno u računalnom vidu.
+\begin{equation}
+f(\mat{X};\mat{W})=\mat{X} \circledast \mat{W}
+\end{equation}
+
+\todo{Je li uopće potrebno spominjat konvoluciju?}
+
+Postoje i aktivacijske funkcije temeljene na udaljenosti vektora ...
+
 \todo{Spomeni distance based aktivacije (ANFIS?)}
 \todo{Spomeni i složenije metode: \citep{network_in_network}}
 
@@ -112,16 +127,8 @@ Potpuno povezana arhitektura je najjednostavnija arhitektura za zadatak klasifik
 
 \todo{Daj neki dokaz za ovo gore.}
 
-Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Ulaz za takav model je definiran n-dimenzijskim tenzorom, a neuron uzima samo jedan pod-tenzor ulaza (vidljiva regija) i nad njime računa skalarni produkt s n-dimenzijskim tenzorom parametara (jezgrom). Kada su ulazi slike u boji ulazni tenzor ima 3 dimenzije (visina, širina, RGB kanali) pa stoga i jezgra ima 3 dimenzije, no znantno manje visine i širine. Unakrsna korelacija prozvana je konvolucijom jer radi na istom principu, a jedina razlika je da se elementi jezgre indeksiraju zrcaljeno po obje osi. S obzirom da se parametri jezgre uče automatski, nije nam bitno definirati orijentaciju jezgre.
-\begin{equation}
-f(\mat{X};\mat{W})=\mat{X} \circledast \mat{W}
-\end{equation}
-
-\todo{Je li uopće potrebno spominjat konvoluciju?}
-\todo{Raspisat konvoluciju po elementima?}
-
 \subsection{Optimizacija umjetne neuronske mreže}
-Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno kažemo da mreža 'uči'. Optimizaciju parametara najčešće izvodimo gradijentnim spustom, uz pretpostavku derivabilnosti svih komponenata neuronske mreže. Kada ta pretpostavka ne vrijedi koriste se algoritmi kombinatorne optimizacije poput evolucijskih algoritama. U ovom radu optimizacija se vrši gradijentnim spustom.
+Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno kažemo da mreža 'uči'. Optimizaciju parametara najčešće izvodimo gradijentnim spustom, uz pretpostavku derivabilnosti svih komponenata neuronske mreže. Kada ta pretpostavka ne vrijedi koriste se algoritmi kombinatorne optimizacije poput algoritma roja čestica koji se spominje u \citet{skripta_nenr}. U ovom radu neuronske mreže optimiraju se gradijentnim spustom.
 
 \subsubsection{Gradijentni spust}
 \label{sec:gradijentni_spust}
@@ -131,8 +138,9 @@ Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno
 
 Gradijentni spust je algoritam pronalaska minimuma funkcije vođen gradijentom te funkcije. Za zadanu početnu točku iterativno se pomiče u smjeru suprotnom od gradijenta funkcije u toj točki dok ne zadovolji neki od uvijeta zaustavljanja. Na strmim funkcijama gradijent je često prevelik i može izazvati oscilaciju ili divergenciju (slika \ref{fig:oscilira_divergira}). Stoga se gradijent pri pomaku skalira koeficijentom pomaka $\mu$. Dobro odabran koeficijent pomaka može osigurati bržu konvergenciju, a kod višemodalnih funkcija i pronalazak boljeg optimuma (slika \ref{fig:gradientni_spust}).
 
-Početna točka utječe na ishod algoritma. Kod višemodalnih funkcija s optimumima različitih kvaliteta, početna točka može definirati u koji će lokalni optimum algoritam konvergirati (slika \ref{fig:pocetna_tocka}). 
-
+Početna točka utječe na ishod algoritma. Kod višemodalnih funkcija s optimumima različitih kvaliteta, početna točka može definirati u koji će lokalni optimum algoritam konvergirati (slika \ref{fig:pocetna_tocka}).
+\newline
+\newline
 \begin{algorithm}[H]
 \KwIn{funkcija $f(\vec{x})$}
 \KwIn{početna točka $\vec{x_0}$}
@@ -155,7 +163,7 @@ Broj iteracija definira koliko se puta pomičemo iz početne točke, što defini
 \todoimg{gradijentni spust sa početnim točkama (jedna ode u lok, jedna ode u glob, jedna zapne desno na platou)}
 \label{fig:pocetna_tocka}
 
-Problem se javlja ako algoritam "odluta" u visoravan na kojoj su gradijenti vrlo mali, a sama regija je s obzirom na pomake ogromna (slika \ref{fig:pocetna_tocka}). Kad gradijent postane neupotrebljivo malen kažemo da je "\textit{iščeznuo}". U takvim slučajevima pomaže dodavanje momenta koji se akumulira kroz više iteracija i dodaje vektoru gradijenta. Kad algoritam naiđe na regiju s vrlo malim gradijentima, moment pokušava izvuči algoritam iz visoravni pomičući ga u smjeru koji je akumuliran. Kako moment ne bi izvukao algoritam iz optimuma, dodaje mu se koeficijent "\textit{zaboravljanja}" kojim se stari vektor momenta djelomično zaboravlja u korist novog vektora pomaka (jednadžba \ref{eq:moment_update}). Moment može pomoći i pri zaobilaženju lokalnih optimuma (slika \ref{fig:pocetna_tocka}).
+Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo mali, a sama regija je s obzirom na pomake ogromna (slika \ref{fig:pocetna_tocka}). Kad gradijent postane neupotrebljivo malen kažemo da je \textit{iščeznuo}. U takvim slučajevima pomaže dodavanje momenta koji se akumulira kroz više iteracija i dodaje vektoru gradijenta. Kad algoritam naiđe na regiju s vrlo malim gradijentima, moment pokušava izvuči algoritam iz visoravni pomičući ga u smjeru koji je akumuliran. Kako moment ne bi izvukao algoritam iz optimuma, dodaje mu se koeficijent \textit{zaboravljanja} kojim se stari vektor momenta djelomično zaboravlja u korist novog vektora pomaka (jednadžba \ref{eq:moment_update}). Moment može pomoći i pri zaobilaženju lokalnih optimuma (slika \ref{fig:pocetna_tocka}).
 
 \begin{equation}
 \label{eq:moment_update}
@@ -175,44 +183,113 @@ Problem odabira hiperparametara proizlazi iz činjenice da u generalno praksi ne
 \subsubsection{Funkcija gubitka}
 Pri učenju umjetnih neuronskih mreža potrebno je definirati funkciju gubitka. Funkcija gubitka, za dani ulaz, uspoređuje predikciju mreže sa željenim vrijednostima te dodjeljuje iznos pogreške (realan broj). Potrebno je pažljivo odabrati funkciju gubitka jer utječe na učenje svakog parametra (kao što je opisano u poglavlju \ref{sec:backprop}) te definira što je ishod učenja. 
 
-Najčešće ne znamo definiciju funkcije gubitka na čitavoj promatranoj domeni već posjedujemo samo uzorke te funkcije u podatcima koje smo izmjerili i koje smatramo reprezentativnim. Ovdje pretpostavljamo da će neuronska mreža ostvariti svojstvo generalizacije, koje je detaljnije objašnjeno u poglavlju \ref{sec:svojstva}. Stoga se u narednim formulama koristi notacija sumiranja.
+Najčešće ne znamo definiciju funkcije gubitka na čitavoj promatranoj domeni već posjedujemo samo prijere te funkcije u podatcima koje smo izmjerili i koje smatramo reprezentativnim. Ovdje pretpostavljamo da će neuronska mreža ostvariti svojstvo generalizacije, koje je detaljnije objašnjeno u poglavlju \ref{sec:svojstva}. Stoga se u narednim formulama koristi notacija sumiranja.
 
-Funkcija gubitka često je usko vezana uz vrstu problema koji se rješava (klasifikacija, regresija i ostali), način učenja (nadzirano, polu-nadzirano, nenadzirano, podržano) i izlaznu funkciju posljednjeg sloja neuronske mreže. U ovom radu vrši se klasifikacija nadziranim učenjem, no u nastavku se navodi i primjer funkcije gubitka za regresiju.
+Funkcija gubitka često je usko vezana uz vrstu problema koji se rješava (klasifikacija, regresija i ostali), način učenja (nadzirano, polu-nadzirano, nenadzirano, podržano) i izlaznu funkciju posljednjeg sloja neuronske mreže. U ovom radu vrši se klasifikacija nadziranim učenjem, no u nastavku se navodi i primjer funkcije gubitka za regresiju. Funkciju gubitka definiramo kao inverz funkcije izglednosti da neuronska mreža modelira funkciju predstavljenu primjerima podatkovnog skupa. Funkciju gubitka minimiziramo pa je definirana \textbf{negativnim logaritmom izglednosti} \eqref{eq:negloglikelyhood}. Logaritam je uveden zbog pojednostavljivanja distribucija koje sadrže eksponente.
 
-Uobičajeno se za funkciju gubitka koristi negativna logaritamska izglednost ...
-
-\todo{oba imaju neg.log.izglednost, no pretpostavljaju razl. distribucije da dobiješ kvadratni (gauss) ili ovaj drugi loss (kategorička ilitiga Bernoullijeva)}
-
-U problemima regresije, najčešće se koristi funkcija kvadratnog gubitka koja računa odstupanje izlaza neuronske mreže od željenih vrijednosti. Uz ovaj gubitak najčešće se koristi funkcija identiteta u izlaznom sloju. Ova funkcija je brza i jednostavna
 \begin{equation}
+\label{eq:negloglikelyhood}
+L(\theta \probsep x,y) = -\log\ p(f(X;\theta)=y \probsep X=x)
+\end{equation}
+
+Zbog jednostavnosti zapisa, funkciju modela zapisujemo skraćeno kao aproksimaciju odnosno predikciju funkcije izlaza podatkovnog skupa te se ovisnost o ulazima podrazumijeva.
+\begin{equation}
+\hat{y} = f(x; \theta)
+\end{equation}
+
+ S obzirom da želimo procijeniti kvalitetu modela na čitavom podatkovnom skupu zanima nas očekivanje funkcije gubitka \eqref{eq:negloglikelyhood_expect}.
+\begin{equation}
+\label{eq:negloglikelyhood_expect}
+\begin{split}
+L(\theta \probsep \dataset) &= \expect_{(x,y) \sim p_\dataset}[L(\theta \probsep x,y)] \\
+&= -\frac{1}{|\dataset|} \sum_{(x,y)\in\dataset} \log\ p(\hat{y}=y \probsep x)
+\end{split}
+\end{equation}
+
+\textbf{U problemima regresije}, pretpostavlja se da izlazi mreže prate Gaussovu distribuciju s jediničnom kovarijacijskom matricom. Njenim uvrštavanjem u negativnu log. izglednost \eqref{eq:negloglikelyhood} dobivamo funkciju kvadratnog gubitka koja računa odstupanje izlaza neuronske mreže od željenih vrijednosti. Uz ovaj gubitak najčešće se koristi funkcija identiteta u izlaznom sloju.
+\begin{align}
+\label{eq:normal_dist}
+\begin{split}
+p(\hat{y}=y \probsep x) &= \normal(y \probsep \mu=\hat{y}, \mat{\Sigma}=\mat{I}) \\
+&= \frac{1}{\sqrt{2\pi}\Sigma^{^1/_2}} \exp(-(y-\hat{y})^T\Sigma^{^1/_2}(y-\hat{y}))
+\end{split}
+\end{align}
+
+Uvrštavanjem u \eqref{eq:negloglikelyhood} dobivamo kvadratni gubitak:
+
+\begin{align}
 \label{eq:loss_regression}
-L(\theta) = \expect_{(\vec{x},\vec{y})\in (X,Y)???} \sum_{i}^{|\vec{y}|} (f(\vec{x};\theta)_i - \vec{y}_i)^2
-\end{equation}
+L(\theta \probsep x,y) &= - \log \Big[ \frac{1}{\sqrt{2\pi}\Sigma^{^1/_2}} \Big] - \log \Big[ \exp(-(y-\hat{y})^T\Sigma^{^1/_2}(y-\hat{y})) \Big] \nonumber \\
+&= -\log c - (y-\hat{y})^T\Sigma^{^1/_2}(y-\hat{y}) \nonumber \\
+&= \left|\footnotesize 
+\begin{array}[c]{l} 
+	c = konst. \\ 
+	\Sigma = I 
+\end{array}
+\right| \nonumber \\
+&= (y-\hat{y})^T(y-\hat{y}) = \sum_i (y_i - \hat{y}_i)^2
+\end{align}
 
-U problemima klasifikacije, koristi se funkcija negativne logaritamske izglednosti. 
+\textbf{U problemima klasifikacije}, pretpostavlja se da su izlazi mreže međusobno isključive slučajne varijable te stoga prate generaliziranu Bernoullijevu distribuciju (kategoričku distribuciju).
 \begin{equation}
-\label{eq:loss_classification}
-L(\theta) = -\expect ...
+p(\hat{y}=y \probsep x) = \hat{y}_1^{y_1} \cdot \hat{y}_2^{y_2} \cdots \hat{y}_c^{y_c} 
+= \prod_{i=1}^C \hat{y}_i^{y_i}, \quad \sum_i \hat{y}_i = 1
 \end{equation}
 
-\todo{prebaci očekivanja u SGD, ovdje spomeni samo fje gubitka}
+Uvrštavanjem u \ref{eq:negloglikelyhood} dobivamo kategorički gubitak:
+\begin{align}
+\label{eq:loss_classification}
+L(\theta \probsep x,y) &= - \log \Big[ \prod_{i=1}^C \hat{y}_i^{y_i} \Big] = - \sum_{i=1}^C y_i \log (\hat{y}_i)
+\end{align}
 
 \subsubsection{Optimizacija širenjem unatrag}
 \label{sec:backprop}
-Funkcija gubitka opisuje pogrešku čitave mreže te ovisi o svakom ugodljivom parametru mreže. Takva formulacija problema omogućuje nam da svaki parametrar mreže ugađamo gradijentnim spustom. Dakle, za parametriziranu funkciju $f(x;\theta)$ tražimo one parametre $\theta^*$ za koje je gubitak najmanji na danim parovima ulaznih i izlaznih podataka.
+Funkcija gubitka opisuje pogrešku čitave mreže te ovisi o svakom ugodljivom parametru mreže. Takva formulacija problema omogućuje nam da svaki parametrar mreže ugađamo gradijentnim spustom. Dakle, za parametriziranu funkciju $f(x;\theta)$ tražimo one parametre $\theta^*$ za koje je gubitak najmanji na podatkovnom skupu.
 \begin{equation}
-\theta^* = argmin_\theta L(x,y; \theta), \quad \forall (x,y) \in (X,Y)
+\theta^* = argmin_\theta\ L(\theta \probsep \dataset), \quad \forall (x,y) \in \dataset
 \end{equation}
 
 Optimiranje gradijentnim spustom zahtjeva derivabilnost funkcije koju optimiziramo po ulazima, što izrazi \eqref{eq:loss_regression} i \eqref{eq:loss_classification} zadovoljavaju. Pri tome koristi se pravilo ulančavanja parcijalne derivacije kompozicije funkcija.
 \begin{equation}
+\label{eq:partial_rule}
 \dfrac{}{x} f(g(x)) = \pfrac{f(g(x))}{g(x)} \cdot \pfrac{g(x)}{x}
 \end{equation}
 
 Derivacijom funkcije gubitka za regresiju \eqref{eq:loss_regression} po ulazima, uz pretpostavku derivabilnosti čitave neuronske mreže po ulazima, dobivamo sljedeći izraz:
+\begin{align}
+\dfrac{L(\theta \probsep x,y)}{x} &= \dfrac{}{x}\sum_i(y_i - \hat{y}_i(x))^2 \nonumber \\
+&= 2 \cdot \sum_i (y_i - \hat{y}_i(x)) \cdot \dfrac{\hat{y}_i(x)}{x}
+\end{align}
+
+Derivaciju funkcije gubitka za klasifikaciju možemo drastično pojednostaviti ako za izlaznu funkciju izlaznog sloja mreže odaberemo funkciju \textit{softmax} \eqref{eq:softmax_for_loss}, a izlaze kodiramo \textit{one-hot} oznakama \eqref{eq:onehot}. Ulaz u funkciju softmax su aktivacije neurona izlaznog sloja koje su ovdje označene vektorom $\vec{s}(x)$.
 \begin{equation}
-tODO
+\label{eq:softmax_for_loss}
+\hat{y}(\vec{x}) = \text{softmax}(\vec{s}(x)) = \frac{\exp(\vec{s}(x))}{\sum_{i=1}^{C} exp(s_i(x))}
+%%% \quad \equiv \quad p(y_i \probsep x) = \frac{p(x|y_i)p(y_i)}{\sum_jp(x|y_j)p(y_j)}
 \end{equation}
+
+\begin{equation}
+\label{eq:onehot}
+\vec{y}=[y_1, y_2, \cdots, y_C], \quad y_i \in \{0,1\}, \quad \sum_{i=1}^C y_i = 1
+\end{equation}
+
+Uvrštavanjem u \eqref{eq:loss_classification} dobivamo:
+
+\begin{align}
+\label{eq:loss_classification_softmax}
+L(\theta \probsep x,y) &= - \sum_{i=1}^C y_i \log \frac{\exp(s_i(x))}{\sum_{j=1}^{C} exp(s_j(x))} \nonumber \\
+&= - \sum_{i=1}^C \bigg[ y_i \cdot s_i(x) - y_i \log\big(\sum_{j=1}^{C} exp(s_j(x))\big) \bigg] \nonumber \\
+&= - \sum_{i=1}^C \big[ y_i \cdot s_i(x) \big] + \log\big[\sum_{j=1}^{C} exp(s_j(x))\big] \cdot \sum_{i=1}^C y_i \nonumber \\
+&= \log\big[\sum_{j=1}^{C} exp(s_j(x))\big] - \sum_{i=1}^C \big[ y_i \cdot s_i(x) \big]
+\end{align}
+
+Derivacijom \eqref{eq:loss_classification_softmax} po ulazima, koristeći pravilo \eqref{eq:partial_rule} dobivamo:
+\begin{align}
+\dfrac{L(\theta \probsep x,y)}{x} &= \dfrac{L(\theta \probsep x,y)}{\vec{s}(x)} \cdot \dfrac{\vec{s}(x)}{x} \nonumber \\
+&= \bigg[ \vec{s}(x) - y \bigg] \cdot \dfrac{s(x)}{x}
+\end{align}
+
+
 
 S obzirom da se mreža sastoji od ulančanih nelinearnih neurona s parametrima, gradijent gubitka moramo proslijediti sekvencijalno širenjem unazad (prema ulazima u mrežu). Pojedini neuron možemo smatrati parametriziranom funkcijom koju je moguće prikazati grafom \ref{fig:neuron_grad}. Vidimo da se ulazni gradijent prolaskom kroz neuron širi na ostale elemente i na ulaze neurona koji vode do prethodnih neurona. Primijetimo i da se širi u suprotnom smjeru od toka podataka. Iz toga proizlazi naziv "\textit{širenjem unazad}" \engl{backpropagation}.
 
@@ -249,19 +326,41 @@ S obzirom da se mreža sastoji od ulančanih nelinearnih neurona s parametrima, 
 \end{align}
 
 \subsubsection{Stohastički gradijentni spust}
+U prošlom poglavlju koristili smo funkciju gubitka na jednom podatkovnom paru, no želimo minimizirati očekivanje funkcije gubitka \eqref{eq:negloglikelyhood_expect} na cijelom podatkovnom skupu jer želimo što preciznije procijeniti naš model i učit ga da aproksimira čitavu uzorkovanu funkciju što bolje. Nažalost, podatkovni skupovi poput spomenutog u poglavlju \ref{sec:dpa_datasets} vrlo su veliki i nije ih praktično koristiti pri optimizaciji gradijentom jer bismo ih čitave morali držati u brzoj memoriji. Ovo predstavlja velik problem pri računanju s grafičkim karticama. Očekivanje gubitka služi nam za procjenu smjera i veličine gradijenta. Ako gradijent procjenjujemo na čitavom podatkovnom skupu on će nas dovesti do prvog optimuma koji najčešće nije dobar, odnosno snažno ovisi o odabiru početne točke. 
 
-\todo{ne možemo čitav ds odjednom jer je prevelik}
-\todo{ne možemo stohastički jer je prešumovito, a i skupo na gpu}
-\todo{all hail the mini-batch, aproksimacija taman šumovita da pomaže, spomeni usrednjavanje gradijenta po batchu}
-\todo{može i sampliranjem, ali ako imamo dataset kako znamo koliko koje semplirat -> bolje po epohama}
-\todo{algoritam SGD}
+S druge strane, ako gradijent računamo na pojedinom podatkovnom paru kao u \eqref{eq:loss_classification} ostvarili smo stohastičko kretanje jer će svaki primjer usjeriti gradijent u drugom smjeru. Posljedica toga je dulje vrijeme pretrage, no veća otpornost na loše lokalne optimume. Iako će algoritam generalno konvergirati, postupak je zahtjevan jer za svaki primjer podatkovnog skupa trebamo provesti korak algoritma. Ovaj problem također ograničava svojstvo ubrzanja grafičkim karticama koje nude masivnu paralelizaciju operacija nad podatcima.
+
+Iz navedenih razloga želimo vršiti procjenu gradijenta na "nekoliko" primjera. Podskup takvih primjera nazivamo \textbf{mini-grupom} \engl{mini-batch}. Najčešće se uzima najveći broj primjera koji grafička kartica može efikasno obraditi i koji je potencija broja 2. Mini-grupe i dalje zadržavaju stohastičnost kretanja gradijenta (posebice ako je veličina manja od broja klasa), ali procjenjuju bolje od potpuno stohastičnog te brže konvergiraju. Sada formula \eqref{eq:negloglikelyhood_expect} poprima oblik koji odgovara očekivanju pojedine mini-grupe $\minibatch_i$.
+\begin{equation}
+\label{eq:negloglikelyhood_expect}
+\begin{split}
+L(\theta \probsep \dataset) &= \expect_{(x,y) \sim p_{\minibatch_i}}[L(\theta \probsep x,y)] \\
+&= -\frac{1}{|\minibatch_i|} \sum_{(x,y)\in\minibatch_i} \log\ p(\hat{y}=y \probsep x)
+\end{split}
+\end{equation}
+
+Mini-grupe se najčešće definiraju prije početka učenja nasumičnim rasporedom. To je najjednostavniji i najbrži pristup, no definiranjem fiksnih mini-grupa unosi induktivnu pristranost jer ne možemo znati je li odabran raspored idealan za model koji evaluiramo. Pristranost možemo ublažiti miješanjem podatkovnog skupa između epoha, no skupocijenost te operacije ograničava njeno korištenje u praksi. Također, problem mogu stvoriti mini-grupe pristrane jednoj ili više dominantnih (većinskih) klasa koje će snažno usmjeravati gradijent prema tim klasama i zanemarivati ostale. Taj problem je posebno izražen u nebalansiranim podatkovnim skupovima, a može se zaobići tehnikom težinskog uzorkovanja s ponavljanjem gdje je vjerojatnost odabira primjera obrnuto proporcionalna dominantnosti (brojnosti) njegove klase. Treba paziti da se provede dovoljan broj uzorkovanja tako da je model učen na svakom primjeru podatkovnog skupa.
+
+\begin{algorithm}[H]
+\KwIn{funkcija $f(\vec{x})$}
+\KwIn{inicijalizirani parametar $\theta_0$}
+\KwIn{stopa učenja $\eta$}
+\KwIn{kriterij zaustavljanja $k$}
+\While{kriterij $k$ nije zadovoljen}{
+	\For{$\minibatch_i \in \dataset$}{
+		$\vec{g_i} \gets \frac{1}{|\minibatch|} \sum_{(\vec{x},\vec{y})\in\minibatch} \vec{\nabla}_{\theta} L(\theta \probsep \vec{x},\vec{y})$ \;
+		$\vec{\theta_{i+1}} \gets \vec{\theta_i} - \eta \cdot \vec{g_i}$
+	}
+}
+\caption{Stohastički gradijentni spust}
+\label{alg:sgd}
+\end{algorithm}
 
 \subsubsection{Optimizator}
-U prethodnim poglavljima opisan je postupak stohastičkog gradijentnog spusta i definicije gradijenta po parametrima, koji su potrebni za ispravno računanje
+Optimizator brine o pomaku odnosno ažuriranju parametara modela pri gradijentnom spustu. Dosad smo vidjeli dva načina: klasični s koeficijentom pomaka (algoritam \ref{alg:grad_spust}) i s dodatkom momenta \eqref{eq:moment_update}. Moment 
 
 \todo{uporaba momenta i momenta na kvadrat (interpretacija)}
 \todo{Adam}
-\todo{smanjivanje stope učenja}
 
 \subsubsection{Promijenjiva stopa učenja}
 \todo{zbog nekonveksnih izbočina tam dolje, stopa može biti prejaka}
@@ -276,27 +375,73 @@ Inicijalizacija parametara mreže je sinonim za odabir početne točke pri gradi
 \todo{važnost dobre inicijalizacije}
 \todo{Xavier}
 
+\subsubsection{Pretprocesiranje podataka}
+\todo{normalizacija po značajkama}
+Koeficijenti se računaju pomoću značajki iz podatkovnog skupa za učenje. Koeficijent varijance ovisi o koeficijentu sredine pa se njihovo računanje ne može paralelizirati.
+\begin{equation}
+\vec{\mu} = \frac{1}{N} \sum_{\vec{x}\in \dataset} \vec{x}
+\end{equation}
+\begin{equation}
+\vec{\sigma^2} = \frac{1}{N-1} \sum_{\vec{x}\in \dataset} (\vec{x}-\vec{\mu})^2
+\end{equation}
+
+Prije no što model dobije ulazne značajke, normaliziramo ih formulom:
+\begin{equation}
+\vec{z} = \frac{\vec{x} - \vec{\mu}}{\vec{\sigma^2}}
+\end{equation}
+
+Koeficijenti normalizacije se računaju samo na skupu za učenje, a normalizacija se mora primijeniti prilikom inferencije odnosno na skupu za testiranje.
+\todoimg{slika značajki prije i poslije normalizacije}
+\todo{sada su vrijednosti centriranje sa std.dev.}
+
 \subsection{Regularizacija}
 \label{sec:regularizacija}
+Decizijska granica je sjecište 
+
 \todo{geometrijski opis deciziske granice}
+
+Podatkovni skupovi najčešće sadrže šum zbog nesavršenog uzorkovanja stvarne funkcije, pogrešnog označavanja ili višeznačnosti primjera. Bez regularizacije, model će s ciljem minimiziranja gubitka svoju decizijsku granicu saviti kako bi što ispravnije obuhvatio sve primjere pa čak i šum. Tada kažemo da je model počeo učiti šum odnosno da je \textbf{prenaučen}.
+
 \todo{podnaučena, generalizira, prenaučena}
 \todoimg{podnaučena, generalizira, prenaučena}
 
-\paragraph{Regularizacija parametara}
-\todo{L1}
-\todo{L2}
-\todo{Spomeni pokoju još (adversarial iz Hintona, one za style transfer, ...)}
+\subsubsection{Regularizacija parametara}
+Prenaučenost je često posljedica velikih normi vektora parametara. Stoga se u funkciju gubitka dodaje regularizacijski član po težinama $\Omega(\theta)$. Utjecaj regularizacije moguće je mijenjati hiperparametrom $\alpha$.
+\begin{equation}
+\label{eq:weights_regularization}
+\tilde{L}(\theta \probsep x,y) = L(\theta \probsep x,y) + \alpha\Omega(\theta)
+\end{equation}
 
-\paragraph{Regularizacija šumom}
-\todo{inherentno zbog šumovitih ulaznih podataka}
-\todo{može povećati dataset}
+Najčešće se koristi regularizacija \textbf{L2} normom koja akumulira kvadrate svih parametara modela. Pri ažuriranju parametra formula dobiva skaliranu vrijednost tog parametra što smanjuje vrijednost negativnog gradijenta.
+\begin{equation}
+\Omega(\vec{\theta}) = \frac{1}{2} \|\vec{w}\|_2^2 = \frac{1}{2} \sum_i w_i^2
+\end{equation}
+\begin{equation}
+\vec{\theta}_{i+1} \gets \vec{\theta}_i - \eta \cdot \vec{g}_i + \alpha \cdot \theta
+\end{equation}
+
+\todo{Spomeni pokoju još (L1, adversarial iz Hintona, ...)}
+
+\subsubsection{Regularizacija šumom}
+Unošenjem šuma u podatke netom prije nego ih dobije model moguće je graditi robusnost modela na šum, ali ujedno to sprječava model da se pretrenira na podatkovnom skupu za treniranje. Jedan primjer možemo nasumično zašumiti nekoliko puta te se time povećava efektivna veličina podatkovnog skupa.
+
+U ovom se radu ne koristi regularizacija šumom jer bi mogla imati nepredvidivi utjecaj na učenje. Primjena na slike je vrlo jasna jer uz dovoljno malu amplitudu aditivnog šuma teksture na slici će ostati očuvane zahvaljujući susjedstvu piksela, odnosno izrezivanjem slike obrasci će ostati netaknuti. Značajke podatkovnih skupova navedenih u poglavlju \ref{sec:dpa_datasets} su PCA redukcije originalnih slijedova signala koji su ispunjeni šumom očitavanja.
+
+\todo{ajd svejedno isprobaj, grafi za ljubav}
+
+\subsubsection{Rano zaustavljanje}
+Pri učenju modela funkcija gubitka na skupu za učenje i testiranje generalno opada, no u jednom trenu gubitak generalizacije počinje rasti. Zaustavimo li učenje u trenutku kada je gubitak generalizacije najmanji dobili smo optimalan model za zadane hiperparametre. U praksi te funkcije neće biti naročito glatke zbog stohastičkog gradijentnog spusta te greška će generalizacije povremeno i rasti kako savladava lokalne optimume.
+
+Postupak ranog zaustavljanja tretira broj epoha kao hiperparametar koji se pretražuje po liniji. No umjesto da za svaku vrijednost broja epoha nanovo treniramo model, ovdje ga treniramo jednom i jednostavno odaberemo vrijednost za koju model generalizira najbolje. To upućuje na potrebu krosvalidacije koja je opisana u poglavlju \ref{sec:crossval}.
+
+\todoeq{Algoritam ranog zaustavljanja}
 
 \subsection{Odabir hiperparametara}
 Do ovdje su navedeni hiperparametri koji se koriste pri spomenutim tehnikama optimizacije neuronske mreže (poglavlja \ref{sec:gradijentni_spust} - \ref{sec:regularizacija}). No neuronska mreža ima i strukturalne hiperparametre.
 
 Arhitektura mreže je vrlo bitan hiperparametar koji određuje složenost modela te utječe na brzinu inferencije i učenja modela. Razvijene su razne arhitekture koje koriste preskočne veze za postizanje vrlo dubokih arhitektura \citep{resnet, densenet}. Preskočne veze omogućavaju direktniji prijenos gradijenta što pomaže kod problema iščezavajućeg gradijenta u dubokim mrežama (poglavlje \ref{sec:iscezavajuci_grad}). Arhitektura može omogućiti dodatnu paralelizaciju inferencije i učenja tako da se teške operacije raspodijele na više uređaja, a rezultati spoje samo kada je to nužno \citep{alexnet}.
 
-\todo{Izlazne funkcije}
+Izlazne funkcije su također važan hiperparametar, no u praksi se većinom ignoriraju zbog manjka intuicije o njihovom utjecaju na učenje pojedinog modela na pojedinom podatkovnom skupu. U praksi se najčešće odabiru funkcije koje su brze i koje se pokazuju korisnima u raznim radovima. Najčešće se koristi ReLU opisan u poglavlju \ref{func:relu}. U povratnim neuronskim mrežama za rekurzivne slojeve popularan je tangens hiperbolni opisan u poglavlju \ref{func:tanh}. U poglavlju \ref{sec:izlazne_fje} navedene su i opisane brojne funkcije te je njihov utjecaj ispitan u poglavlju \ref{sec:rezultati}.
 
 \subsubsection{Procjena generalizacije i odabir modela}
 Skup podataka kojim učimo model najčešće ne opisuje stvarnu funkciju potpuno, već sadrži primjere koje smatramo reprezentativnim i koji su dovoljni za njeno modeliranje. Kako bismo procjenili koliko dobro naš model procjenjuje stvarnu funkciju ispitujemo model na podatcima koji nisu korišteni prilikom učenja, odnosno na neviđenim podatcima. Ta se metoda zove \textbf{unakrsna validacija}, a skupove nazivamo \textbf{skupom za učenje} i \textbf{skupom za testiranje}. Dakako, važno je pobrinuti se da su oba skupa reprezentativna stvarnoj funkciji, ali da ne sadrže iste primjere. U suprotnom mreža će naučiti pogrešnu funkciju što može dati lažno pesimistične rezultate ili ćemo nepotpuno ili pristrano testirati što može dovesti do lažno optimističnih rezultata.
@@ -379,7 +524,13 @@ FP = FN \implies P^\mu &= R^\mu = F_1^\mu = \frac{\sum_i TP_i}{\sum_i (TP_i+FP_i
 \end{split}
 \end{align}
 
+\subsubsection{Krosvalidacija}
+\label{sec:crossval}
+\todo{ovo je bitno}
+... pri ćemu se skup za učenje podijeli na manji skup za učenje i skup za validaciju. Tek nakon što otkrijemo optimalan broj epoha model trenira na čitavom skupu za učenje i ispituje na skupu za testiranje koji mjeri stvarnu generalizaciju.
+
 \subsubsection{Pretraživanje po rešetci}
+\label{sec:grid_search}
 Najjednostavniji način za pretraživanje hiperparametara je pretraživanje po rešetci. Za svaki hiperparametar koji optimiziramo definiramo vrijednosti koje želimo ispitati. Algoritam tada evaluira dani model za svaku kombinaciju hiperparametara i vraća kombinaciju ili model koji ostvaruje najbolje rezultate.
 
 Iako se optimalni hipermarametri mogu nalaziti izvan zadanih skupova i neće biti pronađeni, postupak je brz i daje dovoljno dobre rezultate za praktičnu primjenu. Često je dovoljno da pronađe kombinaciju hiperparametara za koju model ne divergira niti prestaje učiti određen broj iteracija.
@@ -412,7 +563,7 @@ Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu 
 \subsection{Problemi}
 \subsubsection{Odabir hiperparametara}
 \todo{Problem odabira arhitekture, aktivacijske funkcije i hiperparametara}
-Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov odabir značajno utjeće na performanse neuronske mreže. Učenje 
+Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov pravilan odabir značajno utjeće na performanse neuronske mreže. Nažalost nije ih moguće optimalno odabrati u zatvorenom obliku, već se to svodi na problem pretraživanja kao što je pretraživanje po rešetci \ref{sec:grid_search}. Arhitekture mogu poprimiti vrlo složene oblike kao što je predstavljeno radovima \citet{resnet}, \citet{densenet}, \citet{inceptionnet} i \citet{yolo} te se najčešće grade ručno s maksimalnom traktabilnom složenošću. Detaljnije o odabiru izlaznih funkcija napisano je u poglavlju \ref{sec:izlazne_fje}.
 
 \subsubsection{Isčezavajući gradijent}
 \label{sec:iscezavajuci_grad}
@@ -428,6 +579,8 @@ Derivabilne neuronske mreže optimiziraju se optimizatorom koji određuje kako s
 Izlazna funkcija služi unošenju nelinearnosti u neuronsku mrežu i ima utjecaj na njeno učenje. Prilikom inferencije izlazna funkcija stvara nelinearnosti u decizijskoj granici koje su parametrizirane parametrima neurona na koji se primijenjuje. U slojevitim arhitekturama izlazne funkcije se primijenjuju uzastopno s različitim parametrima i vrše nelinearne projekcije iz jedne dimenzije u drugu.
 
 Prilikom učenja neuronske mreže važan nam je utjecaj derivacije izlazne funkcije na gradijent pri širenju unatrag. Prolaskom unazad gradijent se množi s parametrima slojeva koji se mogu zapisati matricom težina $\mat{W}$. Uzastopnom primijenom matrica težina, ako su loše kondicionirane, može doći do "\textit{isćezavanja}" ili "\textit{eksplozije}" gradijenta.
+
+Za odabir izlazne funkcije ne postoji jasno pravilo. U praksi se odabiru empirijski po pokazanim rezultatima i brzinom (te implementacijskom podrškom), s preferencijom onih koje imaju neku teorijsku podlogu. U radu \citet{learnable_func} predstavljen je pokušaj automatske izgradnje izlazne funkcije gradijentnim spustom, no ... . U radu \citet{golden_func} autori koriste simboličku regresiju kako bi izgradili dvodjelnu funkciju, sa zasebnom komponentom u negativnoj i pozitivnoj domeni. Rezultat pretrage je funkcija \textit{Swish} \ref{func:swish} koja se pokazala vrlo dobrom na nekoliko arhitektura i podatkovnih skupova.
 
 \todo{Bitka za odabir izlazne fje (nađi onaj rad di pljuje po sigmoidi i relu (elu rad?))}
 
@@ -464,6 +617,7 @@ f_1(f_2(x)) &= w_1 \cdot (w_2 \cdot x + b_2) + b_1 \\
 \end{align}
 
 \subsection*{Ispravljena linearna jedinica (ReLU)}
+\label{func:relu}
 \engl{Rectified linear unit}
 
 \begin{figure}[H]
@@ -763,6 +917,7 @@ f'(x) =
 \todo{problemi}
 
 \subsection*{Swish}
+\label{func:swish}
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{Swish.pdf}
@@ -787,6 +942,7 @@ f'(x) &= \sigma(\beta x) + \beta x \cdot \sigma(\beta x)(1-\sigma(\beta x)) \\
 \todo{problemi}
 
 \subsection*{Tangens hiperbolni (tanh)}
+\label{func:tanh}
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{tanh.pdf}
@@ -1152,6 +1308,7 @@ tanh		& $tanh(x)$				& 1 \\
 
 %--------------------------------------------------------------------------------------%
 \chapter{Rezultati}
+\label{sec:rezultati}
 
 \section{9class}
 
