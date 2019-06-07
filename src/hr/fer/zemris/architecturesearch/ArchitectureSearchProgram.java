@@ -91,7 +91,7 @@ public class ArchitectureSearchProgram {
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("gauss[x]", set))));
 
 
-        final LinkedList<String> top_results = new LinkedList<>();
+        final LinkedList<Pair<Double, String>> top_results = new LinkedList<>();
 
         for (String[] ds : new String[][]{
 //                new String[]{"res/noiseless_data/noiseless_all_training_9class.arff", "res/noiseless_data/noiseless_all_testing_9class.arff"}
@@ -150,7 +150,10 @@ public class ArchitectureSearchProgram {
                             acti.toString().substring(0, Math.min(15, acti.toString().length())),
                             result.accuracy(), result.f1(), result.f1_micro()
                     );
-                    top_results.addLast(sb.toString());
+
+                    // Add, sort and remove worst.
+                    top_results.addLast(new Pair<>(result.accuracy() + 10 * result.f1(), sb.toString()));
+                    top_results.sort((a, b) -> (int) (b.getKey() - a.getKey()));
                     if (top_results.size() > 10)
                         top_results.removeLast();
                 }
@@ -165,8 +168,8 @@ public class ArchitectureSearchProgram {
         sb.append("DONE! (").append(Utilities.formatMiliseconds(stopwatch.stop())).append(")");
         sb.append("\nTop " + top_results.size() + " results:");
         sb.append("\nArchitecture             Function         Acc    F1     F1 (micro)");
-        for (String s : top_results)
-            sb.append('\n').append(s);
+        for (Pair<Double, String> s : top_results)
+            sb.append('\n').append(s.getVal());
 
         System.out.println(sb.toString());
         slack.d(sb.toString());
@@ -199,6 +202,7 @@ public class ArchitectureSearchProgram {
         } else {
             train_procedure.train_joined(model, log, stat_storage);
             result = train_procedure.test(model);
+//            train_procedure.collectModelActivationsOnTest(model, context);  // Very time and memory intensive.
         }
 
         log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().toString());
