@@ -103,7 +103,7 @@ Neuronske mreže građene su od međusobno povezanih jedinica, tzv. neurona, mod
 \label{fig:neuron}
 \end{figure}
 
-Način na koji iz ulaza gradimo unutarnje stanje neurona opisujemo ulaznom funkcijom. Pretvorbu unutarnjeg stanja neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Ulazna i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Izlaznu funkciju ne treba miješati s funkcijom izlaza mreže koja predstavlja nelinearnost posljednjeg sloja mreže. U literaturi se umjesto pojma izlazne funkcije vrlo često koristi pojam aktivacijske funkcije. No u preglednom znanstvenom radu \citet{function_survey} aktivacijska funkcija predstavlja ulaznu funkciju, što je neispravno sa stajališta teorijske neuroznanosti jer aktivacija neurona označava trenutak odašiljanja signala kroz akson \citep{neuroscience}. U starijoj literaturi je pojam aktivacijske i prijenosne funkcije često ekvivalentno korišten. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi prvo navedena nomenklatura (ulazna, izlazna i prijenosna funkcija).
+Način na koji iz ulaza gradimo unutarnje stanje neurona opisujemo ulaznom funkcijom. Pretvorbu unutarnjeg stanja neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Ulazna i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ih ponekad ne možemo podijeliti na ulazne i izlazne. Izlaznu funkciju ne treba miješati s funkcijom izlaza mreže koja predstavlja nelinearnost posljednjeg sloja mreže. U literaturi se umjesto pojma izlazne funkcije vrlo često koristi pojam aktivacijske funkcije. No u preglednom znanstvenom radu \citet{function_survey} aktivacijska funkcija predstavlja ulaznu funkciju, što je neispravno sa stajališta teorijske neuroznanosti jer aktivacija neurona označava trenutak odašiljanja signala kroz akson \citep{neuroscience}. U starijoj literaturi je pojam aktivacijske i prijenosne funkcije često ekvivalentno korišten. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi prvo navedena nomenklatura (ulazna, izlazna i prijenosna funkcija).
 \begin{equation}
 t(x) = (f \circ a)(x) = f(a(x))
 \end{equation}
@@ -668,13 +668,41 @@ f'(x) =
 \end{split}
 \end{equation}
 
-\todo{bez i sa cutoff}
-\todo{mrtvi neuroni}
-\todo{i dalje nije loša}
+Funkcija ReLU svoje korijene povlači iz rada bioloških neurona, a u dubokom učenju je zamijenila dotadašnju sigmoidu i tangens hiperbolni. Zahvaljujući prizemljenosti na negativnoj domeni ReLU omogućava neuronskoj mreži učenje rijetke reprezentacije. Njihovim kombiniranjem u dubokoj mreži dobivamo model s eksponencijalno puno linearnih regija koje dijele zajedničke parametre \citep{relu_rbm}. Zahvaljujući linearnosti na pozitivnoj domeni gradijenti kroz mrežu su očuvani, a sam izračun funkcije i derivacije je vrlo brz i efikasan \citep{relu}.
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+Problem u negativnoj domeni je mogućnost blokiranja gradijenta i neaktivnih neurona (mrtvi neuroni), no dok god postoji put kroz mrežu gdje su neuroni aktivni (u pozitivnoj domeni) učenje će raditi, što pokazuju i rezultati \citep{relu}. Drugi problem je u neograničenosti funkcije u pozitivnoj domeni, no nju rješavamo regularizacijom koja ograničava veličinu ulaza u neuron \citep{relu}.
+
+\todo{bez i sa cutoff}
+
+\subsection{Ograničena ispravljena linearna jedinica (ReLU6)}
+\label{func:relu6}
+
+\begin{figure}[H]
+%\includegraphics[width=\textwidth]{ReLU6.pdf}
+\centering
+\caption{Funkcija ReLU6 i njena derivacija}
+\label{fig:relu6}
+\end{figure}
+
+\begin{equation}
+\label{eq:relu}
+\begin{split}
+f(x) = 
+\begin{cases}
+0,		& \text{ako} x < 0 \\
+x,		& \text{ako } x \in [0, 6] \\
+6,		& \otherwise
+\end{cases}
+\end{split}
+\qquad
+\begin{split}
+f'(x) = 
+\begin{cases}
+1,		& \text{ako } x \in [0, 6] \\
+0,		& \otherwise
+\end{cases}
+\end{split}
+\end{equation}
 
 \subsection{Propusna ispravljena linearna jedinica (LReLU)}
 \engl{Leaky ReLU}
