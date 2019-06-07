@@ -7,6 +7,7 @@
 \usepackage{bbm}
 \usepackage{multirow}
 \usepackage{float}
+\usepackage{amsmath}
 
 \graphicspath{ {./img/} }
 
@@ -21,12 +22,16 @@
 \def\probsep{\ |\ }
 \def\dataset{\mathcal{D}}
 \def\minibatch{\mathcal{M}}
+\def\otherwise{\textit{inače}}
+
+% Referencing
+\def\figref#1{(slika \ref{#1})}
 
 % TODO notes
 \def\TODO#1{\noindent\textcolor{red}{TODO: \textit{#1}}\newline}
 \def\todo#1{\TODO{#1}}
 \def\todoimg#1{\begin{center} \textcolor{red}{\big[ IMAGE: \textit{#1} \big]} \end{center}}
-\def\todoeq#1{\textcolor{red}{\begin{equation}\text{\big[EQ: \textit{#1}\big]}\end{equation}}}
+\def\todoeq#1{\textcolor{red}{\begin{equation}\text{\big[EQUATION: \textit{#1}\big]}\end{equation}}}
 
 \begin{document}
 
@@ -87,19 +92,24 @@
 Umjetne neuronske mreže (nadalje „neuronske mreže“) koristimo za modeliranje višedimenzijske funkcije ili distribucije kojom se aproksimira rješenje zadanog problema iz konačnog broja primjera. Vrlo su moćan alat za savladavanje teških zadataka u raznim područjima, često dostižući ljudske performanse na zadanom problemu. Danas su vrlo raširene u raznim područjima od kojih su samo neka: računalni vid \citep{alexnet,yolo}, prirodna obrada jezika \citep{word2vec,char_cnn} i podržano učenje \citep{atari,active_learn}.
 
 \subsection{Građa}
-Neuronske mreže građene su od međusobno povezanih jedinica, tzv. neurona, modeliranih prema pojednostavljenom modelu biološkog neurona. Neuron očitava ulazne značajke sustava ili izlaze drugih neurona te ažurira svoje unutarnje stanje (aktivaciju) i stvara odziv (izlaz). Utjecaj ulaza na neuron vrednuje se težinama \engl{weights} koje definiraju kako se neuron ponaša u ovisnosti o pojedinim ulazima. Aktivacijski prag neurona \engl{bias} određuje jedinstvenu osjetljivost neurona na jačinu podražaja. Težine i prag neurona nazivamo parametrima neurona.
+Neuronske mreže građene su od međusobno povezanih jedinica, tzv. neurona, modeliranih prema pojednostavljenom modelu biološkog neurona. Neuron očitava ulazne značajke sustava ili izlaze drugih neurona te ažurira svoje unutarnje stanje i stvara odziv. Utjecaj ulaza na neuron vrednuje se težinama \engl{weights} koje definiraju kako se neuron ponaša u ovisnosti o pojedinim ulazima. Aktivacijski prag neurona \engl{bias} određuje jedinstvenu osjetljivost neurona na jačinu podražaja. Težine i prag neurona nazivamo parametrima neurona.
 
 \todo{Što sve biolozi vele o neuronima? https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3812748/}
 
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{Neuron.pdf}
-\caption{Prikazani osnovni dijelovi neurona su težine dendrita ($w_i$), aktivacijska funkcija ($a(\vec{x},\vec{w})$) i izlazna funkcija ($f(x)$). Prag neurona nije prikazan zbog jednostavnosti dijagrama.}
+\caption{Prikazani osnovni dijelovi neurona su težine dendrita ($w_i$), ulazna funkcija ($a(\vec{x},\vec{w})$) i izlazna funkcija ($f(x)$). Prag neurona nije prikazan zbog jednostavnosti dijagrama.}
 \label{fig:neuron}
 \end{figure}
 
-Način na koji iz ulaza gradimo unutarnje stanje (aktivaciju) neurona opisujemo aktivacijskom funkcijom. Najpopularnije aktivacijske funkcije jesu afina funkcija i unakrsna korelacija.
-Afina funkcija je skalarni produkt vektora ulaza s vektorom težina neurona uz dodatak vrijednosti praga. Parametri neurona definiraju nagib i pomak ravnine u prostoru ulaza koja opisuje aktivaciju neurona. Primijenjuje se kada se ulazi u model mogu zapisati vektorom značajki čiji raspored nije bitan.
+Način na koji iz ulaza gradimo unutarnje stanje neurona opisujemo ulaznom funkcijom. Pretvorbu unutarnjeg stanja neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Ulazna i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Izlaznu funkciju ne treba miješati s funkcijom izlaza mreže koja predstavlja nelinearnost posljednjeg sloja mreže. U literaturi se umjesto pojma izlazne funkcije vrlo često koristi pojam aktivacijske funkcije. No u preglednom znanstvenom radu \citet{function_survey} aktivacijska funkcija predstavlja ulaznu funkciju, što je neispravno sa stajališta teorijske neuroznanosti jer aktivacija neurona označava trenutak odašiljanja signala kroz akson \citep{neuroscience}. U starijoj literaturi je pojam aktivacijske i prijenosne funkcije često ekvivalentno korišten. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi prvo navedena nomenklatura (ulazna, izlazna i prijenosna funkcija).
+\begin{equation}
+t(x) = (f \circ a)(x) = f(a(x))
+\end{equation}
+
+Najpopularnije ulazne funkcije jesu afina funkcija i unakrsna korelacija.
+Afina funkcija je skalarni produkt vektora ulaza s vektorom težina neurona uz dodatak vrijednosti praga. Parametri neurona definiraju nagib i pomak ravnine u prostoru ulaza koja opisuje ulaz neurona. Primijenjuje se kada se ulazi u model mogu zapisati vektorom značajki čiji raspored nije bitan.
 \begin{equation}
 f(\vec{x};\mat{W},\vec{b})=\mat{W}^T \cdot \vec{x} + \vec{b}
 \end{equation}
@@ -116,11 +126,6 @@ Postoje i aktivacijske funkcije temeljene na udaljenosti vektora ...
 \todo{Spomeni distance based aktivacije (ANFIS?)}
 \todo{Spomeni i složenije metode: \citep{network_in_network}}
 
-Pretvorbu aktivacije neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Aktivacijska i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona \citep{function_survey}. U praksi se pojam aktivacijske i prijenosne vrlo često ekvivalentno koristi na mjestu pojma izlazne funkcije, no ovaj rad se drži prethodno navedene i jasnije notacije.
-\begin{equation}
-t(x) = (f \circ a)(x) = f(a(x))
-\end{equation}
-
 Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i gradijenti teku kroz mrežu, a time utječu na brzinu učenja i inferencije neuronske mreže. Najčešće se koriste slojevite unaprijedne arhitekture zbog jednostavnosti izvedbe. Unaprijedne arhitekture propuštaju podatke samo u jednom smjeru odnosno već izračunati neuroni se ne izračunavaju ponovno, što je posebno pogodno za optimizaciju širenjem unatrag, detaljnije opisanu u poglavlju \ref{sec:backprop}. Slojevite arhitekture omogućuju paralelizaciju izvođenja operacija na grafičkim karticama što značajno ubrzava postupke učenja i inferencije. Pri definiciji slojevite arhitekture najčešće je dovoljno navesti samo redoslijed slojeva, no ponekad je potrebno definirati i način povezivanja slojeva npr. pri uporabi preskočnih veza \citep{highwaynet, resnet, densenet}. Prvi sloj služi za postavljanje ulaza mreže i nazivamo ga ulaznim slojem mreže. Posljednji sloj mreže služi nam za ekstrakciju izlaza te mjerenje kakvoće mreže i nazivamo ga izlaznim slojem mreže. Svi slojevi između ulaznog i izlaznog sloja nazivaju se skrivenim slojevima.
 
 Potpuno povezana arhitektura je najjednostavnija arhitektura za zadatak klasifikacije. Svaki neuron u potpuno povezanom sloju aktivira se pomoću svih izlaza iz prethodnog sloja. Za naučeni potpuno povezani sloj kažemo da vrši ekstrakciju značajki iz svojih ulaza. Geometrijski gledano, svaki neuron vrši mapiranje značajki iz dimenzije prethodnog sloja u novu dimenziju s ciljem modeliranja boljih značajki.
@@ -136,9 +141,9 @@ Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno
 \todoimg{gradijentni spust unimodalna vs višemodalna (gdje preskoći brdo i uleti u bolji optimum)}
 \label{fig:gradientni_spust}
 
-Gradijentni spust je algoritam pronalaska minimuma funkcije vođen gradijentom te funkcije. Za zadanu početnu točku iterativno se pomiče u smjeru suprotnom od gradijenta funkcije u toj točki dok ne zadovolji neki od uvijeta zaustavljanja. Na strmim funkcijama gradijent je često prevelik i može izazvati oscilaciju ili divergenciju (slika \ref{fig:oscilira_divergira}). Stoga se gradijent pri pomaku skalira koeficijentom pomaka $\mu$. Dobro odabran koeficijent pomaka može osigurati bržu konvergenciju, a kod višemodalnih funkcija i pronalazak boljeg optimuma (slika \ref{fig:gradientni_spust}).
+Gradijentni spust je algoritam pronalaska minimuma funkcije vođen gradijentom te funkcije. Za zadanu početnu točku iterativno se pomiče u smjeru suprotnom od gradijenta funkcije u toj točki dok ne zadovolji neki od uvijeta zaustavljanja. Na strmim funkcijama gradijent je često prevelik i može izazvati oscilaciju ili divergenciju \figref{fig:oscilira_divergira}. Stoga se gradijent pri pomaku skalira koeficijentom pomaka $\mu$. Dobro odabran koeficijent pomaka može osigurati bržu konvergenciju, a kod višemodalnih funkcija i pronalazak boljeg optimuma \figref{fig:gradientni_spust}.
 
-Početna točka utječe na ishod algoritma. Kod višemodalnih funkcija s optimumima različitih kvaliteta, početna točka može definirati u koji će lokalni optimum algoritam konvergirati (slika \ref{fig:pocetna_tocka}).
+Početna točka utječe na ishod algoritma. Kod višemodalnih funkcija s optimumima različitih kvaliteta, početna točka može definirati u koji će lokalni optimum algoritam konvergirati \figref{fig:pocetna_tocka}.
 \newline
 \newline
 \begin{algorithm}[H]
@@ -163,7 +168,7 @@ Broj iteracija definira koliko se puta pomičemo iz početne točke, što defini
 \todoimg{gradijentni spust sa početnim točkama (jedna ode u lok, jedna ode u glob, jedna zapne desno na platou)}
 \label{fig:pocetna_tocka}
 
-Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo mali, a sama regija je s obzirom na pomake ogromna (slika \ref{fig:pocetna_tocka}). Kad gradijent postane neupotrebljivo malen kažemo da je \textit{iščeznuo}. U takvim slučajevima pomaže dodavanje momenta koji se akumulira kroz više iteracija i dodaje vektoru gradijenta. Kad algoritam naiđe na regiju s vrlo malim gradijentima, moment pokušava izvuči algoritam iz visoravni pomičući ga u smjeru koji je akumuliran. Kako moment ne bi izvukao algoritam iz optimuma, dodaje mu se koeficijent \textit{zaboravljanja} kojim se stari vektor momenta djelomično zaboravlja u korist novog vektora pomaka (jednadžba \ref{eq:moment_update}). Moment može pomoći i pri zaobilaženju lokalnih optimuma (slika \ref{fig:pocetna_tocka}).
+Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo mali, a sama regija je s obzirom na pomake ogromna \figref{fig:pocetna_tocka}. Kad gradijent postane neupotrebljivo malen kažemo da je \textit{iščeznuo}. U takvim slučajevima pomaže dodavanje momenta koji se akumulira kroz više iteracija i dodaje vektoru gradijenta. Kad algoritam naiđe na regiju s vrlo malim gradijentima, moment pokušava izvuči algoritam iz visoravni pomičući ga u smjeru koji je akumuliran. Kako moment ne bi izvukao algoritam iz optimuma, dodaje mu se koeficijent \textit{zaboravljanja} kojim se stari vektor momenta djelomično zaboravlja u korist novog vektora pomaka (jednadžba \ref{eq:moment_update}). Moment može pomoći i pri zaobilaženju lokalnih optimuma \figref{fig:pocetna_tocka}.
 
 \begin{equation}
 \label{eq:moment_update}
@@ -176,7 +181,7 @@ Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo m
 \todoimg{moment prije i na visoravni, moment za savladavanje brda}
 \label{fig:visoravan}
 
-Algoritam je primijenjiv na funkcije proizvoljne dimenzionalnosti uz pretpostavku derivabilnosti u svakoj točki. Za proizvoljnu realnu funkciju, uz dobro odabrane hiperparametre, algoritam će konvergirati u jedan od lokalnih optimuma, no algoritam generalno nema garanciju konvergencije u globalni optimum. Garanciju pronalaska globalnog optimuma nudi jedino za trivijalne unimodalne funkcije uz odgovarajuće hiperparametre algoritma (slika \ref{fig:gradientni_spust}).
+Algoritam je primijenjiv na funkcije proizvoljne dimenzionalnosti uz pretpostavku derivabilnosti u svakoj točki. Za proizvoljnu realnu funkciju, uz dobro odabrane hiperparametre, algoritam će konvergirati u jedan od lokalnih optimuma, no algoritam generalno nema garanciju konvergencije u globalni optimum. Garanciju pronalaska globalnog optimuma nudi jedino za trivijalne unimodalne funkcije uz odgovarajuće hiperparametre algoritma \figref{fig:gradientni_spust}.
 
 Problem odabira hiperparametara proizlazi iz činjenice da u generalno praksi nemamo definiranu funkciju koju minimiziramo (već samo skup primjera te funkcije) i/ili ju ne možemo jasno vizualizirati (kada radimo s funkcijama visoke dimenzionalnosti). Čak i da imamo definiranu funkciju najčešće ne znamo koju vrijednost poprima globalni optimum, a pohlepna pretraga je netraktabilna. Unatoč tome, gradijentni spust efikasno i učinkovito pronalazi optimume koji su dovoljno dobri za većinu praktičnih primjena \citep{yolo}.
 
@@ -374,6 +379,7 @@ Inicijalizacija parametara mreže je sinonim za odabir početne točke pri gradi
 
 \todo{važnost dobre inicijalizacije}
 \todo{Xavier}
+\todo{postoji i nenadzirana inicijalizacija sloj-po-sloj deep belief network ili autoenkoderom, ali u kontekstu evolucije je preskupa}
 
 \subsubsection{Pretprocesiranje podataka}
 \todo{normalizacija po značajkama}
@@ -539,7 +545,7 @@ Iako se optimalni hipermarametri mogu nalaziti izvan zadanih skupova i neće bit
 \label{sec:svojstva}
 
 \subsubsection{Univerzalna aproksimacija}
-Teorem univerzalne aproksimacije tvrdi da unaprijedna neuronska mreža može modelirati proizvoljnu Borel mjerljivu funkcju proizvoljno dobro uz nekoliko uvijeta: mora imati linearni izlaz, barem jedan nelinearni skriveni sloj koji koristi sažimajuću funkciju i "dovoljan" broj skrivenih neurona. Dakle, postoji arhitektura i postoje parametri kojima neuronska mreža može modelirati zadani podatkovni skup. No, teorem ne iskazuje kako doći do tih parametara što optimizaciju neuronske mreže čini vrlo teškom. \citep{goodfellowbook}
+Teorem univerzalne aproksimacije tvrdi da unaprijedna neuronska mreža može modelirati proizvoljnu Borel mjerljivu funkcju proizvoljno dobro uz nekoliko uvijeta: mora imati linearni izlaz, barem jedan nelinearni skriveni sloj koji koristi sažimajuću funkciju i "dovoljan" broj skrivenih neurona. Dakle, postoji arhitektura i postoje parametri kojima neuronska mreža može modelirati zadani podatkovni skup. No, teorem ne iskazuje kako doći do tih parametara što optimizaciju neuronske mreže čini vrlo teškom \citep{goodfellowbook}. 
 
 \subsubsection{Dubina}
 Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skriveni sloj za predstavljanje proizvoljne Borel mjerljive funkcije, gornja granica veličine tog sloja je eksponencijalno velika naspram broja ulaza što je netraktabilno. Dodavanjem dubine moguće je iskoristiti pravilnosti u funkciji koju aproksimiramo kako bismo smanjili potreban broj neurona. Primjer su funkcije simetrične oko neke osi. Ako skriveni slojevi mreže vrše preklapanje te funkcije preko same sebe, uzastopnim preklapanjem dobiva se sve jednostavnija funkcija. Preklapanje mogu vršiti po-dijelovima-linearne izlazne funkcije poput ReLU i Maxout. Dakako, ne postoji garancija da stvarna funkcija zadovoljava svojstvo simetrije, no u praksi dublje mreže generaliziraju bolje \citep{alexnet, highwaynet, resnet, densenet}. Postoje i druge interpretacije utjecaja dubine, poput svojstva dekompozicije zadatka na manje cjeline ili interpretacija neuronske mreže ako računalnog programa koje nadilaze temu ovog rada \citep{goodfellowbook}.
@@ -562,8 +568,7 @@ Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu 
 
 \subsection{Problemi}
 \subsubsection{Odabir hiperparametara}
-\todo{Problem odabira arhitekture, aktivacijske funkcije i hiperparametara}
-Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov pravilan odabir značajno utjeće na performanse neuronske mreže. Nažalost nije ih moguće optimalno odabrati u zatvorenom obliku, već se to svodi na problem pretraživanja kao što je pretraživanje po rešetci \ref{sec:grid_search}. Arhitekture mogu poprimiti vrlo složene oblike kao što je predstavljeno radovima \citet{resnet}, \citet{densenet}, \citet{inceptionnet} i \citet{yolo} te se najčešće grade ručno s maksimalnom traktabilnom složenošću. Detaljnije o odabiru izlaznih funkcija napisano je u poglavlju \ref{sec:izlazne_fje}.
+Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov pravilan odabir značajno utjeće na performanse neuronske mreže. Nažalost nije ih moguće optimalno odabrati u zatvorenom obliku, već se to svodi na problem pretraživanja kao što je pretraživanje po rešetci \ref{sec:grid_search}. Arhitekture mogu poprimiti vrlo složene oblike kao što je predstavljeno radovima \citet{highway}, \citet{resnet}, \citet{densenet}, \citet{inceptionnet} i \citet{yolo} te se najčešće grade ručno s maksimalnom traktabilnom složenošću mreže. Detaljnije o odabiru izlaznih funkcija napisano je u poglavlju \ref{sec:izlazne_fje}.
 
 \subsubsection{Isčezavajući gradijent}
 \label{sec:iscezavajuci_grad}
@@ -574,15 +579,32 @@ Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njih
 
 Derivabilne neuronske mreže optimiziraju se optimizatorom koji određuje kako se mijenjaju parametri. Za ugađanje parametara najčešće se koristi gradijentni spust, uz pretpostavku derivabilnosti čitave neuronske mreže. Kada pretpostavka ne vrijedi najčešće se koriste evolucijski algoritmi.
 
-\section{Izlazne funkcije}
+\chapter{Izlazne funkcije}
 \label{sec:izlazne_fje}
 Izlazna funkcija služi unošenju nelinearnosti u neuronsku mrežu i ima utjecaj na njeno učenje. Prilikom inferencije izlazna funkcija stvara nelinearnosti u decizijskoj granici koje su parametrizirane parametrima neurona na koji se primijenjuje. U slojevitim arhitekturama izlazne funkcije se primijenjuju uzastopno s različitim parametrima i vrše nelinearne projekcije iz jedne dimenzije u drugu.
 
 Prilikom učenja neuronske mreže važan nam je utjecaj derivacije izlazne funkcije na gradijent pri širenju unatrag. Prolaskom unazad gradijent se množi s parametrima slojeva koji se mogu zapisati matricom težina $\mat{W}$. Uzastopnom primijenom matrica težina, ako su loše kondicionirane, može doći do "\textit{isćezavanja}" ili "\textit{eksplozije}" gradijenta.
 
-Za odabir izlazne funkcije ne postoji jasno pravilo. U praksi se odabiru empirijski po pokazanim rezultatima i brzinom (te implementacijskom podrškom), s preferencijom onih koje imaju neku teorijsku podlogu. U radu \citet{learnable_func} predstavljen je pokušaj automatske izgradnje izlazne funkcije gradijentnim spustom, no ... . U radu \citet{golden_func} autori koriste simboličku regresiju kako bi izgradili dvodjelnu funkciju, sa zasebnom komponentom u negativnoj i pozitivnoj domeni. Rezultat pretrage je funkcija \textit{Swish} \ref{func:swish} koja se pokazala vrlo dobrom na nekoliko arhitektura i podatkovnih skupova.
+\section{Odabir izlazne funkcije}
+Za odabir izlazne funkcije ne postoji jasno pravilo. U praksi se odabiru empirijski po pokazanim rezultatima i brzinom (te implementacijskom podrškom), s preferencijom onih koje imaju neka teorijski potkrijepljena svojstva.
 
 \todo{Bitka za odabir izlazne fje (nađi onaj rad di pljuje po sigmoidi i relu (elu rad?))}
+
+U radu \citet{elish} autori koriste simboličku regresiju kako bi izgradili dvodjelnu izlaznu funkciju, sa zasebnom funkcijom u negativnoj i pozitivnoj domeni te definiraju dvije ručno izgrađene funkcije. Pretražuju se funkcije koje su jednostavne kompozicije popularnih izlaznih funkcija s ciljem iskorištavanja njihovih dobrih svojstava. Funkcije se primijenjuju na duboke arhitekture ResNet56 i VGG16 i na nekoliko podatkovnih skupova: CIFAR-10, CIFAR-100 i Tiny-ImageNet. Rezultati pokazuju poboljšanje kompozicije u odnosu na popularne funkcije gdje pozitivan dio često sadrži linearnu komponentu, a oblikom funkcije podsjećaju na zglobnicu \figref{fig:relu}.
+
+\subsection{Izlazne funkcije s učećim parametima}
+\todo{članak: učeći parametri u fjama (onaj stari)}
+
+U radu \citet{trained_func} autori istražuju učeće izlazne funkcije ...
+
+U radu TAF...
+
+\subsection{Periodičke izlazne funkcije}
+\todo{članak: fourier mreža s periodičkim fjama}
+\todo{Članak: taming the waves}
+\todo{ostale reference iz taming the waves}
+
+\section{Popularne izlazne funkcije}
 
 U nastavku su navedene izlazne funkcije koje je autor pronašao u literaturi i koje su isprobane u ovom radu. Za svaku funkciju napisana je formula i iscrtan izgled funkcije i njene derivacije te navedena neka poznata svojstva.
 
@@ -616,7 +638,7 @@ f_1(f_2(x)) &= w_1 \cdot (w_2 \cdot x + b_2) + b_1 \\
 \end{split}
 \end{align}
 
-\subsection*{Ispravljena linearna jedinica (ReLU)}
+\subsection{Zglobnica ili ispravljena linearna jedinica (ReLU)}
 \label{func:relu}
 \engl{Rectified linear unit}
 
@@ -628,11 +650,12 @@ f_1(f_2(x)) &= w_1 \cdot (w_2 \cdot x + b_2) + b_1 \\
 \end{figure}
 
 \begin{equation}
+\label{eq:relu}
 \begin{split}
 f(x) = 
 \begin{cases}
 x,		& \text{ako } x > 0 \\
-0,		& \text{inače}
+0,		& \otherwise
 \end{cases}
 \end{split}
 \qquad
@@ -640,7 +663,7 @@ x,		& \text{ako } x > 0 \\
 f'(x) = 
 \begin{cases}
 1,		& \text{ako } x > 0 \\
-0,		& \text{inače}
+0,		& \otherwise
 \end{cases}
 \end{split}
 \end{equation}
@@ -653,7 +676,7 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Propusna ispravljena linearna jedinica (LReLU)}
+\subsection{Propusna ispravljena linearna jedinica (LReLU)}
 \engl{Leaky ReLU}
 
 \begin{figure}[H]
@@ -668,7 +691,7 @@ f'(x) =
 f(x) = 
 \begin{cases}
 x,			& \text{ako } x > 0 \\
-\alpha x,	& \text{inače}
+\alpha x,	& \otherwise
 \end{cases}
 \end{split}
 \qquad
@@ -676,7 +699,7 @@ x,			& \text{ako } x > 0 \\
 f'(x) = 
 \begin{cases}
 1,		& \text{ako } x > 0 \\
-\alpha,	& \text{inače}
+\alpha,	& \otherwise
 \end{cases}
 \end{split}
 \end{equation}
@@ -685,7 +708,7 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Parametrizirana ispravljena linearna jedinica (PReLU)}
+\subsection{Parametrizirana ispravljena linearna jedinica (PReLU)}
 \engl{Parametric ReLU}
 
 \todoimg{}
@@ -696,7 +719,7 @@ f'(x) =
 f(x) &= 
 \begin{cases}
 x,			& \text{ako } x > 0 \\
-\alpha x,	& \text{inače}
+\alpha x,	& \otherwise
 \end{cases}
 \end{split}
 \qquad
@@ -704,7 +727,7 @@ x,			& \text{ako } x > 0 \\
 f'(x) = 
 \begin{cases}
 1,		& \text{ako } x > 0 \\
-\alpha,	& \text{inače}
+\alpha,	& \otherwise
 \end{cases}
 \end{split}
 \end{equation}
@@ -716,7 +739,7 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Nasumična ispravljena linearna jedinica (RReLU)}
+\subsection{Nasumična ispravljena linearna jedinica (RReLU)}
 \engl{Randomized leaky ReLU}
 
 \todoimg{}
@@ -726,7 +749,7 @@ f'(x) =
 f(x) &= 
 \begin{cases}
 x,			& \text{ako } x > 0 \\
-\alpha x,	& \text{inače}
+\alpha x,	& \otherwise
 \end{cases}
 \end{split}
 \qquad
@@ -734,7 +757,7 @@ x,			& \text{ako } x > 0 \\
 f'(x) = 
 \begin{cases}
 1,		& \text{ako } x > 0 \\
-\alpha,	& \text{inače}
+\alpha,	& \otherwise
 \end{cases}
 \end{split}
 \end{equation}
@@ -746,7 +769,7 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Ispravljena linearna jedinica s pragom (ThReLU)}
+\subsection{Ispravljena linearna jedinica s pragom (ThReLU)}
 \engl{Thresholded ReLU}
 
 \begin{figure}[H]
@@ -761,7 +784,7 @@ f'(x) =
 f(x) = 
 \begin{cases}
 x,		& \text{ako } x > \theta \\
-0,		& \text{inače}
+0,		& \otherwise
 \end{cases}
 \end{split}
 \qquad
@@ -769,7 +792,7 @@ x,		& \text{ako } x > \theta \\
 f'(x) = 
 \begin{cases}
 1,		& \text{ako } x > \theta \\
-0,		& \text{inače}
+0,		& \otherwise
 \end{cases}
 \end{split}
 \end{equation}
@@ -778,7 +801,7 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{(DReLU)}
+\subsection{(DReLU)}
 \engl{Dual ReLU}
 
 \todoimg{}
@@ -791,7 +814,20 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Eksponencijalno-linearna jedinica (ELU)}
+\subsection{(CReLU)}
+\engl{Concatenated ReLU}
+
+\todoimg{}
+
+\begin{equation}
+???
+\end{equation}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
+\subsection{Eksponencijalno-linearna jedinica (ELU)}
 \engl{Exponential linear unit}
 
 \begin{figure}[H]
@@ -802,11 +838,12 @@ f'(x) =
 \end{figure}
 
 \begin{equation}
+\label{eq:elu}
 \begin{split}
 f(x) = 
 \begin{cases}
 x,					& \text{ako } x > 0 \\
-\alpha (e^x - 1),	&  \text{inače}
+\alpha (e^x - 1),	& \otherwise
 \end{cases}
 \end{split}
 \qquad
@@ -814,7 +851,7 @@ x,					& \text{ako } x > 0 \\
 f'(x) = 
 \begin{cases}
 1,	 		& \text{ako } x > 0 \\
-\alpha e^x,	& \text{inače}
+\alpha e^x,	& \otherwise
 \end{cases}
 \end{split}
 \end{equation}
@@ -823,7 +860,7 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Skalirana eksponencijalno-linearna jedinica (SELU)}
+\subsection{Skalirana eksponencijalno-linearna jedinica (SELU)}
 \engl{Scaled exponential linear unit}
 
 \begin{figure}[H]
@@ -838,7 +875,7 @@ f'(x) =
 f(x) = \lambda
 \begin{cases}
 x,					& \text{ako } x > 0 \\
-\alpha (e^x - 1),	&  \text{inače}
+\alpha (e^x - 1),	& \otherwise
 \end{cases}
 \end{split}
 \qquad
@@ -846,7 +883,7 @@ x,					& \text{ako } x > 0 \\
 f'(x) = \lambda
 \begin{cases}
 1,	 		& \text{ako } x > 0 \\
-\alpha e^x,	& \text{inače}
+\alpha e^x,	& \otherwise
 \end{cases}
 \end{split}
 \end{equation}
@@ -855,7 +892,7 @@ f'(x) = \lambda
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{(GELU)}
+\subsection{(GELU)}
 \engl{Gaussian error linear unit}
 
 \todoimg{}
@@ -864,7 +901,7 @@ f'(x) = \lambda
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Sigmoida ($\sigma $)}
+\subsection{Sigmoida ($\sigma $)}
 \engl{Sigmoid}
 
 \begin{figure}[H]
@@ -875,6 +912,7 @@ f'(x) = \lambda
 \end{figure}
 
 \begin{equation}
+\label{eq:sigmoid}
 \begin{split}
 f(x) = \frac{1}{1+e^{-x}}
 \end{split}
@@ -888,7 +926,7 @@ f'(x) = \sigma(x)(1-\sigma(x))
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Tvrda sigmoida}
+\subsection{Tvrda sigmoida}
 \engl{Hard sigmoid}
 
 \begin{figure}[H]
@@ -916,7 +954,7 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Swish}
+\subsection{Swish}
 \label{func:swish}
 
 \begin{figure}[H]
@@ -927,13 +965,11 @@ f'(x) =
 \end{figure}
 
 \begin{equation}
+\label{eq:swish}
 \begin{split}
-f(x) = x \sigma(\beta x)
-\end{split}
-\qquad
-\begin{split}
-f'(x) &= \sigma(\beta x) + \beta x \cdot \sigma(\beta x)(1-\sigma(\beta x)) \\
-&= \frac{e^x \cdot (e^x + x + 1)}{(e^x + 1)^2}
+&f(x) = x \cdot \sigma(\beta x)
+\\
+&f'(x) = \sigma(\beta x) \cdot (1 + \beta x \cdot (1-\sigma(\beta x)) = \frac{e^x \cdot (e^x + x + 1)}{(e^x + 1)^2}
 \end{split}
 \end{equation}
 
@@ -941,7 +977,73 @@ f'(x) &= \sigma(\beta x) + \beta x \cdot \sigma(\beta x)(1-\sigma(\beta x)) \\
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Tangens hiperbolni (tanh)}
+\subsection{ELiSH}
+\label{func:elish}
+\engl{Exponential Linear Sigmoid Squashing}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{ELiSH.pdf}
+\centering
+\caption{Funkcija ELiSH i njena derivacija}
+\label{fig:elish}
+\end{figure}
+
+\begin{equation}
+\begin{split}
+&f(x) = 
+	\begin{cases}
+		swish(x), \quad x \geq 0 \\
+		ELU(x) \cdot \sigma(x), \quad \otherwise
+	\end{cases} \\
+&f'(x) =
+	\begin{cases}
+		swish'(x), \quad x \geq 0 \\
+		\sigma(x) \cdot (ELU'(x) + ELU(x) \cdot (1-\sigma(x)), \quad \otherwise
+	\end{cases}
+\end{split}
+\end{equation}
+
+Ova funkcija i njena brža aproksimacija \textit{Tvrdi ELiSH} su predstavljene u članku \citet{elish}. Funkcija je različito definirana na pozitivnoj i negativnoj domeni. Pozitivnu domenu naslijeđuje od funkcije Swish \eqref{eq:swish}, a negativna je umnožak funkcije ELU \eqref{eq:elu} i sigmoide \eqref{eq:sigmoid}. Obje funkcije su ručno izgrađene s ciljem korištenja dobrog prijenosa informacije koji ostvaruju funkcije Swish i sigmoide, ali sprečavanjem isčezavajućeg gradijenta pomoću linearne komponente.
+
+\subsection{Tvrdi ELiSH}
+\label{func:hard_elish}
+\engl{Hard ELiSH}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Hard_ELiSH.pdf}
+\centering
+\caption{Funkcija Tvrdi ELiSH i njena derivacija}
+\label{fig:hard_elish}
+\end{figure}
+
+\begin{equation}
+\begin{split}
+&f(x) =
+	\begin{cases}
+		x \cdot a(x), \quad x \geq 0 \\
+		ELU(x) \cdot a(x), \quad \otherwise
+	\end{cases} \\
+&f'(x) = \begin{cases}
+	a(x) + x \cdot a'(x), \quad x \geq 0 \\
+	ELU'(x) \cdot a(x) + x \cdot ELU(x) \cdot a'(x), \quad \otherwise
+\end{cases}
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+&a(x) = \max(0, \min(1, \frac{x+1}{2})) \approx HardSigmoid(x) \\
+&a'(x) =
+\begin{cases}
+	0.5, \quad x \in [-1,1] \\
+	0, \quad \otherwise
+\end{cases}	
+\end{split}
+\end{equation}
+
+Ova funkcija je aproksimacija funkcije ELiSH opisane u poglavlju \ref{func:elish}. Uvedena je za potrebe bržeg izvođenja sigmoide i nasljeđuje svojstva ELiSH funkcije.
+
+\subsection{Tangens hiperbolni (tanh)}
 \label{func:tanh}
 
 \begin{figure}[H]
@@ -965,7 +1067,7 @@ f'(x) = 1 - tanh^2(x)
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Tvrdi tangens hiperbolni}
+\subsection{Tvrdi tangens hiperbolni}
 \engl{Hard tanh}
 
 \begin{figure}[H]
@@ -999,37 +1101,48 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Racionalna aproksimacija tanh}
+\subsection{Racionalna aproksimacija tanh}
 \engl{Rational tanh}
 
-\todo{DL4J ima bug u derivaciji ove fje}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Rational_tanh.pdf}
+\centering
+\caption{Racionalni tanh i njegova derivacija}
+\label{fig:rational_tanh}
+\end{figure}
 
-\todoimg{}
+\begin{align}
+\begin{split}
+f(x) &= 1.7159 \cdot tanh^*(\frac{2}{3}x), \quad
+tanh^*(x) = sgn(x)(1 - \frac{1}{1 + |x| + x^2 + 1.41645 \cdot x^4}) \\
+f'(x) &= 1.7159 \cdot \frac{2}{3} \cdot tanh^{*'}(\frac{2}{3}x), \quad
+tanh^{*'}(x) = \frac{1+sgn(x) \cdot (2x + 4 \cdot 1.41645 \cdot x^3)}{(1 + |x| + x^2 + 1.41645 \cdot x^4)^2}
+\end{split}
+\end{align}
 
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
 
+\subsection{Ispravljeni tanh}
+\engl{Rectified tanh}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Rectified_tanh.pdf}
+\centering
+\caption{Ispravljeni tanh i njegova derivacija}
+\label{fig:rectified_tanh}
+\end{figure}
+
 \begin{equation}
-f(x) = 1.7159 \cdot tanh(\frac{2}{3}x)\text{,\quad gdje }
-tanh(x) \approx sgn(x)(1 - \frac{1}{1 + |x| + x^2 + 1.41645 \cdot x^4}) \\
-f'(x) =
+???
 \end{equation}
 
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Ispravljeni tanh}
-\engl{Rectified tanh}
-
-\todoimg{}
-
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
-
-\subsection*{Softmax}
+\subsection{Softmax}
 
 \todoimg{}
 
@@ -1047,7 +1160,7 @@ f'(x) = \frac{e^x}{1+e^x}
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Hierarchical softmax}
+\subsection{Hierarchical softmax}
 
 \todoimg{}
 
@@ -1060,27 +1173,26 @@ f'(x) = \frac{e^x}{1+e^x}
 \todo{problemi}
 
 
-\subsection*{Maxout}
+\subsection{Maxout}
 
 \todoimg{}
 
 \begin{equation}
-\begin{split}
-f(\vec{x}) = 
-\end{split}
-\qquad
-\begin{split}
-f'(x) = 
-\end{split}
+???
 \end{equation}
 
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Softplus}
+\subsection{Softplus}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Softplus.pdf}
+\centering
+\caption{Softplus i njegova derivacija}
+\label{fig:softplus}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -1096,7 +1208,7 @@ f'(x) = \frac{e^x}{1+e^x}
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Noisy softplus}
+\subsection{Noisy softplus}
 
 \todoimg{}
 
@@ -1108,9 +1220,14 @@ f'(x) = \frac{e^x}{1+e^x}
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Softsign}
+\subsection{Softsign}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Softsign.pdf}
+\centering
+\caption{Softsign i njegova derivacija}
+\label{fig:softsign}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -1126,9 +1243,14 @@ f'(x) = \frac{1}{(1+|x|)^2}
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Sinus (sin)}
+\subsection{Sinus (sin)}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Sin.pdf}
+\centering
+\caption{Sinusoida i njegova derivacija}
+\label{fig:sin}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -1140,13 +1262,32 @@ f'(x) = cos(x)
 \end{split}
 \end{equation}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+Sinus je periodička funkcija te nema teorijsku podlogu za uporabu u neuronskim mrežama, za razliku od monotonih funkcija.
+\todo{članak dokaz univerzalne aproksimacije monotonih fja}
 
-\subsection*{Kosinus (cos)}
+Unatoč tome, pojavljuje se u radovima pretrage izlaznih funkcija \citep{elish} i u ovom radu te pokazuje obećavajuće rezultate. U radu \citet{taming_waves} autori predstavljaju problematiku učenja sa sinusoidom na jednostavnom problemu. Problem stvaraju brojni lokalni optimumi na koje je izrazito osjetljiv gradijentni spust. Problem je ublažava učenje stohastičkim gradijentnim spustom koji zaglađuje valovitost funkcije gubitka. Dodatno, autori pokazuju da neuronska mreža zapravo ne ovisi snažno o periodičnosti funkcije tako da su rezultate usporedili sa skraćenom sinusoidom \eqref{eq:truncated_sin}. Članak nije prošao postupak recenzije jer su dodatni eksperimenti urodili nekonzistentnim rezultatima u usporedbi s tangensom hiperbolnim.
+\begin{equation}
+\label{eq:truncated_sin}
+f(x) =
+\begin{cases}
+0, \quad x < \frac{\pi}{2} \\
+sin(x), \quad x \in [-\frac{\pi}{2},\frac{\pi}{2}] \\
+1, \quad \otherwise
+\end{cases}
+\end{equation}
+\todoimg{truncated sine}
 
-\todoimg{}
+
+Po uzoru na slićne funkcije kao što je sigmoida \figref{fig:sigmoid} i tangens hiperbolni \figref{fig:tanh}, sinusoida najveću vrijednost gradijenta daje upravo kada je aktivacija jednaka 0 (u ograničenom intervalu).
+
+\subsection{Kosinus (cos)}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Cos.pdf}
+\centering
+\caption{Kosinus i njegova derivacija}
+\label{fig:cos}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -1158,13 +1299,19 @@ f'(x) = -sin(x)
 \end{split}
 \end{equation}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+Kosinus je funkcija sinusa pomaknuta za četvrtinu periode te dijeli ista svojstva i probleme. no, s obzirom da je pomak relativno velik u odnosu na očekivane veličine ulaza, možemo ga promatrati kao zasebnu izlaznu funkciju. Derivacija kosinusa se poprilično razlikuje od ostalih aktivacijskih funkcija. Unatoč tome, daje vrlo kompetitivne rezultate (poglavlje \ref{sec:rezultati}).
+\begin{equation}
+cos(x) = sin(x + \frac{\pi}{2}) \approx sin(x + 1.571)
+\end{equation}
 
-\subsection*{Parabola $x^2$}
+\subsection{Parabola $x^2$}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Pow2.pdf}
+\centering
+\caption{Parabola i njena derivacija}
+\label{fig:pow2}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -1180,9 +1327,14 @@ f'(x) = 2x
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Kubna parabola $x^3$}
+\subsection{Kubna parabola $x^3$}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Pow3.pdf}
+\centering
+\caption{Kubna parabola i njena derivacija}
+\label{fig:pow3}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -1198,9 +1350,14 @@ f'(x) = 3x^2
 \todo{svojstva}
 \todo{problemi}
 
-\subsection*{Gauss}
+\subsection{Gauss}
 
-\todoimg{}
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Gauss.pdf}
+\centering
+\caption{Gaussolika funkcija i njena derivacija}
+\label{fig:gauss}
+\end{figure}
 
 \begin{equation}
 \begin{split}
@@ -1222,6 +1379,8 @@ f'(x) = -2x \cdot f(x)
 \section{Simbolička regresija}
 \todo{Opis i svojstva SR}
 \todo{Utjecaj i brojnost parametara u GA (moš linkat i svoj završni rad :P)}
+
+\todo{golden activation članak, kako radi detaljnije}
 
 \section{Taboo evolucijski algoritam}
 \todo{Problem konvergencije i stohastičnosti GP-a}
@@ -1353,7 +1512,7 @@ tanh		& $tanh(x)$				& 1 \\
 \chapter{Buduća istraživanja}
 \todo{Primjena CNN na vremenskim uzorcima po uzoru na onaj rad}
 \todo{Ispitivanje učinkovitosti korištene optimizacije na ostalim problemima}
-\todo{Paralelna evolucija arhitekture i aktivacijskih fja}
+\todo{Paralelna evolucija arhitekture i aktivacijskih fja \citep{cnn_evolution}}
 
 %--------------------------------------------------------------------------------------%
 \chapter{Zaključak}
