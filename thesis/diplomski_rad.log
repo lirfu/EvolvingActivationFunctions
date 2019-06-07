@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.2.5)  7 JUN 2019 02:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.2.5)  7 JUN 2019 15:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -658,25 +658,22 @@ LaTeX Warning: Label `eq:negloglikelyhood_expect' multiply defined.
 
 LaTeX Warning: Label `eq:true_groups' multiply defined.
 
-
-LaTeX Warning: Label `eq:relu' multiply defined.
-
 )
 \openout1 = `diplomski_rad.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 36.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 37.
+LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 37.
  (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1ptm.fd
 File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
@@ -774,32 +771,32 @@ e
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Try loading font information for T1+phv on input line 44.
+LaTeX Font Info:    Try loading font information for T1+phv on input line 45.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2001/06/04 scalable font definitions for T1/phv.
 )
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 44.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 45.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 44.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 45.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 44.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 45.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <24.88> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 44.
-LaTeX Font Info:    Try loading font information for U+msa on input line 44.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 45.
+LaTeX Font Info:    Try loading font information for U+msa on input line 45.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 44.
+LaTeX Font Info:    Try loading font information for U+msb on input line 45.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 47.
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 48.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
@@ -810,7 +807,7 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
  [4
 
 ]
-Overfull \hbox (18.21915pt too wide) in paragraph at lines 75--75
+Overfull \hbox (18.21915pt too wide) in paragraph at lines 78--78
  [] []\T1/ptm/b/n/12 Optimizacija sim-bo-li£-kom re-gre-si-jom (teh-ni£ki ge-ne
 t-skim pro-gra-mi-ra-njem...) []  
  []
@@ -822,7 +819,7 @@ t-skim pro-gra-mi-ra-njem...) []
  [6]
 Poglavlje 1.
 
-Underfull \hbox (badness 10000) in paragraph at lines 55--56
+Underfull \hbox (badness 10000) in paragraph at lines 56--57
 
  []
 
@@ -831,64 +828,64 @@ Underfull \hbox (badness 10000) in paragraph at lines 55--56
 ]
 Poglavlje 2.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 60.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 61.
 
-Underfull \hbox (badness 10000) in paragraph at lines 61--63
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 65--68
+Underfull \hbox (badness 10000) in paragraph at lines 62--64
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 71--73
+Underfull \hbox (badness 10000) in paragraph at lines 66--69
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 75--77
+Underfull \hbox (badness 10000) in paragraph at lines 72--74
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 76--78
 
  []
 
 [2
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 79--80
+Underfull \hbox (badness 10000) in paragraph at lines 80--81
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 82--84
+Underfull \hbox (badness 10000) in paragraph at lines 83--85
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 86--87
+Underfull \hbox (badness 10000) in paragraph at lines 87--88
 
  []
 
 [3]
 Poglavlje 3.
 
-Overfull \hbox (65.45038pt too wide) in paragraph at lines 97--98
+Overfull \hbox (65.45038pt too wide) in paragraph at lines 98--99
 []\T1/ptm/m/n/12 TODO: \T1/ptm/m/it/12 ’to sve bi-olozi vele o ne-uro-nima? ht-
 tps://www.ncbi.nlm.nih.gov/pmc/articles/PMC3812748/[] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 97--98
+Underfull \hbox (badness 10000) in paragraph at lines 98--99
 
  []
 
 <./img/Neuron.pdf, id=41, 424.4658pt x 168.63pt>
 File: ./img/Neuron.pdf Graphic file (type pdf)
  <use ./img/Neuron.pdf>
-Package pdftex.def Info: ./img/Neuron.pdf used on input line 101.
+Package pdftex.def Info: ./img/Neuron.pdf used on input line 102.
 (pdftex.def)             Requested size: 297.12402pt x 118.04018pt.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 102.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 103.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -900,81 +897,81 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 pdfTeX warning: pdflatex (file ./img/Neuron.pdf): PDF inclusion: invalid other 
 resource which is no dict (key 'ProcSets', type <array>); ignored.
 >]
-Underfull \hbox (badness 10000) in paragraph at lines 122--123
+Underfull \hbox (badness 10000) in paragraph at lines 123--124
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 126--128
+Underfull \hbox (badness 10000) in paragraph at lines 127--129
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 133--134
+Underfull \hbox (badness 10000) in paragraph at lines 134--135
 
  []
 
 [6]
-Underfull \hbox (badness 10000) in paragraph at lines 146--161
+Underfull \hbox (badness 10000) in paragraph at lines 147--162
 
  []
 
 [7] [8] [9]
 
 LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 23
-6.
+7.
 
 
 LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 23
-6.
+7.
 
 [10] [11] [12] [13]
-Underfull \hbox (badness 10000) in paragraph at lines 367--369
+Underfull \hbox (badness 10000) in paragraph at lines 368--370
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 371--372
+Underfull \hbox (badness 10000) in paragraph at lines 372--373
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 374--376
+Underfull \hbox (badness 10000) in paragraph at lines 375--377
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 380--383
+Underfull \hbox (badness 10000) in paragraph at lines 381--384
 
  []
 
 [14]
-Underfull \hbox (badness 10000) in paragraph at lines 401--402
+Underfull \hbox (badness 10000) in paragraph at lines 402--403
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 407--408
+Underfull \hbox (badness 10000) in paragraph at lines 408--409
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 411--412
+Underfull \hbox (badness 10000) in paragraph at lines 412--413
 
  []
 
 [15]
-Underfull \hbox (badness 10000) in paragraph at lines 429--430
+Underfull \hbox (badness 10000) in paragraph at lines 430--431
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 436--437
+Underfull \hbox (badness 10000) in paragraph at lines 437--438
 
  []
 
 [16] [17]
-LaTeX Font Info:    Try loading font information for U+bbm on input line 475.
+LaTeX Font Info:    Try loading font information for U+bbm on input line 476.
  (/usr/share/texlive/texmf-dist/tex/latex/bbm-macros/ubbm.fd
 File: ubbm.fd 1999/03/15 V 1.2 Font definition for bbm font - TH
 ) [18]
@@ -982,64 +979,64 @@ File: ubbm.fd 1999/03/15 V 1.2 Font definition for bbm font - TH
 File: ./img/Pitagorine_sredine.pdf Graphic file (type pdf)
 
 <use ./img/Pitagorine_sredine.pdf>
-Package pdftex.def Info: ./img/Pitagorine_sredine.pdf used on input line 491.
+Package pdftex.def Info: ./img/Pitagorine_sredine.pdf used on input line 492.
 (pdftex.def)             Requested size: 412.56497pt x 157.07416pt.
  [19 <./img/Pitagorine_sredine.pdf>] [20]
-Underfull \hbox (badness 10000) in paragraph at lines 553--554
+Underfull \hbox (badness 10000) in paragraph at lines 554--555
 
  []
 
 
-Overfull \hbox (17.61935pt too wide) in paragraph at lines 556--558
+Overfull \hbox (17.61935pt too wide) in paragraph at lines 557--559
 []\T1/ptm/m/n/12 TODO: \T1/ptm/m/it/12 https://www.quantamagazine.org/new-theor
 y-cracks-open-the-black-box-of-deep-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 556--558
+Underfull \hbox (badness 10000) in paragraph at lines 557--559
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 562--563
+Underfull \hbox (badness 10000) in paragraph at lines 563--564
 
  []
 
 [21]
-Underfull \hbox (badness 10000) in paragraph at lines 567--568
+Underfull \hbox (badness 10000) in paragraph at lines 568--569
 
  []
 
 
 Package natbib Warning: Citation `highway' on page 22 undefined on input line 5
-71.
+72.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 575--576
+Underfull \hbox (badness 10000) in paragraph at lines 576--577
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 578--579
+Underfull \hbox (badness 10000) in paragraph at lines 579--580
 
  []
 
 [22] [23]
 Poglavlje 4.
 
-Underfull \hbox (badness 10000) in paragraph at lines 591--592
+Underfull \hbox (badness 10000) in paragraph at lines 592--593
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 596--597
+Underfull \hbox (badness 10000) in paragraph at lines 597--598
 
  []
 
 [24
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 603--606
+Underfull \hbox (badness 10000) in paragraph at lines 604--607
 
  []
 
@@ -1047,323 +1044,324 @@ Underfull \hbox (badness 10000) in paragraph at lines 603--606
 File: ./img/Identity.pdf Graphic file (type pdf)
 
 <use ./img/Identity.pdf>
-Package pdftex.def Info: ./img/Identity.pdf used on input line 615.
+Package pdftex.def Info: ./img/Identity.pdf used on input line 616.
 (pdftex.def)             Requested size: 412.56497pt x 139.70451pt.
  [25 <./img/Identity.pdf>]
 <./img/ReLU.pdf, id=210, 857.06134pt x 293.06676pt>
 File: ./img/ReLU.pdf Graphic file (type pdf)
  <use ./img/ReLU.pdf>
-Package pdftex.def Info: ./img/ReLU.pdf used on input line 646.
+Package pdftex.def Info: ./img/ReLU.pdf used on input line 647.
 (pdftex.def)             Requested size: 412.56497pt x 141.07736pt.
 
-[26 <./img/ReLU.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 675--676
-
- []
-
-<./img/LReLU.pdf, id=230, 857.06134pt x 293.06676pt>
+[26 <./img/ReLU.pdf>] <./img/LReLU.pdf, id=230, 857.06134pt x 293.06676pt>
 File: ./img/LReLU.pdf Graphic file (type pdf)
- <use ./img/LReLU.pdf>
-Package pdftex.def Info: ./img/LReLU.pdf used on input line 711.
+
+<use ./img/LReLU.pdf>
+Package pdftex.def Info: ./img/LReLU.pdf used on input line 680.
 (pdftex.def)             Requested size: 412.56497pt x 141.07736pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 735--738
-
- []
-
-[27 <./img/LReLU.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 766--769
+ [27 <./img/LReLU.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 733--736
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 796--799
+Underfull \hbox (badness 10000) in paragraph at lines 763--766
 
  []
 
 <./img/ThReLU.pdf, id=251, 857.06134pt x 293.06676pt>
 File: ./img/ThReLU.pdf Graphic file (type pdf)
  <use ./img/ThReLU.pdf>
-Package pdftex.def Info: ./img/ThReLU.pdf used on input line 804.
+Package pdftex.def Info: ./img/ThReLU.pdf used on input line 771.
 (pdftex.def)             Requested size: 412.56497pt x 141.07736pt.
 
 [28]
-Underfull \hbox (badness 10000) in paragraph at lines 828--831
+Underfull \hbox (badness 10000) in paragraph at lines 795--798
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 841--844
+Underfull \hbox (badness 10000) in paragraph at lines 808--811
+
+ []
+
+<./img/Softplus.pdf, id=255, 857.06134pt x 293.06676pt>
+File: ./img/Softplus.pdf Graphic file (type pdf)
+
+<use ./img/Softplus.pdf>
+Package pdftex.def Info: ./img/Softplus.pdf used on input line 815.
+(pdftex.def)             Requested size: 412.56497pt x 141.07736pt.
+ [29 <./img/ThReLU.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 831--834
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 854--857
+Underfull \hbox (badness 10000) in paragraph at lines 845--848
 
  []
 
-[29 <./img/ThReLU.pdf>] <./img/ELU.pdf, id=274, 865.46776pt x 293.06676pt>
+<./img/ELU.pdf, id=275, 865.46776pt x 293.06676pt>
 File: ./img/ELU.pdf Graphic file (type pdf)
-
-<use ./img/ELU.pdf>
-Package pdftex.def Info: ./img/ELU.pdf used on input line 862.
+ <use ./img/ELU.pdf>
+Package pdftex.def Info: ./img/ELU.pdf used on input line 853.
 (pdftex.def)             Requested size: 412.56497pt x 139.70451pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 887--890
+ [30 <./img/Softplus.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 878--881
 
  []
 
-<./img/SELU.pdf, id=275, 865.46776pt x 293.06676pt>
+<./img/SELU.pdf, id=295, 865.46776pt x 293.06676pt>
 File: ./img/SELU.pdf Graphic file (type pdf)
  <use ./img/SELU.pdf>
-Package pdftex.def Info: ./img/SELU.pdf used on input line 895.
+Package pdftex.def Info: ./img/SELU.pdf used on input line 886.
 (pdftex.def)             Requested size: 412.56497pt x 139.70451pt.
 
-[30 <./img/ELU.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 910--913
+
+ []
+
+[31 <./img/ELU.pdf> <./img/SELU.pdf
+
+pdfTeX warning: pdflatex (file ./img/SELU.pdf): PDF inclusion: multiple pdfs wi
+th page group included in a single page
+>]
 Underfull \hbox (badness 10000) in paragraph at lines 919--922
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 928--931
-
- []
-
-<./img/Sigmoid.pdf, id=295, 866.64403pt x 293.06676pt>
-File: ./img/Sigmoid.pdf Graphic file (type pdf)
- <use ./img/Sigmoid.pdf>
-Package pdftex.def Info: ./img/Sigmoid.pdf used on input line 936.
-(pdftex.def)             Requested size: 412.56497pt x 139.5167pt.
-
-[31 <./img/SELU.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 953--956
-
- []
-
-<./img/Hard_sigmoid.pdf, id=315, 866.64403pt x 293.06676pt>
-File: ./img/Hard_sigmoid.pdf Graphic file (type pdf)
-
-<use ./img/Hard_sigmoid.pdf>
-Package pdftex.def Info: ./img/Hard_sigmoid.pdf used on input line 961.
-(pdftex.def)             Requested size: 412.56497pt x 139.5167pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 981--984
-
- []
-
-[32 <./img/Sigmoid.pdf> <./img/Hard_sigmoid.pdf
-
-pdfTeX warning: pdflatex (file ./img/Hard_sigmoid.pdf): PDF inclusion: multiple
- pdfs with page group included in a single page
->] <./img/Swish.pdf, id=349, 857.06134pt x 293.06676pt>
+<./img/Swish.pdf, id=330, 857.06134pt x 293.06676pt>
 File: ./img/Swish.pdf Graphic file (type pdf)
  <use ./img/Swish.pdf>
-Package pdftex.def Info: ./img/Swish.pdf used on input line 989.
+Package pdftex.def Info: ./img/Swish.pdf used on input line 927.
 (pdftex.def)             Requested size: 412.56497pt x 141.07736pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1004--1007
+Underfull \hbox (badness 10000) in paragraph at lines 942--945
 
  []
 
-<./img/ELiSH.pdf, id=350, 857.06134pt x 293.06676pt>
+<./img/ELiSH.pdf, id=331, 857.06134pt x 293.06676pt>
 File: ./img/ELiSH.pdf Graphic file (type pdf)
  <use ./img/ELiSH.pdf>
-Package pdftex.def Info: ./img/ELiSH.pdf used on input line 1013.
+Package pdftex.def Info: ./img/ELiSH.pdf used on input line 951.
 (pdftex.def)             Requested size: 412.56497pt x 141.07736pt.
 
-[33 <./img/Swish.pdf>]
-<./img/Hard_ELiSH.pdf, id=370, 857.06134pt x 293.06676pt>
+[32 <./img/Swish.pdf>]
+<./img/Hard_ELiSH.pdf, id=351, 857.06134pt x 293.06676pt>
 File: ./img/Hard_ELiSH.pdf Graphic file (type pdf)
 
 <use ./img/Hard_ELiSH.pdf>
-Package pdftex.def Info: ./img/Hard_ELiSH.pdf used on input line 1041.
+Package pdftex.def Info: ./img/Hard_ELiSH.pdf used on input line 979.
 (pdftex.def)             Requested size: 412.56497pt x 141.07736pt.
- [34 <./img/ELiSH.pdf> <./img/Hard_ELiSH.pdf
+ [33 <./img/ELiSH.pdf>]
+<./img/ReLU6.pdf, id=371, 857.06134pt x 293.06676pt>
+File: ./img/ReLU6.pdf Graphic file (type pdf)
+ <use ./img/ReLU6.pdf>
+Package pdftex.def Info: ./img/ReLU6.pdf used on input line 1016.
+(pdftex.def)             Requested size: 412.56497pt x 141.07736pt.
 
-pdfTeX warning: pdflatex (file ./img/Hard_ELiSH.pdf): PDF inclusion: multiple p
-dfs with page group included in a single page
->] <./img/tanh.pdf, id=404, 881.43365pt x 293.06676pt>
-File: ./img/tanh.pdf Graphic file (type pdf)
- <use ./img/tanh.pdf>
-Package pdftex.def Info: ./img/tanh.pdf used on input line 1078.
-(pdftex.def)             Requested size: 412.56497pt x 137.17346pt.
+[34 <./img/Hard_ELiSH.pdf> <./img/ReLU6.pdf
 
-Underfull \hbox (badness 10000) in paragraph at lines 1094--1097
+pdfTeX warning: pdflatex (file ./img/ReLU6.pdf): PDF inclusion: multiple pdfs w
+ith page group included in a single page
+>]
+Overfull \hbox (24.56384pt too wide) in paragraph at lines 1045--1046
+[]\T1/ptm/m/n/12 Ograni£ena ReLU funk-cija uve-dena je kako bi ogra-ni-£eni Bol
+tzmann-ov stroj (engl. \T1/ptm/m/it/12 Res-
+ []
+
+<./img/Sigmoid.pdf, id=406, 866.64403pt x 293.06676pt>
+File: ./img/Sigmoid.pdf Graphic file (type pdf)
+ <use ./img/Sigmoid.pdf>
+Package pdftex.def Info: ./img/Sigmoid.pdf used on input line 1053.
+(pdftex.def)             Requested size: 412.56497pt x 139.5167pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1070--1073
 
  []
 
-<./img/Hard_tanh.pdf, id=405, 881.43365pt x 293.06676pt>
+[35 <./img/Sigmoid.pdf>]
+<./img/Hard_sigmoid.pdf, id=425, 866.64403pt x 293.06676pt>
+File: ./img/Hard_sigmoid.pdf Graphic file (type pdf)
+
+<use ./img/Hard_sigmoid.pdf>
+Package pdftex.def Info: ./img/Hard_sigmoid.pdf used on input line 1078.
+(pdftex.def)             Requested size: 412.56497pt x 139.5167pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1098--1101
+
+ []
+
+<./img/tanh.pdf, id=426, 881.43365pt x 293.06676pt>
+File: ./img/tanh.pdf Graphic file (type pdf)
+ <use ./img/tanh.pdf>
+Package pdftex.def Info: ./img/tanh.pdf used on input line 1106.
+(pdftex.def)             Requested size: 412.56497pt x 137.17346pt.
+
+[36 <./img/Hard_sigmoid.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1122--1125
+
+ []
+
+<./img/Hard_tanh.pdf, id=446, 881.43365pt x 293.06676pt>
 File: ./img/Hard_tanh.pdf Graphic file (type pdf)
 
 <use ./img/Hard_tanh.pdf>
-Package pdftex.def Info: ./img/Hard_tanh.pdf used on input line 1102.
+Package pdftex.def Info: ./img/Hard_tanh.pdf used on input line 1130.
 (pdftex.def)             Requested size: 412.56497pt x 137.17346pt.
- [35 <./img/tanh.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 1128--1131
+
+Underfull \hbox (badness 10000) in paragraph at lines 1156--1159
 
  []
 
-<./img/Rational_tanh.pdf, id=425, 875.05043pt x 293.1932pt>
+[37 <./img/tanh.pdf> <./img/Hard_tanh.pdf
+
+pdfTeX warning: pdflatex (file ./img/Hard_tanh.pdf): PDF inclusion: multiple pd
+fs with page group included in a single page
+>] <./img/Rational_tanh.pdf, id=482, 875.05043pt x 293.1932pt>
 File: ./img/Rational_tanh.pdf Graphic file (type pdf)
 
 <use ./img/Rational_tanh.pdf>
-Package pdftex.def Info: ./img/Rational_tanh.pdf used on input line 1136.
+Package pdftex.def Info: ./img/Rational_tanh.pdf used on input line 1164.
 (pdftex.def)             Requested size: 412.56497pt x 138.23477pt.
 
-Overfull \hbox (0.26353pt too wide) in paragraph at lines 1149--1149
+Overfull \hbox (0.26353pt too wide) in paragraph at lines 1177--1177
 [] 
  []
 
-[36 <./img/Hard_tanh.pdf> <./img/Rational_tanh.pdf
 
-pdfTeX warning: pdflatex (file ./img/Rational_tanh.pdf): PDF inclusion: multipl
-e pdfs with page group included in a single page
->]
-Underfull \hbox (badness 10000) in paragraph at lines 1151--1154
+Underfull \hbox (badness 10000) in paragraph at lines 1179--1182
 
  []
 
-<./img/Rectified_tanh.pdf, id=459, 866.64403pt x 293.06676pt>
+<./img/Rectified_tanh.pdf, id=483, 866.64403pt x 293.06676pt>
 File: ./img/Rectified_tanh.pdf Graphic file (type pdf)
 
 <use ./img/Rectified_tanh.pdf>
-Package pdftex.def Info: ./img/Rectified_tanh.pdf used on input line 1159.
+Package pdftex.def Info: ./img/Rectified_tanh.pdf used on input line 1187.
 (pdftex.def)             Requested size: 412.56497pt x 139.5167pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 1169--1172
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1187--1190
-
- []
-
-[37 <./img/Rectified_tanh.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 1199--1202
+ [38 <./img/Rational_tanh.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1197--1200
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1212--1215
-
- []
-
-<./img/Softplus.pdf, id=478, 857.06134pt x 293.06676pt>
-File: ./img/Softplus.pdf Graphic file (type pdf)
-
-<use ./img/Softplus.pdf>
-Package pdftex.def Info: ./img/Softplus.pdf used on input line 1219.
-(pdftex.def)             Requested size: 412.56497pt x 141.07736pt.
- [38]
-Underfull \hbox (badness 10000) in paragraph at lines 1235--1238
+Underfull \hbox (badness 10000) in paragraph at lines 1215--1218
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1247--1250
+Underfull \hbox (badness 10000) in paragraph at lines 1227--1230
 
  []
 
-<./img/Softsign.pdf, id=482, 881.43365pt x 293.06676pt>
+[39 <./img/Rectified_tanh.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1240--1243
+
+ []
+
+<./img/Softsign.pdf, id=520, 881.43365pt x 293.06676pt>
 File: ./img/Softsign.pdf Graphic file (type pdf)
 
 <use ./img/Softsign.pdf>
-Package pdftex.def Info: ./img/Softsign.pdf used on input line 1254.
+Package pdftex.def Info: ./img/Softsign.pdf used on input line 1247.
 (pdftex.def)             Requested size: 412.56497pt x 137.17346pt.
- [39 <./img/Softplus.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 1270--1273
+
+Underfull \hbox (badness 10000) in paragraph at lines 1263--1266
 
  []
 
-<./img/Sin.pdf, id=503, 881.43365pt x 293.06676pt>
+<./img/Sin.pdf, id=521, 881.43365pt x 293.06676pt>
 File: ./img/Sin.pdf Graphic file (type pdf)
  <use ./img/Sin.pdf>
-Package pdftex.def Info: ./img/Sin.pdf used on input line 1277.
+Package pdftex.def Info: ./img/Sin.pdf used on input line 1270.
 (pdftex.def)             Requested size: 412.56497pt x 137.17346pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 1293--1295
+ [40 <./img/Softsign.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1286--1288
 
  []
 
-[40 <./img/Softsign.pdf> <./img/Sin.pdf
 
-pdfTeX warning: pdflatex (file ./img/Sin.pdf): PDF inclusion: multiple pdfs wit
-h page group included in a single page
->] <./img/Cos.pdf, id=536, 881.43365pt x 293.06676pt>
-File: ./img/Cos.pdf Graphic file (type pdf)
- <use ./img/Cos.pdf>
-Package pdftex.def Info: ./img/Cos.pdf used on input line 1314.
+LaTeX Warning: Reference `eq:truncated_sin' on page 41 undefined on input line 
+1289.
+
+<./img/TrSin.pdf, id=541, 881.43365pt x 293.06676pt>
+File: ./img/TrSin.pdf Graphic file (type pdf)
+ <use ./img/TrSin.pdf>
+Package pdftex.def Info: ./img/TrSin.pdf used on input line 1298.
 (pdftex.def)             Requested size: 412.56497pt x 137.17346pt.
 
-[41 <./img/Cos.pdf>] <./img/Pow2.pdf, id=554, 863.44456pt x 293.06676pt>
-File: ./img/Pow2.pdf Graphic file (type pdf)
+[41 <./img/Sin.pdf>] <./img/Cos.pdf, id=559, 881.43365pt x 293.06676pt>
+File: ./img/Cos.pdf Graphic file (type pdf)
 
-<use ./img/Pow2.pdf>
-Package pdftex.def Info: ./img/Pow2.pdf used on input line 1338.
+<use ./img/Cos.pdf>
+Package pdftex.def Info: ./img/Cos.pdf used on input line 1329.
+(pdftex.def)             Requested size: 412.56497pt x 137.17346pt.
+ [42 <./img/TrSin.pdf> <./img/Cos.pdf
+
+pdfTeX warning: pdflatex (file ./img/Cos.pdf): PDF inclusion: multiple pdfs wit
+h page group included in a single page
+>] <./img/TrCos.pdf, id=592, 866.64403pt x 293.06676pt>
+File: ./img/TrCos.pdf Graphic file (type pdf)
+ <use ./img/TrCos.pdf>
+Package pdftex.def Info: ./img/TrCos.pdf used on input line 1355.
+(pdftex.def)             Requested size: 412.56497pt x 139.5167pt.
+
+<./img/Pow2.pdf, id=593, 863.44456pt x 293.06676pt>
+File: ./img/Pow2.pdf Graphic file (type pdf)
+ <use ./img/Pow2.pdf>
+Package pdftex.def Info: ./img/Pow2.pdf used on input line 1385.
 (pdftex.def)             Requested size: 412.56497pt x 140.03096pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1354--1357
+[43 <./img/TrCos.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1401--1404
 
  []
 
-<./img/Pow3.pdf, id=555, 878.23419pt x 293.06676pt>
+<./img/Pow3.pdf, id=614, 878.23419pt x 293.06676pt>
 File: ./img/Pow3.pdf Graphic file (type pdf)
  <use ./img/Pow3.pdf>
-Package pdftex.def Info: ./img/Pow3.pdf used on input line 1361.
+Package pdftex.def Info: ./img/Pow3.pdf used on input line 1408.
 (pdftex.def)             Requested size: 412.56497pt x 137.6743pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1377--1380
+Underfull \hbox (badness 10000) in paragraph at lines 1424--1427
 
  []
 
-[42 <./img/Pow2.pdf> <./img/Pow3.pdf
+<./img/Gauss.pdf, id=615, 866.64403pt x 293.06676pt>
+File: ./img/Gauss.pdf Graphic file (type pdf)
+ <use ./img/Gauss.pdf>
+Package pdftex.def Info: ./img/Gauss.pdf used on input line 1431.
+(pdftex.def)             Requested size: 412.56497pt x 139.5167pt.
+
+[44 <./img/Pow2.pdf> <./img/Pow3.pdf
 
 pdfTeX warning: pdflatex (file ./img/Pow3.pdf): PDF inclusion: multiple pdfs wi
 th page group included in a single page
->] <./img/Gauss.pdf, id=587, 866.64403pt x 293.06676pt>
-File: ./img/Gauss.pdf Graphic file (type pdf)
- <use ./img/Gauss.pdf>
-Package pdftex.def Info: ./img/Gauss.pdf used on input line 1384.
-(pdftex.def)             Requested size: 412.56497pt x 139.5167pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 1400--1403
+>]
+Underfull \hbox (badness 10000) in paragraph at lines 1447--1450
 
  []
 
-[43 <./img/Gauss.pdf>]
+
+Underfull \hbox (badness 10000) in paragraph at lines 1462--1465
+
+ []
+
+[45 <./img/Gauss.pdf>]
 Poglavlje 5.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1408--1410
+Underfull \hbox (badness 10000) in paragraph at lines 1472--1474
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1411--1412
+Underfull \hbox (badness 10000) in paragraph at lines 1476--1478
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1414--1416
-
- []
-
-[44
-
-] [45]
-Poglavlje 6.
-
-Underfull \hbox (badness 10000) in paragraph at lines 1470--1473
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1475--1478
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1480--1482
+Underfull \hbox (badness 10000) in paragraph at lines 1480--1483
 
  []
 
@@ -1372,134 +1370,161 @@ Underfull \hbox (badness 10000) in paragraph at lines 1485--1487
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 1490--1492
-
- []
-
 [46
 
-]
-Underfull \hbox (badness 10000) in paragraph at lines 1494--1495
-
- []
-
-[47]
-Poglavlje 7.
-
-Underfull \hbox (badness 10000) in paragraph at lines 1503--1506
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1508--1510
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1516--1519
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1521--1523
-
- []
-
-[48
-
-] [49]
-Poglavlje 8.
-
-Underfull \hbox (badness 10000) in paragraph at lines 1529--1531
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1533--1535
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1537--1538
-
- []
-
-[50
-
-]
-Poglavlje 9.
+] [47]
+Poglavlje 6.
 
 Underfull \hbox (badness 10000) in paragraph at lines 1541--1544
 
  []
 
-[51
+
+Underfull \hbox (badness 10000) in paragraph at lines 1546--1549
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1551--1553
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1556--1558
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1561--1563
+
+ []
+
+[48
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 1565--1566
+
+ []
+
+[49]
+Poglavlje 7.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1574--1577
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1579--1581
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1587--1590
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1592--1594
+
+ []
+
+[50
+
+] [51]
+Poglavlje 8.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1600--1602
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1604--1606
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1608--1609
+
+ []
+
+[52
+
+]
+Poglavlje 9.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1612--1615
+
+ []
+
+[53
 
 ]
 Poglavlje 10.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1547--1550
+Underfull \hbox (badness 10000) in paragraph at lines 1618--1621
 
  []
 
-(./diplomski_rad.bbl [52
+(./diplomski_rad.bbl [54
 
-] [53
+] [55
 
 ]
-Underfull \hbox (badness 2846) in paragraph at lines 85--92
+Underfull \hbox (badness 2846) in paragraph at lines 100--107
 []\T1/ptm/m/n/12 Alex Kri-zhev-sky, Ilya Sut-ske-ver, i Ge-of-frey E Hin-ton.  
 Ima-ge-net cla-ssi-fi-
  []
 
 
-Underfull \hbox (badness 2119) in paragraph at lines 85--92
+Underfull \hbox (badness 2119) in paragraph at lines 100--107
 \T1/ptm/m/n/12 ca-tion with deep co-nvo-lu-ti-onal ne-ural networks.  U F. Pe-r
 e-ira, C. J. C.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 85--92
+Underfull \hbox (badness 10000) in paragraph at lines 100--107
 \T1/ptm/m/n/12 Bur-ges, L. Bot-tou, i K. Q. We-in-ber-ger, ured-nici, \T1/ptm/m
 /it/12 Advan-ces in Ne-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 85--92
+Underfull \hbox (badness 10000) in paragraph at lines 100--107
 \T1/ptm/m/it/12 ural In-for-ma-tion Pro-ce-ssing Sys-tems 25\T1/ptm/m/n/12 , st
 ra-nice 1097--1105. Cur-ran
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 85--92
+Underfull \hbox (badness 10000) in paragraph at lines 100--107
 \T1/ptm/m/n/12 Asso-ci-ates, Inc., 2012.  URL $\T1/pcr/m/n/12 http : / / papers
  . nips . cc / paper /
  []
 
 
-Overfull \hbox (99.48195pt too wide) in paragraph at lines 85--92
+Overfull \hbox (99.48195pt too wide) in paragraph at lines 100--107
 \T1/pcr/m/n/12 4824-[]imagenet-[]classification-[]with-[]deep-[]convolutional-[
 ]neural-[]networks .
  []
 
-[54]) [55]
+[56]) [57]
 
 Package natbib Warning: There were undefined citations.
 
-[56] (./diplomski_rad.aux)
+[58] (./diplomski_rad.aux)
+
+LaTeX Warning: There were undefined references.
+
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 7784 strings out of 493029
- 109653 string characters out of 6136235
- 204260 words of memory out of 5000000
- 11112 multiletter control sequences out of 15000+600000
+ 7819 strings out of 493029
+ 110224 string characters out of 6136235
+ 204503 words of memory out of 5000000
+ 11144 multiletter control sequences out of 15000+600000
  70883 words of font info for 100 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 43i,23n,40p,1259b,402s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 43i,23n,40p,1315b,402s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc} </home/lirfu/.tex
 mf-var/fonts/pk/ljfour/public/bbm/bbm12.600pk></usr/share/texlive/texmf-dist/fo
 nts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/ty
@@ -1522,10 +1547,10 @@ are/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
 utmri8a.pfb>
-Output written on diplomski_rad.pdf (62 pages, 476106 bytes).
+Output written on diplomski_rad.pdf (64 pages, 497360 bytes).
 PDF statistics:
- 727 PDF objects out of 1000 (max. 8388607)
- 358 compressed objects within 4 object streams
+ 785 PDF objects out of 1000 (max. 8388607)
+ 380 compressed objects within 4 object streams
  0 named destinations out of 1000 (max. 500000)
- 121 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 136 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -26,6 +26,7 @@
 
 % Referencing
 \def\figref#1{(slika \ref{#1})}
+\def\secref#1{(poglavlje \ref{#1})}
 
 % TODO notes
 \def\TODO#1{\noindent\textcolor{red}{TODO: \textit{#1}}\newline}
@@ -103,7 +104,7 @@ Neuronske mreže građene su od međusobno povezanih jedinica, tzv. neurona, mod
 \label{fig:neuron}
 \end{figure}
 
-Način na koji iz ulaza gradimo unutarnje stanje neurona opisujemo ulaznom funkcijom. Pretvorbu unutarnjeg stanja neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Ulazna i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ih ponekad ne možemo podijeliti na ulazne i izlazne. Izlaznu funkciju ne treba miješati s funkcijom izlaza mreže koja predstavlja nelinearnost posljednjeg sloja mreže. U literaturi se umjesto pojma izlazne funkcije vrlo često koristi pojam aktivacijske funkcije. No u preglednom znanstvenom radu \citet{function_survey} aktivacijska funkcija predstavlja ulaznu funkciju, što je neispravno sa stajališta teorijske neuroznanosti jer aktivacija neurona označava trenutak odašiljanja signala kroz akson \citep{neuroscience}. U starijoj literaturi je pojam aktivacijske i prijenosne funkcije često ekvivalentno korišten. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi prvo navedena nomenklatura (ulazna, izlazna i prijenosna funkcija).
+Način na koji iz ulaza gradimo unutarnje stanje neurona opisujemo ulaznom funkcijom. Pretvorbu unutarnjeg stanja neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Ulazna i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ih ponekad ne možemo podijeliti na ulazne i izlazne. Izlaznu funkciju ne treba miješati s funkcijom izlaza mreže koja predstavlja nelinearnost posljednjeg sloja mreže. U literaturi se umjesto pojma izlazne funkcije vrlo često koristi pojam aktivacijske funkcije. No u preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno sa stajališta teorijske neuroznanosti jer aktivacija neurona označava pojavu odaslanog signala iz some u akson \citep[p.~234]{neuroscience}. U starijoj literaturi je pojam aktivacijske i prijenosne funkcije često ekvivalentno korišten. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi prvo navedena nomenklatura (ulazna, izlazna i prijenosna funkcija).
 \begin{equation}
 t(x) = (f \circ a)(x) = f(a(x))
 \end{equation}
@@ -379,7 +380,7 @@ Inicijalizacija parametara mreže je sinonim za odabir početne točke pri gradi
 
 \todo{važnost dobre inicijalizacije}
 \todo{Xavier}
-\todo{postoji i nenadzirana inicijalizacija sloj-po-sloj deep belief network ili autoenkoderom, ali u kontekstu evolucije je preskupa}
+\todo{postoji i nenadzirana inicijalizacija sloj-po-sloj RBM \citep{relu6} ili autoenkoderom, ali u kontekstu evolucije je preskupa}
 
 \subsubsection{Pretprocesiranje podataka}
 \todo{normalizacija po značajkama}
@@ -652,11 +653,11 @@ f_1(f_2(x)) &= w_1 \cdot (w_2 \cdot x + b_2) + b_1 \\
 \begin{equation}
 \label{eq:relu}
 \begin{split}
-f(x) = 
-\begin{cases}
+f(x) &= \begin{cases}
 x,		& \text{ako } x > 0 \\
 0,		& \otherwise
-\end{cases}
+\end{cases} \\
+&= max(0, x)
 \end{split}
 \qquad
 \begin{split}
@@ -668,41 +669,9 @@ f'(x) =
 \end{split}
 \end{equation}
 
-Funkcija ReLU svoje korijene povlači iz rada bioloških neurona, a u dubokom učenju je zamijenila dotadašnju sigmoidu i tangens hiperbolni. Zahvaljujući prizemljenosti na negativnoj domeni ReLU omogućava neuronskoj mreži učenje rijetke reprezentacije. Njihovim kombiniranjem u dubokoj mreži dobivamo model s eksponencijalno puno linearnih regija koje dijele zajedničke parametre \citep{relu_rbm}. Zahvaljujući linearnosti na pozitivnoj domeni gradijenti kroz mrežu su očuvani, a sam izračun funkcije i derivacije je vrlo brz i efikasan \citep{relu}.
+Funkcija ReLU svoje korijene povlači iz rada bioloških neurona, a u dubokom učenju je zamijenila dotadašnju sigmoidu i tangens hiperbolni. Zahvaljujući prizemljenosti na negativnoj domeni ReLU omogućava neuronskoj mreži učenje rijetke reprezentacije. Njihovim kombiniranjem u dubokoj mreži dobivamo model s eksponencijalno puno linearnih regija koje dijele zajedničke parametre \citep{relu_rbm}. Zahvaljujući linearnosti na pozitivnoj domeni funkcija ne doprinosi isčezavanju ni eksploziji gradijenta, a sam izračun funkcije i derivacije je vrlo brz i efikasan. \citep{relu}
 
 Problem u negativnoj domeni je mogućnost blokiranja gradijenta i neaktivnih neurona (mrtvi neuroni), no dok god postoji put kroz mrežu gdje su neuroni aktivni (u pozitivnoj domeni) učenje će raditi, što pokazuju i rezultati \citep{relu}. Drugi problem je u neograničenosti funkcije u pozitivnoj domeni, no nju rješavamo regularizacijom koja ograničava veličinu ulaza u neuron \citep{relu}.
-
-\todo{bez i sa cutoff}
-
-\subsection{Ograničena ispravljena linearna jedinica (ReLU6)}
-\label{func:relu6}
-
-\begin{figure}[H]
-%\includegraphics[width=\textwidth]{ReLU6.pdf}
-\centering
-\caption{Funkcija ReLU6 i njena derivacija}
-\label{fig:relu6}
-\end{figure}
-
-\begin{equation}
-\label{eq:relu}
-\begin{split}
-f(x) = 
-\begin{cases}
-0,		& \text{ako} x < 0 \\
-x,		& \text{ako } x \in [0, 6] \\
-6,		& \otherwise
-\end{cases}
-\end{split}
-\qquad
-\begin{split}
-f'(x) = 
-\begin{cases}
-1,		& \text{ako } x \in [0, 6] \\
-0,		& \otherwise
-\end{cases}
-\end{split}
-\end{equation}
 
 \subsection{Propusna ispravljena linearna jedinica (LReLU)}
 \engl{Leaky ReLU}
@@ -716,11 +685,11 @@ f'(x) =
 
 \begin{equation}
 \begin{split}
-f(x) = 
-\begin{cases}
+f(x) &= \begin{cases}
 x,			& \text{ako } x > 0 \\
 \alpha x,	& \otherwise
-\end{cases}
+\end{cases} \\
+&= max(\alpha x, x)
 \end{split}
 \qquad
 \begin{split}
@@ -732,9 +701,7 @@ f'(x) =
 \end{split}
 \end{equation}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+Problem funkcije ReLU \secref{func:relu} je što postoji mogućnost pojave mrtvih neurona, koji su uvijek u neaktivnom području i kroz njih ne teče gradijent. Taj problem efektivno smanjuje kapacitet modela pod cijenu nepotrebnog memorijskog opterećenja i smanjene brzine izvođenja. Iz navedenih razloga uvedena je propusna ReLU funkcija koja u "neaktivnom" području propušta mali gradijent. Rezultati na zadatku prepoznavanja govora pokazuju da je propusna ReLU funkcija ekvivalentna standardnom ReLU, no rezultati su prikazani na relativno plitkim arhitekturama (do 4 skrivena sloja). \citep{lrelu}
 
 \subsection{Parametrizirana ispravljena linearna jedinica (PReLU)}
 \engl{Parametric ReLU}
@@ -744,11 +711,11 @@ f'(x) =
 
 \begin{equation}
 \begin{split}
-f(x) &= 
-\begin{cases}
+f(x) &= \begin{cases}
 x,			& \text{ako } x > 0 \\
 \alpha x,	& \otherwise
-\end{cases}
+\end{cases} \\
+&= max(\alpha x, x)
 \end{split}
 \qquad
 \begin{split}
@@ -829,8 +796,8 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection{(DReLU)}
-\engl{Dual ReLU}
+\subsection{(CReLU)}
+\engl{Concatenated ReLU}
 
 \todoimg{}
 
@@ -842,8 +809,32 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection{(CReLU)}
-\engl{Concatenated ReLU}
+\subsection{Softplus}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Softplus.pdf}
+\centering
+\caption{Softplus i njegova derivacija}
+\label{fig:softplus}
+\end{figure}
+
+\begin{equation}
+\begin{split}
+f(x) = log(1+e^x)
+\end{split}
+\qquad
+\begin{split}
+f'(x) = \frac{e^x}{1+e^x}
+\end{split}
+\end{equation}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
+Funkcija Softplus nastaje ...
+
+\subsection{Noisy softplus}
 
 \todoimg{}
 
@@ -929,6 +920,132 @@ f'(x) = \lambda
 \todo{svojstva}
 \todo{problemi}
 
+\subsection{Swish}
+\label{func:swish}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Swish.pdf}
+\centering
+\caption{Funkcija Swish i njena derivacija}
+\label{fig:swish}
+\end{figure}
+
+\begin{equation}
+\label{eq:swish}
+\begin{split}
+&f(x) = x \cdot \sigma(\beta x)
+\\
+&f'(x) = \sigma(\beta x) \cdot (1 + \beta x \cdot (1-\sigma(\beta x)) = \frac{e^x \cdot (e^x + x + 1)}{(e^x + 1)^2}
+\end{split}
+\end{equation}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
+\subsection{ELiSH}
+\label{func:elish}
+\engl{Exponential Linear Sigmoid Squashing}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{ELiSH.pdf}
+\centering
+\caption{Funkcija ELiSH i njena derivacija}
+\label{fig:elish}
+\end{figure}
+
+\begin{equation}
+\begin{split}
+&f(x) = 
+	\begin{cases}
+		swish(x), \quad x \geq 0 \\
+		ELU(x) \cdot \sigma(x), \quad \otherwise
+	\end{cases} \\
+&f'(x) =
+	\begin{cases}
+		swish'(x), \quad x \geq 0 \\
+		\sigma(x) \cdot (ELU'(x) + ELU(x) \cdot (1-\sigma(x)), \quad \otherwise
+	\end{cases}
+\end{split}
+\end{equation}
+
+Ova funkcija i njena brža aproksimacija \textit{Tvrdi ELiSH} su kompozicije funkcija, različito definirane na pozitivnoj i negativnoj domeni. ELiSH pozitivnu domenu naslijeđuje od funkcije Swish \eqref{eq:swish}, a negativna je umnožak funkcije ELU \eqref{eq:elu} i sigmoide \eqref{eq:sigmoid}. Obje funkcije su ručno izgrađene s ciljem iskorištavanja dobrog prijenosa informacije koji ostvaruju funkcije Swish i sigmoida te sprečavanjem isčezavajućeg gradijenta pomoću linearne komponente u funkciji Swish. \citep{elish}
+
+\subsection{Tvrdi ELiSH}
+\label{func:hard_elish}
+\engl{Hard ELiSH}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{Hard_ELiSH.pdf}
+\centering
+\caption{Funkcija Tvrdi ELiSH i njena derivacija}
+\label{fig:hard_elish}
+\end{figure}
+
+\begin{equation}
+\begin{split}
+&f(x) =
+	\begin{cases}
+		x \cdot a(x), \quad x \geq 0 \\
+		ELU(x) \cdot a(x), \quad \otherwise
+	\end{cases} \\
+&f'(x) = \begin{cases}
+	a(x) + x \cdot a'(x), \quad x \geq 0 \\
+	ELU'(x) \cdot a(x) + x \cdot ELU(x) \cdot a'(x), \quad \otherwise
+\end{cases}
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+&a(x) = \max(0, \min(1, \frac{x+1}{2})) \approx HardSigmoid(x) \\
+&a'(x) =
+\begin{cases}
+	0.5, \quad x \in [-1,1] \\
+	0, \quad \otherwise
+\end{cases}	
+\end{split}
+\end{equation}
+
+Ova funkcija je aproksimacija funkcije ELiSH opisane u poglavlju \ref{func:elish}. Uvedena je za potrebe bržeg izvođenja sigmoide i nasljeđuje svojstva ELiSH funkcije. \citep{elish}
+
+\subsection{Ograničena ispravljena linearna jedinica (ReLUn)}
+\label{func:relun}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{ReLU6.pdf}
+\centering
+\caption{Funkcija ReLU6 i njena derivacija}
+\label{fig:relu6}
+\end{figure}
+
+\begin{equation}
+\label{eq:relun}
+\begin{split}
+f(x) &= \begin{cases}
+0,		& \text{ako } x < 0 \\
+x,		& \text{ako } x \in [0, n] \\
+n,		& \otherwise
+\end{cases} \\
+&= min(n, max(0, x))
+\end{split}
+\qquad
+\begin{split}
+f'(x) = 
+\begin{cases}
+1,		& \text{ako } x \in [0, n] \\
+0,		& \otherwise
+\end{cases}
+\end{split}
+\end{equation}
+\begin{equation*}
+n \in \realnum
+\end{equation*}
+
+Ograničena ReLU funkcija uvedena je kako bi ograničeni Boltzmann-ov stroj \engl{Restricted Boltzmann machine} brže naučio rijetke značajke, koje kasnije ugađa konvolucijski klasifikator. Za razliku od ReLU koji se može interpretirati kao kompozicija beskonačno mnogo identičnih Bernoullijevih jedinica translatiranih po domeni, ograničeni ReLU interpretiramo kao kompoziciju $n$ jedinica. Za vidljivi sloj korištena je ReLU1, a za skrivene slojeve ReLU6 funkcija. \citep{relu6}
+
+S obzirom da je ReLUn neuron aktivan samo na relativno uskoj regiji u pozitivnoj domeni, postoji opasnost od pojave mrtvih neurona (kroz koje ne prolazi gradijent). Idealna regija je $<0,n>$ jer  je u njoj neuron aktivan, a učenjem se može specijalizirati približavanjem zasićenju i stvoriti rijetke reprezentacije. Stoga je potrebno koristiti regularizaciju te pažljivu inicijalizaciju parametara.
+
 \subsection{Sigmoida ($\sigma $)}
 \engl{Sigmoid}
 
@@ -981,95 +1098,6 @@ f'(x) =
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
-
-\subsection{Swish}
-\label{func:swish}
-
-\begin{figure}[H]
-\includegraphics[width=\textwidth]{Swish.pdf}
-\centering
-\caption{Funkcija Swish i njena derivacija}
-\label{fig:swish}
-\end{figure}
-
-\begin{equation}
-\label{eq:swish}
-\begin{split}
-&f(x) = x \cdot \sigma(\beta x)
-\\
-&f'(x) = \sigma(\beta x) \cdot (1 + \beta x \cdot (1-\sigma(\beta x)) = \frac{e^x \cdot (e^x + x + 1)}{(e^x + 1)^2}
-\end{split}
-\end{equation}
-
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
-
-\subsection{ELiSH}
-\label{func:elish}
-\engl{Exponential Linear Sigmoid Squashing}
-
-\begin{figure}[H]
-\includegraphics[width=\textwidth]{ELiSH.pdf}
-\centering
-\caption{Funkcija ELiSH i njena derivacija}
-\label{fig:elish}
-\end{figure}
-
-\begin{equation}
-\begin{split}
-&f(x) = 
-	\begin{cases}
-		swish(x), \quad x \geq 0 \\
-		ELU(x) \cdot \sigma(x), \quad \otherwise
-	\end{cases} \\
-&f'(x) =
-	\begin{cases}
-		swish'(x), \quad x \geq 0 \\
-		\sigma(x) \cdot (ELU'(x) + ELU(x) \cdot (1-\sigma(x)), \quad \otherwise
-	\end{cases}
-\end{split}
-\end{equation}
-
-Ova funkcija i njena brža aproksimacija \textit{Tvrdi ELiSH} su predstavljene u članku \citet{elish}. Funkcija je različito definirana na pozitivnoj i negativnoj domeni. Pozitivnu domenu naslijeđuje od funkcije Swish \eqref{eq:swish}, a negativna je umnožak funkcije ELU \eqref{eq:elu} i sigmoide \eqref{eq:sigmoid}. Obje funkcije su ručno izgrađene s ciljem korištenja dobrog prijenosa informacije koji ostvaruju funkcije Swish i sigmoide, ali sprečavanjem isčezavajućeg gradijenta pomoću linearne komponente.
-
-\subsection{Tvrdi ELiSH}
-\label{func:hard_elish}
-\engl{Hard ELiSH}
-
-\begin{figure}[H]
-\includegraphics[width=\textwidth]{Hard_ELiSH.pdf}
-\centering
-\caption{Funkcija Tvrdi ELiSH i njena derivacija}
-\label{fig:hard_elish}
-\end{figure}
-
-\begin{equation}
-\begin{split}
-&f(x) =
-	\begin{cases}
-		x \cdot a(x), \quad x \geq 0 \\
-		ELU(x) \cdot a(x), \quad \otherwise
-	\end{cases} \\
-&f'(x) = \begin{cases}
-	a(x) + x \cdot a'(x), \quad x \geq 0 \\
-	ELU'(x) \cdot a(x) + x \cdot ELU(x) \cdot a'(x), \quad \otherwise
-\end{cases}
-\end{split}
-\end{equation}
-
-\begin{equation}
-\begin{split}
-&a(x) = \max(0, \min(1, \frac{x+1}{2})) \approx HardSigmoid(x) \\
-&a'(x) =
-\begin{cases}
-	0.5, \quad x \in [-1,1] \\
-	0, \quad \otherwise
-\end{cases}	
-\end{split}
-\end{equation}
-
-Ova funkcija je aproksimacija funkcije ELiSH opisane u poglavlju \ref{func:elish}. Uvedena je za potrebe bržeg izvođenja sigmoide i nasljeđuje svojstva ELiSH funkcije.
 
 \subsection{Tangens hiperbolni (tanh)}
 \label{func:tanh}
@@ -1213,41 +1241,6 @@ f'(x) = \frac{e^x}{1+e^x}
 \todo{svojstva}
 \todo{problemi}
 
-\subsection{Softplus}
-
-\begin{figure}[H]
-\includegraphics[width=\textwidth]{Softplus.pdf}
-\centering
-\caption{Softplus i njegova derivacija}
-\label{fig:softplus}
-\end{figure}
-
-\begin{equation}
-\begin{split}
-f(x) = log(1+e^x)
-\end{split}
-\qquad
-\begin{split}
-f'(x) = \frac{e^x}{1+e^x}
-\end{split}
-\end{equation}
-
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
-
-\subsection{Noisy softplus}
-
-\todoimg{}
-
-\begin{equation}
-???
-\end{equation}
-
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
-
 \subsection{Softsign}
 
 \begin{figure}[H]
@@ -1263,7 +1256,7 @@ f(x) = \frac{x}{1+|x|}
 \end{split}
 \qquad
 \begin{split}
-f'(x) = \frac{1}{(1+|x|)^2}
+f'(x) = \frac{1 + |x| - x \cdot sign(x)}{(1+|x|)^2}
 \end{split}
 \end{equation}
 
@@ -1294,19 +1287,41 @@ Sinus je periodička funkcija te nema teorijsku podlogu za uporabu u neuronskim 
 \todo{članak dokaz univerzalne aproksimacije monotonih fja}
 
 Unatoč tome, pojavljuje se u radovima pretrage izlaznih funkcija \citep{elish} i u ovom radu te pokazuje obećavajuće rezultate. U radu \citet{taming_waves} autori predstavljaju problematiku učenja sa sinusoidom na jednostavnom problemu. Problem stvaraju brojni lokalni optimumi na koje je izrazito osjetljiv gradijentni spust. Problem je ublažava učenje stohastičkim gradijentnim spustom koji zaglađuje valovitost funkcije gubitka. Dodatno, autori pokazuju da neuronska mreža zapravo ne ovisi snažno o periodičnosti funkcije tako da su rezultate usporedili sa skraćenom sinusoidom \eqref{eq:truncated_sin}. Članak nije prošao postupak recenzije jer su dodatni eksperimenti urodili nekonzistentnim rezultatima u usporedbi s tangensom hiperbolnim.
+
+Po uzoru na slićne funkcije kao što je sigmoida \figref{fig:sigmoid} i tangens hiperbolni \figref{fig:tanh}, sinusoida najveću vrijednost gradijenta daje upravo kada je aktivacija jednaka 0 (u ograničenom intervalu).
+
+\subsection{Ograničeni sinus (TrSin)}
+\label{func:trsin}
+\engl{Truncated sine}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{TrSin.pdf}
+\centering
+\caption{Ograničeni sinus i njegova derivacija}
+\label{fig:trsin}
+\end{figure}
+
 \begin{equation}
-\label{eq:truncated_sin}
+\label{eq:trsin}
+\begin{split}
 f(x) =
 \begin{cases}
 0, \quad x < \frac{\pi}{2} \\
 sin(x), \quad x \in [-\frac{\pi}{2},\frac{\pi}{2}] \\
 1, \quad \otherwise
 \end{cases}
+\end{split}
+\qquad
+\begin{split}
+f'(x) =
+\begin{cases}
+cos(x), \quad x \in [-\frac{\pi}{2},\frac{\pi}{2}] \\
+0, \quad \otherwise
+\end{cases}
+\end{split}
 \end{equation}
-\todoimg{truncated sine}
 
-
-Po uzoru na slićne funkcije kao što je sigmoida \figref{fig:sigmoid} i tangens hiperbolni \figref{fig:tanh}, sinusoida najveću vrijednost gradijenta daje upravo kada je aktivacija jednaka 0 (u ograničenom intervalu).
+Ograničeni sinus korišten je u radu \citet{taming_waves} za usporedbu s klasičnom sinusoidom i tangensom hiperbolnim. U usporedbi sa sinusom ispituje se utjecaj periodičnosti sinusa na performanse. S tangensom hiperbolnim uspoređene su performanse zbog slićnosti u obliku krivulja.
 
 \subsection{Kosinus (cos)}
 
@@ -1331,6 +1346,38 @@ Kosinus je funkcija sinusa pomaknuta za četvrtinu periode te dijeli ista svojst
 \begin{equation}
 cos(x) = sin(x + \frac{\pi}{2}) \approx sin(x + 1.571)
 \end{equation}
+
+\subsection{Ograničeni kosinus (TrCos)}
+\label{func:trcos}
+\engl{Truncated cosine}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{TrCos.pdf}
+\centering
+\caption{Ograničeni kosinus i njegova derivacija}
+\label{fig:trcos}
+\end{figure}
+
+\begin{equation}
+\label{eq:trcos}
+\begin{split}
+f(x) =
+\begin{cases}
+cos(x), \quad x \in [-\frac{\pi}{2},\frac{\pi}{2}] \\
+0, \quad \otherwise
+\end{cases}
+\end{split}
+\qquad
+\begin{split}
+f'(x) =
+\begin{cases}
+-sin(x), \quad x \in [-\frac{\pi}{2},\frac{\pi}{2}] \\
+0, \quad \otherwise
+\end{cases}
+\end{split}
+\end{equation}
+
+Ograničeni kosinus autori nisu pronašli u literaturi, no navodi se zbog potrebe ispitivanja ovisnosti o periodičnosti kosinusa (po uzoru na poglavlje \ref{func:trsin}).
 
 \subsection{Parabola $x^2$}
 
@@ -1401,6 +1448,23 @@ f'(x) = -2x \cdot f(x)
 \todo{svojstva}
 \todo{problemi}
 
+\section{Izlazne funkcije posebne namjene}
+
+\subsection{(DReLU)}
+\engl{Dual ReLU}
+
+\todoimg{}
+
+\begin{equation}
+???
+\end{equation}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
+Koristi se u rekurzivnim neuronskim mrežama kako bi se 
+
 %--------------------------------------------------------------------------------------%
 \chapter{Optimizacija simboličkom regresijom (tehnički genetskim programiranjem...)}
 
@@ -1408,7 +1472,14 @@ f'(x) = -2x \cdot f(x)
 \todo{Opis i svojstva SR}
 \todo{Utjecaj i brojnost parametara u GA (moš linkat i svoj završni rad :P)}
 
+\subsection{Pretraživanje izlaznih funkcija}
 \todo{golden activation članak, kako radi detaljnije}
+\todo{swish članak detaljnije}
+
+\subsection{Neuronska mreža kao funkcija}
+\todo{Kako predstaviti čitavu mrežu grafom}
+\todo{CGP Atari rad}
+\todo{Spomeni da je to kao evolucija prijenosne funkcije (i ulazna i izlazna se definiraju)}
 
 \section{Taboo evolucijski algoritam}
 \todo{Problem konvergencije i stohastičnosti GP-a}
