@@ -65,6 +65,18 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
             return new DerivableNode[]{new CosNode()};
         }
     },
+    TRSIN {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new TrSinNode()};
+        }
+    },
+    TRCOS {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new TrCosNode()};
+        }
+    },
     TAN {
         @Override
         public DerivableNode[] list() {
@@ -162,6 +174,12 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
             return new DerivableNode[]{new TanhNode()};
         }
     },
+    PLU {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new PLUNode()};
+        }
+    },
 
     /* TERMINALS */
 
@@ -189,7 +207,7 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
     TRIGONOMETRY {
         @Override
         public DerivableNode[] list() {
-            return new DerivableNode[]{SIN.list()[0], COS.list()[0], TAN.list()[0]};
+            return new DerivableNode[]{SIN.list()[0], COS.list()[0], TRSIN.list()[0], TRCOS.list()[0], TAN.list()[0]};
         }
     },
     EXPONENTIALS {
@@ -203,7 +221,7 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
         @Override
         public DerivableNode[] list() {
             return new DerivableNode[]{ELU.list()[0], GAUSS.list()[0], LRELU.list()[0], RELU.list()[0], SELU.list()[0],
-                    SIGMOID.list()[0], SOFTPLUS.list()[0], SOFTSIGN.list()[0], SWISH.list()[0], TANH.list()[0]};
+                    SIGMOID.list()[0], SOFTPLUS.list()[0], SOFTSIGN.list()[0], SWISH.list()[0], TANH.list()[0], PLU.list()[0]};
         }
     },
 

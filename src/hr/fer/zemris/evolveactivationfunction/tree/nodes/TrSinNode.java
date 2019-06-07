@@ -28,7 +28,7 @@ public class TrSinNode extends DerivableNode {
         return (input, node) -> {
             input = ((DerivableNode) node.getChild(0)).execute(input);
 
-            INDArray out = Transforms.min(Transforms.max(input, PIH), -PIH);
+            INDArray out = Transforms.max(Transforms.min(input, PIH), -PIH);
             Nd4j.getExecutioner().execAndReturn(new Sin(out));
             return out;
         };
@@ -40,7 +40,7 @@ public class TrSinNode extends DerivableNode {
             INDArray dLdz = ((DerivableNode) node.getChild(0)).derivate(input);
             input = ((DerivableNode) node.getChild(0)).execute(input);
 
-            INDArray out = Transforms.min(Transforms.max(input, PIH), -PIH);
+            INDArray out = Transforms.max(Transforms.min(input, PIH), -PIH);
             Nd4j.getExecutioner().execAndReturn(new Cos(out));
             return out.muli(dLdz);
         };

@@ -8,16 +8,20 @@ import org.nd4j.linalg.api.ops.impl.transforms.Cos;
 import org.nd4j.linalg.api.ops.impl.transforms.Sin;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.indexing.conditions.AbsValueLessThan;
-import org.nd4j.linalg.indexing.conditions.GreaterThanOrEqual;
-import org.nd4j.linalg.indexing.conditions.LessThanOrEqual;
 import org.nd4j.linalg.ops.transforms.Transforms;
 
-public class TrCosNode extends DerivableNode {
-    public static final String NAME = "trcos";
-    private static final double PIH = Math.PI / 2.;
+public class PLUNode extends DerivableNode {
+    public static final String NAME = "plu";
+    private double alpha = 0.1, c = 1;
 
-    public TrCosNode() {
+    public PLUNode() {
         super(NAME, 1);
+    }
+
+    public PLUNode(double alpha, double c) {
+        super(NAME, 1);
+        this.alpha = alpha;
+        this.c = c;
     }
 
     @Override
@@ -25,8 +29,8 @@ public class TrCosNode extends DerivableNode {
         return (input, node) -> {
             input = ((DerivableNode) node.getChild(0)).execute(input);
 
-            INDArray out = Transforms.max(Transforms.min(input, PIH), -PIH);
-            Nd4j.getExecutioner().execAndReturn(new Cos(out));
+            INDArray out = Transforms.max(input.mul(alpha).addi(c * (alpha - 1)),
+                    Transforms.min(input, input.mul(alpha).addi(c * (1 - alpha))));
             return out;
         };
     }
@@ -37,14 +41,14 @@ public class TrCosNode extends DerivableNode {
             INDArray dLdz = ((DerivableNode) node.getChild(0)).derivate(input);
             input = ((DerivableNode) node.getChild(0)).execute(input);
 
-            input.muli(input.cond(new AbsValueLessThan(PIH)));
-            Nd4j.getExecutioner().execAndReturn(new Sin(input));
-            return input.muli(-1.).muli(dLdz);
+            INDArray out = input.condi(new AbsValueLessThan(c));
+            out = out.add(alpha).subi(out.mul(alpha));
+            return out.muli(dLdz);
         };
     }
 
     @Override
     protected IInstantiable<TreeNode<INDArray, INDArray>> getInstantiable() {
-        return TrCosNode::new;
+        return PLUNode::new;
     }
 }
