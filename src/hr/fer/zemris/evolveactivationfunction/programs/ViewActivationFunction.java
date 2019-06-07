@@ -7,6 +7,7 @@ import com.lirfu.lirfugraph.components.EmptySpace;
 import com.lirfu.lirfugraph.components.Label;
 import com.lirfu.lirfugraph.graphs.MultiLinearGraph;
 import com.lirfu.lirfugraph.themes.LightTheme;
+import hr.fer.zemris.evolveactivationfunction.tree.DerivableSymbolicTree;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSetFactory;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSets;
 import hr.fer.zemris.genetics.symboregression.SymbolicTree;
@@ -23,23 +24,23 @@ public class ViewActivationFunction {
     public static void main(String[] args) {
         if (args.length < 1) throw new IllegalArgumentException("Specify at least 1 function.");
         TreeNodeSet set = new TreeNodeSetFactory().build(new Random(), TreeNodeSets.ALL);
-        LinkedList<SymbolicTree> trees = new LinkedList<>();
+        LinkedList<DerivableSymbolicTree> trees = new LinkedList<>();
         for (String s : args) {
-            trees.add(SymbolicTree.parse(s, set));
+            trees.add(new DerivableSymbolicTree(DerivableSymbolicTree.parse(s, set)));
         }
 
         StringBuilder legend = new StringBuilder();
         int i = 0;
-        for (SymbolicTree t : trees)
+        for (DerivableSymbolicTree t : trees)
             legend.append("\nf").append(++i).append(": ").append(t.serialize());
 
         new Window(new VerticalContainer(
-                new Row(drawFunctions(-5, 5, 0.1, trees.toArray(new SymbolicTree[]{}))),
+                new Row(drawFunctions(-5, 5, 0.1, trees.toArray(new DerivableSymbolicTree[]{}))),
                 new Row(new EmptySpace(), new Label("Legend", legend.toString()))
         ), true, true);
     }
 
-    public static BufferedImage[] displayResult(SymbolicTree<INDArray, INDArray> best, SymbolicTree<INDArray, INDArray>[] top) {
+    public static BufferedImage[] displayResult(DerivableSymbolicTree best, DerivableSymbolicTree[] top) {
         StringBuilder legend = new StringBuilder();
         legend.append("\nBest: ").append(best.serialize()).append("  (").append(best.getFitness()).append(')');
         int i = 0;
@@ -59,23 +60,26 @@ public class ViewActivationFunction {
         return new BufferedImage[]{g_best.getImage(new Dimension(2000, 1200)), g_top.getImage(new Dimension(2000, 1200))};
     }
 
-    public static MultiLinearGraph drawFunctions(double min, double max, double delta, SymbolicTree<INDArray, INDArray>... trees) {
+    public static MultiLinearGraph drawFunctions(double min, double max, double delta, DerivableSymbolicTree... trees) {
         if (trees.length < 1) throw new IllegalArgumentException("Specify at least 1 tree to draw.");
         int size = trees.length;
         // Create names.
-        String[] names = new String[size];
-        for (int i = 0; i < size; i++)
-            names[i] = "f" + (i + 1);
+        String[] names = new String[2 * size];
+        for (int i = 0; i < size; i++) {
+            names[2 * i] = "f" + (i + 1);
+            names[2 * i + 1] = "d" + (i + 1);
+        }
         // Create the graph.
         MultiLinearGraph g = new MultiLinearGraph(
-                (trees.length > 1 ? "Top " + trees.length + " results" : "Top result"), size, names);
+                (trees.length > 1 ? "Top " + trees.length + " results" : "Top result"), 2 * size, names);
         g.setMinX(min).setMaxX(max).setShowDots(false);
         g.setTheme(new LightTheme());
         // Calculate values and populate graph.
         for (double x = min; x <= max; x += delta) {
-            double[] data = new double[size];
+            double[] data = new double[2 * size];
             for (int i = 0; i < size; i++) {
-                data[i] = trees[i].execute(Nd4j.scalar(x)).getDouble(0);
+                data[2 * i] = trees[i].execute(Nd4j.scalar(x)).getDouble(0);
+                data[2 * i + 1] = trees[i].derivate(Nd4j.scalar(x)).getDouble(0);
             }
             g.add(data);
         }
