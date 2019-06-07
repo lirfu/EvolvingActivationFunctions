@@ -23,6 +23,7 @@ import hr.fer.zemris.utils.logs.StdoutLogger;
 import hr.fer.zemris.utils.threading.WorkArbiter;
 import org.bytedeco.javacv.FrameFilter;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.activations.impl.*;
 
@@ -89,6 +90,9 @@ public class ArchitectureSearchProgram {
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow2[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow3[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("gauss[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("trsin[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("trcos[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("plu[x]", set))));
 
 
         final LinkedList<Pair<Double, String>> top_results = new LinkedList<>();
