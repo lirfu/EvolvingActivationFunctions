@@ -1001,7 +1001,7 @@ Ova funkcija i njena brža aproksimacija \textit{Tvrdi ELiSH} su kompozicije fun
 &a(x) = \max(0, \min(1, \frac{x+1}{2})) \approx HardSigmoid(x) \\
 &a'(x) =
 \begin{cases}
-	0.5, \quad x \in [-1,1] \\
+	0.5, \quad |x| \leq 1 \\
 	0, \quad \otherwise
 \end{cases}	
 \end{split}
@@ -1046,6 +1046,43 @@ Ograničena ReLU funkcija uvedena je kako bi ograničeni Boltzmann-ov stroj \eng
 
 S obzirom da je ReLUn neuron aktivan samo na relativno uskoj regiji u pozitivnoj domeni, postoji opasnost od pojave mrtvih neurona (kroz koje ne prolazi gradijent). Idealna regija je $<0,n>$ jer  je u njoj neuron aktivan, a učenjem se može specijalizirati približavanjem zasićenju i stvoriti rijetke reprezentacije. Stoga je potrebno koristiti regularizaciju te pažljivu inicijalizaciju parametara.
 
+\subsection{Razlomljena linearna jedinica (PLU)}
+\engl{Piecewise linear unit}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{PLU.pdf}
+\centering
+\caption{Funkcija PLU i njena derivacija}
+\label{fig:plu}
+\end{figure}
+
+\begin{equation}
+\label{eq:plu}
+\begin{split}
+f(x) &=
+\begin{cases}
+x, \quad |x| \leq c \\
+\alpha \cdot x, \quad \otherwise
+\end{cases} \\
+&= \max(\alpha x - c(1-\alpha), \min(x, \alpha x + c (1-\alpha)))
+\end{split}
+\quad
+\begin{split}
+f'(x) =
+\begin{cases}
+1, \quad |x| \leq c \\
+\alpha, \quad \otherwise
+\end{cases}
+\end{split}
+\end{equation}
+\begin{equation*}
+\alpha, c \in \realnum
+\end{equation*}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \subsection{Sigmoida ($\sigma $)}
 \engl{Sigmoid}
 
@@ -1089,7 +1126,7 @@ f(x) = min(1,\ max(0,\ 0.2x + 0.5))
 \begin{split}
 f'(x) = 
 \begin{cases}
-0.2,	 		& \text{ako } x \in [-2.5, 2.5] \\
+0.2,	 		& \text{ako } |x| \leq 2.5 \\
 0,	& \text{inače}
 \end{cases}
 \end{split}
@@ -1138,7 +1175,7 @@ f'(x) = 1 - tanh^2(x)
 f(x) =
 \begin{cases}
 -1,	 		& \text{ako } x < 1 \\
-x,	 		& \text{ako } x \in [-1,1] \\
+x,	 		& \text{ako } |x| \leq 1 \\
 1,	& \text{inače}
 \end{cases}
 \end{split}
@@ -1147,7 +1184,7 @@ x,	 		& \text{ako } x \in [-1,1] \\
 f'(x) =
 \begin{cases}
 0,	 		& \text{ako } x < 1 \\
-1,	 		& \text{ako } x \in [-1,1] \\
+1,	 		& \text{ako } |x| \leq 1 \\
 0,	& \text{inače}
 \end{cases}
 \end{split}
@@ -1307,7 +1344,7 @@ Po uzoru na slićne funkcije kao što je sigmoida \figref{fig:sigmoid} i tangens
 f(x) =
 \begin{cases}
 0, \quad x < \frac{\pi}{2} \\
-sin(x), \quad x \in [-\frac{\pi}{2},\frac{\pi}{2}] \\
+sin(x), \quad |x| \leq \frac{\pi}{2} \\
 1, \quad \otherwise
 \end{cases}
 \end{split}
@@ -1315,7 +1352,7 @@ sin(x), \quad x \in [-\frac{\pi}{2},\frac{\pi}{2}] \\
 \begin{split}
 f'(x) =
 \begin{cases}
-cos(x), \quad x \in [-\frac{\pi}{2},\frac{\pi}{2}] \\
+cos(x), \quad |x| \leq \frac{\pi}{2} \\
 0, \quad \otherwise
 \end{cases}
 \end{split}
@@ -1363,7 +1400,7 @@ cos(x) = sin(x + \frac{\pi}{2}) \approx sin(x + 1.571)
 \begin{split}
 f(x) =
 \begin{cases}
-cos(x), \quad x \in [-\frac{\pi}{2},\frac{\pi}{2}] \\
+cos(x), \quad |x| \leq \frac{\pi}{2} \\
 0, \quad \otherwise
 \end{cases}
 \end{split}
@@ -1371,7 +1408,7 @@ cos(x), \quad x \in [-\frac{\pi}{2},\frac{\pi}{2}] \\
 \begin{split}
 f'(x) =
 \begin{cases}
--sin(x), \quad x \in [-\frac{\pi}{2},\frac{\pi}{2}] \\
+-sin(x), \quad |x| \leq \frac{\pi}{2} \\
 0, \quad \otherwise
 \end{cases}
 \end{split}
