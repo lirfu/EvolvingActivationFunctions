@@ -375,7 +375,8 @@ Tijekom optimizacije gradijentnim spustom uz fiksnu stupu učenja optimizacija �
 \todo{zbog nekonveksnih izbočina tam dolje, stopa može biti prejaka}
 \todoimg{konveksasta fja u kojoj skok u višljim regijama stvara manje problema od skokova u nižim}
 
-Jedan način smanjivanja stope je zadavanje ključnih iteracija u kojima se prestaje koristiti stara stopa i koristi se nova. Moguće je zadati stope za svaku od zadanih ključnih iteracija \citep{onaj rad} ili zadati početnu stopu koja se u ključnoj iteraciji pomnoži konstantom manjom od 1. Pri ovom pristupu problem je odrediti optimalne ključne iteracije ili početnu iteraciju i konstantu.
+Jedan način smanjivanja stope je zadavanje ključnih iteracija u kojima se prestaje koristiti stara stopa i koristi se nova. Moguće je zadati stope za svaku od zadanih ključnih iteracija %\citep{onaj rad} ili zadati početnu stopu koja se u ključnoj iteraciji pomnoži konstantom manjom od 1. Pri ovom pristupu problem je odrediti optimalne ključne iteracije ili početnu iteraciju i konstantu.
+\todo{fali tekst (nađi onaj rad)}
 
 Ključnim iteracijama možemo proglasiti one u kojima je detektirana konvergencija ili divergencija. Taj pristup omogućava nastavak pretrage, no problem je kako sa sigurnošću detektirati konvergenciju ili divergenciju. Tipično učenje mreže nije monotono, tj. gubitak mreže može na neko vrijeme rasti prije no što nastavi padati, što odgovara ponašanju u lokalnom optimumu. U tom slučaju smanjivanje stope učenja je nepoželjno.
 
@@ -385,6 +386,8 @@ Ključnim iteracijama možemo proglasiti one u kojima je detektirana konvergenci
 Pristup koji se koristi u ovom radu, je zadati početnu stopu i u svakoj iteraciji pomnožiti ju s konstantom manjom od 1. Pri tome se ne pretpostavlja postojanje ključnih iteracija i stopa se konstantno smanjuje. Uz korištenje stohastičkog gradijentnog spusta postupak navodi pretragu na sve finije regije funkcije gubitka. Postupak povlači slićnost s postupkom simuliranog kaljenja gdje se smanjivanjem temperature sustava smanjuje njegova stohastičnost i postupak konvergira u sve finije regije rješenja.
 
 \todo{postoji množenje faktorom pri detekciji konvergencije, ali ne želim ga jer ne znam kada konvergira (stepeničasto učenje)}
+
+\todo{Koristim relativnu razliku za detekciju konvergencije. Samo abs nije dobar jer nemam pojma koje su vrijednosti lossa pri optimumu niti znam koji je najmanji loss za koji gradijent isčezne. Pri rel. se zada delta koja predstavlja postotak od trenutnog optimuma za koji se pomaknuo. Ako je pomak manji od 1\% trenutnog optimuma, to je kvg.}
 
 \subsubsection{Inicijalizacija parametara}
 Inicijalizacija parametara mreže odgovara odabiru početne točke pri gradijentnom spustu. Dobrom inicijalizacijom možemo osigurati pronalazak boljeg optimuma te u kritičnim slučajevima i osigurati konvergenciju mreže. S obzirom da neuronske mreže posjeduju jasnu strukturu (što je posebno izraženo u slojevitim arhitekturama) inicijalizacija ima dodatne utjecaje. U potpuno povezanim slojevima želimo da svaki neuron vrši ekstrakciju značajki. Pri tome, u efikasnom sloju svaki će neuron stvoriti svoju značajku. Ako je više neurona inicijalizirano dovoljno slićno, ti neuroni će naučiti izvlaćiti iste značajke. Kažemo da je došlo do \textbf{koadaptacije neurona}.
@@ -582,7 +585,7 @@ Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu 
 
 \subsection{Problemi}
 \subsubsection{Odabir hiperparametara}
-Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov pravilan odabir značajno utjeće na performanse neuronske mreže. Nažalost nije ih moguće optimalno odabrati u zatvorenom obliku, već se to svodi na problem pretraživanja kao što je pretraživanje po rešetci \ref{sec:grid_search}. Arhitekture mogu poprimiti vrlo složene oblike kao što je predstavljeno radovima \citet{highway}, \citet{resnet}, \citet{densenet}, \citet{inceptionnet} i \citet{yolo} te se najčešće grade ručno s maksimalnom traktabilnom složenošću mreže. Detaljnije o odabiru izlaznih funkcija napisano je u poglavlju \ref{sec:izlazne_fje}.
+Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov pravilan odabir značajno utjeće na performanse neuronske mreže. Nažalost nije ih moguće optimalno odabrati u zatvorenom obliku, već se to svodi na problem pretraživanja kao što je pretraživanje po rešetci \ref{sec:grid_search}. Arhitekture mogu poprimiti vrlo složene oblike kao što je predstavljeno radovima \citet{highwaynet}, \citet{resnet}, \citet{densenet}, \citet{inceptionnet} i \citet{yolo} te se najčešće grade ručno s maksimalnom traktabilnom složenošću mreže. Detaljnije o odabiru izlaznih funkcija napisano je u poglavlju \ref{sec:izlazne_fje}.
 
 \subsubsection{Isčezavajući gradijent}
 \label{sec:iscezavajuci_grad}
@@ -618,9 +621,8 @@ U radu TAF...
 \todo{Članak: taming the waves}
 \todo{ostale reference iz taming the waves}
 
-\section{Popularne izlazne funkcije}
-
-U nastavku su navedene izlazne funkcije koje je autor pronašao u literaturi i koje su isprobane u ovom radu. Za svaku funkciju napisana je formula i iscrtan izgled funkcije i njene derivacije te navedena neka poznata svojstva.
+\section{Pasivne izlazne funkcije}
+U nastavku su navedene pasivne izlazne funkcije koje je autor pronašao u literaturi i koje su isprobane u ovom radu. Funkcije su pasivne u smislu da ne sadrže učeće parametre te njihov izlaz ovisi isključivo o ulazu  u funkciju. Za svaku funkciju napisana je formula i iscrtan izgled funkcije i njene derivacije te navedena neka poznata svojstva.
 
 \subsection{Funkcija identiteta}
 \engl{Identity function}
@@ -715,37 +717,6 @@ f'(x) =
 \end{equation}
 
 Problem funkcije ReLU \secref{func:relu} je što postoji mogućnost pojave mrtvih neurona, koji su uvijek u neaktivnom području i kroz njih ne teče gradijent. Taj problem efektivno smanjuje kapacitet modela pod cijenu nepotrebnog memorijskog opterećenja i smanjene brzine izvođenja. Iz navedenih razloga uvedena je propusna ReLU funkcija koja u "neaktivnom" području propušta mali gradijent. Rezultati na zadatku prepoznavanja govora pokazuju da je propusna ReLU funkcija ekvivalentna standardnom ReLU, no rezultati su prikazani na relativno plitkim arhitekturama (do 4 skrivena sloja). \citep{lrelu}
-
-\subsection{Parametrizirana ispravljena linearna jedinica (PReLU)}
-\engl{Parametric ReLU}
-
-\todoimg{}
-
-
-\begin{equation}
-\begin{split}
-f(x) &= \begin{cases}
-x,			& \text{ako } x > 0 \\
-\alpha x,	& \otherwise
-\end{cases} \\
-&= max(\alpha x, x)
-\end{split}
-\qquad
-\begin{split}
-f'(x) = 
-\begin{cases}
-1,		& \text{ako } x > 0 \\
-\alpha,	& \otherwise
-\end{cases}
-\end{split}
-\end{equation}
-\begin{equation*}
-\alpha \text{ je učeći parametar}
-\end{equation*}
-
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
 
 \subsection{Nasumična ispravljena linearna jedinica (RReLU)}
 \engl{Randomized leaky ReLU}
@@ -1059,43 +1030,6 @@ Ograničena ReLU funkcija uvedena je kako bi ograničeni Boltzmann-ov stroj \eng
 
 S obzirom da je ReLUn neuron aktivan samo na relativno uskoj regiji u pozitivnoj domeni, postoji opasnost od pojave mrtvih neurona (kroz koje ne prolazi gradijent). Idealna regija je $<0,n>$ jer  je u njoj neuron aktivan, a učenjem se može specijalizirati približavanjem zasićenju i stvoriti rijetke reprezentacije. Stoga je potrebno koristiti regularizaciju te pažljivu inicijalizaciju parametara.
 
-\subsection{Razlomljena linearna jedinica (PLU)}
-\engl{Piecewise linear unit}
-
-\begin{figure}[H]
-\includegraphics[width=\textwidth]{PLU.pdf}
-\centering
-\caption{Funkcija PLU i njena derivacija}
-\label{fig:plu}
-\end{figure}
-
-\begin{equation}
-\label{eq:plu}
-\begin{split}
-f(x) &=
-\begin{cases}
-x, \quad |x| \leq c \\
-\alpha \cdot x, \quad \otherwise
-\end{cases} \\
-&= \max(\alpha x - c(1-\alpha), \min(x, \alpha x + c (1-\alpha)))
-\end{split}
-\quad
-\begin{split}
-f'(x) =
-\begin{cases}
-1, \quad |x| \leq c \\
-\alpha, \quad \otherwise
-\end{cases}
-\end{split}
-\end{equation}
-\begin{equation*}
-\alpha, c \in \realnum
-\end{equation*}
-
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
-
 \subsection{Sigmoida ($\sigma $)}
 \engl{Sigmoid}
 
@@ -1265,19 +1199,6 @@ f'(x) = \frac{e^x}{1+e^x}
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
-
-\subsection{Hierarchical softmax}
-
-\todoimg{}
-
-\begin{equation}
-???
-\end{equation}
-
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
-
 
 \subsection{Maxout}
 
@@ -1498,7 +1419,100 @@ f'(x) = -2x \cdot f(x)
 \todo{svojstva}
 \todo{problemi}
 
+\section{Adaptivne izlazne funkcije}
+U nastavku su navedene adaptivne izlazne funkcije koje je autor pronašao u literaturi. Funkcije su adaptivne jer sadrže parametre koje je moguće optimizirati. Njihov izlaz ovisi o ulazu u funkciju i adaptivnim parametrima. Za svaku funkciju napisana je formula i iscrtan izgled funkcije i njene derivacije te navedena neka poznata svojstva.
+
+\subsection{Parametrizirana ispravljena linearna jedinica (PReLU)}
+\engl{Parametric ReLU}
+
+\todoimg{}
+
+\begin{equation}
+\begin{split}
+f(x) &= \begin{cases}
+x,			& \text{ako } x > 0 \\
+\alpha x,	& \otherwise
+\end{cases} \\
+&= max(\alpha x, x)
+\end{split}
+\qquad
+\begin{split}
+f'(x) = 
+\begin{cases}
+1,		& \text{ako } x > 0 \\
+\alpha,	& \otherwise
+\end{cases}
+\end{split}
+\end{equation}
+\begin{equation*}
+\alpha \text{ je učeći parametar}
+\end{equation*}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
+\subsection{Adaptivna razlomljena linearna funkcija (APL)}
+\engl{Adaptive piecewise linear}
+
+\todoimg{}
+
+\begin{equation}
+\begin{split}
+f(x) &=  \\
+\end{split}
+\qquad
+\begin{split}
+f'(x) = 
+\end{split}
+\end{equation}
+\begin{equation*}
+\alpha \text{ je učeći parametar}
+\end{equation*}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
+\subsection{ReLU oblika S (SReLU)}
+\engl{S-shaped ReLU}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{PLU.pdf}
+\centering
+\caption{Funkcija PLU i njena derivacija}
+\label{fig:plu}
+\end{figure}
+
+\begin{equation}
+\label{eq:plu}
+\begin{split}
+f(x) &=
+\begin{cases}
+x, \quad |x| \leq c \\
+\alpha \cdot x, \quad \otherwise
+\end{cases} \\
+&= \max(\alpha x - c(1-\alpha), \min(x, \alpha x + c (1-\alpha)))
+\end{split}
+\quad
+\begin{split}
+f'(x) =
+\begin{cases}
+1, \quad |x| \leq c \\
+\alpha, \quad \otherwise
+\end{cases}
+\end{split}
+\end{equation}
+\begin{equation*}
+\alpha, c \in \realnum
+\end{equation*}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+
 \section{Izlazne funkcije posebne namjene}
+U nastavku su navedene izlazne funkcije posebne namjene koje je autor pronašao u literaturi. Navedene funkcije uvedene su za pospješivanje neuronskih mreža specifičnih arhitektura. Funkcije nisu korištene u ovom radu, no autor smatra da ih je dobro spomenuti. Za svaku funkciju napisana je formula i iscrtan izgled funkcije i njene derivacije te navedena neka poznata svojstva.
 
 \subsection{(DReLU)}
 \engl{Dual ReLU}
@@ -1513,7 +1527,20 @@ f'(x) = -2x \cdot f(x)
 \todo{svojstva}
 \todo{problemi}
 
-Koristi se u rekurzivnim neuronskim mrežama kako bi se 
+Koristi se u rekurzivnim neuronskim mrežama kako bi se ... LSTM
+
+\subsection{Hijerarhijski softmax}
+\engl{hierarchical softmax}
+
+\todoimg{}
+
+\begin{equation}
+???
+\end{equation}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
 
 %--------------------------------------------------------------------------------------%
 \chapter{Optimizacija simboličkom regresijom (tehnički genetskim programiranjem...)}
@@ -1610,39 +1637,113 @@ tanh		& $tanh(x)$				& 1 \\
 \section{Paralelizacija}
 \todo{workarbiter <3}
 \todo{sinkronizacija u GA i pomoćne klase/metode}
+\todoimg{IntelliJ generirna UML paketa utils.threading}
 
-\section{Loggovi}
+\section{Logiranje}
 \todo{kaj sve imaš i kak se koristi}
+\todoimg{IntelliJ generirna UML paketa utils.logging}
 
 %--------------------------------------------------------------------------------------%
 \chapter{Rezultati}
 \label{sec:rezultati}
 
-\section{9class}
+\section{DPAv4}
 
-\subsection{Uobičajene izlazne funkcije}
+\subsection{Usporedba uobičajenih izlaznih funkcija}
 \todo{Opis postupka pretrage}
 \todo{Tablica}
 \todo{Komentar}
 
-\subsection{Utjecaj parametra veličine taboo liste}
+\subsection{Izgradnja izlaznih funkcija simboličkom regresijom}
 \todo{Tablica}
 \todo{Komentar}
+\todoimg{boxplot usporedba po taboo veličini}
 
-\todoimg{boxplot}
+\subsection{Izgradnja heterogenog rasporeda izlaznih funkcija}
+\todo{Valjda ću stići i ovo izvrtiti. Za najbolju prethodnu arhitekturu ću pronaći najbolji raspored uobičajenih fja po slojevima mreže (npr. sin-relu).}
 
-\section{256class}
+\section{DPAv2}
 
-\subsection{Uobičajene izlazne funkcije}
-\todo{Opis postupka pretrage}
-\todo{Tablica}
+\subsection{Usporedba uobičajenih izlaznih funkcija}
+U ovom poglavlju prikazana je usporedba i rezultati uobočajenih izlaznih funkcija. Ispitivane su kombinacije arhitekture i izlazne funkcije napisane su mjere točnosti i F1 na skupu za testiranje. Za svaku kombinaciju arhitekture i izlazne funkcije provedeno je pretraživanje hiperparametara po rešetci i napisani su najbolji postignuti rezultati. Zajednički hiperparametri i pretraživani navedeni su u tablici \ref{tab:hp_256} (pretraživani su na dnu). Kombinacije hiperparametara su indeksirane prema tablici \ref{tab:hp_256_comb} za lakše snalaženje na slici najboljih kombinacija hiperparametara \ref{fig:greedy_256_acc}.
+
+\begin{table}
+\centering
+\begin{tabular}{lr}
+Hiperparametar & Vrijednosti \\
+\hline
+Seed & 42 \\
+Veličina minigrupe & 256 \\
+Normalizacija značajki & Da \\
+Permutacija mini-grupa & Ne \\
+Normalizacija mini-grupe & Da \\
+Dropout & Ne \\
+Stopa opadanja stope učenja & 0.99 \\
+Broj iteracija do idućeg opadanja stope učenja & 1 \\
+Maksimalan broj epoha & 40 \\
+Broj uzastopnih iteracija za rano zaustavljanje & 5 \\
+Minimalna relativna promjena gubitka za detekciju konvergencije & 0.01 \\
+\hline
+Koeficijent L2 regularizacije & $10^{-3}$, $10^{-4}$, $10^{-5}$ \\
+Stopa učenja & $10^{-3}$, $5 \cdot 10^{-4}$, $10^{-4}$
+\end{tabular}
+\caption{Hiperparametri korišteni pri učenju mreža. Zarezima su odvojene vrijednosti hiperparametara koje su pretraživane po rešetci.}
+\label{tab:hp_256}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{lrr}
+Indeks & Koeficijent L2 regularizacije & Stopa učenja \\
+\hline
+1 & $10^{-3}$ & $10^{-3}$ \\
+2 & $5 \cdot 10^{-4}$ & $10^{-3}$ \\
+3 & $10^{-4}$ & $10^{-3}$ \\
+4 & $10^{-3}$ & $10^{-4}$ \\
+5 & $5 \cdot 10^{-4}$ & $10^{-4}$ \\
+6 & $10^{-4}$ & $10^{-4}$ \\
+7 & $10^{-3}$ & $10^{-5}$ \\
+8 & $5 \cdot 10^{-4}$ & $10^{-5}$ \\
+9 & $10^{-4}$ & $10^{-5}$
+\end{tabular}
+\caption{Indeksi kombinacija hiperparametara korištenih pri pretraživanju po rešetci.}
+\label{tab:hp_256_comb}
+\end{table}
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{greedy_256_acc.pdf}
+\centering
+\caption{Postignuta točnost izlaznih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
+\label{fig:greedy_256_acc}
+\end{figure}
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{greedy_256_f1.pdf}
+\centering
+\caption{Postignuta F1 mjera izlaznih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
+\label{fig:greedy_256_f1}
+\end{figure}
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{greedy_256_hp.pdf}
+\centering
+\caption{Najbolja kombinacija hiperparametara za izlazne funkcije na različitim arhitekturama. Vrijednosti u ćelijama označavaju kombinaciju hiperparametara navedenu u tablici \ref{tab:hp_256_comb}}
+\label{fig:greedy_256_acc}
+\end{figure}
+
+\clearpage
+
 \todo{Komentar}
 
-\subsection{Utjecaj parametra veličine taboo liste}
+\clearpage
+
+\subsection{Izgradnja izlaznih funkcija simboličkom regresijom}
 \todo{Tablica}
 \todo{Komentar}
+\todoimg{boxplot usporedba po taboo veličini}
 
-\todoimg{boxplot}
+\subsection{Izgradnja heterogenog rasporeda izlaznih funkcija}
+\todo{Valjda ću stići i ovo izvrtiti. Za najbolju prethodnu arhitekturu ću pronaći najbolji raspored uobičajenih fja po slojevima mreže (npr. sin-relu).}
 
 %--------------------------------------------------------------------------------------%
 \chapter{Stvari koje sam probao, ali nisu ispale korisne}
