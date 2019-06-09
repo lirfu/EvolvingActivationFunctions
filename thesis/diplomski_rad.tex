@@ -80,7 +80,7 @@
 \todo{Mjere dobrote klasifikacije}
 
 \subsection{DPAv4}
-\todo{Kada je napravljen i ko ga je radil}
+\todo{Kada je napravljen i ko ga je radilo}
 \todo{Jel HW ili onaj pravi}
 \todoimg{PCA redukcija iz jn}
 \todoimg{Statistike iz jn}
@@ -369,18 +369,31 @@ Optimizator brine o pomaku odnosno ažuriranju parametara modela pri gradijentno
 \todo{Adam}
 
 \subsubsection{Promijenjiva stopa učenja}
+Tijekom optimizacije gradijentnim spustom uz fiksnu stupu učenja optimizacija će početi oscilirati. Oscilacija se javlja kada je funkcija gubitka generalno konveksna po regijama, no sadrži 
+
+\todo{zašto je problem u stopi}
 \todo{zbog nekonveksnih izbočina tam dolje, stopa može biti prejaka}
 \todoimg{konveksasta fja u kojoj skok u višljim regijama stvara manje problema od skokova u nižim}
 
-\todo{koristim step reduction}
+Jedan način smanjivanja stope je zadavanje ključnih iteracija u kojima se prestaje koristiti stara stopa i koristi se nova. Moguće je zadati stope za svaku od zadanih ključnih iteracija \citep{onaj rad} ili zadati početnu stopu koja se u ključnoj iteraciji pomnoži konstantom manjom od 1. Pri ovom pristupu problem je odrediti optimalne ključne iteracije ili početnu iteraciju i konstantu.
+
+Ključnim iteracijama možemo proglasiti one u kojima je detektirana konvergencija ili divergencija. Taj pristup omogućava nastavak pretrage, no problem je kako sa sigurnošću detektirati konvergenciju ili divergenciju. Tipično učenje mreže nije monotono, tj. gubitak mreže može na neko vrijeme rasti prije no što nastavi padati, što odgovara ponašanju u lokalnom optimumu. U tom slučaju smanjivanje stope učenja je nepoželjno.
+
+\todo{WTF??? Zašto bi itko smanjivao stopu? jel zato kaj je oštrina brda tam dolje opasna za malu regiju koju pretražujemo? wtf?}
+\todo{zašto bi loss rastao?}
+
+Pristup koji se koristi u ovom radu, je zadati početnu stopu i u svakoj iteraciji pomnožiti ju s konstantom manjom od 1. Pri tome se ne pretpostavlja postojanje ključnih iteracija i stopa se konstantno smanjuje. Uz korištenje stohastičkog gradijentnog spusta postupak navodi pretragu na sve finije regije funkcije gubitka. Postupak povlači slićnost s postupkom simuliranog kaljenja gdje se smanjivanjem temperature sustava smanjuje njegova stohastičnost i postupak konvergira u sve finije regije rješenja.
+
 \todo{postoji množenje faktorom pri detekciji konvergencije, ali ne želim ga jer ne znam kada konvergira (stepeničasto učenje)}
 
 \subsubsection{Inicijalizacija parametara}
-Inicijalizacija parametara mreže je sinonim za odabir početne točke pri gradijentnom spustu.
+Inicijalizacija parametara mreže odgovara odabiru početne točke pri gradijentnom spustu. Dobrom inicijalizacijom možemo osigurati pronalazak boljeg optimuma te u kritičnim slučajevima i osigurati konvergenciju mreže. S obzirom da neuronske mreže posjeduju jasnu strukturu (što je posebno izraženo u slojevitim arhitekturama) inicijalizacija ima dodatne utjecaje. U potpuno povezanim slojevima želimo da svaki neuron vrši ekstrakciju značajki. Pri tome, u efikasnom sloju svaki će neuron stvoriti svoju značajku. Ako je više neurona inicijalizirano dovoljno slićno, ti neuroni će naučiti izvlaćiti iste značajke. Kažemo da je došlo do \textbf{koadaptacije neurona}.
+
+Inicijalizacija slojevitim nenadziranim učenjem ograničenog Boltzmann-ovog stroja \engl{restricted Boltzmann machine} pokazuje se dobrom \citep{relu6}. Postupak nenadzirano trenira stohastičku mrežu sloj po sloj na ulaznim značajkama kako bi slojevi ostvarili dobru ekstrakciju viših značajki. Nakon treniranja, mreži se dodaje izlazni klasifikacijski sloj i mreža se nadzirano ugađa na skupu za učenje. Iako je ostvarena inicijalizacija vrlo dobra, postupak je vremenski zahtjevan. Uvođenjem 
 
 \todo{važnost dobre inicijalizacije}
 \todo{Xavier}
-\todo{postoji i nenadzirana inicijalizacija sloj-po-sloj RBM \citep{relu6} ili autoenkoderom, ali u kontekstu evolucije je preskupa}
+\todo{postoji i init. autoenkoderom, ali u kontekstu evolucije je preskupa}
 
 \subsubsection{Pretprocesiranje podataka}
 \todo{normalizacija po značajkama}
