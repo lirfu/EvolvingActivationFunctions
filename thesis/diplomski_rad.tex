@@ -9,6 +9,7 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{subcaption}
+\usepackage{url}
 
 \graphicspath{ {./img/} }
 
@@ -198,9 +199,7 @@ Postoje i aktivacijske funkcije temeljene na udaljenosti vektora ...
 
 Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i gradijenti teku kroz mrežu, a time utječu na brzinu učenja i inferencije neuronske mreže. Najčešće se koriste slojevite unaprijedne arhitekture zbog jednostavnosti izvedbe. Unaprijedne arhitekture propuštaju podatke samo u jednom smjeru odnosno već izračunati neuroni se ne izračunavaju ponovno, što je posebno pogodno za optimizaciju širenjem unatrag, detaljnije opisanu u poglavlju \ref{sec:backprop}. Slojevite arhitekture omogućuju paralelizaciju izvođenja operacija na grafičkim karticama što značajno ubrzava postupke učenja i inferencije. Pri definiciji slojevite arhitekture najčešće je dovoljno navesti samo redoslijed slojeva, no ponekad je potrebno definirati i način povezivanja slojeva npr. pri uporabi preskočnih veza \citep{highwaynet, resnet, densenet}. Prvi sloj služi za postavljanje ulaza mreže i nazivamo ga ulaznim slojem mreže. Posljednji sloj mreže služi nam za ekstrakciju izlaza te mjerenje kakvoće mreže i nazivamo ga izlaznim slojem mreže. Svi slojevi između ulaznog i izlaznog sloja nazivaju se skrivenim slojevima.
 
-Potpuno povezana arhitektura je najjednostavnija arhitektura za zadatak klasifikacije. Svaki neuron u potpuno povezanom sloju aktivira se pomoću svih izlaza iz prethodnog sloja. Za naučeni potpuno povezani sloj kažemo da vrši ekstrakciju značajki iz svojih ulaza. Geometrijski gledano, svaki neuron vrši mapiranje značajki iz dimenzije prethodnog sloja u novu dimenziju s ciljem modeliranja boljih značajki.
-
-\todo{Daj neki dokaz za ovo gore.}
+Potpuno povezana arhitektura je najjednostavnija arhitektura. Svaki neuron u potpuno povezanom sloju aktivira se pomoću svih izlaza iz prethodnog sloja. Za naučeni potpuno povezani sloj kažemo da vrši ekstrakciju značajki iz svojih ulaza. Geometrijski gledano, svaki neuron vrši nelinearno mapiranje značajki iz dimenzije prethodnog sloja u novu dimenziju s ciljem modeliranja boljih značajki.
 
 \subsection{Optimizacija umjetne neuronske mreže}
 Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno kažemo da mreža 'uči'. Optimizaciju parametara najčešće izvodimo gradijentnim spustom, uz pretpostavku derivabilnosti svih komponenata neuronske mreže. Kada ta pretpostavka ne vrijedi koriste se algoritmi kombinatorne optimizacije poput algoritma roja čestica koji se spominje u \citet{skripta_nenr}. U ovom radu neuronske mreže optimiraju se gradijentnim spustom.
@@ -217,6 +216,7 @@ Početna točka utječe na ishod algoritma. Kod višemodalnih funkcija s optimum
 \newline
 \newline
 \begin{algorithm}[H]
+\DontPrintSemicolon
 \KwIn{funkcija $f(\vec{x})$}
 \KwIn{početna točka $\vec{x}_0$}
 \KwIn{koeficijent pomaka $\eta$}
@@ -226,6 +226,7 @@ $\vec{g}_i \gets \vec{\nabla}_{\vec{x}} f(\vec{x}_i)$ \;
 $\vec{x}_{i+1} \gets \vec{x}_i - \eta \cdot \vec{g}_i$
 }
 \KwResult{pronađena optimalna točka $\vec{x}_i$}
+\;
 \caption{Gradijentni spust}
 \label{alg:grad_spust}
 \end{algorithm}
@@ -415,8 +416,10 @@ L(\theta \probsep \dataset) &= \expect_{(x,y) \sim p_{\minibatch_i}}[L(\theta \p
 \end{equation}
 
 Mini-grupe se najčešće definiraju prije početka učenja nasumičnim rasporedom. To je najjednostavniji i najbrži pristup, no definiranjem fiksnih mini-grupa unosi induktivnu pristranost jer ne možemo znati je li odabran raspored idealan za model koji evaluiramo. Pristranost možemo ublažiti miješanjem podatkovnog skupa između epoha, no skupocijenost te operacije ograničava njeno korištenje u praksi. Također, problem mogu stvoriti mini-grupe pristrane jednoj ili više dominantnih (većinskih) klasa koje će snažno usmjeravati gradijent prema tim klasama i zanemarivati ostale. Taj problem je posebno izražen u nebalansiranim podatkovnim skupovima, a može se zaobići tehnikom težinskog uzorkovanja s ponavljanjem gdje je vjerojatnost odabira primjera obrnuto proporcionalna dominantnosti (brojnosti) njegove klase. Treba paziti da se provede dovoljan broj uzorkovanja tako da je model učen na svakom primjeru podatkovnog skupa.
-
+\newline
+\newline
 \begin{algorithm}[H]
+\DontPrintSemicolon
 \KwIn{funkcija $f(\vec{x})$}
 \KwIn{početni parametar $\vec{\theta}_0$}
 \KwIn{stopa učenja $\eta$}
@@ -428,6 +431,7 @@ Mini-grupe se najčešće definiraju prije početka učenja nasumičnim raspored
 	}
 }
 \KwResult{pronađeni optimalni parametar $\vec{\theta}^*$}
+\;
 \caption{Stohastički gradijentni spust}
 \label{alg:sgd}
 \end{algorithm}
@@ -462,6 +466,8 @@ Inicijalizacija parametara mreže odgovara odabiru početne točke pri gradijent
 Inicijalizacija slojevitim nenadziranim učenjem ograničenog Boltzmann-ovog stroja \engl{restricted Boltzmann machine} pokazuje se dobrom \citep{relu6}. Postupak nenadzirano trenira stohastičku mrežu sloj po sloj na ulaznim značajkama kako bi slojevi ostvarili dobru ekstrakciju viših značajki. Nakon treniranja, mreži se dodaje izlazni klasifikacijski sloj i mreža se nadzirano ugađa na skupu za učenje. Iako je ostvarena inicijalizacija vrlo dobra, postupak je vremenski zahtjevan. Uvođenjem 
 
 %\todo{postoji i init. autoenkoderom, ali u kontekstu evolucije je preskupa}
+
+U ovom radu koristi se Xavier inicijalizacija koja parametre uzorkuje iz centrirane distribucije s varijancom koja ovisi o broju ulaznih neurona ili značajki.
 \todo{Ja koristim Xavier}
 
 \subsubsection{Pretprocesiranje podataka}
@@ -524,6 +530,13 @@ Postupak ranog zaustavljanja tretira broj epoha kao hiperparametar koji se pretr
 
 \todoeq{Algoritam ranog zaustavljanja}
 
+\subsubsection{Normalizacija nad grupom}
+\engl{batch normalization}
+
+\todo{zašto?}
+\todo{kako?}
+\todo{zašto ne dropout?}
+
 \subsection{Odabir hiperparametara}
 Do ovdje su navedeni hiperparametri koji se koriste pri spomenutim tehnikama optimizacije neuronske mreže (poglavlja \ref{sec:gradijentni_spust} - \ref{sec:regularizacija}). No neuronska mreža ima i strukturalne hiperparametre.
 
@@ -532,11 +545,13 @@ Arhitektura mreže je vrlo bitan hiperparametar koji određuje složenost modela
 Izlazne funkcije su također važan hiperparametar, no u praksi se većinom ignoriraju zbog manjka intuicije o njihovom utjecaju na učenje pojedinog modela na pojedinom podatkovnom skupu. U praksi se najčešće odabiru funkcije koje su brze i koje se pokazuju korisnima u raznim radovima. Najčešće se koristi ReLU opisan u poglavlju \ref{func:relu}. U povratnim neuronskim mrežama za rekurzivne slojeve popularan je tangens hiperbolni opisan u poglavlju \ref{func:tanh}. U poglavlju \ref{sec:izlazne_fje} navedene su i opisane brojne funkcije te je njihov utjecaj ispitan u poglavlju \ref{sec:rezultati}.
 
 \subsubsection{Procjena generalizacije i odabir modela}
-Skup podataka kojim učimo model najčešće ne opisuje stvarnu funkciju potpuno, već sadrži primjere koje smatramo reprezentativnim i koji su dovoljni za njeno modeliranje. Kako bismo procjenili koliko dobro naš model procjenjuje stvarnu funkciju ispitujemo model na podatcima koji nisu korišteni prilikom učenja, odnosno na neviđenim podatcima. Ta se metoda zove \textbf{unakrsna validacija}, a skupove nazivamo \textbf{skupom za učenje} \engl{train set} i \textbf{skupom za testiranje} \engl{test set}. Dakako, važno je pobrinuti se da su oba skupa reprezentativna stvarnoj funkciji, ali da ne sadrže iste primjere. U suprotnom mreža će naučiti pogrešnu funkciju što može dati lažno pesimistične rezultate ili ćemo nepotpuno ili pristrano testirati što može dovesti do lažno optimističnih rezultata. Postoji više postupaka mjerenja generalizacije modela (k-fold, LOOCV, ...) koji osiguravaju da je generalizacija ispitana na svim primjerima, no zbog postojanja službenog skupa za testiranje i zahtjevnosti postupaka u ovom se radu koristi \textbf{metoda izdvajanja} \engl{holdout}.
+Skup podataka kojim učimo model najčešće ne opisuje stvarnu funkciju potpuno, već sadrži primjere koje smatramo reprezentativnim i koji su dovoljni za njeno modeliranje. Kako bismo procjenili koliko dobro naš model procjenjuje stvarnu funkciju ispitujemo model na podatcima koji nisu korišteni prilikom učenja, odnosno na neviđenim podatcima. Ta se metoda zove \textbf{unakrsna validacija} \engl{crossvalidation}, a skupove nazivamo \textbf{skupom za učenje} \engl{train set} i \textbf{skupom za testiranje} \engl{test set}. Dakako, važno je pobrinuti se da su oba skupa reprezentativna stvarnoj funkciji, ali da ne sadrže iste primjere. U suprotnom mreža će naučiti pogrešnu funkciju što može dati lažno pesimistične rezultate ili ćemo nepotpuno ili pristrano testirati što može dovesti do lažno optimističnih rezultata. Postoji više postupaka mjerenja generalizacije modela (k-preklopa, LOOCV, ...) koji osiguravaju da je generalizacija ispitana na svim primjerima, no zbog postojanja službenog skupa za testiranje i zahtjevnosti ostalih postupaka mjerenja u ovom se radu koristi \textbf{metoda izdvajanja} \engl{holdout}.
 
-Pri odabiru hiperparametara ili pri odabiru modela potrebno je usporediti dobrotu svake kombinacije. Pri tome se skup za učenje ponovno podijeli na skup za učenje i \textbf{skup za validaciju} \engl{validation set}. Skupom za učenje optimiziramo model, a skupom za validaciju ispitujemo generalizaciju modela. Između kombinacija hiperparametara odabiremo onu za koju model najbolje generalizira na skupu za validaciju te njome nanovo optimiziramo model na originalnom skupu za učenje i dobivamo konačnu generalizaciju na skupu za testiranje. Navedeni postupak odgovara algoritmu \textbf{ugniježđene unakrsne provjere} \engl{nested crossvalidation}. U ovom radu koristi se metoda izdvajanja u unutarnjoj i vanjskoj petlji umjesto k-struke unakrsne validacije, a postupak je opisan pseudokodom \ref{alg:nested_cv}.
-
+Pri odabiru hiperparametara ili pri odabiru modela potrebno je usporediti dobrote njihovih rezultata. Pri tome se skup za učenje ponovno podijeli na skup za učenje i \textbf{skup za validaciju} \engl{validation set}. Skupom za učenje optimiziramo model, a skupom za validaciju ispitujemo generalizaciju modela. Između kombinacija hiperparametara odabiremo onu za koju model najbolje generalizira na skupu za validaciju te njome nanovo optimiziramo model na originalnom skupu za učenje i dobivamo konačnu generalizaciju na skupu za testiranje. Navedeni postupak odgovara algoritmu \textbf{ugniježđene unakrsne provjere} \engl{nested crossvalidation}. U ovom radu se umjesto unakrsne validacije k-preklopa koristi metoda izdvajanja u unutarnjoj i vanjskoj petlji, a postupak je opisan pseudokodom \ref{alg:nested_cv}.
+\newline
+\newline
 \begin{algorithm}[H]
+\DontPrintSemicolon
 \KwIn{model $m$}
 \KwIn{podatkovni skup $\dataset$}
 \KwIn{kombinacije vrijednosti hiperparametara $\mathcal{K}$}
@@ -552,11 +567,14 @@ Inicijaliziraj $m$
 Optimiziraj $m$ hiperparametrima $k^*$ na $\dataset_{train}$ \;
 Izmjeri konačnu generalizaciju $g$ na $\dataset_{test}$ \;
 \KwResult{pronađeni optimalni model $m^*$}
+\;
 \caption{Ugniježđena unakrsna provjera}
 \label{alg:nested_cv}
 \end{algorithm}
 
-Za različite vrste problema koristimo različite mjere za usporedbu. Iako je ukupna vrijednost funkcije gubitka na čitavom skupu za testiranje dobar pokazatelj, za probleme klasifikacije koristimo mjere koje detaljnije opisuju stvarne performanse modela.
+\subsubsection{Mjere generalizacije}
+
+Za različite vrste problema koristimo različite mjere. Iako je ukupna vrijednost funkcije gubitka na čitavom skupu za testiranje dobar pokazatelj, za probleme klasifikacije koristimo mjere koje detaljnije opisuju stvarne performanse modela.
 
 \begin{equation}
 \label{eq:mat_zabune_bin}
@@ -609,7 +627,7 @@ Mjere binarne klasifikacije možemo primijeniti pri \textbf{višeklasnoj klasifi
 \end{split}
 \end{align}
 
-Za izračun složenijih mjera poput točnosti i \F1 mjere moramo računati prosjek po klasama. Razlikujemo dva pristupa računanju prosjeka: makro i mikro. \textbf{Makro prosjekom} se prvo izračunaju mjere svake klase naspram svih ostalih te se uzme njihov prosjek. Ova mjera pretpostavlja jednak utjecaj svih klasa nez obzira na njihovu veličinu \citep{ml_probabilistic}.
+Za izračun složenijih mjera poput točnosti i \F1 mjere moramo računati prosjek po klasama. Razlikujemo dva pristupa računanju prosjeka: makro i mikro. \textbf{Makro prosjekom} prvo se izračunaju mjere svake klase naspram svih ostalih te se uzme njihov prosjek. Ova mjera pretpostavlja jednak utjecaj svih klasa nez obzira na njihovu veličinu \citep{ml_probabilistic}.
 \begin{equation}
 \begin{split}
 Acc^M = \sum_{i=1}^K \frac{Acc_i}{K}
@@ -625,7 +643,7 @@ F_1^M = \sum_{i=1}^K \frac{F_{1;i}}{K}
 \end{split}
 \end{equation}
 
-\textbf{Mikro prosjekom} se prvo zbroje matrice zabune po pojedinim klasama, a zatim se nad zbrojenom matricom računaju mjere. Na mikro prosjek više utječe veličina klasa i koristi se u nebalansiranim skupovima.
+\textbf{Mikro prosjekom} prvo se zbroje matrice zabune po pojedinim klasama, a zatim se nad zbrojenom matricom računaju mjere. Na mikro prosjek više utječe veličina klasa i koristi se u nebalansiranim skupovima.
 
 \begin{align}
 \begin{split}
@@ -633,13 +651,6 @@ Acc^\mu &= \frac{\sum_i (TP_i+TN_i)}{\sum_i (TP_i+TN_i+FP_i+FN_i)} = Acc^M \\
 FP = FN \implies P^\mu &= R^\mu = F_1^\mu = \frac{\sum_i TP_i}{\sum_i (TP_i+FP_i)}
 \end{split}
 \end{align}
-
-\subsubsection{Unakrsna provjera}
-\label{sec:crossval}
-Pri mjerenju svojstva generalizacije modela treba posvetiti pažnju da primjeri na kojima se testira nisu korišteni pri optimizaciji modela. Stoga podatkovni skup treba izdvojiti skup za učenje i skup za testiranje. 
-
-
-... pri ćemu se skup za učenje podijeli na manji skup za učenje i skup za validaciju. Tek nakon što otkrijemo optimalan broj epoha model trenira na čitavom skupu za učenje i ispituje na skupu za testiranje koji mjeri stvarnu generalizaciju.
 
 \subsubsection{Pretraživanje po rešetci}
 \label{sec:grid_search}
@@ -653,22 +664,21 @@ Iako se optimalni hipermarametri mogu nalaziti izvan zadanih skupova i neće bit
 \subsubsection{Univerzalna aproksimacija}
 Teorem univerzalne aproksimacije tvrdi da unaprijedna neuronska mreža može modelirati proizvoljnu Borel mjerljivu funkcju proizvoljno dobro uz nekoliko uvijeta: mora imati linearni izlaz, barem jedan nelinearni skriveni sloj koji koristi sažimajuću funkciju i "dovoljan" broj skrivenih neurona. Dakle, postoji arhitektura i postoje parametri kojima neuronska mreža može modelirati zadani podatkovni skup. No, teorem ne iskazuje kako doći do tih parametara što optimizaciju neuronske mreže čini vrlo teškom \citep{goodfellowbook}. 
 
-\subsubsection{Dubina}
-Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skriveni sloj za predstavljanje proizvoljne Borel mjerljive funkcije, gornja granica veličine tog sloja je eksponencijalno velika naspram broja ulaza što je netraktabilno. Dodavanjem dubine moguće je iskoristiti pravilnosti u funkciji koju aproksimiramo kako bismo smanjili potreban broj neurona. Primjer su funkcije simetrične oko neke osi. Ako skriveni slojevi mreže vrše preklapanje te funkcije preko same sebe, uzastopnim preklapanjem dobiva se sve jednostavnija funkcija. Preklapanje mogu vršiti po-dijelovima-linearne izlazne funkcije poput ReLU i Maxout. Dakako, ne postoji garancija da stvarna funkcija zadovoljava svojstvo simetrije, no u praksi dublje mreže generaliziraju bolje \citep{alexnet, highwaynet, resnet, densenet}. Postoje i druge interpretacije utjecaja dubine, poput svojstva dekompozicije zadatka na manje cjeline ili interpretacija neuronske mreže ako računalnog programa koje nadilaze temu ovog rada \citep{goodfellowbook}.
+\subsubsection{Reprezentacija dubinom}
+Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skriveni sloj za predstavljanje proizvoljne Borel mjerljive funkcije, gornja granica veličine tog sloja je eksponencijalno velika naspram broja ulaza što je netraktabilno. Dodavanjem dubine moguće je iskoristiti pravilnosti u funkciji koju aproksimiramo kako bismo smanjili potreban broj neurona. Primjer su funkcije simetrične oko neke osi. Ako skriveni slojevi mreže vrše preklapanje te funkcije preko same sebe, uzastopnim preklapanjem dobiva se sve jednostavnija funkcija. Preklapanje mogu vršiti po-dijelovima-linearne izlazne funkcije poput ReLU i Maxout. Dakako, ne postoji garancija da stvarna funkcija zadovoljava svojstvo simetrije, no u praksi dublje mreže generaliziraju bolje \citep{alexnet, highwaynet, resnet, densenet}. Postoje i druge interpretacije utjecaja dubine, poput svojstva dekompozicije zadatka na manje cjeline ili interpretacija neuronske mreže kao računalnog programa koje nadilaze temu ovog rada. \citep{goodfellowbook}
 
-\todo{VC dimenzija}
+\todo{*VC dimenzija \citep{vc_dimension}}
 
-\subsubsection{Kompresija}
-\todo{kompresija}
+\subsubsection{*Kompresija podataka}
 \todo{https://www.quantamagazine.org/new-theory-cracks-open-the-black-box-of-deep-learning-20170921/}
 
 \subsubsection{Generalizacija}
 \label{sec:generalizacija}
 \todoimg{underfit-fit-overfit}
-\todo{generalizacija}
-\todoimg{train-test U curve}
 
-Svojstvo modela da dobro predviđa funkciju na neviđenim primjerima.
+Model sa svojstvom generalizacije dobro modelira stvarnu funkciju te ispravno radi na neviđenim primjerima.
+
+\todoimg{train-test U curve}
 
 Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu (npr. automobil) postoji neprebrojivo mogućih slika s različitim modelom, bojom ili kutom gledanja automobila. No mi raspolažemo sa svega nekoliko stotina tisuća primjera koje smatramo reprezentativnim za tu klasu i želimo izgraditi klasifikator koji je robustan na većinu perturbacija slike.
 
@@ -678,14 +688,16 @@ Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu 
 \subsubsection{Odabir hiperparametara}
 Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov pravilan odabir značajno utjeće na performanse neuronske mreže. Nažalost nije ih moguće optimalno odabrati u zatvorenom obliku, već se to svodi na problem pretraživanja kao što je pretraživanje po rešetci \ref{sec:grid_search}. Arhitekture mogu poprimiti vrlo složene oblike kao što je predstavljeno radovima \citet{highwaynet}, \citet{resnet}, \citet{densenet}, \citet{inceptionnet} i \citet{yolo} te se najčešće grade ručno s maksimalnom traktabilnom složenošću mreže. Detaljnije o odabiru izlaznih funkcija napisano je u poglavlju \ref{sec:izlazne_fje}.
 
-\subsubsection{Isčezavajući gradijent}
-\label{sec:iscezavajuci_grad}
+\subsubsection{Nestajući gradijent}
+\label{sec:nestajući_grad}
 \todo{Problem dubokih arhitektura}
 
-\subsubsection{Pretreniranost i neprijateljski primjeri}
+
+
+\subsubsection{*Neprijateljski primjeri}
 \todo{Problem pretreniranosti + neprijateljski primjeri}
 
-Derivabilne neuronske mreže optimiziraju se optimizatorom koji određuje kako se mijenjaju parametri. Za ugađanje parametara najčešće se koristi gradijentni spust, uz pretpostavku derivabilnosti čitave neuronske mreže. Kada pretpostavka ne vrijedi najčešće se koriste evolucijski algoritmi.
+Vrlo složeni modeli, kao što su neuronske mreže, unatoč regularizaciji skloni su pretreniranju. \citep{intriguing_props}
 
 \chapter{Izlazne funkcije}
 \label{sec:izlazne_fje}
@@ -775,7 +787,7 @@ f'(x) =
 \end{split}
 \end{equation}
 
-Funkcija ReLU svoje korijene povlači iz rada bioloških neurona, a u dubokom učenju je zamijenila dotadašnju sigmoidu i tangens hiperbolni. Zahvaljujući prizemljenosti na negativnoj domeni ReLU omogućava neuronskoj mreži učenje rijetke reprezentacije. Njihovim kombiniranjem u dubokoj mreži dobivamo model s eksponencijalno puno linearnih regija koje dijele zajedničke parametre \citep{relu_rbm}. Zahvaljujući linearnosti na pozitivnoj domeni funkcija ne doprinosi isčezavanju ni eksploziji gradijenta, a sam izračun funkcije i derivacije je vrlo brz i efikasan. \citep{relu}
+Funkcija ReLU svoje korijene povlači iz rada bioloških neurona, a u dubokom učenju je zamijenila dotadašnju sigmoidu i tangens hiperbolni. Zahvaljujući prizemljenosti na negativnoj domeni ReLU omogućava neuronskoj mreži učenje rijetke reprezentacije. Njihovim kombiniranjem u dubokoj mreži dobivamo model s eksponencijalno puno linearnih regija koje dijele zajedničke parametre \citep{relu_rbm}. Zahvaljujući linearnosti na pozitivnoj domeni funkcija ne doprinosi nestajanju ni eksploziji gradijenta, a sam izračun funkcije i derivacije je vrlo brz i efikasan. \citep{relu}
 
 Problem u negativnoj domeni je mogućnost blokiranja gradijenta i neaktivnih neurona (mrtvi neuroni), no dok god postoji put kroz mrežu gdje su neuroni aktivni (u pozitivnoj domeni) učenje će raditi, što pokazuju i rezultati \citep{relu}. Drugi problem je u neograničenosti funkcije u pozitivnoj domeni, no nju rješavamo regularizacijom koja ograničava veličinu ulaza u neuron \citep{relu}.
 
@@ -1044,7 +1056,7 @@ f'(x) = \lambda
 \end{split}
 \end{equation}
 
-Ova funkcija i njena brža aproksimacija \textit{Tvrdi ELiSH} su kompozicije funkcija, različito definirane na pozitivnoj i negativnoj domeni. ELiSH pozitivnu domenu naslijeđuje od funkcije Swish \eqref{eq:swish}, a negativna je umnožak funkcije ELU \eqref{eq:elu} i sigmoide \eqref{eq:sigmoid}. Obje funkcije su ručno izgrađene s ciljem iskorištavanja dobrog prijenosa informacije koji ostvaruju funkcije Swish i sigmoida te sprečavanjem isčezavajućeg gradijenta pomoću linearne komponente u funkciji Swish. \citep{elish}
+Ova funkcija i njena brža aproksimacija \textit{Tvrdi ELiSH} su kompozicije funkcija, različito definirane na pozitivnoj i negativnoj domeni. ELiSH pozitivnu domenu naslijeđuje od funkcije Swish \eqref{eq:swish}, a negativna je umnožak funkcije ELU \eqref{eq:elu} i sigmoide \eqref{eq:sigmoid}. Obje funkcije su ručno izgrađene s ciljem iskorištavanja dobrog prijenosa informacije koji ostvaruju funkcije Swish i sigmoida te sprečavanjem nestajućeg gradijenta pomoću linearne komponente u funkciji Swish. \citep{elish}
 
 \subsection{Tvrdi ELiSH}
 \label{func:hard_elish}
@@ -1640,6 +1652,8 @@ Koristi se u rekurzivnim neuronskim mrežama kako bi se ... LSTM
 \todo{Opis i svojstva SR}
 \todo{Utjecaj i brojnost parametara u GA (moš linkat i svoj završni rad :P)}
 
+
+
 \subsection{Pretraživanje izlaznih funkcija}
 \todo{golden activation članak, kako radi detaljnije}
 \todo{swish članak detaljnije}
@@ -1707,19 +1721,27 @@ tanh		& $tanh(x)$				& 1 \\
 %--------------------------------------------------------------------------------------%
 \chapter{Implementacija}
 \section{Razvojna okolina i alati}
-\todo{tulavi DL4J}
-\todo{IntelliJ <3 <3 <3}
-\todo{funkcije iscrtavam u jn}
+Projekt je implementiran u programskom jeziku Java verzije 8, alatom IntelliJ. Razvojna okolina Deeplearning4j korištena je za učitavanje podatakovnih skupova, pretprocesiranje, izgradnju i optimizaciju neuronskih mreža te podršku izvođenja na grafičkim karticama s podrškom CUDA biblioteke. Obrada podataka i iscrtavanje grafova implementirano je u Jupyter bilježnicama u programskom jeziku Python verzije 3 korištenjem raznih biblioteka (numpy, sk-learn, matplotlib i ostalim).
 
-\section{Parametri}
-\todo{da, možeš definirat parametre u datoteki}
-\todo{dodavanje parametara}
-\todo{grid search mehanizam}
+\noindent
+Kod je dostupan na GitHub repozitoriju: \\
+\url{https://github.com/lirfu/EvolvingOutputFunctions}
 
-\section{Evolucijski algoritmi}
-\todo{in-house EA okolina}
-\todo{glavne komponente koda}
-\todoimg{IntelliJ generirna UML paketa genetics}
+\section{Organizacija koda}
+U implementaciji je napisano nekoliko izvršnih programa različitih namjena. Napisani su i UNIT testovi za ispitivanje ispravnosti ključnih dijelova implementacije. U nastavku su spomenuti glavni dijelovi implementacije korisni korisniku za brže snalaženje.
+
+\subsection{Evolucijski algoritmi}
+Evolucijski algoritmi i pomočne klase implementirane su u paketu $genetics$. Dizajn biblioteke inspiriran je bibliotekom \textit{Evolutionary Computation Framework} \citep{ecf} u programskom jeziku C++. 
+
+Najsloženija klasa je apstraktna klasa $Algorithm$ u kojoj se čuvaju generični parametri i operatori algoritma, implementirana je inicijalizacija i pokretanje algoritma te praćenje i dohvat rezultata. Implementacije algoritma definiraju funkciju $runIteration$ u kojoj se obavljaju sve operacije pri jednoj iteraciji algoritma. Implementacije algoritma nalaze se u paketu $genetics.algorithms$. Algoritam podržava oblikovni obrazac \textit{graditelj} za jednostavniju i pregledniju definiciju algoritma. Primjere implementacije moguće je pronaći u paketu $genetics.algorithms$.
+
+Genotip je definiran apstraktnom klasom $Genotype$ koja čuva svoju vrijednost dobrote i definira nekoliko apstraktnih metoda za rad s genotipom. Primjer implementacije genotipa je klasa $symboregression.SymbolicTree$ opisana kasnije. Genotip je moguće serijalizirati u tekst.
+
+Operatori su definirani apstraktnom klasom $Operator$ koja čuva vrijednost važnosti operatora te referencu na generator slučajnih brojeva. Operatori križanja $Crossover$ i mutacije $Mutation$ dodaju svoje apstraktne metode koje je potrebno implementirati i koje se pozivaju u algoritmu. Implementacije generičnih operatora nalaze se u korijenu paketa, dok se operatori specifični za pojedine vrste genotipa nalaze u zasebnim paketima tog genotipa (npr. $genetics.symboregression$). Parametre opetatora moguće je serijalizirati u tekst.
+
+Metoda odabira jedinki iz populacije definirana je sučeljem $Selector$ koja definira apstraktnu metodu $selectParentsFrom$ koja na ulaz dobiva populaciju, a vraća polje kandidata za roditelje. Ovisno o implementaciji, algoritam odabira može vratiti samo 2 roditelja ($RouletteWheelSelector$) ili 2 roditelja i jedinku koju zamijenjujemo djetetom ($TournamentSelector$). Metode odabira implementirane su u paketu $selectors$.
+
+Inicijalizator populacije definiran je sučeljem $Initializer$. Uvijet zaustavljanja algoritma definiran je klasom $stopconditions.StopCondition$ koja se predaje algoritmu. Uvijete zaustavljanja moguće serijalizirati u tekst. Rezultat algoritma opisan je klasom $Result$ koju je moguće serijalizirati u tekst.
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{pkg_genetics.pdf}
@@ -1728,23 +1750,37 @@ tanh		& $tanh(x)$				& 1 \\
 \label{fig:pkg_genetics}
 \end{figure}
 
-\section{Neuronske mreže}
+\subsubsection{Simbolička regresija}
+Implementacija simboličke regresije nalazi se u paketu $genetics.symboregression$. Sadrži operatore križanja definirane paketom $crx$ i operatore mutacije definirane paketom $mut$. Genotip je definiran klasom $SymbolicTree$ koja sadrži referencu na korijenski čvor. Čvorovi su definirani apstraktnom klasom $TreeNode$, a skup dostupnih čvorova s pristupnim metodama definiran je klasom $TreeNodeSet$.
+
+Izvršavanje operacija obilaskom stabla obavlja se objektom sučelja $IExecutable$ koji se definira pri implementaciji čvora. Čvor sadrži i operacije za dohvat i zamjenu djece te izvršnog objekta, a koje su potrebne operatorima križanja i mutacije. Čvor može primiti i dodatan objekt koji može poslužiti čvorovima specijalne namjene.
+
+\subsection{Neuronske mreže}
 \todo{glavne komponente}
-\todo{automatizirana pohrana rezultata}
 \todoimg{IntelliJ generirna UML paketa neurology}
 
-\section{Paralelizacija}
-\todo{workarbiter <3}
+\subsection{Pomoćni mehanizmi za projekt}
+
+\subsubsection{Zajednička klasa optimizaciju mreža}
+
+\subsubsection{Automatska pohrana rezultata}
+\todo{storagemanager}
+
+\subsubsection{Parametri}
+Hiperparametre programa moguće je zadati konfiguracijskom datotekom. Datoteka je formata ključ-vrijednost, odvojeni regularnim izrazom: $[:\ \textbackslash t]+$. 
+
+\todo{definiranje parametara kroz datoteku}
+\todo{*dodavanje novih parametara}
+\todo{grid search mehanizam}
+
+\subsubsection{Paralelizacija}
+Paralelizaciju je moguće postići vrlo jednostavno paketom $utils.threading$. Prvo je potrebno instancirati klasu $WorkArbiter$ koja u sebi sadrži red poslova koje treba obaviti i listu radnika. Posao koji treba izvršiti definira se implementacijom sučelja $Work$. Poslovi se predaju objektu $WorkArbiter$ koja ih stavlja u red. Radnici $Worker$ paralelno i sinkronizirano dohvaćaju i izvršavaju poslove iz reda poslova klase $WorkArbiter$ koja ih je stvorila. S obzirom da su radnici implementirani kao zasebne dretve, navalom poslova radnici će paralelno uzimati poslove i izvršavati ih.
+
+Čekanje pozivajuće dretve na izvršenje zadataka moguće je ostvariti pozivom metode $waitOn$ koja prima uvijet čekanja $WaitCondition$. Moguće je definirati svoj uvijet (npr. čekanje dok se ne popuni spremnik) ili pričekati dok se svi poslovi ne izvrše, uvijetom koji vraća metoda $getAllFinishedCondition$.
+
 \todo{sinkronizacija u GA i pomoćne klase/metode}
 
-\begin{figure}[ht]
-\includegraphics[width=7cm]{pkg_threading.pdf}
-\centering
-\caption{Paket $utils.threading$}
-\label{fig:pkg_threading}
-\end{figure}
-
-\section{Logiranje}
+\subsubsection{Logiranje}
 \todo{kaj sve imaš i kak se koristi}
 
 \begin{figure}[ht]
@@ -1753,6 +1789,11 @@ tanh		& $tanh(x)$				& 1 \\
 \caption{Paket $utils.logs$}
 \label{fig:pkg_logs}
 \end{figure}
+
+\subsection{Izvršni programi projekta}
+\subsubsection{Pohlepna pretraga uobičajenih funkcija}
+
+\subsubsection{Izgradnja izlaznih funkcija simboličkom regresijom}
 
 %--------------------------------------------------------------------------------------%
 \chapter{Rezultati}
@@ -1805,17 +1846,17 @@ Stopa učenja & $10^{-3}$, $5 \cdot 10^{-4}$, $10^{-4}$
 \begin{table}
 \centering
 \begin{tabular}{lrr}
-Indeks & Koeficijent L2 regularizacije & Stopa učenja \\
+Indeks & Stopa učenja & Koeficijent L2 regularizacije \\
 \hline
-1 & $10^{-3}$ & $10^{-3}$ \\
-2 & $5 \cdot 10^{-4}$ & $10^{-3}$ \\
-3 & $10^{-4}$ & $10^{-3}$ \\
-4 & $10^{-3}$ & $10^{-4}$ \\
-5 & $5 \cdot 10^{-4}$ & $10^{-4}$ \\
+1 & $10^{-3}$ & $10^{-3}$  \\
+2 & $10^{-3}$ & $5 \cdot 10^{-4}$ \\
+3 & $10^{-3}$ & $10^{-4}$ \\
+4 & $10^{-4}$ & $10^{-3}$ \\
+5 & $10^{-4}$ & $5 \cdot 10^{-4}$ \\
 6 & $10^{-4}$ & $10^{-4}$ \\
-7 & $10^{-3}$ & $10^{-5}$ \\
-8 & $5 \cdot 10^{-4}$ & $10^{-5}$ \\
-9 & $10^{-4}$ & $10^{-5}$
+7 & $10^{-5}$ & $10^{-3}$ \\
+8 & $10^{-5}$ & $5 \cdot 10^{-4}$ \\
+9 & $10^{-5}$ & $10^{-4}$
 \end{tabular}
 \caption{Indeksi kombinacija hiperparametara korištenih pri pretraživanju po rešetci.}
 \label{tab:hp_256_comb}
@@ -1844,11 +1885,23 @@ Indeks & Koeficijent L2 regularizacije & Stopa učenja \\
 
 \clearpage
 
+\todoimg{mjesta aktivacije top 4 funkcije po arh}
 \todo{Komentar}
+
+\todoimg{mjesta aktivacije bottom 4 funkcije po arh (tu je i pow2)}
+\todo{Komentar}
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{greedy_256_arch_quality.pdf}
+\centering
+\caption{Suma kvadrata F1 mjera po svim arhitekturama. Kvadriranjem veći utjecaj na sumu imaju veće vrijednosti (želimo zanemariti loše vrijednosti). Najveću sumu ostvaruje arhitektura $300-300$ te se upravo ona uzima kza daljnje eksperimente. Koristi se najčešća kombinacija hiperparametara za tu arhitekturu je pod indeksom $5$ tablice \ref{tab:hp_256_comb}.}
+\label{fig:greedy_256_arch_quality}
+\end{figure}
 
 \clearpage
 
 \subsection{Izgradnja izlaznih funkcija simboličkom regresijom}
+
 \todo{Tablica}
 \todo{Komentar}
 \todoimg{boxplot usporedba po taboo veličini}
