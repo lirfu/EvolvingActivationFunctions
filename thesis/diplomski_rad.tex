@@ -8,6 +8,7 @@
 \usepackage{multirow}
 \usepackage{float}
 \usepackage{amsmath}
+\usepackage{subcaption}
 
 \graphicspath{ {./img/} }
 
@@ -73,17 +74,93 @@
 \todo{Ne zaboravi referencu na stranicu!}
 
 \subsection{DPAv2}
-\todo{Kada je napravljen i ko ga je radil}
-\todo{Jel HW ili onaj pravi}
-\todoimg{PCA redukcija iz jn}
-\todoimg{Statistike iz jn}
+\todo{Kad je napravljen i ko ga je radil}
+
+\begin{figure}[H]
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl256_tr_instances.pdf}
+\centering
+\caption{PCA redukcija skupa za učenje}
+\label{fig:dpa2_train_pca}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl256_ts_instances.pdf}
+\centering
+\caption{PCA redukcija skupa za testiranje}
+\label{fig:dpa2_test_pca}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl256_tr_inputs.pdf}
+\centering
+\caption{Distribucija značajki skupa za učenje}
+\label{fig:dpa2_train_inputs}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl256_ts_inputs.pdf}
+\centering
+\caption{Distribucija značajki skupa za testiranje}
+\label{fig:dpa2_test_inputs}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl256_tr_outputs.pdf}
+\centering
+\caption{Distribucija oznaka skupa za učenje}
+\label{fig:dpa2_train_outputs}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl256_ts_outputs.pdf}
+\centering
+\caption{Distribucija oznaka skupa za testiranje}
+\label{fig:dpa2_test_outputs}
+\end{subfigure}
+\caption{Statistike podskupa za učenje i testiranje skupa DPAv2}
+\end{figure}
+
 \todo{Mjere dobrote klasifikacije}
 
 \subsection{DPAv4}
 \todo{Kada je napravljen i ko ga je radilo}
-\todo{Jel HW ili onaj pravi}
-\todoimg{PCA redukcija iz jn}
-\todoimg{Statistike iz jn}
+
+\begin{figure}[H]
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl9_tr_instances.pdf}
+\centering
+\caption{PCA redukcija skupa za učenje}
+\label{fig:dpa4_train_pca}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl9_ts_instances.pdf}
+\centering
+\caption{PCA redukcija skupa za testiranje}
+\label{fig:dpa4_test_pca}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl9_tr_inputs.pdf}
+\centering
+\caption{Distribucija značajki skupa za učenje}
+\label{fig:dpa4_train_inputs}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl9_ts_inputs.pdf}
+\centering
+\caption{Distribucija značajki skupa za testiranje}
+\label{fig:dpa4_test_inputs}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl9_tr_outputs.pdf}
+\centering
+\caption{Distribucija oznaka skupa za učenje}
+\label{fig:dpa4_train_outputs}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+\includegraphics[width=\textwidth]{nl9_ts_outputs.pdf}
+\centering
+\caption{Distribucija oznaka skupa za testiranje}
+\label{fig:dpa4_test_outputs}
+\end{subfigure}
+\caption{Statistike podskupa za učenje i testiranje skupa DPAv4}
+\end{figure}
+
 \todo{Mjere dobrote klasifikacije}
 
 %--------------------------------------------------------------------------------------%
@@ -356,7 +433,7 @@ Mini-grupe se najčešće definiraju prije početka učenja nasumičnim raspored
 \end{algorithm}
 
 \subsubsection{Optimizator}
-Optimizator brine o pomaku odnosno ažuriranju parametara modela pri gradijentnom spustu. Dosad smo vidjeli dva načina: klasični s koeficijentom pomaka (algoritam \ref{alg:grad_spust}) i s dodatkom momenta \eqref{eq:moment_update}. Moment 
+Optimizator brine o pomaku odnosno ažuriranju parametara modela pri gradijentnom spustu. Dosad smo vidjeli dva načina: klasični s koeficijentom pomaka (algoritam \ref{alg:grad_spust}) i s dodatkom momenta \eqref{eq:moment_update}.  
 
 \todo{uporaba momenta i momenta na kvadrat (interpretacija)}
 \todo{Adam}
