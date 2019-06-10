@@ -95,8 +95,6 @@ Umjetne neuronske mreže (nadalje „neuronske mreže“) koristimo za modeliran
 \subsection{Građa}
 Neuronske mreže građene su od međusobno povezanih jedinica, tzv. neurona, modeliranih prema pojednostavljenom modelu biološkog neurona. Neuron očitava ulazne značajke sustava ili izlaze drugih neurona te ažurira svoje unutarnje stanje i stvara odziv. Utjecaj ulaza na neuron vrednuje se težinama \engl{weights} koje definiraju kako se neuron ponaša u ovisnosti o pojedinim ulazima. Aktivacijski prag neurona \engl{bias} određuje jedinstvenu osjetljivost neurona na jačinu podražaja. Težine i prag neurona nazivamo parametrima neurona.
 
-\todo{Što sve biolozi vele o neuronima? https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3812748/}
-
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{Neuron.pdf}
@@ -115,15 +113,9 @@ Afina funkcija je skalarni produkt vektora ulaza s vektorom težina neurona uz d
 f(\vec{x};\mat{W},\vec{b})=\mat{W}^T \cdot \vec{x} + \vec{b}
 \end{equation}
 
-Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Ulaz za takav model je definiran n-dimenzijskim tenzorom, a neuron uzima samo jednu regiju tenzora (vidljivu regiju) i nad njime računa skalarni produkt s n-dimenzijskim tenzorom parametara (jezgrom). Kada su ulazi slike u boji ulazni tenzor ima 3 dimenzije (visina, širina i RGB kanali) pa stoga i svaka jezgra ima 3 dimenzije, no znantno manje visine i širine. Unakrsna korelacija prozvana je konvolucijom jer radi na istom principu, a jedina razlika je da se elementi jezgre indeksiraju zrcaljeno po obje osi. S obzirom da se parametri jezgre uče automatski, nije nam bitno definirati orijentaciju jezgre. Unakrsna korelacija koristi iste parametre za svaku vidljivu regiju što ju čini štedljivijom od afine funkcije te ostvaruje neosjetljivost na translaciju, što je vrlo korisno u računalnom vidu.
-\begin{equation}
-f(\mat{X};\mat{W})=\mat{X} \circledast \mat{W}
-\end{equation}
-
-\todo{Je li uopće potrebno spominjat konvoluciju?}
+Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Unakrsna korelacija vrlo je slićna operatoru konvolucije te se u literaturi gotovo uvijek naziva konvolucijom. Često se koristi za ekstrakciju obrazaca u slikama \citep{alexnet}, no može se koristiti u problemima koji zahtjevaju obrau slijedova podataka. Jedan takav primjer je klasifikacija teksta u kome različit slijed riječi može prenositi različito značenje \citep{char_cnn}.
 
 Postoje i aktivacijske funkcije temeljene na udaljenosti vektora ...
-
 \todo{Spomeni distance based aktivacije (ANFIS?)}
 \todo{Spomeni i složenije metode: \citep{network_in_network}}
 
@@ -149,14 +141,14 @@ Početna točka utječe na ishod algoritma. Kod višemodalnih funkcija s optimum
 \newline
 \begin{algorithm}[H]
 \KwIn{funkcija $f(\vec{x})$}
-\KwIn{početna točka $\vec{x_0}$}
+\KwIn{početna točka $\vec{x}_0$}
 \KwIn{koeficijent pomaka $\eta$}
 \KwIn{broj iteracija $n$}
 \For{n iteracija}{
-$\vec{g_i} \gets \vec{\nabla}_{\vec{x}} f(\vec{x_i})$ \;
-$\vec{x_{i+1}} \gets \vec{x_i} - \eta \cdot \vec{g_i}$
+$\vec{g}_i \gets \vec{\nabla}_{\vec{x}} f(\vec{x}_i)$ \;
+$\vec{x}_{i+1} \gets \vec{x}_i - \eta \cdot \vec{g}_i$
 }
-\KwResult{konačna točka $\vec{x_i}$ je pronađeni optimum}
+\KwResult{pronađena optimalna točka $\vec{x}_i$}
 \caption{Gradijentni spust}
 \label{alg:grad_spust}
 \end{algorithm}
@@ -349,15 +341,16 @@ Mini-grupe se najčešće definiraju prije početka učenja nasumičnim raspored
 
 \begin{algorithm}[H]
 \KwIn{funkcija $f(\vec{x})$}
-\KwIn{inicijalizirani parametar $\theta_0$}
+\KwIn{početni parametar $\vec{\theta}_0$}
 \KwIn{stopa učenja $\eta$}
 \KwIn{kriterij zaustavljanja $k$}
 \While{kriterij $k$ nije zadovoljen}{
 	\For{$\minibatch_i \in \dataset$}{
-		$\vec{g_i} \gets \frac{1}{|\minibatch|} \sum_{(\vec{x},\vec{y})\in\minibatch} \vec{\nabla}_{\theta} L(\theta \probsep \vec{x},\vec{y})$ \;
-		$\vec{\theta_{i+1}} \gets \vec{\theta_i} - \eta \cdot \vec{g_i}$
+		$\vec{g}_i \gets \frac{1}{|\minibatch|} \sum_{(\vec{x},\vec{y})\in\minibatch} \vec{\nabla}_{\theta} L(\theta \probsep \vec{x},\vec{y})$ \;
+		$\vec{\theta}_{i+1} \gets \vec{\theta}_i - \eta \cdot \vec{g_i}$
 	}
 }
+\KwResult{pronađeni optimalni parametar $\vec{\theta}^*$}
 \caption{Stohastički gradijentni spust}
 \label{alg:sgd}
 \end{algorithm}
@@ -380,12 +373,9 @@ Jedan način smanjivanja stope je zadavanje ključnih iteracija u kojima se pres
 
 Ključnim iteracijama možemo proglasiti one u kojima je detektirana konvergencija ili divergencija. Taj pristup omogućava nastavak pretrage, no problem je kako sa sigurnošću detektirati konvergenciju ili divergenciju. Tipično učenje mreže nije monotono, tj. gubitak mreže može na neko vrijeme rasti prije no što nastavi padati, što odgovara ponašanju u lokalnom optimumu. U tom slučaju smanjivanje stope učenja je nepoželjno.
 
-\todo{WTF??? Zašto bi itko smanjivao stopu? jel zato kaj je oštrina brda tam dolje opasna za malu regiju koju pretražujemo? wtf?}
-\todo{zašto bi loss rastao?}
+\todo{Zašto zapravo smanjujemo stopu? Zato kaj je oštrina brda tamo dolje opasna za malu regiju u kojoj je optimum (vjerojatnost pogotka je malena)?}
 
-Pristup koji se koristi u ovom radu, je zadati početnu stopu i u svakoj iteraciji pomnožiti ju s konstantom manjom od 1. Pri tome se ne pretpostavlja postojanje ključnih iteracija i stopa se konstantno smanjuje. Uz korištenje stohastičkog gradijentnog spusta postupak navodi pretragu na sve finije regije funkcije gubitka. Postupak povlači slićnost s postupkom simuliranog kaljenja gdje se smanjivanjem temperature sustava smanjuje njegova stohastičnost i postupak konvergira u sve finije regije rješenja.
-
-\todo{postoji množenje faktorom pri detekciji konvergencije, ali ne želim ga jer ne znam kada konvergira (stepeničasto učenje)}
+Pristup koji se koristi u ovom radu je zadanu početnu stopu u svakoj iteraciji pomnožiti s konstantom manjom od 1. Pri tome se ne pretpostavlja postojanje ključnih iteracija i stopa se konstantno smanjuje. Uz korištenje stohastičkog gradijentnog spusta postupak navodi pretragu na sve finije regije funkcije gubitka. Postupak povlači slićnost s postupkom simuliranog kaljenja gdje se smanjivanjem temperature sustava smanjuje njegova stohastičnost i postupak konvergira u sve finije regije rješenja.
 
 \todo{Koristim relativnu razliku za detekciju konvergencije. Samo abs nije dobar jer nemam pojma koje su vrijednosti lossa pri optimumu niti znam koji je najmanji loss za koji gradijent isčezne. Pri rel. se zada delta koja predstavlja postotak od trenutnog optimuma za koji se pomaknuo. Ako je pomak manji od 1\% trenutnog optimuma, to je kvg.}
 
@@ -394,13 +384,13 @@ Inicijalizacija parametara mreže odgovara odabiru početne točke pri gradijent
 
 Inicijalizacija slojevitim nenadziranim učenjem ograničenog Boltzmann-ovog stroja \engl{restricted Boltzmann machine} pokazuje se dobrom \citep{relu6}. Postupak nenadzirano trenira stohastičku mrežu sloj po sloj na ulaznim značajkama kako bi slojevi ostvarili dobru ekstrakciju viših značajki. Nakon treniranja, mreži se dodaje izlazni klasifikacijski sloj i mreža se nadzirano ugađa na skupu za učenje. Iako je ostvarena inicijalizacija vrlo dobra, postupak je vremenski zahtjevan. Uvođenjem 
 
-\todo{važnost dobre inicijalizacije}
-\todo{Xavier}
-\todo{postoji i init. autoenkoderom, ali u kontekstu evolucije je preskupa}
+%\todo{postoji i init. autoenkoderom, ali u kontekstu evolucije je preskupa}
+\todo{Ja koristim Xavier}
 
 \subsubsection{Pretprocesiranje podataka}
-\todo{normalizacija po značajkama}
-Koeficijenti se računaju pomoću značajki iz podatkovnog skupa za učenje. Koeficijent varijance ovisi o koeficijentu sredine pa se njihovo računanje ne može paralelizirati.
+\todo{zašto normalizacija po značajkama}
+
+Koeficijenti se računaju pomoću značajki iz podatkovnog skupa za učenje. Koeficijent varijance ovisi o koeficijentu sredine pa se njihovo računanje ne može paralelizirati, no to ne predstavlja velik problem s obzirom da ih računamo samo jendom pri učitavanju skupa.
 \begin{equation}
 \vec{\mu} = \frac{1}{N} \sum_{\vec{x}\in \dataset} \vec{x}
 \end{equation}
@@ -408,25 +398,23 @@ Koeficijenti se računaju pomoću značajki iz podatkovnog skupa za učenje. Koe
 \vec{\sigma^2} = \frac{1}{N-1} \sum_{\vec{x}\in \dataset} (\vec{x}-\vec{\mu})^2
 \end{equation}
 
-Prije no što model dobije ulazne značajke, normaliziramo ih formulom:
+Prije no što ih predamo modelu, ulazne značajke normaliziramo formulom \eqref{eq:feat_norm}.
 \begin{equation}
+\label{eq:featnorm}
 \vec{z} = \frac{\vec{x} - \vec{\mu}}{\vec{\sigma^2}}
 \end{equation}
 
-Koeficijenti normalizacije se računaju samo na skupu za učenje, a normalizacija se mora primijeniti prilikom inferencije odnosno na skupu za testiranje.
+Koeficijenti normalizacije računaju se isključivo na skupu za učenje, a normalizacija se mora primijeniti prilikom inferencije odnosno na skupu za testiranje.
 \todoimg{slika značajki prije i poslije normalizacije}
-\todo{sada su vrijednosti centriranje sa std.dev.}
+\todo{komentar na sliku}
 
 \subsection{Regularizacija}
 \label{sec:regularizacija}
-Decizijska granica je sjecište 
+Decizijska granica opisuje točke u prostoru značajki za koje model dvoji između dviju ili više klasa. Geometrijski, decizijsku granicu možemo interpretirati kao presjek dviju ili više ploha u hiperprostoru. Pri optimizaciji model prilagođava decizijsku granicu kako bi što bolje razvdojio primjere iz podatkovnog skupa koji su različitih klasa, a obuhvatio primjere iste klase. Podatkovni skupovi najčešće sadrže šum zbog nesavršenog uzorkovanja stvarne funkcije, pogrešnog označavanja ili višeznačnosti primjera. Bez regularizacije, model će s ciljem minimiziranja gubitka svoju decizijsku granicu saviti kako bi što ispravnije obuhvatio sve primjere pa čak i šum. Tada kažemo da je model počeo učiti šum odnosno da je \textbf{prenaučen}. Na prenaučenost su posebno osjetljivi složeni modeli kao što su neuronske mreže.
 
-\todo{geometrijski opis deciziske granice}
-
-Podatkovni skupovi najčešće sadrže šum zbog nesavršenog uzorkovanja stvarne funkcije, pogrešnog označavanja ili višeznačnosti primjera. Bez regularizacije, model će s ciljem minimiziranja gubitka svoju decizijsku granicu saviti kako bi što ispravnije obuhvatio sve primjere pa čak i šum. Tada kažemo da je model počeo učiti šum odnosno da je \textbf{prenaučen}.
-
-\todo{podnaučena, generalizira, prenaučena}
 \todoimg{podnaučena, generalizira, prenaučena}
+
+Kako bismo spriječili prenaučenost ili ju barem ublažili, koristimo tehnike regularizacije. Pri tome ne smijemo pretjerati jer suviše snažna regularizacija može ograničiti sposobnost učenja te model postaje \textbf{podnaučen}. Stoga je potrebno pronaći balans između složenosti modela i jačine regularizacije za koji model dobro \textbf{generalizira}. Pri uporabi neuronskih mreža obično se odabire složen model na koji se primjenjuju razne tehnike regularizacije.
 
 \subsubsection{Regularizacija parametara}
 Prenaučenost je često posljedica velikih normi vektora parametara. Stoga se u funkciju gubitka dodaje regularizacijski član po težinama $\Omega(\theta)$. Utjecaj regularizacije moguće je mijenjati hiperparametrom $\alpha$.
@@ -443,7 +431,7 @@ Najčešće se koristi regularizacija \textbf{L2} normom koja akumulira kvadrate
 \vec{\theta}_{i+1} \gets \vec{\theta}_i - \eta \cdot \vec{g}_i + \alpha \cdot \theta
 \end{equation}
 
-\todo{Spomeni pokoju još (L1, adversarial iz Hintona, ...)}
+\todo{*Spomeni pokoju još (L1, adversarial iz Hintona, ...)}
 
 \subsubsection{Regularizacija šumom}
 Unošenjem šuma u podatke netom prije nego ih dobije model moguće je graditi robusnost modela na šum, ali ujedno to sprječava model da se pretrenira na podatkovnom skupu za treniranje. Jedan primjer možemo nasumično zašumiti nekoliko puta te se time povećava efektivna veličina podatkovnog skupa.
@@ -467,9 +455,31 @@ Arhitektura mreže je vrlo bitan hiperparametar koji određuje složenost modela
 Izlazne funkcije su također važan hiperparametar, no u praksi se većinom ignoriraju zbog manjka intuicije o njihovom utjecaju na učenje pojedinog modela na pojedinom podatkovnom skupu. U praksi se najčešće odabiru funkcije koje su brze i koje se pokazuju korisnima u raznim radovima. Najčešće se koristi ReLU opisan u poglavlju \ref{func:relu}. U povratnim neuronskim mrežama za rekurzivne slojeve popularan je tangens hiperbolni opisan u poglavlju \ref{func:tanh}. U poglavlju \ref{sec:izlazne_fje} navedene su i opisane brojne funkcije te je njihov utjecaj ispitan u poglavlju \ref{sec:rezultati}.
 
 \subsubsection{Procjena generalizacije i odabir modela}
-Skup podataka kojim učimo model najčešće ne opisuje stvarnu funkciju potpuno, već sadrži primjere koje smatramo reprezentativnim i koji su dovoljni za njeno modeliranje. Kako bismo procjenili koliko dobro naš model procjenjuje stvarnu funkciju ispitujemo model na podatcima koji nisu korišteni prilikom učenja, odnosno na neviđenim podatcima. Ta se metoda zove \textbf{unakrsna validacija}, a skupove nazivamo \textbf{skupom za učenje} i \textbf{skupom za testiranje}. Dakako, važno je pobrinuti se da su oba skupa reprezentativna stvarnoj funkciji, ali da ne sadrže iste primjere. U suprotnom mreža će naučiti pogrešnu funkciju što može dati lažno pesimistične rezultate ili ćemo nepotpuno ili pristrano testirati što može dovesti do lažno optimističnih rezultata.
+Skup podataka kojim učimo model najčešće ne opisuje stvarnu funkciju potpuno, već sadrži primjere koje smatramo reprezentativnim i koji su dovoljni za njeno modeliranje. Kako bismo procjenili koliko dobro naš model procjenjuje stvarnu funkciju ispitujemo model na podatcima koji nisu korišteni prilikom učenja, odnosno na neviđenim podatcima. Ta se metoda zove \textbf{unakrsna validacija}, a skupove nazivamo \textbf{skupom za učenje} \engl{train set} i \textbf{skupom za testiranje} \engl{test set}. Dakako, važno je pobrinuti se da su oba skupa reprezentativna stvarnoj funkciji, ali da ne sadrže iste primjere. U suprotnom mreža će naučiti pogrešnu funkciju što može dati lažno pesimistične rezultate ili ćemo nepotpuno ili pristrano testirati što može dovesti do lažno optimističnih rezultata. Postoji više postupaka mjerenja generalizacije modela (k-fold, LOOCV, ...) koji osiguravaju da je generalizacija ispitana na svim primjerima, no zbog postojanja službenog skupa za testiranje i zahtjevnosti postupaka u ovom se radu koristi \textbf{metoda izdvajanja} \engl{holdout}.
 
-Svojstvo modela da dobro modelira na neviđenim primjerima naziva se generalizacija i detaljnije je opisano u poglavlju \ref{sec:generalizacija}. Pri odabiru hiperparametara ili pri odabiru modela potrebno je usporediti generalizaciju svakog pomoću zajedničke mjere. U problemima regresije najčešće se koristi ukupna vrijednost funkcije gubitka na čitavom skupu za testiranje.
+Pri odabiru hiperparametara ili pri odabiru modela potrebno je usporediti dobrotu svake kombinacije. Pri tome se skup za učenje ponovno podijeli na skup za učenje i \textbf{skup za validaciju} \engl{validation set}. Skupom za učenje optimiziramo model, a skupom za validaciju ispitujemo generalizaciju modela. Između kombinacija hiperparametara odabiremo onu za koju model najbolje generalizira na skupu za validaciju te njome nanovo optimiziramo model na originalnom skupu za učenje i dobivamo konačnu generalizaciju na skupu za testiranje. Navedeni postupak odgovara algoritmu \textbf{ugniježđene unakrsne provjere} \engl{nested crossvalidation}. U ovom radu koristi se metoda izdvajanja u unutarnjoj i vanjskoj petlji umjesto k-struke unakrsne validacije, a postupak je opisan pseudokodom \ref{alg:nested_cv}.
+
+\begin{algorithm}[H]
+\KwIn{model $m$}
+\KwIn{podatkovni skup $\dataset$}
+\KwIn{kombinacije vrijednosti hiperparametara $\mathcal{K}$}
+Podijeli $\dataset$ na $\dataset_{train}$ i $\dataset_{test}$ \;
+Podijeli $\dataset_{train}$ na $\dataset_{train'}$ i $\dataset_{val}$ \;
+\For{svaku kombinaciju $k_i \in \mathcal{K}$}{
+Inicijaliziraj $m$
+Optimiziraj $m$ hiperparametrima $k_i$ na $\dataset_{train'}$ \;
+Izmjeri generalizaciju $g_i$ na $\dataset_{val}$ \;
+}
+$k^* \gets argmax_{g_i} k_i$ \;
+Inicijaliziraj $m$
+Optimiziraj $m$ hiperparametrima $k^*$ na $\dataset_{train}$ \;
+Izmjeri konačnu generalizaciju $g$ na $\dataset_{test}$ \;
+\KwResult{pronađeni optimalni model $m^*$}
+\caption{Ugniježđena unakrsna provjera}
+\label{alg:nested_cv}
+\end{algorithm}
+
+Za različite vrste problema koristimo različite mjere za usporedbu. Iako je ukupna vrijednost funkcije gubitka na čitavom skupu za testiranje dobar pokazatelj, za probleme klasifikacije koristimo mjere koje detaljnije opisuju stvarne performanse modela.
 
 \begin{equation}
 \label{eq:mat_zabune_bin}
@@ -547,9 +557,11 @@ FP = FN \implies P^\mu &= R^\mu = F_1^\mu = \frac{\sum_i TP_i}{\sum_i (TP_i+FP_i
 \end{split}
 \end{align}
 
-\subsubsection{Krosvalidacija}
+\subsubsection{Unakrsna provjera}
 \label{sec:crossval}
-\todo{ovo je bitno}
+Pri mjerenju svojstva generalizacije modela treba posvetiti pažnju da primjeri na kojima se testira nisu korišteni pri optimizaciji modela. Stoga podatkovni skup treba izdvojiti skup za učenje i skup za testiranje. 
+
+
 ... pri ćemu se skup za učenje podijeli na manji skup za učenje i skup za validaciju. Tek nakon što otkrijemo optimalan broj epoha model trenira na čitavom skupu za učenje i ispituje na skupu za testiranje koji mjeri stvarnu generalizaciju.
 
 \subsubsection{Pretraživanje po rešetci}
@@ -578,6 +590,8 @@ Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skrive
 \todoimg{underfit-fit-overfit}
 \todo{generalizacija}
 \todoimg{train-test U curve}
+
+Svojstvo modela da dobro predviđa funkciju na neviđenim primjerima.
 
 Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu (npr. automobil) postoji neprebrojivo mogućih slika s različitim modelom, bojom ili kutom gledanja automobila. No mi raspolažemo sa svega nekoliko stotina tisuća primjera koje smatramo reprezentativnim za tu klasu i želimo izgraditi klasifikator koji je robustan na većinu perturbacija slike.
 
@@ -1257,7 +1271,7 @@ f'(x) = cos(x)
 Sinus je periodička funkcija te nema teorijsku podlogu za uporabu u neuronskim mrežama, za razliku od monotonih funkcija.
 \todo{članak dokaz univerzalne aproksimacije monotonih fja}
 
-Unatoč tome, pojavljuje se u radovima pretrage izlaznih funkcija \citep{elish} i u ovom radu te pokazuje obećavajuće rezultate. U radu \citet{taming_waves} autori predstavljaju problematiku učenja sa sinusoidom na jednostavnom problemu. Problem stvaraju brojni lokalni optimumi na koje je izrazito osjetljiv gradijentni spust. Problem je ublažava učenje stohastičkim gradijentnim spustom koji zaglađuje valovitost funkcije gubitka. Dodatno, autori pokazuju da neuronska mreža zapravo ne ovisi snažno o periodičnosti funkcije tako da su rezultate usporedili sa skraćenom sinusoidom \eqref{eq:truncated_sin}. Članak nije prošao postupak recenzije jer su dodatni eksperimenti urodili nekonzistentnim rezultatima u usporedbi s tangensom hiperbolnim.
+Unatoč tome, pojavljuje se u radovima pretrage izlaznih funkcija \citep{elish} i u ovom radu te pokazuje obećavajuće rezultate. U radu \citet{taming_waves} autori predstavljaju problematiku učenja sa sinusoidom na jednostavnom problemu. Problem stvaraju brojni lokalni optimumi na koje je izrazito osjetljiv gradijentni spust. Problem je ublažava učenje stohastičkim gradijentnim spustom koji zaglađuje valovitost funkcije gubitka. Dodatno, autori pokazuju da neuronska mreža zapravo ne ovisi snažno o periodičnosti funkcije tako da su rezultate usporedili s ograničenom sinusoidom \eqref{eq:trsin}. Članak nije prošao postupak recenzije jer su dodatni eksperimenti urodili nekonzistentnim rezultatima u usporedbi s tangensom hiperbolnim.
 
 Po uzoru na slićne funkcije kao što je sigmoida \figref{fig:sigmoid} i tangens hiperbolni \figref{fig:tanh}, sinusoida najveću vrijednost gradijenta daje upravo kada je aktivacija jednaka 0 (u ograničenom intervalu).
 
@@ -1565,7 +1579,8 @@ Koristi se u rekurzivnim neuronskim mrežama kako bi se ... LSTM
 \section{Korišteni čvorovi (prostor pretraživanja)}
 U nastavku je dan popis čvorova koji ujedno definiraju prostor pretraživanja.
 
-\begin{table}
+\begin{table}[H]
+\centering
 \begin{tabular}[t]{lr}
 \begin{tabular}[t]{l|c|r}
 \textbf{Naziv} & \textbf{Funkcija} & \textbf{Broj ulaza} \\
@@ -1629,6 +1644,13 @@ tanh		& $tanh(x)$				& 1 \\
 \todo{glavne komponente koda}
 \todoimg{IntelliJ generirna UML paketa genetics}
 
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{pkg_genetics.pdf}
+\centering
+\caption{Paket $genetics$}
+\label{fig:pkg_genetics}
+\end{figure}
+
 \section{Neuronske mreže}
 \todo{glavne komponente}
 \todo{automatizirana pohrana rezultata}
@@ -1637,11 +1659,23 @@ tanh		& $tanh(x)$				& 1 \\
 \section{Paralelizacija}
 \todo{workarbiter <3}
 \todo{sinkronizacija u GA i pomoćne klase/metode}
-\todoimg{IntelliJ generirna UML paketa utils.threading}
+
+\begin{figure}[ht]
+\includegraphics[width=7cm]{pkg_threading.pdf}
+\centering
+\caption{Paket $utils.threading$}
+\label{fig:pkg_threading}
+\end{figure}
 
 \section{Logiranje}
 \todo{kaj sve imaš i kak se koristi}
-\todoimg{IntelliJ generirna UML paketa utils.logging}
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{pkg_logs.pdf}
+\centering
+\caption{Paket $utils.logs$}
+\label{fig:pkg_logs}
+\end{figure}
 
 %--------------------------------------------------------------------------------------%
 \chapter{Rezultati}
@@ -1727,7 +1761,7 @@ Indeks & Koeficijent L2 regularizacije & Stopa učenja \\
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{greedy_256_hp.pdf}
 \centering
-\caption{Najbolja kombinacija hiperparametara za izlazne funkcije na različitim arhitekturama. Vrijednosti u ćelijama označavaju kombinaciju hiperparametara navedenu u tablici \ref{tab:hp_256_comb}}
+\caption{Optimalne kombinacije hiperparametara za izlazne funkcije na različitim arhitekturama. Vrijednosti u ćelijama označavaju kombinacije hiperparametara navedene u tablici \ref{tab:hp_256_comb}}
 \label{fig:greedy_256_acc}
 \end{figure}
 
