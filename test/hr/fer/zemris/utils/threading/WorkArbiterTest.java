@@ -56,7 +56,8 @@ public class WorkArbiterTest {
         }
 
         // Wait until all finish.
-        arbiter_.waitOn(() -> i[0] == 2 * T);
+//        arbiter_.waitOn(() -> i[0] == 2 * T);
+        arbiter_.waitOn(arbiter_.getAllFinishedCondition());
 
         System.out.println("Done!");
     }

@@ -1,20 +1,19 @@
 package hr.fer.zemris.utils.threading;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.LinkedList;
 
-public class Worker implements Comparable<Worker> {
+public class Worker {
     private boolean is_alive_ = true;
     private long wait_time_ = 500;
     private final String name_;
     private final Thread thread_;
     private final LinkedList<Work> queue_;
+    private boolean idle_ = true;
 
     /**
      * Creates a new worker and starts the internal thread.
      */
-    public Worker(String name, LinkedList<Work> queue) {
+    public Worker(String name, final LinkedList<Work> queue) {
         name_ = name;
         queue_ = queue;
 
@@ -26,12 +25,11 @@ public class Worker implements Comparable<Worker> {
                     synchronized (queue_) {
                         if (queue_.size() == 0) continue;
                         w = queue_.removeFirst();
+                        idle_ = false;
                     }
                     w.work();
-//                    synchronized (queue_) {
-//                        queue_.removeFirst();
-//                    }
                 }
+                idle_ = true;
 
                 // Wait for changes in queue or timeout.
                 synchronized (Worker.this) {
@@ -48,22 +46,8 @@ public class Worker implements Comparable<Worker> {
         thread_.start();
     }
 
-    /**
-     * Enqueues work to workers' queue. If worker is dead, work is dropped.
-     */
-    public final void enqueueWork(Work work) {
-        synchronized (queue_) {
-            if (!is_alive_) return;
-            queue_.addLast(work);
-            notify();
-        }
-    }
-
-    /**
-     * Returns the current queue size.
-     */
-    public final int getWorkCount() {
-        return queue_.size();
+    public boolean isIdle() {
+        return idle_;
     }
 
     /**
@@ -86,10 +70,5 @@ public class Worker implements Comparable<Worker> {
     public final void kill() {
         is_alive_ = false;
         notify();
-    }
-
-    @Override
-    public final int compareTo(@NotNull Worker o) {
-        return getWorkCount() - o.getWorkCount();
     }
 }
