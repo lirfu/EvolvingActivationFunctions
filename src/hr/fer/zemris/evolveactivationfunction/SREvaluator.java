@@ -14,20 +14,20 @@ import org.nd4j.linalg.activations.IActivation;
 import java.util.HashMap;
 
 public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
-    private ITrainProcedure tmpl_procedure_;
+    private TrainProcedureDL4J tmpl_procedure_;
     private NetworkArchitecture architecture_;
     private ILogger log_;
 
     private boolean use_memory_;
     private final HashMap<String, Double> memory = new HashMap<>();
 
-    public SREvaluator(ITrainProcedure template_procedure, NetworkArchitecture architecture, ILogger log) {
+    public SREvaluator(TrainProcedureDL4J template_procedure, NetworkArchitecture architecture, ILogger log) {
         tmpl_procedure_ = template_procedure;
         architecture_ = architecture;
         log_ = log;
     }
 
-    public SREvaluator(ITrainProcedure template_procedure, NetworkArchitecture architecture, ILogger log, boolean use_memory) {
+    public SREvaluator(TrainProcedureDL4J template_procedure, NetworkArchitecture architecture, ILogger log, boolean use_memory) {
         this(template_procedure, architecture, log);
         use_memory_ = use_memory;
     }
@@ -73,7 +73,8 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
 
         timer.start();
         IModel model = tmpl_procedure_.createModel(architecture_, activations);
-        tmpl_procedure_.train(model, log_, storage);
+//        tmpl_procedure_.train(model, log_, storage);
+        tmpl_procedure_.train_itersearch(model, log_, storage);
         Pair<ModelReport, Object> res = tmpl_procedure_.validate(model);
         log_.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + name + "(" + res.getKey().f1() + ")");
         return res;

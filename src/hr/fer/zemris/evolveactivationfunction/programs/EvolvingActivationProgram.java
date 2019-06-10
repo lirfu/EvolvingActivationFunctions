@@ -244,7 +244,12 @@ public class EvolvingActivationProgram {
         Stopwatch timer = new Stopwatch();
         timer.start();
         IModel model = train_proc.createModel(params.architecture(), activations);
-        train_proc.train_joined(model, evo_logger, StorageManager.createStatsLogger(c)); // Train on joined train-val set.
+        // Find best epoch.
+        int best_apoch = train_proc.train_itersearch(model, evo_logger, null);
+        params.epochs_num(best_apoch);
+        // Train for best amount of epochs and test.
+        model = train_proc.createModel(params.architecture(), activations); // Reinitialized model.
+        train_proc.train_joined(model, evo_logger, null); // Train on joined train-val set.
         Pair<ModelReport, Object> result = train_proc.test(model); // Use test set for final results.
         evo_logger.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + best.serialize());
 
