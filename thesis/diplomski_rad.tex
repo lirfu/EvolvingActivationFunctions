@@ -180,9 +180,9 @@ Neuronske mreže građene su od međusobno povezanih jedinica, tzv. neurona, mod
 \label{fig:neuron}
 \end{figure}
 
-Način na koji iz ulaza gradimo unutarnje stanje neurona opisujemo ulaznom funkcijom. Pretvorbu unutarnjeg stanja neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Ulazna i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ih ponekad ne možemo podijeliti na ulazne i izlazne. Izlaznu funkciju ne treba miješati s funkcijom izlaza mreže koja predstavlja nelinearnost posljednjeg sloja mreže.
+Način na koji iz ulaza gradimo unutarnje stanje neurona opisujemo ulaznom funkcijom. Pretvorbu unutarnjeg stanja neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Ulazna i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ih ponekad ne možemo podijeliti na ulazne i izlazne. Izlaznu funkciju ne treba miješati s funkcijom izlaznog sloja koja predstavlja nelinearnost posljednjeg sloja mreže.
 
-U literaturi postoje nekonzistencije oko pojma izlazne funkcije te se vrlo često koristi pojam aktivacijske funkcije. No u preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno sa stajališta računalne neuroznanosti jer aktivacija neurona označava pojavu signala odaslanog iz some u akson \citep[p.~234]{neuroscience}. U starijoj literaturi pojam aktivacijske i prijenosne funkcije često se koristi ekvivalentno \citep{evolving_transfer}. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi prvo navedena nomenklatura (ulazna, izlazna i prijenosna funkcija).
+U literaturi postoje nekonzistencije oko pojma izlazne funkcije te se vrlo često i s pravom koristi pojam aktivacijske funkcije. U preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno sa stajališta računalne neuroznanosti jer aktivacija neurona označava pojavu signala odaslanog iz some u akson \citep[p.~234]{neuroscience}. U starijoj literaturi pojam aktivacijske i prijenosne funkcije često se koristi ekvivalentno \citep{evolving_transfer}. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi prvo navedena nomenklatura (ulazna, izlazna i prijenosna funkcija).
 \begin{equation}
 t(x) = (f \circ a)(x) = f(a(x))
 \end{equation}
@@ -339,7 +339,7 @@ Derivacijom funkcije gubitka za regresiju \eqref{eq:loss_regression} po ulazima,
 &= 2 \cdot \sum_i (y_i - \hat{y}_i(x)) \cdot \dfrac{\hat{y}_i(x)}{x}
 \end{align}
 
-Derivaciju funkcije gubitka za klasifikaciju možemo drastično pojednostaviti ako za izlaznu funkciju izlaznog sloja mreže odaberemo funkciju \textit{softmax} \eqref{eq:softmax_for_loss}, a izlaze kodiramo \textit{one-hot} oznakama \eqref{eq:onehot}. Ulaz u funkciju softmax su aktivacije neurona izlaznog sloja koje su ovdje označene vektorom $\vec{s}(x)$.
+Derivaciju funkcije gubitka za klasifikaciju možemo drastično pojednostaviti ako za funkciju izlaznog sloja mreže odaberemo funkciju \textit{softmax} \eqref{eq:softmax_for_loss}, a izlaze kodiramo \textit{one-hot} oznakama \eqref{eq:onehot}. Ulaz u funkciju softmax su aktivacije neurona izlaznog sloja koje su ovdje označene vektorom $\vec{s}(x)$.
 \begin{equation}
 \label{eq:softmax_for_loss}
 \hat{y}(\vec{x}) = \text{softmax}(\vec{s}(x)) = \frac{\exp(\vec{s}(x))}{\sum_{i=1}^{C} exp(s_i(x))}
@@ -517,13 +517,14 @@ Najčešće se koristi regularizacija \textbf{L2} normom koja akumulira kvadrate
 \end{equation}
 
 \todo{*Spomeni pokoju još (L1, adversarial iz Hintona, ...)}
-
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Regularizacija šumom}
 Unošenjem šuma u podatke netom prije nego ih dobije model moguće je graditi robusnost modela na šum, ali ujedno to sprječava model da se pretrenira na podatkovnom skupu za treniranje. Jedan primjer možemo nasumično zašumiti nekoliko puta te se time povećava efektivna veličina podatkovnog skupa.
 
 U ovom se radu ne koristi regularizacija šumom jer bi mogla imati nepredvidivi utjecaj na učenje. Primjena na slike je vrlo jasna jer uz dovoljno malu amplitudu aditivnog šuma teksture na slici će ostati očuvane zahvaljujući susjedstvu piksela, odnosno izrezivanjem slike obrasci će ostati netaknuti. Značajke podatkovnih skupova navedenih u poglavlju \ref{sec:dpa_datasets} su PCA redukcije originalnih slijedova signala koji su ispunjeni šumom očitavanja.
 
 \todo{ajd svejedno isprobaj, grafi za ljubav}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Rano zaustavljanje}
 Pri učenju modela funkcija gubitka na skupu za učenje i testiranje generalno opada, no u jednom trenu gubitak generalizacije počinje rasti. Zaustavimo li učenje u trenutku kada je gubitak generalizacije najmanji dobili smo optimalan model za zadane hiperparametre. U praksi te funkcije neće biti naročito glatke zbog stohastičkog gradijentnog spusta te greška će generalizacije povremeno i rasti kako savladava lokalne optimume.
@@ -535,9 +536,9 @@ Postupak ranog zaustavljanja tretira broj epoha kao hiperparametar koji se pretr
 \subsubsection{Normalizacija nad grupom}
 \engl{batch normalization}
 
-\todo{zašto?}
-\todo{kako?}
-\todo{zašto ne dropout?}
+\todo{što radi}
+\todo{kako}
+\todo{zašto umjesto dropouta}
 
 \subsection{Odabir hiperparametara}
 Do ovdje su navedeni hiperparametri koji se koriste pri spomenutim tehnikama optimizacije neuronske mreže (poglavlja \ref{sec:gradijentni_spust} - \ref{sec:regularizacija}). No neuronska mreža ima i strukturalne hiperparametre.
@@ -671,8 +672,10 @@ Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skrive
 
 \todo{*VC dimenzija \citep{vc_dimension}}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{*Kompresija podataka}
 \todo{https://www.quantamagazine.org/new-theory-cracks-open-the-black-box-of-deep-learning-20170921/}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{Generalizacija}
 \label{sec:generalizacija}
@@ -692,12 +695,12 @@ Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njih
 \label{sec:nestajući_grad}
 \todo{Problem dubokih arhitektura}
 
-
-
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{*Neprijateljski primjeri}
 \todo{Problem pretreniranosti + neprijateljski primjeri}
 
 Vrlo složeni modeli, kao što su neuronske mreže, unatoč regularizaciji skloni su pretreniranju. \citep{intriguing_props}
+\fi
 
 \chapter{Izlazne funkcije}
 \label{sec:izlazne_fje}
@@ -722,7 +725,7 @@ U radu TAF...
 \subsection{Periodičke izlazne funkcije}
 \todo{članak: fourier mreža s periodičkim fjama}
 
-Periodičke aktivacijske funkcije stvaraju brojne lokalne optimume u funkciji gubitka koji otežavaju učenje neuronskih mreža. S obzirom da mreže treniramo stohastičkim gradijentnim spustom, većina lokalnih optimuma ne postoji. ... \citep{taming_waves}
+Periodičke aktivacijske funkcije stvaraju brojne lokalne optimume u funkciji gubitka koji otežavaju učenje neuronskih mreža. S obzirom da mreže treniramo stohastičkim gradijentnim spustom većina lokalnih optimuma nije vidljiva i ublažava naglašenost lokalnih optimuma. Pri uporabi sinusoide autori pokazuju da će model konvergirati samo ako su težine inicijalizirane dovoljno malim vrijednostima da ulaz ne prelazi interval monotonosti sinusa $[-\frac{\pi}{2}, \frac{\pi}{2}]$. U usporedbi sinusoide s ograničenom sinusoidom na potpuno povezanom modelu pokazuje se nezamjetna razliku u performansama iako oko $40%$ ulaza neurona završava izvan intervala monotonosti, što upućuje da modeli ne ovise o periodičnosti funkcije. U primjeni na rekurzivnim modelima ne ostvaruje konzistentnu prednost nad monotonim tangensom hiperbolnim zbog čega članak nije prošao postupak recenzije. \citep{taming_waves}
 
 \todo{ostale reference iz taming the waves}
 
