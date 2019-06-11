@@ -180,7 +180,9 @@ Neuronske mreže građene su od međusobno povezanih jedinica, tzv. neurona, mod
 \label{fig:neuron}
 \end{figure}
 
-Način na koji iz ulaza gradimo unutarnje stanje neurona opisujemo ulaznom funkcijom. Pretvorbu unutarnjeg stanja neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Ulazna i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ih ponekad ne možemo podijeliti na ulazne i izlazne. Izlaznu funkciju ne treba miješati s funkcijom izlaza mreže koja predstavlja nelinearnost posljednjeg sloja mreže. U literaturi se umjesto pojma izlazne funkcije vrlo često koristi pojam aktivacijske funkcije. No u preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno sa stajališta teorijske neuroznanosti jer aktivacija neurona označava pojavu odaslanog signala iz some u akson \citep[p.~234]{neuroscience}. U starijoj literaturi pojam aktivacijske i prijenosne funkcije često se koristi ekvivalentno \citep{evolving_transfer}. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi prvo navedena nomenklatura (ulazna, izlazna i prijenosna funkcija).
+Način na koji iz ulaza gradimo unutarnje stanje neurona opisujemo ulaznom funkcijom. Pretvorbu unutarnjeg stanja neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Ulazna i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ih ponekad ne možemo podijeliti na ulazne i izlazne. Izlaznu funkciju ne treba miješati s funkcijom izlaza mreže koja predstavlja nelinearnost posljednjeg sloja mreže.
+
+U literaturi postoje nekonzistencije oko pojma izlazne funkcije te se vrlo često koristi pojam aktivacijske funkcije. No u preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno sa stajališta računalne neuroznanosti jer aktivacija neurona označava pojavu signala odaslanog iz some u akson \citep[p.~234]{neuroscience}. U starijoj literaturi pojam aktivacijske i prijenosne funkcije često se koristi ekvivalentno \citep{evolving_transfer}. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi prvo navedena nomenklatura (ulazna, izlazna i prijenosna funkcija).
 \begin{equation}
 t(x) = (f \circ a)(x) = f(a(x))
 \end{equation}
@@ -682,8 +684,6 @@ Model sa svojstvom generalizacije dobro modelira stvarnu funkciju te ispravno ra
 
 Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu (npr. automobil) postoji neprebrojivo mogućih slika s različitim modelom, bojom ili kutom gledanja automobila. No mi raspolažemo sa svega nekoliko stotina tisuća primjera koje smatramo reprezentativnim za tu klasu i želimo izgraditi klasifikator koji je robustan na većinu perturbacija slike.
 
-\todo{negdje spomeni da su neuralke zapravo vrlo ograničene jer ograničavamo prostor mogućnosti zadavanjem fiksnih izlaznih fja, arhitekture i načina optimizacije (induktivna pristranost ograničavanjem skupa hipoteza). leži negdje između GP i ručno izgrađenih modela (jer je neuralka samo stablo funkcija kao u TF). CGP unosi ograničenje strukture što je bliže neuralki i daje zanimljive rezultate (atari cgp). Čini se da im godi balans između strukture i nasumičnosti.}
-
 \subsection{Problemi}
 \subsubsection{Odabir hiperparametara}
 Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov pravilan odabir značajno utjeće na performanse neuronske mreže. Nažalost nije ih moguće optimalno odabrati u zatvorenom obliku, već se to svodi na problem pretraživanja kao što je pretraživanje po rešetci \ref{sec:grid_search}. Arhitekture mogu poprimiti vrlo složene oblike kao što je predstavljeno radovima \citet{highwaynet}, \citet{resnet}, \citet{densenet}, \citet{inceptionnet} i \citet{yolo} te se najčešće grade ručno s maksimalnom traktabilnom složenošću mreže. Detaljnije o odabiru izlaznih funkcija napisano je u poglavlju \ref{sec:izlazne_fje}.
@@ -726,7 +726,7 @@ Periodičke aktivacijske funkcije stvaraju brojne lokalne optimume u funkciji gu
 
 \todo{ostale reference iz taming the waves}
 
-\section{Pasivne izlazne funkcije}
+\section{Popularne izlazne funkcije}
 U nastavku su navedene pasivne izlazne funkcije koje je autor pronašao u literaturi i koje su isprobane u ovom radu. Funkcije su pasivne u smislu da ne sadrže učeće parametre te njihov izlaz ovisi isključivo o ulazu  u funkciju. Za svaku funkciju napisana je formula i iscrtan izgled funkcije i njene derivacije te navedena neka poznata svojstva.
 
 \subsection{Funkcija identiteta}
@@ -749,7 +749,7 @@ f'(x) = 1
 \end{split}
 \end{equation}
 
-Funkcija identiteta je jednostavna i brza, no njome neuronska mreža može naučiti samo linearne funkcije. Ako primijenimo funkciju na dva uzastopna sloja vidimo da je konačna funkcija ponovno linearna što znači da ne možemo naučiti mrežu na nelinearnim podatcima:
+Funkcija identiteta je jednostavna i brza, no njome neuronska mreža može naučiti samo linearne funkcije. Ako se primijeni na dva uzastopna sloja neuronske mreže, konačna će funkcija ponovno biti linearna što znači da se mreža ne može koristiti na nelinearnim podatcima. Derivacija funkcije je konstanta $1$ što znaći da je gradijent prolaskom kroz nju očuvan. Funkcija identiteta često se koristi kao funkcija izlaznog sloja kod regresije, no u dubokim arhitekturama \citep{resnet,densenet} i novijim izlaznim funkcijama \citep{swish,elish} koristi se paralelno s nelinearnim funkcijama.
 \begin{align}
 \begin{split}
 f_l(x) &= w_l \cdot x + b_l \\
@@ -1317,6 +1317,7 @@ f'(x) = \frac{e^x}{1+e^x}
 \todo{svojstva}
 \todo{problemi}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Maxout}
 
 \todoimg{}
@@ -1328,6 +1329,7 @@ f'(x) = \frac{e^x}{1+e^x}
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Softsign}
 
@@ -1492,6 +1494,7 @@ f'(x) = 2x
 \todo{svojstva}
 \todo{problemi}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Kubna parabola $x^3$}
 
 \begin{figure}[H]
@@ -1514,13 +1517,14 @@ f'(x) = 3x^2
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%555
 
-\subsection{Gauss}
+\subsection{Gaussova krivulja bez normalizacije}
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{Gauss.pdf}
 \centering
-\caption{Gaussolika funkcija i njena derivacija}
+\caption{Gaussova krivulja bez normalizacije i njena derivacija}
 \label{fig:gauss}
 \end{figure}
 
@@ -1538,6 +1542,7 @@ f'(x) = -2x \cdot f(x)
 \todo{svojstva}
 \todo{problemi}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Adaptivne izlazne funkcije}
 U nastavku su navedene adaptivne izlazne funkcije koje je autor pronašao u literaturi. Funkcije su adaptivne jer sadrže parametre koje je moguće optimizirati. Njihov izlaz ovisi o ulazu u funkciju i adaptivnim parametrima. Za svaku funkciju napisana je formula i iscrtan izgled funkcije i njene derivacije te navedena neka poznata svojstva.
 
@@ -1660,35 +1665,40 @@ Koristi se u rekurzivnim neuronskim mrežama kako bi se ... LSTM
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %--------------------------------------------------------------------------------------%
-\chapter{Optimizacija izlazne funkcije simboličkom regresijom (tehnički genetskim programiranjem...)}
+\chapter{Optimizacija izlazne funkcije genetskim programiranjem}
 
-\section{Simbolička regresija}
-
-\todo{Opis i svojstva SR}
+\section{Genetsko programiranje}
+\todo{Opis i svojstva GP}
 \todo{Utjecaj i brojnost parametara u GA (moš linkat i svoj završni rad :P)}
 
-\subsection{Neuroevolucija}
+\subsection{Simbolička regresija}
+\todo{Opis SR}
+
+\subsection{Neuroevolucija genetskim programiranjem}
 \todo{Kako predstaviti čitavu mrežu grafom (evolucija arhitekture)}
+\todo{negdje spomeni da su neuralke zapravo vrlo ograničene jer ograničavamo prostor mogućnosti zadavanjem fiksnih izlaznih fja, arhitekture i načina optimizacije (induktivna pristranost ograničavanjem skupa hipoteza). leži negdje između GP i ručno izgrađenih modela (jer je neuralka samo stablo funkcija kao u TF). CGP unosi ograničenje strukture što je bliže neuralki i daje zanimljive rezultate (atari cgp). Čini se da im godi balans između strukture i nasumičnosti.}
 \todo{CGP Atari rad - Spomeni da je to kao evolucija prijenosne funkcije (i ulazna i izlazna se definiraju)}
 
-\subsection{Pretraživanje izlaznih funkcija}
-\todo{golden activation članak, kako radi detaljnije}
-\todo{swish članak detaljnije}
+\section{Pretraživanje izlaznih funkcija}
+\todo{golden activation članak, kako radi detaljnije \citep{elish}}
+\todo{swish članak detaljnije \citep{swish}}
 
-\section{Algoritam}
+\subsection{Algoritam}
 \todo{Problem konvergencije i stohastičnosti GP-a}
 \todo{EA oplemenjen taboo listom iz algoritma Taboo pretraživanja}
 
-\subsection{Korišteni čvorovi (prostor pretraživanja)}
-U nastavku je dan popis čvorova koji ujedno definiraju prostor pretraživanja.
+\subsection{Skup čvorova (prostor pretraživanja)}
+\label{sec:node_set}
+Skup čvorova koji se koriste pri pretraživanju definiraja prostor pretraživanja. Skup čvorova je implementiran tako da razlikuje čvorove različitih stupnjeva i omogućuje operatorima selektivni, nasumično selektivni ili potpuno nasumičan pristup. Početna vrijednost konstante pri dohvatu je postojana i definira se unaprijed, a vrijednost pojedine konstante u stablima mijenja se operatorima.
 
 \begin{table}[H]
 \centering
 \begin{tabular}[t]{lr}
 \begin{tabular}[t]{l|c|r}
-\textbf{Naziv} & \textbf{Funkcija} & \textbf{Broj ulaza} \\
+\textbf{Naziv} & \textbf{Funkcija} & \textbf{Stupanj} \\
 \hline
 x		& $x$					& 0 \\
 const	& $c \in \realnum$		& 0 \\
@@ -1696,7 +1706,7 @@ const	& $c \in \realnum$		& 0 \\
 +		& $x + y$				& 2 \\
 -		& $x - y$				& 2 \\
 *		& $x \cdot y$			& 2 \\
-/		& $\frac{x}{y + 1e-12}$	& 2 \\
+/		& $\frac{x}{y + 10^{-12}}$	& 2 \\
 \hline
 min		& $min(x, y)$			& 2 \\
 max		& $max(x, y)$			& 2 \\
@@ -1714,7 +1724,7 @@ pow		& $x^y$					& 2 \\
 \end{tabular}
 & \quad
 \begin{tabular}[t]{l|c|r}
-\textbf{Naziv} & \textbf{Funkcija} & \textbf{Broj ulaza} \\
+\textbf{Naziv} & \textbf{Funkcija} & \textbf{Stupanj} \\
 \hline
 elu		& $ELU(x)$				& 1 \\
 gauss	& $e^{x^2}$				& 1 \\
@@ -1727,10 +1737,72 @@ sotplus	& $Softplus(x)$			& 1 \\
 softsign	& $Softsign(x)$			& 1 \\
 swish	& $Swish(x)$				& 1 \\
 tanh		& $tanh(x)$				& 1 \\
+ostali & ostali & 1
 \end{tabular}
 \end{tabular}
-\caption{Popis korištenih čvorova}
+\caption{Popis čvorova korištenih pri pretrazi. U lijevoj tablici navedeni su čvorovi matematičkih funkcija, a u desnoj čvorovi popularnih aktivacijskih funkcija.}
 \end{table}
+
+
+\subsection{Operatori križanja}
+U nastavku opisani operatori križanja primaju dva roditelja, obavljaju križanje i vraćaju jedno dijete. Neki operatori istovremeno stvaraju dva djeteta, no vraćaju samo jedno nasumično odabrano. Ne obavlja se biranje djece prema dobroti zbog skupocijenosti postupka evaluacije, no preporuča se zbog kvalitetnije pretrage.
+
+\subsubsection{Zamijeni podstabla}
+Operator zamjene podstabla odabire u svakom roditelju po jedan čvor i zamijeni ih. Pri zamjeni čvorovi zadržavaju svoju djecu i time su efektivno zamijenjena podstabla. Operator služi za mješanje genotipa s čuvanjem podstruktura koje se pokazuju dobrima. %Očekivano mješanje potpunog binarnog stabla dubine $n$ je $XX$ čvorova.
+
+Rubni slučajevi su zamjena korijena stabla i zamjena listova. Pri zamjeni korijena jedno dijete postaje podstablo drugog roditelja. Pri zamjeni listova operator je ekvivalentan operatoru zamjene čvorova odnosno konstanti ako su obje konstante.
+
+% Očekivani odmak od zadnjeg sloja -> Desmos: x-\left(\sum_{n=1}^xn\cdot\frac{2^{\left(n-1\right)}}{2^x-1}\ \right)
+
+\subsubsection{Zamijeni čvorove}
+Operator zamjene čvorova nasumično odabire čvor u stablu s manje čvorova. Zatim nasumično pronalazi čvor istog stupnja u većem stablu i zamijenjuje ih bez zamjene djece. Ako operator ne pronađe čvor istog stupnja, vraća nasumičnog roditelja. Prvo se odabire čvor iz manjeg stabla jer je veća vjerojatnost da će veće stablo sadržavati čvor istog stupnja, što je važno za unarne čvorove.
+
+\subsubsection{Zamijeni konstante}
+Operator zamjene konstanti nasumično odabire po jednu konstantu u oba roditelja i zamijeni ih. Operator je posebno koristan u kasnijem dijelu optimizacije kada pretraživanje funkcija konvergira, a pretražuju se optimalne konstante. U slučaju da barem jedan roditelj nema niti jednu konstantu, operator vraća nasumičnog roditelja.
+
+\subsubsection{Usrednji konstante}
+Operator usrednjavanja konstanti nasumično odabire po jednu konstantu u oba roditelja i jednu zamijeni njihovom aritmetičkom sredinom. Vraća se dijete sa zamijenjenom konstantom. Operator je posebno koristan u kasnijem dijelu optimizacije kada pretraživanje funkcija konvergira, a pretražuju se optimalne konstante. U slučaju da barem jedan roditelj nema niti jednu konstantu, operator vraća nasumičnog roditelja.
+
+\subsubsection{Vrati nasumičnog roditelja}
+Operator vraća nasumičnog roditelja kao dijete. Služi za osnaživanje konvergencije algoritma jer u populaciju vraća već postojeću jedinku koja dodatno prolazi kroz operator mutacije.
+
+
+\subsection{Operatori mutacije}
+U nastavku opisani operatori mutacije primaju jedno dijete i nad njime obave mutaciju. Operatori koji unose nove čvorove biraju čvorove iz skupa dostupnih čvorova \ref{sec:node_set}.
+
+\subsubsection{Ubaci korijen}
+Operator ubacivanja korijena stabla odabire nasumičan čvor stupnja većeg od 0 iz seta i postavlja ga korijenom stabla. Ako je odabrani čvor unaran, njegovo djete postaje stari korijen. Ako je odabrani čvor većeg stupnja prvo djete postaje korijen roditelja, a ostala njegova djeca popune se nasumičnim listovima iz skupa. Operator služi povećavanju dubine stabla i ključan je za stvaranje kompozicija funkcija.
+
+\subsubsection{Ubaci list}
+Operator ubacivanja lista odabire nasumičan čvor u stablu i zamijeni ga nasumičnim listom iz skupa. Ne postoje ograničenja na mjesto postavljanja lista pa operator može zamijeniti čitavo stablo listom. Iako je vrlo radikalan operator snažno pomaže očuvanju raznolikosti populacije. Operator služi smanjivanju dubine stabla i ključan je za pronalaženje plitkih stabala, što se odražava na brzinu izvođenja pronađenih funkcija.
+
+\subsubsection{Postavi vrijednost konstante}
+Operator odabire nasumičnu konstantu u stablu i dodjeljuje joj nasumičnu vrijednost. Vrijednost se uzorkuje iz uniformne distribucije zadanog intervala. Ako stablo ne sadrži konstante, operator ne mijenja stablo. Operator je ključan za pretraživanje prostora konstanti u kasnijem dijelu optimizacije kada pretraživanje funkcija konvergira.
+
+\subsubsection{Postavi cjelobrojnu vrijednost konstante}
+Operator je ekvivalentan operatoru postavljanja vrijednosti konstante, ali služi za pretraživanje prostora cjelobrojnih konstanti funkcija.
+
+\subsubsection{Pribroji vrijednost konstanti}
+Operator odabire nasumičnu konstantu u stablu i pribraja joj nasumičnu vrijednost. Vrijednost se uzorkuje iz normalne distribucije i skalira zadanom konstantom. Ako stablo ne sadrži konstante, operator ne mijenja stablo. Operator dijeli namjenu s operatorom postavljanja vrijednosti konstante.
+
+\subsubsection{Izmjeni čvor}
+Operator odabire nasumičan čvor u stablu i zamijeni ga nasumičnim čvorom iz seta istog stupnja. Stablo se neće promijeniti ako postoji samo jedan čvor tog stupnja u setu. Operator ne mijenja veličinu stabla te služi za postizanje blažih izmjena u genotipu. Treba obratiti pažnju da se izmjene genotipa mogu značajno odraziti na fenotip.
+
+\subsubsection{Izmjeni podstablo}
+Operator odabire nasumičan čvor i na njegovo mjesto postavlja generirano podstablo. Podstablo se generira zadanim inicijalizatorom. Operator unosi snažne izmjene genotipa i služi održavanju raznolikosti populacije i globalnoj pretrazi prostora. Rubni uvijet je kada se generira stablo dubine $1$, što utjecaj operatora čini identičnim operatoru ubacivanja lista.
+
+\subsubsection{Ukloni korijen}
+Operator iz korijena stabla odabire nasumično dijete i njega postavi kao novi korijen. Ako je originalan korijen list, operator ne radi izmjene. Operator je komplementaran operatoru ubacivanja korijena te služi smanjivanju dubine stabla i ključan je za pronalaženje plitkih stabala.
+
+\subsubsection{Ukloni unarni čvor}
+Operator odabire nasumični unarni čvor i zamjenjuje ga njegovim djetetom. Ako stablo ne sadrži unarne čvorove operator ne unosi izmjene. Operator je posebno koristan pri eliminaciji dubokih kompozicija funkcija koje se znaju pojaviti pri pretraživanju, a koje nije moguće ukloniti operatorom uklanjanja korijena.
+
+\subsubsection{Zamijeni redoslijed djece}
+Operator odabire nasumičan čvor i njemu zamjeni mjesta dvaju djeteta. Ako je čvor stupnja $2$ operator će im zamijeniti mjesta. Ako je čvor stupnja većeg od $2$ operator će nasumično odabrati dva djeteta i njih zamijeniti. Pri tom operator može odabrati isto djete dvaput čime se stablo ne mijenja. Za sve ostale čvorove operator ne unosi izmjene. Operator je koristan za promjenu utjecaja čvorova koji ovise o redoslijedu djece (npr. operator djeljenja, oduzimanja, potenciranja i td.).
+
+\subsubsection{Inicijaliziraj genotip}
+Operator inicijalizacije genotipa zamijenjuje čitavo stablo novim generiranim stablom. Stablo se generira zadanim inicijalizatorom. Operator snažno pridonosi održavanju raznolikosti populacije i globalnoj pretrazi prostora.
+
 
 %--------------------------------------------------------------------------------------%
 \chapter{Implementacija}
@@ -1745,17 +1817,17 @@ Kod je dostupan na GitHub repozitoriju: \\
 U implementaciji je napisano nekoliko izvršnih programa različitih namjena. Napisani su i UNIT testovi za ispitivanje ispravnosti ključnih dijelova implementacije. U nastavku su spomenuti glavni dijelovi implementacije korisni korisniku za brže snalaženje.
 
 \subsection{Evolucijski algoritmi}
-Evolucijski algoritmi i pomočne klase implementirane su u paketu $genetics$. Dizajn biblioteke inspiriran je bibliotekom \textit{Evolutionary Computation Framework} \citep{ecf} u programskom jeziku C++. 
+Evolucijski algoritmi i pomoćni razredi implementirani su u paketu $genetics$. Dizajn biblioteke inspiriran je bibliotekom \textit{Evolutionary Computation Framework} \citep{ecf} u programskom jeziku C++. 
 
-Najsloženija klasa je apstraktna klasa $Algorithm$ u kojoj se čuvaju generični parametri i operatori algoritma, implementirana je inicijalizacija i pokretanje algoritma te praćenje i dohvat rezultata. Implementacije algoritma definiraju funkciju $runIteration$ u kojoj se obavljaju sve operacije pri jednoj iteraciji algoritma. Implementacije algoritma nalaze se u paketu $genetics.algorithms$. Algoritam podržava oblikovni obrazac \textit{graditelj} za jednostavniju i pregledniju definiciju algoritma. Primjere implementacije moguće je pronaći u paketu $genetics.algorithms$.
+Najsloženiji razred je apstraktni razred $Algorithm$ koji čuva parametre i operatore algoritma, implementaciju inicijalizacije i pokretanja algoritma te praćenje i dohvat rezultata. Implementacije algoritma definiraju funkciju $runIteration$ u kojoj se obavljaju sve operacije pri jednoj iteraciji algoritma. Implementacije algoritma nalaze se u paketu $genetics.algorithms$. Algoritam podržava oblikovni obrazac \textit{graditelj} za jednostavniju i pregledniju definiciju algoritma. Primjere implementacije moguće je pronaći u paketu $genetics.algorithms$.
 
-Genotip je definiran apstraktnom klasom $Genotype$ koja čuva svoju vrijednost dobrote i definira nekoliko apstraktnih metoda za rad s genotipom. Primjer implementacije genotipa je klasa $symboregression.SymbolicTree$ opisana kasnije. Genotip je moguće serijalizirati u tekst.
+Genotip je definiran apstraktnim razredom $Genotype$ koji čuva svoju vrijednost dobrote i definira nekoliko apstraktnih metoda za rad s genotipom. Primjer implementacije genotipa je razred $symboregression.SymbolicTree$ opisan kasnije. Genotip je moguće serijalizirati u tekst.
 
-Operatori su definirani apstraktnom klasom $Operator$ koja čuva vrijednost važnosti operatora te referencu na generator slučajnih brojeva. Operatori križanja $Crossover$ i mutacije $Mutation$ dodaju svoje apstraktne metode koje je potrebno implementirati i koje se pozivaju u algoritmu. Implementacije generičnih operatora nalaze se u korijenu paketa, dok se operatori specifični za pojedine vrste genotipa nalaze u zasebnim paketima tog genotipa (npr. $genetics.symboregression$). Parametre opetatora moguće je serijalizirati u tekst.
+Operatori su definirani apstraktnim razredom $Operator$ koji čuva vrijednost važnosti operatora te referencu na generator slučajnih brojeva. Operatori križanja $Crossover$ i mutacije $Mutation$ dodaju svoje apstraktne metode koje je potrebno implementirati i koje se pozivaju u algoritmu. Implementacije generičnih operatora nalaze se u korijenu paketa, dok se operatori specifični za pojedine vrste genotipa nalaze u zasebnim paketima tog genotipa (npr. $genetics.symboregression$). Parametre opetatora moguće je serijalizirati u tekst.
 
 Metoda odabira jedinki iz populacije definirana je sučeljem $Selector$ koja definira apstraktnu metodu $selectParentsFrom$ koja na ulaz dobiva populaciju, a vraća polje kandidata za roditelje. Ovisno o implementaciji, algoritam odabira može vratiti samo 2 roditelja ($RouletteWheelSelector$) ili 2 roditelja i jedinku koju zamijenjujemo djetetom ($TournamentSelector$). Metode odabira implementirane su u paketu $selectors$.
 
-Inicijalizator populacije definiran je sučeljem $Initializer$. Uvijet zaustavljanja algoritma definiran je klasom $stopconditions.StopCondition$ koja se predaje algoritmu. Uvijete zaustavljanja moguće serijalizirati u tekst. Rezultat algoritma opisan je klasom $Result$ koju je moguće serijalizirati u tekst.
+Inicijalizator populacije definiran je sučeljem $Initializer$. Uvijet zaustavljanja algoritma definiran je razredom $stopconditions.StopCondition$ čiji objekt se predaje algoritmu. Uvijete zaustavljanja moguće serijalizirati u tekst. Rezultat algoritma opisan je razredom $Result$ kojeg je moguće serijalizirati u tekst.
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{pkg_genetics.pdf}
@@ -1765,7 +1837,7 @@ Inicijalizator populacije definiran je sučeljem $Initializer$. Uvijet zaustavlj
 \end{figure}
 
 \subsubsection{Simbolička regresija}
-Implementacija simboličke regresije nalazi se u paketu $genetics.symboregression$. Sadrži operatore križanja definirane paketom $crx$ i operatore mutacije definirane paketom $mut$. Genotip je definiran klasom $SymbolicTree$ koja sadrži referencu na korijenski čvor. Čvorovi su definirani apstraktnom klasom $TreeNode$, a skup dostupnih čvorova s pristupnim metodama definiran je klasom $TreeNodeSet$.
+Implementacija simboličke regresije nalazi se u paketu $genetics.symboregression$. Sadrži operatore križanja definirane paketom $crx$ i operatore mutacije definirane paketom $mut$. Genotip je definiran razredom $SymbolicTree$ koji sadrži referencu na korijenski čvor. Čvorovi su definirani apstraktnim razredom $TreeNode$, a skup dostupnih čvorova s pristupnim metodama definiran je razredom $TreeNodeSet$.
 
 Izvršavanje operacija obilaskom stabla obavlja se objektom sučelja $IExecutable$ koji se definira pri implementaciji čvora. Čvor sadrži i operacije za dohvat i zamjenu djece te izvršnog objekta, a koje su potrebne operatorima križanja i mutacije. Čvor može primiti i dodatan objekt koji može poslužiti čvorovima specijalne namjene.
 
@@ -1775,7 +1847,7 @@ Izvršavanje operacija obilaskom stabla obavlja se objektom sučelja $IExecutabl
 
 \subsection{Pomoćni mehanizmi za projekt}
 
-\subsubsection{Zajednička klasa optimizaciju mreža}
+\subsubsection{Zajednički razred za optimizaciju mreža}
 
 \subsubsection{Automatska pohrana rezultata}
 \todo{storagemanager}
@@ -1788,11 +1860,11 @@ Hiperparametre programa moguće je zadati konfiguracijskom datotekom. Datoteka j
 \todo{grid search mehanizam}
 
 \subsubsection{Paralelizacija}
-Paralelizaciju je moguće postići vrlo jednostavno paketom $utils.threading$. Prvo je potrebno instancirati klasu $WorkArbiter$ koja u sebi sadrži red poslova koje treba obaviti i listu radnika. Posao koji treba izvršiti definira se implementacijom sučelja $Work$. Poslovi se predaju objektu $WorkArbiter$ koja ih stavlja u red. Radnici $Worker$ paralelno i sinkronizirano dohvaćaju i izvršavaju poslove iz reda poslova klase $WorkArbiter$ koja ih je stvorila. S obzirom da su radnici implementirani kao zasebne dretve, navalom poslova radnici će paralelno uzimati poslove i izvršavati ih.
+Paralelizaciju je moguće postići vrlo jednostavno paketom $utils.threading$. Prvo je potrebno instancirati razred $WorkArbiter$ koji u sebi sadrži red poslova koje treba obaviti i listu radnika. Posao koji treba izvršiti definira se implementacijom sučelja $Work$. Poslovi se predaju objektu $WorkArbiter$ koja ih stavlja u red. Radnici $Worker$ paralelno i sinkronizirano dohvaćaju i izvršavaju poslove iz reda poslova razreda $WorkArbiter$ koji ih je stvorio. S obzirom da su radnici implementirani kao zasebne dretve, navalom poslova radnici će paralelno uzimati poslove i izvršavati ih.
 
 Čekanje pozivajuće dretve na izvršenje zadataka moguće je ostvariti pozivom metode $waitOn$ koja prima uvijet čekanja $WaitCondition$. Moguće je definirati svoj uvijet (npr. čekanje dok se ne popuni spremnik) ili pričekati dok se svi poslovi ne izvrše, uvijetom koji vraća metoda $getAllFinishedCondition$.
 
-\todo{sinkronizacija u GA i pomoćne klase/metode}
+\todo{sinkronizacija u GA i pomoćni razredi/metode}
 
 \subsubsection{Logiranje}
 \todo{kaj sve imaš i kak se koristi}
