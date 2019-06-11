@@ -10,8 +10,7 @@ import org.nd4j.linalg.factory.Nd4j;
 
 public class LReLUNode extends DerivableNode {
     public static final String NAME = "lrelu";
-
-    private double leak = 0.01f;
+    private static final double leak = 0.01f;
 
     public LReLUNode() {
         super(NAME, 1);

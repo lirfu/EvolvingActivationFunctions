@@ -12,7 +12,7 @@ import org.nd4j.linalg.primitives.Pair;
 
 public class ThReLUNode extends DerivableNode {
     public static final String NAME = "threlu";
-    private double theta = 1.;
+    private final static double theta = 1.;
 
     public ThReLUNode() {
         super(NAME, 1);

@@ -15,7 +15,7 @@ import org.nd4j.linalg.learning.config.Adam;
  */
 public class LearnableNode extends DerivableNode {
     public static final String NAME = "l";
-    private ActivationPReLU prelu;
+    private ActivationPReLU prelu;  // FIXME Can't have non-final internal attributes because node instances are shared across trees.
 
     public LearnableNode() {
         this(0.);
