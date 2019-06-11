@@ -59,16 +59,16 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
             return new DerivableNode[]{new SinNode()};
         }
     },
-    COS {
-        @Override
-        public DerivableNode[] list() {
-            return new DerivableNode[]{new CosNode()};
-        }
-    },
     TRSIN {
         @Override
         public DerivableNode[] list() {
             return new DerivableNode[]{new TrSinNode()};
+        }
+    },
+    COS {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new CosNode()};
         }
     },
     TRCOS {
@@ -114,6 +114,7 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
             return new DerivableNode[]{new AbsNode()};
         }
     },
+
     ELU {
         @Override
         public DerivableNode[] list() {
@@ -138,6 +139,12 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
             return new DerivableNode[]{new ReLUNode()};
         }
     },
+    THRELU {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new ThReLUNode()};
+        }
+    },
     SELU {
         @Override
         public DerivableNode[] list() {
@@ -148,6 +155,18 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
         @Override
         public DerivableNode[] list() {
             return new DerivableNode[]{new SigmoidNode()};
+        }
+    },
+    HARDSIGMOID {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new HardSigmoidNode()};
+        }
+    },
+    SOFTMAX {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new SoftMaxNode()};
         }
     },
     SOFTPLUS {
@@ -174,10 +193,22 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
             return new DerivableNode[]{new TanhNode()};
         }
     },
-    PLU {
+    HARDTANH {
         @Override
         public DerivableNode[] list() {
-            return new DerivableNode[]{new PLUNode()};
+            return new DerivableNode[]{new HardTanhNode()};
+        }
+    },
+    RATIONALTANH {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new RationalTanhNode()};
+        }
+    },
+    RECTIFIEDTANH {
+        @Override
+        public DerivableNode[] list() {
+            return new DerivableNode[]{new RectifiedTanhNode()};
         }
     },
 
@@ -220,8 +251,9 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
     ACTIVATIONS {
         @Override
         public DerivableNode[] list() {
-            return new DerivableNode[]{ELU.list()[0], GAUSS.list()[0], LRELU.list()[0], RELU.list()[0], SELU.list()[0],
-                    SIGMOID.list()[0], SOFTPLUS.list()[0], SOFTSIGN.list()[0], SWISH.list()[0], TANH.list()[0], PLU.list()[0]};
+            return new DerivableNode[]{ELU.list()[0], GAUSS.list()[0], LRELU.list()[0], RELU.list()[0], THRELU.list()[0], SELU.list()[0],
+                    SIGMOID.list()[0], HARDSIGMOID.list()[0], SOFTMAX.list()[0], SOFTPLUS.list()[0], SOFTSIGN.list()[0], SWISH.list()[0],
+                    TANH.list()[0], HARDTANH.list()[0], RATIONALTANH.list()[0], RECTIFIEDTANH.list()[0]};
         }
     },
 
