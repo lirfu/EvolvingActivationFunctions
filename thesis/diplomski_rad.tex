@@ -180,7 +180,7 @@ Neuronske mreže građene su od međusobno povezanih jedinica, tzv. neurona, mod
 \label{fig:neuron}
 \end{figure}
 
-Način na koji iz ulaza gradimo unutarnje stanje neurona opisujemo ulaznom funkcijom. Pretvorbu unutarnjeg stanja neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Ulazna i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ih ponekad ne možemo podijeliti na ulazne i izlazne. Izlaznu funkciju ne treba miješati s funkcijom izlaza mreže koja predstavlja nelinearnost posljednjeg sloja mreže. U literaturi se umjesto pojma izlazne funkcije vrlo često koristi pojam aktivacijske funkcije. No u preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno sa stajališta teorijske neuroznanosti jer aktivacija neurona označava pojavu odaslanog signala iz some u akson \citep[p.~234]{neuroscience}. U starijoj literaturi je pojam aktivacijske i prijenosne funkcije često ekvivalentno korišten. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi prvo navedena nomenklatura (ulazna, izlazna i prijenosna funkcija).
+Način na koji iz ulaza gradimo unutarnje stanje neurona opisujemo ulaznom funkcijom. Pretvorbu unutarnjeg stanja neurona u izlazni signal opisujemo izlaznom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:izlazne_fje}. Ulazna i izlazna funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ih ponekad ne možemo podijeliti na ulazne i izlazne. Izlaznu funkciju ne treba miješati s funkcijom izlaza mreže koja predstavlja nelinearnost posljednjeg sloja mreže. U literaturi se umjesto pojma izlazne funkcije vrlo često koristi pojam aktivacijske funkcije. No u preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno sa stajališta teorijske neuroznanosti jer aktivacija neurona označava pojavu odaslanog signala iz some u akson \citep[p.~234]{neuroscience}. U starijoj literaturi pojam aktivacijske i prijenosne funkcije često se koristi ekvivalentno \citep{evolving_transfer}. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi prvo navedena nomenklatura (ulazna, izlazna i prijenosna funkcija).
 \begin{equation}
 t(x) = (f \circ a)(x) = f(a(x))
 \end{equation}
@@ -721,7 +721,9 @@ U radu TAF...
 
 \subsection{Periodičke izlazne funkcije}
 \todo{članak: fourier mreža s periodičkim fjama}
-\todo{Članak: taming the waves}
+
+Periodičke aktivacijske funkcije stvaraju brojne lokalne optimume u funkciji gubitka koji otežavaju učenje neuronskih mreža. S obzirom da mreže treniramo stohastičkim gradijentnim spustom, većina lokalnih optimuma ne postoji. ... \citep{taming_waves}
+
 \todo{ostale reference iz taming the waves}
 
 \section{Pasivne izlazne funkcije}
@@ -821,6 +823,7 @@ f'(x) =
 
 Problem funkcije ReLU \secref{func:relu} je što postoji mogućnost pojave mrtvih neurona, koji su uvijek u neaktivnom području i kroz njih ne teče gradijent. Taj problem efektivno smanjuje kapacitet modela pod cijenu nepotrebnog memorijskog opterećenja i smanjene brzine izvođenja. Iz navedenih razloga uvedena je propusna ReLU funkcija koja u "neaktivnom" području propušta mali gradijent. Rezultati na zadatku prepoznavanja govora pokazuju da je propusna ReLU funkcija ekvivalentna standardnom ReLU, no rezultati su prikazani na relativno plitkim arhitekturama (do 4 skrivena sloja). \citep{lrelu}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Nasumična ispravljena linearna jedinica (RReLU)}
 \engl{Randomized leaky ReLU}
 
@@ -850,6 +853,7 @@ f'(x) =
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Ispravljena linearna jedinica s pragom (ThReLU)}
 \engl{Thresholded ReLU}
@@ -883,6 +887,7 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{(CReLU)}
 \engl{Concatenated ReLU}
 
@@ -895,6 +900,7 @@ f'(x) =
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Softplus}
 
@@ -921,6 +927,7 @@ f'(x) = \frac{e^x}{1+e^x}
 
 Funkcija Softplus nastaje ...
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Noisy softplus}
 
 \todoimg{}
@@ -932,6 +939,7 @@ Funkcija Softplus nastaje ...
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Eksponencijalno-linearna jedinica (ELU)}
 \engl{Exponential linear unit}
@@ -998,6 +1006,7 @@ f'(x) = \lambda
 \todo{svojstva}
 \todo{problemi}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{(GELU)}
 \engl{Gaussian error linear unit}
 
@@ -1006,6 +1015,7 @@ f'(x) = \lambda
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Swish}
 \label{func:swish}
@@ -1096,7 +1106,7 @@ Ova funkcija i njena brža aproksimacija \textit{Tvrdi ELiSH} su kompozicije fun
 
 Ova funkcija je aproksimacija funkcije ELiSH opisane u poglavlju \ref{func:elish}. Uvedena je za potrebe bržeg izvođenja sigmoide i nasljeđuje svojstva ELiSH funkcije. \citep{elish}
 
-\subsection{Ograničena ispravljena linearna jedinica (ReLUn)}
+\subsection{Ograničena ispravljena linearna jedinica (ReLU-n)}
 \label{func:relun}
 
 \begin{figure}[H]
@@ -1158,6 +1168,7 @@ f'(x) = \sigma(x)(1-\sigma(x))
 \todo{svojstva}
 \todo{problemi}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Tvrda sigmoida}
 \engl{Hard sigmoid}
 
@@ -1185,6 +1196,7 @@ f'(x) =
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Tangens hiperbolni (tanh)}
 \label{func:tanh}
@@ -1210,6 +1222,7 @@ f'(x) = 1 - tanh^2(x)
 \todo{svojstva}
 \todo{problemi}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55
 \subsection{Tvrdi tangens hiperbolni}
 \engl{Hard tanh}
 
@@ -1243,6 +1256,7 @@ f'(x) =
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Racionalna aproksimacija tanh}
 \engl{Rational tanh}
@@ -1421,6 +1435,7 @@ Kosinus je funkcija sinusa pomaknuta za četvrtinu periode te dijeli ista svojst
 cos(x) = sin(x + \frac{\pi}{2}) \approx sin(x + 1.571)
 \end{equation}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Ograničeni kosinus (TrCos)}
 \label{func:trcos}
 \engl{Truncated cosine}
@@ -1452,6 +1467,7 @@ f'(x) =
 \end{equation}
 
 Ograničeni kosinus autori nisu pronašli u literaturi, no navodi se zbog potrebe ispitivanja ovisnosti o periodičnosti kosinusa (po uzoru na poglavlje \ref{func:trsin}).
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Parabola $x^2$}
 
@@ -1646,28 +1662,26 @@ Koristi se u rekurzivnim neuronskim mrežama kako bi se ... LSTM
 \todo{problemi}
 
 %--------------------------------------------------------------------------------------%
-\chapter{Optimizacija simboličkom regresijom (tehnički genetskim programiranjem...)}
+\chapter{Optimizacija izlazne funkcije simboličkom regresijom (tehnički genetskim programiranjem...)}
 
 \section{Simbolička regresija}
+
 \todo{Opis i svojstva SR}
 \todo{Utjecaj i brojnost parametara u GA (moš linkat i svoj završni rad :P)}
 
-
+\subsection{Neuroevolucija}
+\todo{Kako predstaviti čitavu mrežu grafom (evolucija arhitekture)}
+\todo{CGP Atari rad - Spomeni da je to kao evolucija prijenosne funkcije (i ulazna i izlazna se definiraju)}
 
 \subsection{Pretraživanje izlaznih funkcija}
 \todo{golden activation članak, kako radi detaljnije}
 \todo{swish članak detaljnije}
 
-\subsection{Neuronska mreža kao funkcija}
-\todo{Kako predstaviti čitavu mrežu grafom}
-\todo{CGP Atari rad}
-\todo{Spomeni da je to kao evolucija prijenosne funkcije (i ulazna i izlazna se definiraju)}
-
-\section{Taboo evolucijski algoritam}
+\section{Algoritam}
 \todo{Problem konvergencije i stohastičnosti GP-a}
 \todo{EA oplemenjen taboo listom iz algoritma Taboo pretraživanja}
 
-\section{Korišteni čvorovi (prostor pretraživanja)}
+\subsection{Korišteni čvorovi (prostor pretraživanja)}
 U nastavku je dan popis čvorova koji ujedno definiraju prostor pretraživanja.
 
 \begin{table}[H]
