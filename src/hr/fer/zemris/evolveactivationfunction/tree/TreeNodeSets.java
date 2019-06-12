@@ -71,12 +71,6 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
             return new DerivableNode[]{new CosNode()};
         }
     },
-    TRCOS {
-        @Override
-        public DerivableNode[] list() {
-            return new DerivableNode[]{new TrCosNode()};
-        }
-    },
     TAN {
         @Override
         public DerivableNode[] list() {
@@ -166,19 +160,19 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
     SOFTMAX {
         @Override
         public DerivableNode[] list() {
-            return new DerivableNode[]{new SoftMaxNode()};
+            return new DerivableNode[]{new SoftmaxNode()};
         }
     },
     SOFTPLUS {
         @Override
         public DerivableNode[] list() {
-            return new DerivableNode[]{new SoftPlusNode()};
+            return new DerivableNode[]{new SoftplusNode()};
         }
     },
     SOFTSIGN {
         @Override
         public DerivableNode[] list() {
-            return new DerivableNode[]{new SoftSignNode()};
+            return new DerivableNode[]{new SoftsignNode()};
         }
     },
     SWISH {
@@ -238,7 +232,7 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
     TRIGONOMETRY {
         @Override
         public DerivableNode[] list() {
-            return new DerivableNode[]{SIN.list()[0], COS.list()[0], TRSIN.list()[0], TRCOS.list()[0], TAN.list()[0]};
+            return new DerivableNode[]{SIN.list()[0], COS.list()[0], TRSIN.list()[0], TAN.list()[0]};
         }
     },
     EXPONENTIALS {

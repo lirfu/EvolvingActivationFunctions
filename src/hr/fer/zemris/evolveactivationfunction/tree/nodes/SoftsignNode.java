@@ -4,13 +4,14 @@ import hr.fer.zemris.genetics.symboregression.IExecutable;
 import hr.fer.zemris.genetics.symboregression.IInstantiable;
 import hr.fer.zemris.genetics.symboregression.TreeNode;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.api.ops.impl.transforms.OldSoftMax;
+import org.nd4j.linalg.api.ops.impl.transforms.SoftSign;
+import org.nd4j.linalg.api.ops.impl.transforms.gradient.SoftSignDerivative;
 import org.nd4j.linalg.factory.Nd4j;
 
-public class SoftMaxNode extends DerivableNode {
-    public static final String NAME = "softmax";
+public class SoftsignNode extends DerivableNode {
+    public static final String NAME = "softsign";
 
-    public SoftMaxNode() {
+    public SoftsignNode() {
         super(NAME, 1);
     }
 
@@ -18,7 +19,7 @@ public class SoftMaxNode extends DerivableNode {
     protected IExecutable<INDArray, INDArray> getExecutable() {
         return (input, node) -> {
             input = ((DerivableNode) node.getChild(0)).execute(input);
-            Nd4j.getExecutioner().execAndReturn(new OldSoftMax(input));
+            Nd4j.getExecutioner().execAndReturn(new SoftSign(input));
             return input;
         };
     }
@@ -28,14 +29,13 @@ public class SoftMaxNode extends DerivableNode {
         return (input, node) -> {
             INDArray dLdz = ((DerivableNode) node.getChild(0)).derivate(input);
             input = ((DerivableNode) node.getChild(0)).execute(input);
-//            INDArray out = Nd4j.getExecutioner().execAndReturn(new SwishDerivative(input));
-//            return out.muli(dLdz);
-            return null; // TODO some crazy derivatives
+            INDArray out = Nd4j.getExecutioner().execAndReturn(new SoftSignDerivative(input));
+            return out.muli(dLdz);
         };
     }
 
     @Override
     protected IInstantiable<TreeNode<INDArray, INDArray>> getInstantiable() {
-        return SoftMaxNode::new;
+        return SoftsignNode::new;
     }
 }

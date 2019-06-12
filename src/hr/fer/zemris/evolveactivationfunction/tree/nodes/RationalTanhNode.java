@@ -11,7 +11,7 @@ import org.nd4j.linalg.api.ops.impl.transforms.gradient.RationalTanhDerivative;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class RationalTanhNode extends DerivableNode {
-    public static final String NAME = "tanh";
+    public static final String NAME = "rattanh";
 
     public RationalTanhNode() {
         super(NAME, 1);

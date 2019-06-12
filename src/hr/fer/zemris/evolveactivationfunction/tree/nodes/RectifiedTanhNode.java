@@ -11,7 +11,7 @@ import org.nd4j.linalg.api.ops.impl.transforms.gradient.RectifiedTanhDerivative;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class RectifiedTanhNode extends DerivableNode {
-    public static final String NAME = "tanh";
+    public static final String NAME = "rectanh";
 
     public RectifiedTanhNode() {
         super(NAME, 1);

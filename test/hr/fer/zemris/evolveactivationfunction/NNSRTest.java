@@ -9,6 +9,8 @@ import hr.fer.zemris.genetics.symboregression.SymbolicTree;
 import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.nd4j.linalg.activations.IActivation;
+import org.nd4j.linalg.activations.impl.*;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
@@ -47,8 +49,8 @@ public class NNSRTest {
         assertTrue("Test boundaries don't satisfy: " + start + "<" + end, start < end);
 
         for (double x = start; x <= end; x += 0.01) {
-            INDArray t = Nd4j.create(new double[]{f.f(x), f.f(0.1 * x)});
             INDArray input = Nd4j.create(new double[]{x, 0.1 * x});
+            INDArray t = Nd4j.create(new double[]{f.f(x), f.f(0.1 * x)});
             INDArray p = n.execute(input);
 
             assertTrue("[" + n.getName() + "] evaluation must not change shape: " + p.shape()[1] + " != 2",
@@ -63,14 +65,16 @@ public class NNSRTest {
                     Math.abs(t.getDouble(0) - p.getDouble(0)) <= REQUIRED_PRECISION
                             && Math.abs(t.getDouble(1) - p.getDouble(1)) <= REQUIRED_PRECISION);
         }
+
+        System.out.println(n.toString()+" evaluation is OK!");
     }
 
     private void testNodeDeriv(DerivableNode n, IFunc f, double start, double end) {
         assertTrue("Test boundaries don't satisfy: " + start + "<" + end, start < end);
 
         for (double x = start; x <= end; x += 0.01) {
-            INDArray t = Nd4j.create(new double[]{f.f(x), f.f(0.1 * x)});
             INDArray input = Nd4j.create(new double[]{x, 0.1 * x});
+            INDArray t = Nd4j.create(new double[]{f.f(x), f.f(0.1 * x)});
             INDArray p = n.derivate(input);
 
             assertTrue("[" + n.getName() + "] derivative must not change shape: " + p.shape()[1] + " != 2",
@@ -85,6 +89,45 @@ public class NNSRTest {
                     Math.abs(t.getDouble(0) - p.getDouble(0)) <= REQUIRED_PRECISION
                             && Math.abs(t.getDouble(1) - p.getDouble(1)) <= REQUIRED_PRECISION);
         }
+
+        System.out.println(n.toString()+" derivative is OK!");
+    }
+
+    private void testDL4Jnode(DerivableNode n, IActivation a, double start, double end) {
+        assertTrue("Test boundaries don't satisfy: " + start + "<" + end, start < end);
+
+        for (double x = start; x <= end; x += 0.01) {
+            INDArray input = Nd4j.create(new double[]{x, 0.1 * x});
+            String s = input.toString();
+
+            INDArray t = a.getActivation(input.dup(), false);
+            INDArray p = n.execute(input);
+
+            assertTrue("[" + n.getName() + "] evaluation must not change shape: " + p.shape()[1] + " != 2",
+                    p.shape()[1] == 2);
+
+            assertTrue("[" + n.getName() + "] evaluation must not change the input matrix: "
+                            + s + "!=" + input.toString(), s.equals(input.toString()));
+
+            assertTrue("[" + n.getName() + "] should evaluate correctly: " + p + "!=" + t,
+                    Math.abs(t.getDouble(0) - p.getDouble(0)) <= REQUIRED_PRECISION
+                            && Math.abs(t.getDouble(1) - p.getDouble(1)) <= REQUIRED_PRECISION);
+
+            t = a.backprop(input.dup(), Nd4j.create(new float[]{1f, 1f})).getFirst();
+            p = n.derivate(input);
+
+            assertTrue("[" + n.getName() + "] derivative must not change shape: " + p.shape()[1] + " != 2",
+                    p.shape()[1] == 2);
+
+            assertTrue("[" + n.getName() + "] derivative must not change the input matrix: "
+                            + s + "!=" + input.toString(), s.equals(input.toString()));
+
+            assertTrue("[" + n.getName() + "] should derivate correctly for " + x + ": " + p + "!=" + t,
+                    Math.abs(t.getDouble(0) - p.getDouble(0)) <= REQUIRED_PRECISION
+                            && Math.abs(t.getDouble(1) - p.getDouble(1)) <= REQUIRED_PRECISION);
+        }
+
+        System.out.println(n.toString()+" is OK!");
     }
 
     private DerivableNode initNode(DerivableNode n) {
@@ -122,18 +165,17 @@ public class NNSRTest {
         testNodeEval(initNode(new SinNode()), Math::sin, -1, 1);
         testNodeEval(initNode(new CosNode()), Math::cos, -1, 1);
         testNodeEval(initNode(new TanNode()), Math::tan, -1, 1);
+        testNodeEval(initNode(new TrCosNode()), x -> Math.cos(Math.min(Math.PI / 2, Math.max(-Math.PI / 2, x))), -1, 1);
         // Exponentials.
         testNodeEval(initNode(new ExpNode()), Math::exp, -1, 1);
         testNodeEval(initNode(new Pow2Node()), x -> Math.pow(x, 2), -1, 1);
         testNodeEval(initNode(new Pow3Node()), x -> Math.pow(x, 3), -1, 1);
         testNodeEval(initNode(new PowNode()), x -> Math.pow(x, x), 0, 2);
         testNodeEval(initNode(new LogNode()), Math::log, 1e-3, 2);
-        // Activations.
-        testNodeEval(initNode(new ReLUNode()), x -> Math.max(0, x), -1, 1);
-        testNodeEval(initNode(new SigmoidNode()), x -> 1. / (1 + Math.exp(-x)), -1, 1);
+        // Other.
         testNodeEval(initNode(new GaussNode()), x -> Math.exp(-x * x), -3, 3);
-
         testNodeEval(initNode(new AbsNode()), Math::abs, -3, 3);
+
         /* DERIVATIONS */
 
         // Input node.
@@ -156,12 +198,26 @@ public class NNSRTest {
         testNodeDeriv(initNode(new Pow3Node()), x -> 3 * Math.pow(x, 2), -1, 1);
         testNodeDeriv(initNode(new PowNode()), x -> Math.pow(x, x) * (1 + Math.log(x)), 1, 2);
         testNodeDeriv(initNode(new LogNode()), x -> 1. / x, 1e-3, 2);
-        // Activations.
-        testNodeDeriv(initNode(new ReLUNode()), x -> x > 0 ? 1 : 0, -1, 1);
-        testNodeDeriv(initNode(new SigmoidNode()), x -> 1. / (2 + Math.exp(-x) + Math.exp(x)), -1, 1);
+        // Other.
         testNodeDeriv(initNode(new GaussNode()), x -> Math.exp(-x * x) * (-2 * x), -3, 3);
-
         testNodeDeriv(initNode(new AbsNode()), x -> (Math.abs(x) / (x + AbsNode.STABILITY_CONST)), -3, 3);
+
+        // DL4J.
+        testDL4Jnode(initNode(new ReLUNode()),new ActivationReLU(),-1,1);
+        testDL4Jnode(initNode(new LReLUNode()),new ActivationLReLU(),-1,1);
+        testDL4Jnode(initNode(new ThReLUNode()),new ActivationThresholdedReLU(),-1,1);
+        testDL4Jnode(initNode(new ELUNode()),new ActivationELU(),-1,1);
+        testDL4Jnode(initNode(new SELUNode()),new ActivationSELU(),-1,1);
+        testDL4Jnode(initNode(new SigmoidNode()),new ActivationSigmoid(),-1,1);
+        testDL4Jnode(initNode(new HardSigmoidNode()),new ActivationHardSigmoid(),-1,1);
+        testDL4Jnode(initNode(new SoftmaxNode()),new ActivationSoftmax(),-1,1);
+        testDL4Jnode(initNode(new SoftplusNode()),new ActivationSoftPlus(),-1,1);
+        testDL4Jnode(initNode(new SoftsignNode()),new ActivationSoftSign(),-1,1);
+        testDL4Jnode(initNode(new SwishNode()),new ActivationSwish(),-1,1);
+        testDL4Jnode(initNode(new TanhNode()),new ActivationTanH(),-1,1);
+        testDL4Jnode(initNode(new HardTanhNode()),new ActivationHardTanH(),-1,1);
+        testDL4Jnode(initNode(new RationalTanhNode()),new ActivationRationalTanh(),-1,1);
+        testDL4Jnode(initNode(new RectifiedTanhNode()),new ActivationRectifiedTanh(),-1,1);
     }
 
     @Test

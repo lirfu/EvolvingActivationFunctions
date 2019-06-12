@@ -11,7 +11,7 @@ import org.nd4j.linalg.api.ops.impl.transforms.gradient.HardTanhDerivative;
 import org.nd4j.linalg.factory.Nd4j;
 
 public class HardTanhNode extends DerivableNode {
-    public static final String NAME = "tanh";
+    public static final String NAME = "htanh";
 
     public HardTanhNode() {
         super(NAME, 1);

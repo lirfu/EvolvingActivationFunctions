@@ -8,10 +8,10 @@ import org.nd4j.linalg.api.ops.impl.transforms.Sigmoid;
 import org.nd4j.linalg.api.ops.impl.transforms.SoftPlus;
 import org.nd4j.linalg.factory.Nd4j;
 
-public class SoftPlusNode extends DerivableNode {
+public class SoftplusNode extends DerivableNode {
     public static final String NAME = "softplus";
 
-    public SoftPlusNode() {
+    public SoftplusNode() {
         super(NAME, 1);
     }
 
@@ -36,6 +36,6 @@ public class SoftPlusNode extends DerivableNode {
 
     @Override
     protected IInstantiable<TreeNode<INDArray, INDArray>> getInstantiable() {
-        return SoftPlusNode::new;
+        return SoftplusNode::new;
     }
 }
