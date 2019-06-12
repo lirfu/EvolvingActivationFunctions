@@ -199,7 +199,7 @@ Postoje i aktivacijske funkcije temeljene na udaljenosti vektora ...
 \todo{Spomeni distance based aktivacije (ANFIS?)}
 \todo{Spomeni i složenije metode: \citep{network_in_network}}
 
-Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i gradijenti teku kroz mrežu, a time utječu na brzinu učenja i inferencije neuronske mreže. Najčešće se koriste slojevite unaprijedne arhitekture zbog jednostavnosti izvedbe. Unaprijedne arhitekture propuštaju podatke samo u jednom smjeru odnosno već izračunati neuroni se ne izračunavaju ponovno, što je posebno pogodno za optimizaciju širenjem unatrag, detaljnije opisanu u poglavlju \ref{sec:backprop}. Slojevite arhitekture omogućuju paralelizaciju izvođenja operacija na grafičkim karticama što značajno ubrzava postupke učenja i inferencije. Pri definiciji slojevite arhitekture najčešće je dovoljno navesti samo redoslijed slojeva, no ponekad je potrebno definirati i način povezivanja slojeva npr. pri uporabi preskočnih veza \citep{highwaynet, resnet, densenet}. Prvi sloj služi za postavljanje ulaza mreže i naziva se ulaznim slojem mreže. Posljednji sloj mreže služi nam za ekstrakciju izlaza te mjerenje kakvoće mreže i naziva se izlaznim slojem mreže. Svi slojevi između ulaznog i izlaznog sloja nazivaju se skrivenim slojevima.
+Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i gradijenti teku kroz mrežu, a time utječu na brzinu učenja i inferencije neuronske mreže. Najčešće se koriste slojevite unaprijedne arhitekture zbog jednostavnosti izvedbe. Unaprijedne arhitekture propuštaju podatke samo u jednom smjeru odnosno već izračunati neuroni se ne izračunavaju ponovno, što je posebno pogodno za optimizaciju širenjem unatrag\secref{sec:backprop}. Slojevite arhitekture omogućuju paralelizaciju izvođenja operacija na grafičkim karticama što značajno ubrzava postupke učenja i inferencije. Pri definiciji slojevite arhitekture najčešće je dovoljno navesti samo redoslijed slojeva, no ponekad je potrebno definirati i način povezivanja slojeva npr. pri uporabi preskočnih veza \citep{highwaynet, resnet, densenet}. Prvi sloj služi za postavljanje ulaza mreže i naziva se ulaznim slojem mreže. Posljednji sloj mreže služi nam za ekstrakciju izlaza te mjerenje kakvoće mreže i naziva se izlaznim slojem mreže. Svi slojevi između ulaznog i izlaznog sloja nazivaju se skrivenim slojevima.
 
 Potpuno povezana arhitektura je najjednostavnija arhitektura. Svaki neuron u potpuno povezanom sloju aktivira se pomoću svih izlaza iz prethodnog sloja. Za naučeni potpuno povezani sloj kaže se da vrši ekstrakciju značajki iz svojih ulaza. Geometrijski gledano, svaki neuron vrši nelinearno mapiranje značajki iz dimenzije prethodnog sloja u novu dimenziju s ciljem modeliranja boljih značajki.
 
@@ -259,7 +259,7 @@ Algoritam je primijenjiv na funkcije proizvoljne dimenzionalnosti uz pretpostavk
 Problem odabira hiperparametara proizlazi iz činjenice da u generalno praksi funkcija koja se minimizira nije definirana (već samo skup primjera te funkcije) te se ne može jasno vizualizirati postupak pretrage. Čak i da je definirana funkcija najčešće nije poznata vrijednost globalnog optimuma, a pohlepna pretraga je netraktabilna. Unatoč tome, gradijentni spust efikasno i učinkovito pronalazi optimume koji su dovoljno dobri za većinu praktičnih primjena \citep{yolo}.
 
 \subsubsection{Funkcija gubitka}
-Pri učenju umjetnih neuronskih mreža potrebno je definirati funkciju gubitka. Funkcija gubitka, za dani ulaz, uspoređuje predikciju mreže sa željenim vrijednostima te dodjeljuje iznos pogreške (realan broj). Potrebno je pažljivo odabrati funkciju gubitka jer utječe na učenje svakog parametra (kao što je opisano u poglavlju \ref{sec:backprop}) te definira što je ishod učenja. 
+Pri učenju umjetnih neuronskih mreža potrebno je definirati funkciju gubitka. Funkcija gubitka, za dani ulaz, uspoređuje predikciju mreže sa željenim vrijednostima te dodjeljuje iznos pogreške (realan broj). Potrebno je pažljivo odabrati funkciju gubitka jer utječe na učenje svakog parametra \secref{sec:backprop} te definira što je ishod učenja. 
 
 Najčešće nije poznata definicija funkcije gubitka na čitavoj promatranoj domeni već su poznati samo primjeri te funkcije u podatcima koji su izmjereni i koji se smatraju reprezentativnim. Ovdje se pretpostavlja da će neuronska mreža ostvariti svojstvo generalizacije, koje je detaljnije objašnjeno u poglavlju \ref{sec:svojstva}. Stoga se u narednim formulama koristi notacija sumiranja.
 
@@ -485,7 +485,7 @@ Koeficijenti se računaju pomoću značajki iz podatkovnog skupa za učenje. Koe
 
 Prije no što ih se preda modelu, ulazne značajke normaliziraju se formulom \eqref{eq:feat_norm}.
 \begin{equation}
-\label{eq:featnorm}
+\label{eq:eq:feat_norm}
 \vec{z} = \frac{\vec{x} - \vec{\mu}}{\vec{\sigma^2}}
 \end{equation}
 
@@ -529,7 +529,7 @@ U ovom se radu ne koristi regularizacija šumom jer bi mogla imati nepredvidivi 
 \subsubsection{Rano zaustavljanje}
 Pri učenju modela funkcija gubitka na skupu za učenje i testiranje generalno opada, no u jednom trenu gubitak generalizacije počinje rasti. Zaustavi li se učenje u trenutku kada je gubitak generalizacije najmanji dobiva se optimalan model za zadane hiperparametre. U praksi te funkcije neće biti naročito glatke zbog stohastičkog gradijentnog spusta te greška će generalizacije povremeno i rasti kako savladava lokalne optimume.
 
-Postupak ranog zaustavljanja tretira broj epoha kao hiperparametar koji se pretražuje po liniji. No umjesto da za svaku vrijednost broja epoha nanovo trenira model, ovdje se trenira jednom te odabire vrijednost za koju model generalizira najbolje. To upućuje na potrebu unakrsne validacije koja je opisana u poglavlju \ref{sec:crossval}.
+Postupak ranog zaustavljanja tretira broj epoha kao hiperparametar koji se pretražuje po liniji. No umjesto da za svaku vrijednost broja epoha nanovo trenira model, ovdje se trenira jednom te odabire vrijednost za koju model generalizira najbolje. To upućuje na potrebu unakrsne validacije \secref{sec:crossval}.
 
 \todoeq{Algoritam ranog zaustavljanja}
 
@@ -543,7 +543,7 @@ Postupak ranog zaustavljanja tretira broj epoha kao hiperparametar koji se pretr
 \subsection{Odabir hiperparametara}
 Do ovdje su navedeni hiperparametri koji se koriste pri spomenutim tehnikama optimizacije neuronske mreže (poglavlja \ref{sec:gradijentni_spust} - \ref{sec:regularizacija}). No neuronska mreža ima i strukturalne hiperparametre.
 
-Arhitektura mreže je vrlo bitan hiperparametar koji određuje složenost modela te utječe na brzinu inferencije i učenja modela. Razvijene su razne arhitekture koje koriste preskočne veze za postizanje vrlo dubokih arhitektura \citep{resnet, densenet}. Preskočne veze omogućavaju direktniji prijenos gradijenta što pomaže kod problema nestajućeg gradijenta u dubokim mrežama (poglavlje \ref{sec:nestajući_grad}). Arhitektura može omogućiti dodatnu paralelizaciju inferencije i učenja tako da se teške operacije raspodijele na više uređaja, a rezultati spoje samo kada je to nužno \citep{alexnet}.
+Arhitektura mreže je vrlo bitan hiperparametar koji određuje složenost modela te utječe na brzinu inferencije i učenja modela. Razvijene su razne arhitekture koje koriste preskočne veze za postizanje vrlo dubokih arhitektura \citep{resnet, densenet}. Preskočne veze omogućavaju direktniji prijenos gradijenta što pomaže kod problema nestajućeg gradijenta u dubokim mrežama \secref{sec:nestajući_grad}. Arhitektura može omogućiti dodatnu paralelizaciju inferencije i učenja tako da se teške operacije raspodijele na više uređaja, a rezultati spoje samo kada je to nužno \citep{alexnet}.
 
 Izlazne funkcije su također važan hiperparametar, no u praksi se većinom ignoriraju zbog manjka intuicije o njihovom utjecaju na učenje pojedinog modela na pojedinom podatkovnom skupu. U praksi se najčešće odabiru funkcije koje su brze i koje se pokazuju korisnima u raznim radovima. Najčešće se koristi ReLU opisan u poglavlju \ref{func:relu}. U povratnim neuronskim mrežama za rekurzivne slojeve popularan je tangens hiperbolni opisan u poglavlju \ref{func:tanh}. U poglavlju \ref{sec:izlazne_fje} navedene su i opisane brojne funkcije te je njihov utjecaj ispitan u poglavlju \ref{sec:rezultati}.
 
@@ -690,7 +690,7 @@ Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu 
 
 \subsection{Problemi}
 \subsubsection{Odabir hiperparametara}
-Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov pravilan odabir značajno utjeće na performanse neuronske mreže. Nažalost nije ih moguće optimalno odabrati u zatvorenom obliku, već se to svodi na problem pretraživanja kao što je pretraživanje po rešetci \ref{sec:grid_search}. Arhitekture mogu poprimiti vrlo složene oblike kao što je predstavljeno radovima \citet{highwaynet}, \citet{resnet}, \citet{densenet}, \citet{inceptionnet} i \citet{yolo} te se najčešće grade ručno s maksimalnom traktabilnom složenošću mreže. Detaljnije o odabiru izlaznih funkcija napisano je u poglavlju \ref{sec:izlazne_fje}.
+Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov pravilan odabir značajno utjeće na performanse neuronske mreže. Nažalost nije ih moguće optimalno odabrati u zatvorenom obliku, već se to svodi na problem pretraživanja kao što je pretraživanje po rešetci \secref{sec:grid_search}. Arhitekture mogu poprimiti vrlo složene oblike kao što je predstavljeno radovima \citet{highwaynet}, \citet{resnet}, \citet{densenet}, \citet{inceptionnet} i \citet{yolo} te se najčešće grade ručno s maksimalnom traktabilnom složenošću mreže. Detaljnije o odabiru izlaznih funkcija napisano je u poglavlju \ref{sec:izlazne_fje}.
 
 \subsubsection{Nestajući gradijent}
 \label{sec:nestajući_grad}
@@ -1445,7 +1445,7 @@ f'(x) = -sin(x)
 \end{split}
 \end{equation}
 
-Kosinus je funkcija sinusa pomaknuta za četvrtinu periode te dijeli ista svojstva i probleme. no, s obzirom da je pomak relativno velik u odnosu na očekivane veličine ulaza, može se promatrati kao zasebna izlazna funkcija. Derivacija kosinusa se poprilično razlikuje od ostalih aktivacijskih funkcija. Unatoč tome, daje vrlo kompetitivne rezultate (poglavlje \ref{sec:rezultati}).
+Kosinus je funkcija sinusa pomaknuta za četvrtinu periode te dijeli ista svojstva i probleme. no, s obzirom da je pomak relativno velik u odnosu na očekivane veličine ulaza, može se promatrati kao zasebna izlazna funkcija. Derivacija kosinusa se poprilično razlikuje od ostalih aktivacijskih funkcija. Unatoč tome, daje vrlo kompetitivne rezultate \secref{sec:rezultati}.
 \begin{equation}
 cos(x) = sin(x + \frac{\pi}{2}) \approx sin(x + 1.571)
 \end{equation}
@@ -1678,24 +1678,95 @@ Koristi se u rekurzivnim neuronskim mrežama kako bi se ... LSTM
 \chapter{Optimizacija izlazne funkcije genetskim programiranjem}
 
 \section{Genetsko programiranje}
-\todo{Opis i svojstva GP}
-\todo{Utjecaj i brojnost parametara u GA (moš linkat i svoj završni rad :P)}
+Genetsko programiranje je područje evolucijskog računarstva koje se bavi algoritmima pretrage hijerarhijskih struktura. Razlikuje se od susjednih područja po tome što je genotip izvršivi program i dobrota jedinke se dobiva njenim izvršavanjem. Genotip tipično poprima stablastu strukturu te u pravilu nema zadanu veličinu, no može se ograničiti. Dijelovi genotipa definirani su jezikom, skupom funkcija i listova koje definiraju prostor pretraživanja. U ovom radu se elementi jezika nazivaju čvorovima. Jezik mora biti zatvoren (izlaz svakov čvora je kompatibilan s ulazom svakog drugog čvora) i dovoljan (rješenje je moguće predstaviti isključivo koristeći elemente jezika). \citep{comp_intelligence}
+
+Evolucijski algoritmi su intrinzično stohastični te omogućuju globalno i lokalno pretraživanje prostora, za razliku od gradijentnog spusta koji lokalno pretražuje prostor. Dok se lokalnim pretraživanjem pretražuje usko susjedstvo oko točke u prostoru, globalno pretraživanje pretražuje točke po čitavoj dosižnoj domeni. To svojstvo osigurava otpornost evolucijskih algoritama na prepreke koje ograničavaju gradijentni spust \secref{sec:gradijentni_spust}. Opseg pretrage određen je jezikom te ograničenjima pri inicijalizaciji populacije i operatorima pretrage. Treba razlikovati genotipski i fenotipski prostor. Genotipski prostor definiran je jezikom i najvećom dubinom stabla, dok je fenotipski prostor definiran dekoderom koji genotip pretvara u primijenjivo rješenje. Iako ograničenja u genotipu ograničavaju fenotip, mogu imati nepredvidiv utjecaj.
+
+\subsection{Građa}
+Kao i ostali evolucijski algoritmi, algoritam genetskog programiranja sastoji se od više elemenata koji definiraju način pretrage. \textbf{Inicijalizator populacije} služi stvaranju početnih točaka iz kojih kreće pretraga i poželjno je da stvara što raznolikija rješenja (globalna pretraga). \textbf{Operator odabira} iz populacije uzima po jedan par jedinki za roditelje i jednu ili dvije jedinke za zamjenu. Pri RouletteWheel odabiru vjerojatnosti odabira jedinki proporcionalna je njihovoj dobroti. Pri turnirskom odabiru nasumično se odabire $n$ jedinki, dvije najbolje postaju roditeljima te ona najlošija biva odabrana za zamjenu. Operatori odabira naginju zadržavanju dobrih genotipa u populaciji i time osiguravaju konvergenciju algoritma (lokalna pretraga). \textbf{Operator križanja} iz genotipa odabranih roditelja izgradi jedno ili dva djeteta koja će biti dio nove populacije. Operatori križanja miješaju genotipove jedinki zadržavajući svojstva dobrih i time pomažu konvergenciji algoritma (lokalna pretraga). \textbf{Operator mutacije} nad stvorenim djetetom unosi nasumičnu izmjenu i time osigurava unos novih informacija u populaciji (globalna pretraga). Često se definira po nekoliko različitih operatora križanja i mutacije koji različito djeluju na pretragu te se time upravlja globalnošću pretrage. Pristup izgradnji nove populacije na temelju stare utjeće na snagu konvergencije algoritma. \textbf{Generacijski pristup} će u svakoj iteraciji čitavu populaciju zamijeniti djecom. Pri tome često se koristi \textbf{elitizam} kojim se garantira očuvanje najbolje jedinke iz stare u novu populaciju. \textbf{Eliminacijski pristup} definira postotak populacije koji će biti zamijenjen djecom.
+\newline
+\newline
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\KwIn{funkcija $f(x)$}
+\KwIn{kriterij zaustavljanja $K$}
+\KwIn{veličina populacije $N$}
+$InicijalizirajPopulaciju(populacija, N)$ \;
+\While{$K$ nije zadovoljen}{
+$x^* \gets OdaberiNajbolju(x, populacija)$ \;
+definiraj novu populaciju: $populacija'$ \;
+\For{$N$ puta}{
+$(p_1, p_2) \gets OdaberiRoditelje(populacija)$ \;
+$c \gets OperatorKrižanja(p_1, p_2)$ \;
+$OperatorMutacije(c)$ \;
+$DodajPopulaciji(c, populacija')$
+}
+$populacija \gets populacija'$
+}
+\KwResult{pronađena optimalna jedinka $x^*$}
+\;
+\caption{Tipičan generacijski evolucijski algoritam}
+\label{alg:ea}
+\end{algorithm}
+
+\paragraph{}
+Evolucijski algoritmi podržavaju nekoliko glavnih hiperparametara. \textbf{Veličina populacije} definira broj istovremenih točaka u prostoru te o njoj ovisi vjerojatnost pronalaska optimuma. Operatori mutacije unose izmjene u genomu i njihova primjena se regulira \textbf{vjerojatnošću primjene}. \textbf{Kriteriji zaustavljanja} određuju završetak pretrage i mogu ovisiti o kvaliteti rješenja ili raspoloživim resursima. \textbf{Broj iteracija} analogan je onome u gradijentnom spustu \secref{sec:gradijentni_spust} i često se koristi kao gornja granica za vremenski trošak izvođenja. \textbf{Broj evaluacija} je koristan kada je poznato trajanje pojedine evaluacije želi se sukladno raspoloživom vremenu odrediti veličina populacije. \textbf{Raspoloživo vrijeme} se koristi kao kao i broj iteracija, ali u situacijama kada nije poznato trajanje pojedine iteracije algoritma. \textbf{Kvaliteta rješenja} je koristan kriterij zaustavljanja ako postoji definirana granica zadovoljavajuće kvalitete. Razne inačice evolucijskih algoritama mogu uvesti brojne dodatne hiperparametre.
 
 \subsection{Simbolička regresija}
-\todo{Opis SR}
+Simbolička regresija je postupak izgradnje funkcije koja dobro aproksimira uzorke stvarne funkcije.
 
 \subsection{Neuroevolucija genetskim programiranjem}
-\todo{Kako predstaviti čitavu mrežu grafom (evolucija arhitekture)}
-\todo{negdje spomeni da su neuralke zapravo vrlo ograničene jer se ograničava prostor mogućnosti zadavanjem fiksnih izlaznih fja, arhitekture i načina optimizacije (induktivna pristranost ograničavanjem skupa hipoteza). leži negdje između GP i ručno izgrađenih modela (jer je neuralka samo stablo funkcija kao u TF). CGP unosi ograničenje strukture što je bliže neuralki i daje zanimljive rezultate (atari cgp). Čini se da im godi balans između strukture i nasumičnosti.}
-\todo{CGP Atari rad - Spomeni da je to kao evolucija prijenosne funkcije (i ulazna i izlazna se definiraju)}
+Proizvoljnu neuronsku mrežu moguće je predstaviti stablom na razini neurona, gdje su čvorovi mreže ulazne i izlazne funkcije neurona te dodatne operacije (normalizacija grupe, dropout i ostali). Takav pristup korišten je u \citet{evo_atari} algoritmom kartezijevog genetskog programiranja. Postoje i metode indirektne evolucije arhitekture neuronskih mreža sa definiranim ulaznim i izlaznim funkcijama pomoću genetskog programiranja \citep{kitano, gruau}.
 
-\section{Pretraživanje izlaznih funkcija}
-\todo{golden activation članak, kako radi detaljnije \citep{elish}}
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\todo{negdje spomeni da su neuralke zapravo vrlo ograničene jer se ograničava prostor mogućnosti zadavanjem fiksnih izlaznih fja, arhitekture i načina optimizacije (induktivna pristranost ograničavanjem skupa hipoteza). leži negdje između GP i ručno izgrađenih modela (jer je neuralka samo stablo funkcija kao u TF). CGP unosi ograničenje strukture što je bliže neuralki i daje zanimljive rezultate (atari cgp). Čini se da im godi balans između strukture i nasumičnosti.}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Pretraživanje izlaznih funkcija}
+U literaturi postoje brojni radovi na temu pretraživanja izlaznih funkcija genetskim programiranjem.
+
 \todo{swish članak detaljnije \citep{swish}}
 
-\subsection{Algoritam}
+U radu \citet{elish} autori koriste hibridni genetski algoritam kako bi evoluirali funkciju različito definiranu na pozitivnoj i negativnoj domeni. Dijelovi funkcije su predstavljeni stablima i križaju ih posebnim operatorima koji odvojeno mjenjaju pozitivnu i negativnu stranu. Skup čvorova su osnovne aritmetičke operacije, a listovi su popularne aktivacijske funkcije bez konstanti. Autori predstavljaju i nove aktivacijske funkcije (poglavlja \ref{func:elish}, \ref{func:hard_elish}) koje su ručno izgradili s ciljem kombiniranja dobrih svojstava manjih funkcija. Na tri podatkovna skupa pokazuju da su njihove funkcije najbolje.
+
+\section{Algoritam pretrage s taboo listom}
 \todo{Problem konvergencije i stohastičnosti GP-a}
 \todo{EA oplemenjen taboo listom iz algoritma Taboo pretraživanja}
+
+Klasični algoritam genetskog programiranja često dovodi do stvaranja itentičnih jedinki u populaciji što loše utječe na globalnost pretrage. Stoga ovaj rad unosi primjenu taboo liste u proces algoritma. Nakon stvaranja djeteta klasičnim koracima (križanje i mutacija) dodaje se dodatan korak u kome se djete mutira dok ne postane jedinstveno. Kada je stvoreno jedinstveno djete, ono se dodaje u populaciju i zabilježi na kraj taboo liste.
+\newline
+\newline
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\KwIn{funkcija $f(x)$}
+\KwIn{kriterij zaustavljanja $K$}
+\KwIn{veličina populacije $N$}
+\KwIn{veličina taboo liste $T$}
+$InicijalizirajPopulaciju(populacija, N)$ \;
+$taboo \gets StvoriPraznuTabooListu(T)$ \;
+\While{$K$ nije zadovoljen}{
+$x^* \gets OdaberiNajbolju(x, populacija)$ \;
+definiraj novu populaciju: $populacija'$ \;
+\For{$N$ puta}{
+$(p_1, p_2) \gets OdaberiRoditelje(populacija)$ \;
+$c \gets OperatorKrižanja(p_1, p_2)$ \;
+$OperatorMutacije(c)$ \;
+\While{$x \in taboo$}{
+	$OperatorMutacije(c)$
+}
+$DodajNaKraj(c, taboo)$ \;
+\If{$|taboo| > T$}{
+	$UkloniPrvog(taboo)$
+}
+$DodajPopulaciji(c, populacija')$
+}
+$populacija \gets populacija'$
+}
+\KwResult{pronađena optimalna jedinka $x^*$}
+\;
+\caption{Genetsko programiranje s taboo listom}
+\label{alg:ea}
+\end{algorithm}
 
 \subsection{Skup čvorova (prostor pretraživanja)}
 \label{sec:node_set}
@@ -1780,7 +1851,7 @@ Operator vraća nasumičnog roditelja kao dijete. Služi za osnaživanje konverg
 
 
 \subsection{Operatori mutacije}
-U nastavku opisani operatori mutacije primaju jedno dijete i nad njime obave mutaciju. Operatori koji unose nove čvorove biraju čvorove iz skupa dostupnih čvorova \ref{sec:node_set}.
+U nastavku opisani operatori mutacije primaju jedno dijete i nad njime obave mutaciju. Operatori koji unose nove čvorove biraju čvorove iz skupa dostupnih čvorova \secref{sec:node_set}.
 
 \subsubsection{Ubaci korijen}
 Operator ubacivanja korijena stabla odabire nasumičan čvor stupnja većeg od 0 iz seta i postavlja ga korijenom stabla. Ako je odabrani čvor unaran, njegovo djete postaje stari korijen. Ako je odabrani čvor većeg stupnja prvo djete postaje korijen roditelja, a ostala njegova djeca popune se nasumičnim listovima iz skupa. Operator služi povećavanju dubine stabla i ključan je za stvaranje kompozicija funkcija.
@@ -1915,7 +1986,7 @@ Paralelizaciju je moguće postići vrlo jednostavno paketom $utils.threading$. P
 \section{DPAv2}
 
 \subsection{Usporedba uobičajenih izlaznih funkcija}
-U ovom poglavlju prikazana je usporedba i rezultati uobočajenih izlaznih funkcija. Ispitivane su kombinacije arhitekture i izlazne funkcije napisane su mjere točnosti i F1 na skupu za testiranje. Za svaku kombinaciju arhitekture i izlazne funkcije provedeno je pretraživanje hiperparametara po rešetci i napisani su najbolji postignuti rezultati. Zajednički hiperparametri i pretraživani navedeni su u tablici \ref{tab:hp_256} (pretraživani su na dnu). Kombinacije hiperparametara su indeksirane prema tablici \ref{tab:hp_256_comb} za lakše snalaženje na slici najboljih kombinacija hiperparametara \ref{fig:greedy_256_acc}.
+U ovom poglavlju prikazana je usporedba i rezultati uobičajenih izlaznih funkcija. Ispitivane su kombinacije arhitekture i izlazne funkcije napisane su mjere točnosti i F1 na skupu za testiranje. Za svaku kombinaciju arhitekture i izlazne funkcije provedeno je pretraživanje hiperparametara po rešetci i napisani su najbolji postignuti rezultati. Zajednički hiperparametri i pretraživani navedeni su u tablici \ref{tab:hp_256} (pretraživani su na dnu). Kombinacije hiperparametara su indeksirane prema tablici \ref{tab:hp_256_comb} za lakše snalaženje na slici najboljih kombinacija hiperparametara \ref{fig:greedy_256_acc}.
 
 \begin{table}
 \centering
@@ -1986,8 +2057,10 @@ Indeks & Stopa učenja & Koeficijent L2 regularizacije \\
 \todoimg{mjesta aktivacije top 4 funkcije po arh}
 \todo{Komentar}
 
-\todoimg{mjesta aktivacije bottom 4 funkcije po arh (tu je i pow2)}
+\todoimg{mjesta aktivacije bottom 4 funkcije po arh}
 \todo{Komentar}
+
+\todo{analiza slučaja pow2}
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{greedy_256_arch_quality.pdf}
@@ -2022,8 +2095,9 @@ Indeks & Stopa učenja & Koeficijent L2 regularizacije \\
 
 %--------------------------------------------------------------------------------------%
 \chapter{Buduća istraživanja}
-\todo{Primjena CNN na vremenskim uzorcima po uzoru na onaj rad}
-\todo{Ispitivanje učinkovitosti korištene optimizacije na ostalim problemima}
+\todo{Primjena CNN na sirovim vremenskim uzorcima po uzoru na onaj rad}
+\todo{Ispitivanje učinkovitosti korištene optimizacije na ostalim zadatcima}
+\todo{Operatori različitog utjecaja i uzorkovanje s rastućim pragom osjetljivosti na izmjene populacije. Operatori imaju definiranu snagu, kako vrijeme ide sve manje se biraju (putujuća sigmoida) snažni operatori -> konvergencija kao sim. kaljenje}
 \todo{Paralelna evolucija arhitekture i aktivacijskih fja \citep{cnn_evolution}}
 
 %--------------------------------------------------------------------------------------%
