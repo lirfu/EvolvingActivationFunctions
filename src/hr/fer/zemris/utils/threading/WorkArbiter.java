@@ -47,10 +47,12 @@ public class WorkArbiter {
      */
     public WaitCondition getAllFinishedCondition() {
         return () -> {
-            if (queue_.size() > 0) return false;
-            for (Worker w : workers_)
-                if (!w.isIdle())
-                    return false;
+            synchronized (queue_) {
+                if (queue_.size() > 0) return false;
+                for (Worker w : workers_)
+                    if (!w.isIdle())
+                        return false;
+            }
             return true;
         };
     }

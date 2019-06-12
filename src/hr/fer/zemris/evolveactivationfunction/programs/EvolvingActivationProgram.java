@@ -7,6 +7,7 @@ import hr.fer.zemris.evolveactivationfunction.tree.nodes.ConstNode;
 import hr.fer.zemris.evolveactivationfunction.tree.DerivableSymbolicTree;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSetFactory;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSets;
+import hr.fer.zemris.evolveactivationfunction.tree.nodes.InputNode;
 import hr.fer.zemris.experiments.Experiment;
 import hr.fer.zemris.experiments.GridSearch;
 import hr.fer.zemris.genetics.*;
@@ -312,7 +313,7 @@ public class EvolvingActivationProgram {
                 .setInitializer(init)
                 .setEvaluator(eval)
                 .setSelector(new RouletteWheelSelector(r))
-                .setGenotypeTemplate(new DerivableSymbolicTree(set, null))
+                .setGenotypeTemplate(new DerivableSymbolicTree(set, new InputNode()))
                 .setStopCondition(params.condition())
 
                 .setLogger(log)

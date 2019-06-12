@@ -4,6 +4,7 @@ import hr.fer.zemris.genetics.Algorithm;
 import hr.fer.zemris.genetics.Genotype;
 import hr.fer.zemris.genetics.Selector;
 import hr.fer.zemris.genetics.Utils;
+import hr.fer.zemris.utils.Counter;
 import hr.fer.zemris.utils.threading.Work;
 
 import java.util.LinkedList;
@@ -26,16 +27,30 @@ public class GenerationTabooAlgorithm extends Algorithm {
         tabu_list_ = new LinkedList<>();
     }
 
-    /**
-     * Internal index for replacing the old population.
-     */
-    private final int[] index = new int[1];
+
+    private void fix_if_taboo(Genotype child) {
+        synchronized (tabu_list_) {
+            for (int i = 0; i < taboo_attempts_; i++) {
+                if (!tabu_list_.contains(child.serialize())) {
+                    // Update taboo list.
+                    tabu_list_.addLast(child.serialize());
+                    if (tabu_list_.size() > taboo_size_) {
+                        tabu_list_.removeFirst();
+                    }
+                    break;
+                }
+                getRandomMutation().mutate(child);
+            }
+        }
+    }
 
     @Override
     protected void runIteration() {
         // Store original population.
         Genotype[] original_population = population_;
-        index[0] = 0;
+
+        // Internal index for replacing the old population.
+        final Counter index = new Counter(0);
 
         // Create the new population.
         int pop_size = population_.length;
@@ -44,7 +59,8 @@ public class GenerationTabooAlgorithm extends Algorithm {
         // Save the queen.
         if (elitism_) {
             Genotype best = findBest(original_population);
-            population_[index[0]++] = best.copy();
+            population_[index.value()] = best.copy();
+            index.increment();
         }
 
         // Parallelised work.
@@ -59,19 +75,7 @@ public class GenerationTabooAlgorithm extends Algorithm {
                     getRandomMutation().mutate(child);
                 }
                 // Try fixing a taboo child by mutating.
-                synchronized (tabu_list_) {
-                    for (int i = 0; i < taboo_attempts_; i++) {
-                        if (!tabu_list_.contains(child.serialize())) {
-                            // Update taboo list.
-                            tabu_list_.addLast(child.serialize());
-                            if (tabu_list_.size() > taboo_size_) {
-                                tabu_list_.removeFirst();
-                            }
-                            break;
-                        }
-                        getRandomMutation().mutate(child);
-                    }
-                }
+                fix_if_taboo(child);
                 // Evaluate.
                 child.evaluate(evaluator_);
             } catch (Exception | Error e) {
@@ -80,8 +84,8 @@ public class GenerationTabooAlgorithm extends Algorithm {
             } finally { // Ensure no dead-locks.
                 synchronized (index) {
                     // Store the child to current index.
-                    population_[index[0]] = child;
-                    index[0]++;
+                    population_[index.value()] = child;
+                    index.increment();
                 }
             }
         };
@@ -92,7 +96,7 @@ public class GenerationTabooAlgorithm extends Algorithm {
         }
 
         // Wait for all work to be done.
-        work_arbiter_.waitOn(() -> index[0] == pop_size);
+        work_arbiter_.waitOn(() -> index.value() == pop_size);
     }
 
     public static class Builder extends Algorithm.Builder {

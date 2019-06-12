@@ -36,9 +36,11 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
     public double performEvaluate(DerivableSymbolicTree g) {
         Double fitness;
         String s = g.serialize();
-        if (use_memory_ && (fitness = memory.get(s)) != null) {
-            log_.i("Re-using stored fitness for: " + s);
-            return fitness;
+        synchronized (memory) {
+            if (use_memory_ && (fitness = memory.get(s)) != null) {
+                log_.i("Re-using stored fitness for: " + s);
+                return fitness;
+            }
         }
 
         Pair<ModelReport, Object> res = evaluateModel(g, null, s);

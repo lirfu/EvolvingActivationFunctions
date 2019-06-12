@@ -1,6 +1,5 @@
 package hr.fer.zemris.genetics;
 
-import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.Utilities;
 

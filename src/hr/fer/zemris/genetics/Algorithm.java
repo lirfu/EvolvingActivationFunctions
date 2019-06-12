@@ -1,6 +1,7 @@
 package hr.fer.zemris.genetics;
 
 import hr.fer.zemris.genetics.stopconditions.StopCondition;
+import hr.fer.zemris.utils.Counter;
 import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
@@ -23,9 +24,9 @@ public abstract class Algorithm {
     protected final ArrayList<Mutation> mutation_list_;
     protected final double mut_prob_;
     protected final int population_size_;
-    private final Initializer initializer_;
+    protected final Initializer initializer_;
     private final StopCondition condition_;
-    private Genotype genotype_template_;
+    protected Genotype genotype_template_;
     private final int top_optima_num_;
     // Algorithm internal utilities.
     protected final Random random_;
@@ -85,12 +86,14 @@ public abstract class Algorithm {
 
     protected void initializePopulation() {
         population_ = new Genotype[population_size_];
-        final int[] index = new int[]{0, 0};
+        final Counter pop_i = new Counter(0);
+        final Counter done_jobs = new Counter(0);
 
         Work w = () -> {
             int i;
-            synchronized (index) {
-                i = index[0]++;
+            synchronized (pop_i) {
+                i = pop_i.value();
+                pop_i.increment();
             }
             try {
                 population_[i] = genotype_template_.copy();
@@ -100,8 +103,8 @@ public abstract class Algorithm {
                 log_.e(e.toString());
                 population_[i] = null;
             } finally { // Ensure no dead-locks.
-                synchronized (index) {
-                    index[1]++;
+                synchronized (done_jobs) {
+                    done_jobs.increment();
                 }
             }
         };
@@ -110,7 +113,7 @@ public abstract class Algorithm {
             work_arbiter_.postWork(w);
         }
 
-        work_arbiter_.waitOn(() -> index[1] == population_size_);
+        work_arbiter_.waitOn(() -> done_jobs.value() == population_size_);
 
         // Release template (not needed any more).
         genotype_template_ = null;
