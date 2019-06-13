@@ -29,3 +29,7 @@ slack_webhook.txt
 *.blg
 *.synctex.gz
 *.toc
+*.bcf
+*.dvi
+*.out
+*.run.xml
