@@ -1,6 +1,6 @@
 package hr.fer.zemris.architecturesearch;
 
-import hr.fer.zemris.Holder;
+import hr.fer.zemris.utils.Holder;
 import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
 import hr.fer.zemris.evolveactivationfunction.Context;
 import hr.fer.zemris.evolveactivationfunction.StorageManager;
@@ -21,11 +21,8 @@ import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.SlackLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
 import hr.fer.zemris.utils.threading.WorkArbiter;
-import org.bytedeco.javacv.FrameFilter;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
-import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.activations.IActivation;
-import org.nd4j.linalg.activations.impl.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -95,6 +92,8 @@ public class ArchitectureSearchProgram {
 //        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("plu[x]", set))));
 
 
+        final int skip = 0;
+        int i = 0;
         final LinkedList<Pair<Double, String>> top_results = new LinkedList<>();
 
         for (String[] ds : new String[][]{
@@ -105,10 +104,12 @@ public class ArchitectureSearchProgram {
             for (String architecture : new String[]{
                     "fc(100)-fc(100)", "fc(200)-fc(200)", "fc(300)-fc(300)", "fc(400)-fc(400)", "fc(500)-fc(500)",
                     "fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)",
-                    "fc(200)-fc(50)-fc(200)", "fc(200)-fc(100)-fc(200)",
-                    "fc(50)-fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)-fc(200)"}) {
+                    "fc(200)-fc(50)-fc(200)", "fc(200)-fc(100)-fc(200)", "fc(300)-fc(300)-fc(300)",
+                    "fc(50)-fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)-fc(200)"
+            }) {
 
                 for (IActivation acti : activations) {
+                    if (i++ < skip) continue;
 
                     // Create grid search experiments.
                     List<Experiment<TrainParams>> experiments =
@@ -170,7 +171,7 @@ public class ArchitectureSearchProgram {
 
 //        System.out.println("Pending:\n" + arbiter.getStatus());
 
-        arbiter.waitOn(arbiter.getFinishedCondition());
+        arbiter.waitOn(arbiter.getAllFinishedCondition());
 
         StringBuilder sb = new StringBuilder();
         sb.append("DONE! (").append(Utilities.formatMiliseconds(stopwatch.stop())).append(")");

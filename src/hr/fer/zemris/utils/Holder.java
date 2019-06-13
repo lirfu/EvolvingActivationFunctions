@@ -1,4 +1,4 @@
-package hr.fer.zemris;
+package hr.fer.zemris.utils;
 
 /**
  * Utility class for holding an instance while defined as final. Usages include holding an instance in multithreaded setup.
