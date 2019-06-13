@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.2.5)  12 JUN 2019 20:50
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2019.2.5)  13 JUN 2019 10:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -666,9 +666,6 @@ LaTeX Warning: Label `eq:true_groups' multiply defined.
 
 
 LaTeX Warning: Label `alg:ea' multiply defined.
-
-
-LaTeX Warning: Label `fig:greedy_256_acc' multiply defined.
 
 )
 \openout1 = `diplomski_rad.aux'.
@@ -1534,122 +1531,172 @@ Package pdftex.def Info: ./img/pkg_logs.pdf used on input line 1956.
  [56 <./img/pkg_logs.pdf>]
 Poglavlje 7.
 
-Underfull \hbox (badness 10000) in paragraph at lines 1974--1977
-
- []
+LaTeX Warning: Reference `tab:hp_9' on page 57 undefined on input line 1975.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1979--1981
-
- []
+LaTeX Warning: Reference `tab:hp_comb' on page 57 undefined on input line 1975.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1984--1985
+<./img/greedy_9_acc.pdf, id=8080, 568.5617pt x 716.13194pt>
+File: ./img/greedy_9_acc.pdf Graphic file (type pdf)
 
- []
+<use ./img/greedy_9_acc.pdf>
+Package pdftex.def Info: ./img/greedy_9_acc.pdf used on input line 1978.
+(pdftex.def)             Requested size: 412.56497pt x 519.66862pt.
+
+<./img/greedy_9_f1.pdf, id=8081, 568.5617pt x 716.13194pt>
+File: ./img/greedy_9_f1.pdf Graphic file (type pdf)
+
+<use ./img/greedy_9_f1.pdf>
+Package pdftex.def Info: ./img/greedy_9_f1.pdf used on input line 1985.
+(pdftex.def)             Requested size: 412.56497pt x 519.66862pt.
+
+<./img/greedy_9_hp.pdf, id=8082, 558.97902pt x 716.13194pt>
+File: ./img/greedy_9_hp.pdf Graphic file (type pdf)
+
+<use ./img/greedy_9_hp.pdf>
+Package pdftex.def Info: ./img/greedy_9_hp.pdf used on input line 1992.
+(pdftex.def)             Requested size: 412.56497pt x 528.5525pt.
+
+
+LaTeX Warning: Reference `tab:hp_9_comb' on page 57 undefined on input line 199
+4.
+
+
+LaTeX Warning: Reference `tab:hp_9_comb' on page 57 undefined on input line 199
+4.
+
+<./img/greedy_9_arch_quality.pdf, id=8083, 456.35117pt x 340.8248pt>
+File: ./img/greedy_9_arch_quality.pdf Graphic file (type pdf)
+
+<use ./img/greedy_9_arch_quality.pdf>
+Package pdftex.def Info: ./img/greedy_9_arch_quality.pdf used on input line 199
+9.
+(pdftex.def)             Requested size: 412.56497pt x 308.12282pt.
+
+
+LaTeX Warning: Reference `tab:hp_9_comb' on page 57 undefined on input line 200
+1.
+
+
+LaTeX Warning: Reference `tab:hp_9_comb' on page 57 undefined on input line 200
+1.
 
 [57
 
-]
-Overfull \hbox (22.61887pt too wide) in paragraph at lines 1993--2011
+] [58 <./img/greedy_9_acc.pdf>] [59 <./img/greedy_9_f1.pdf>] [60 <./img/greedy_
+9_hp.pdf>] [61 <./img/greedy_9_arch_quality.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 2008--2010
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2013--2014
+
+ []
+
+
+Overfull \hbox (22.61887pt too wide) in paragraph at lines 2022--2040
  [][] 
  []
 
-<./img/greedy_256_acc.pdf, id=8083, 596.32338pt x 716.13194pt>
+<./img/greedy_256_acc.pdf, id=8250, 596.32338pt x 716.13194pt>
 File: ./img/greedy_256_acc.pdf Graphic file (type pdf)
 
 <use ./img/greedy_256_acc.pdf>
-Package pdftex.def Info: ./img/greedy_256_acc.pdf used on input line 2035.
+Package pdftex.def Info: ./img/greedy_256_acc.pdf used on input line 2064.
 (pdftex.def)             Requested size: 412.56497pt x 495.45377pt.
 
-<./img/greedy_256_f1.pdf, id=8084, 596.32338pt x 716.13194pt>
+<./img/greedy_256_f1.pdf, id=8251, 596.32338pt x 716.13194pt>
 File: ./img/greedy_256_f1.pdf Graphic file (type pdf)
 
 <use ./img/greedy_256_f1.pdf>
-Package pdftex.def Info: ./img/greedy_256_f1.pdf used on input line 2042.
+Package pdftex.def Info: ./img/greedy_256_f1.pdf used on input line 2071.
 (pdftex.def)             Requested size: 412.56497pt x 495.45377pt.
 
-<./img/greedy_256_hp.pdf, id=8085, 586.7407pt x 716.13194pt>
+<./img/greedy_256_hp.pdf, id=8252, 586.7407pt x 716.13194pt>
 File: ./img/greedy_256_hp.pdf Graphic file (type pdf)
 
 <use ./img/greedy_256_hp.pdf>
-Package pdftex.def Info: ./img/greedy_256_hp.pdf used on input line 2049.
+Package pdftex.def Info: ./img/greedy_256_hp.pdf used on input line 2078.
 (pdftex.def)             Requested size: 412.56497pt x 503.56181pt.
- [58] [59] [60 <./img/greedy_256_acc.pdf>]
-[61 <./img/greedy_256_f1.pdf>] [62 <./img/greedy_256_hp.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 2058--2059
+ [62
+
+] [63] [64 <./img/greedy_256_acc.pdf>]
+[65 <./img/greedy_256_f1.pdf>] [66 <./img/greedy_256_hp.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 2087--2088
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2061--2062
+Underfull \hbox (badness 10000) in paragraph at lines 2090--2091
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2063--2064
+Underfull \hbox (badness 10000) in paragraph at lines 2092--2093
 
  []
 
-<./img/greedy_256_arch_quality.pdf, id=8236, 456.25394pt x 340.8248pt>
+<./img/greedy_256_arch_quality.pdf, id=8403, 456.35117pt x 340.8248pt>
 File: ./img/greedy_256_arch_quality.pdf Graphic file (type pdf)
 
 <use ./img/greedy_256_arch_quality.pdf>
 Package pdftex.def Info: ./img/greedy_256_arch_quality.pdf used on input line 2
-066.
-(pdftex.def)             Requested size: 412.56497pt x 308.19041pt.
- [63
+095.
+(pdftex.def)             Requested size: 412.56497pt x 308.12282pt.
+ [67
 
  <./img/greedy_256_arch_quality.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 2076--2078
+Underfull \hbox (badness 10000) in paragraph at lines 2105--2107
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2081--2082
+Underfull \hbox (badness 10000) in paragraph at lines 2110--2111
 
  []
 
-[64
+[68
 
 ]
 Poglavlje 8.
 
-Underfull \hbox (badness 10000) in paragraph at lines 2086--2088
+Underfull \hbox (badness 10000) in paragraph at lines 2115--2117
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2090--2092
+Underfull \hbox (badness 10000) in paragraph at lines 2119--2121
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2094--2095
+Underfull \hbox (badness 10000) in paragraph at lines 2123--2124
 
  []
 
-[65
+[69
 
 ]
 Poglavlje 9.
 
-Underfull \hbox (badness 10000) in paragraph at lines 2098--2102
+Underfull \hbox (badness 10000) in paragraph at lines 2127--2131
 
  []
 
-[66
+[70
 
 ]
 Poglavlje 10.
 
-Underfull \hbox (badness 10000) in paragraph at lines 2105--2108
+Underfull \hbox (badness 10000) in paragraph at lines 2134--2137
 
  []
 
-(./diplomski_rad.bbl [67
+(./diplomski_rad.bbl [71
 
-] [68
+] [72
 
 ]
 Underfull \hbox (badness 5274) in paragraph at lines 118--125
@@ -1675,11 +1722,11 @@ Overfull \hbox (113.60167pt too wide) in paragraph at lines 118--125
 ]neural-[]networks .
  []
 
-[69] [70]) [71]
+[73] [74]) [75]
 
 Package natbib Warning: There were undefined citations.
 
-[72] (./diplomski_rad.aux)
+[76] (./diplomski_rad.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -1688,10 +1735,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 8019 strings out of 493029
- 114619 string characters out of 6136235
- 210384 words of memory out of 5000000
- 11325 multiletter control sequences out of 15000+600000
+ 8047 strings out of 493029
+ 115282 string characters out of 6136235
+ 210439 words of memory out of 5000000
+ 11349 multiletter control sequences out of 15000+600000
  70883 words of font info for 100 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  43i,23n,40p,1776b,500s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1716,10 +1763,10 @@ hare/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/te
 xmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/
 type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times
 /utmri8a.pfb>
-Output written on diplomski_rad.pdf (78 pages, 5962660 bytes).
+Output written on diplomski_rad.pdf (82 pages, 6029741 bytes).
 PDF statistics:
- 8356 PDF objects out of 8907 (max. 8388607)
- 4995 compressed objects within 50 object streams
+ 8525 PDF objects out of 8907 (max. 8388607)
+ 5034 compressed objects within 51 object streams
  0 named destinations out of 1000 (max. 500000)
- 216 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 236 words of extra memory for PDF output out of 10000 (max. 10000000)
 

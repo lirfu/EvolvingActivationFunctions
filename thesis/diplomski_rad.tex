@@ -1971,9 +1971,38 @@ Paralelizaciju je moguće postići vrlo jednostavno paketom $utils.threading$. P
 \section{DPAv4}
 
 \subsection{Usporedba uobičajenih izlaznih funkcija}
-\todo{Opis postupka pretrage}
-\todo{Tablica}
-\todo{Komentar}
+
+U ovom poglavlju prikazana je usporedba i rezultati uobičajenih izlaznih funkcija. Ispitivane su kombinacije arhitekture i izlazne funkcije napisane su mjere točnosti i F1 na skupu za testiranje. Za svaku kombinaciju arhitekture i izlazne funkcije provedeno je pretraživanje hiperparametara po rešetci i napisani su najbolji postignuti rezultati. Zajednički hiperparametri i pretraživani navedeni su u tablici \ref{tab:hp_9} (pretraživani su na dnu). Kombinacije hiperparametara su indeksirane prema tablici \ref{tab:hp_comb} za lakše snalaženje na slici najboljih kombinacija hiperparametara \ref{fig:greedy_9_hp}.
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{greedy_9_acc.pdf}
+\centering
+\caption{Postignuta točnost izlaznih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
+\label{fig:greedy_9_acc}
+\end{figure}
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{greedy_9_f1.pdf}
+\centering
+\caption{Postignuta F1 mjera izlaznih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
+\label{fig:greedy_9_f1}
+\end{figure}
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{greedy_9_hp.pdf}
+\centering
+\caption{Optimalne kombinacije hiperparametara za izlazne funkcije na različitim arhitekturama. Vrijednosti u ćelijama označavaju kombinacije hiperparametara navedene u tablici \ref{tab:hp_9_comb}}
+\label{fig:greedy_9_hp}
+\end{figure}
+
+\begin{figure}[ht]
+\includegraphics[width=\textwidth]{greedy_9_arch_quality.pdf}
+\centering
+\caption{Prosječna F1 mjera po svim arhitekturama. Ignorirani su rezultati funkcija kojima mreža nije uspješno naučena ($exp,pow2,pow3$). Najveću sumu ostvaruje arhitektura \textbf{[50-50-50]} te se upravo ona koristi za daljnjim eksperimentima. Koristi se najčešća kombinacija hiperparametara za tu arhitekturu je pod \textbf{indeksom 5} tablice \ref{tab:hp_9_comb}.}
+\label{fig:greedy_9_arch_quality}
+\end{figure}
+
+\clearpage
 
 \subsection{Izgradnja izlaznih funkcija simboličkom regresijom}
 \todo{Tablica}
@@ -1986,7 +2015,7 @@ Paralelizaciju je moguće postići vrlo jednostavno paketom $utils.threading$. P
 \section{DPAv2}
 
 \subsection{Usporedba uobičajenih izlaznih funkcija}
-U ovom poglavlju prikazana je usporedba i rezultati uobičajenih izlaznih funkcija. Ispitivane su kombinacije arhitekture i izlazne funkcije napisane su mjere točnosti i F1 na skupu za testiranje. Za svaku kombinaciju arhitekture i izlazne funkcije provedeno je pretraživanje hiperparametara po rešetci i napisani su najbolji postignuti rezultati. Zajednički hiperparametri i pretraživani navedeni su u tablici \ref{tab:hp_256} (pretraživani su na dnu). Kombinacije hiperparametara su indeksirane prema tablici \ref{tab:hp_256_comb} za lakše snalaženje na slici najboljih kombinacija hiperparametara \ref{fig:greedy_256_acc}.
+U ovom poglavlju prikazana je usporedba i rezultati uobičajenih izlaznih funkcija. Ispitivane su kombinacije arhitekture i izlazne funkcije napisane su mjere točnosti i F1 na skupu za testiranje. Za svaku kombinaciju arhitekture i izlazne funkcije provedeno je pretraživanje hiperparametara po rešetci i napisani su najbolji postignuti rezultati. Zajednički hiperparametri i pretraživani navedeni su u tablici \ref{tab:hp_256} (pretraživani su na dnu). Kombinacije hiperparametara su indeksirane prema tablici \ref{tab:hp_256_comb} za lakše snalaženje na slici najboljih kombinacija hiperparametara \ref{fig:greedy_256_hp}.
 
 \begin{table}
 \centering
@@ -2015,7 +2044,7 @@ Stopa učenja & $10^{-3}$, $5 \cdot 10^{-4}$, $10^{-4}$
 \begin{table}
 \centering
 \begin{tabular}{lrr}
-Indeks & Stopa učenja & Koeficijent L2 regularizacije \\
+Indeks & Koeficijent L2 regularizacije & Stopa učenja \\
 \hline
 1 & $10^{-3}$ & $10^{-3}$  \\
 2 & $10^{-3}$ & $5 \cdot 10^{-4}$ \\
@@ -2049,7 +2078,7 @@ Indeks & Stopa učenja & Koeficijent L2 regularizacije \\
 \includegraphics[width=\textwidth]{greedy_256_hp.pdf}
 \centering
 \caption{Optimalne kombinacije hiperparametara za izlazne funkcije na različitim arhitekturama. Vrijednosti u ćelijama označavaju kombinacije hiperparametara navedene u tablici \ref{tab:hp_256_comb}}
-\label{fig:greedy_256_acc}
+\label{fig:greedy_256_hp}
 \end{figure}
 
 \clearpage
@@ -2065,7 +2094,7 @@ Indeks & Stopa učenja & Koeficijent L2 regularizacije \\
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{greedy_256_arch_quality.pdf}
 \centering
-\caption{Suma kvadrata F1 mjera po svim arhitekturama. Kvadriranjem se žele istaknuti razlike u vrijednostima. Najveću sumu ostvaruje arhitektura $300-300$ te se upravo ona koristi za daljnjim eksperimentima. Koristi se najčešća kombinacija hiperparametara za tu arhitekturu je pod indeksom $5$ tablice \ref{tab:hp_256_comb}.}
+\caption{Prosječna F1 mjera po svim arhitekturama. Ignorirani su rezultati funkcija kojima mreža nije uspješno naučena ($exp,pow2,pow3,softmax,softplus,thresholdedrelu$). Najveću sumu ostvaruje arhitektura \textbf{[300-300]} te se upravo ona koristi za daljnjim eksperimentima. Koristi se najčešća kombinacija hiperparametara za tu arhitekturu je pod \textbf{indeksom 5} tablice \ref{tab:hp_256_comb}.}
 \label{fig:greedy_256_arch_quality}
 \end{figure}
 
