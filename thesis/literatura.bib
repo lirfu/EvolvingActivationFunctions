@@ -160,6 +160,32 @@ URL	= {http://arxiv.org/abs/1312.6199},
 booktitle	= {International Conference on Learning Representations}
 }
 
+@article{dropout,
+  author  = {Nitish Srivastava and Geoffrey Hinton and Alex Krizhevsky and Ilya Sutskever and Ruslan Salakhutdinov},
+  title   = {Dropout: A Simple Way to Prevent Neural Networks from Overfitting},
+  journal = {Journal of Machine Learning Research},
+  year    = {2014},
+  volume  = {15},
+  pages   = {1929-1958},
+  url     = {http://jmlr.org/papers/v15/srivastava14a.html}
+}
+
+@InProceedings{xavier,
+  title = 	 {Understanding the difficulty of training deep feedforward neural networks},
+  author = 	 {Xavier Glorot and Yoshua Bengio},
+  booktitle = 	 {Proceedings of the Thirteenth International Conference on Artificial Intelligence and Statistics},
+  pages = 	 {249--256},
+  year = 	 {2010},
+  editor = 	 {Yee Whye Teh and Mike Titterington},
+  volume = 	 {9},
+  series = 	 {Proceedings of Machine Learning Research},
+  address = 	 {Chia Laguna Resort, Sardinia, Italy},
+  month = 	 {13--15 May},
+  publisher = 	 {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf},
+  url = 	 {http://proceedings.mlr.press/v9/glorot10a.html}
+}
+
 % Evolucija %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 @inproceedings{cnn_evolution,
@@ -212,8 +238,35 @@ ISSN={0018-9219},
 month={Sep.}
 }
 
+@book{gruau,
+  title={Neural Network Synthesis Using Cellular Encoding and the Genetic Algorithm},
+  author={Gruau, F.C.},
+  url={https://books.google.hr/books?id=PTn5rQEACAAJ},
+  year={1994},
+  publisher={Universit{\'e} de Lyon 1}
+}
 
-% Funkcije općenito %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@article{neat,
+ author = {Stanley, Kenneth O. and Miikkulainen, Risto},
+ title = {Evolving Neural Networks Through Augmenting Topologies},
+ journal = {Evol. Comput.},
+ issue_date = {Summer 2002},
+ volume = {10},
+ number = {2},
+ month = jun,
+ year = {2002},
+ issn = {1063-6560},
+ pages = {99--127},
+ numpages = {29},
+ url = {http://dx.doi.org/10.1162/106365602320169811},
+ doi = {10.1162/106365602320169811},
+ acmid = {638554},
+ publisher = {MIT Press},
+ address = {Cambridge, MA, USA},
+ keywords = {competing conventions, genetic algorithms, network topologies, neural networks, neuroevolution, speciation},
+}
+
+% Nomenklatura %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 @article{function_survey1,
   title={Survey of neural transfer functions},
@@ -240,6 +293,29 @@ month={Sep.}
   year={2001}
 }
 
+@article{ieee_standardization, 
+author={R. C. {Eberhart}}, 
+journal={IEEE Transactions on Neural Networks}, 
+title={Standardization of neural network terminology}, 
+year={1990}, 
+volume={1}, 
+number={2}, 
+pages={244-245}, 
+keywords={neural nets;standardisation;neural network;terminology;standards committee;IEEE Neural Networks Council;Standardization;Neural networks;Terminology;Backpropagation algorithms;Control systems;Intelligent robots;Robot control;Knowledge based systems;Adaptive control;Nonlinear systems}, 
+doi={10.1109/72.80238}, 
+ISSN={1045-9227}, 
+month={June}
+}
+
+@inproceedings{evo_parsimonious,
+  title={Evolving parsimonious networks by mixing activation functions},
+  author={Alexander Hagg and Maximilian Mensing and Alexander Asteroth},
+  booktitle={GECCO},
+  year={2017}
+}
+
+% Funkcije općenito %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 @article{trained_func,
   title={A novel type of activation function in artificial neural networks: Trained activation function},
   author={{\"O}mer Faruk Ertugrul},
@@ -249,9 +325,23 @@ month={Sep.}
   pages={148-157}
 }
 
+@inproceedings{cube_spline_func, 
+author={H. A. {Mayer} and R. {Schwaiger}}, 
+booktitle={Proceedings of the 2002 International Joint Conference on Neural Networks. IJCNN'02 (Cat. No.02CH37290)}, 
+title={Differentiation of neuron types by evolving activation function templates for artificial neural networks}, 
+year={2002}, 
+volume={2}, 
+number={}, 
+pages={1773-1778 vol.2}, 
+keywords={transfer functions;self-organising feature maps;multilayer perceptrons;splines (mathematics);neuron type differentiation;activation function template evolution;artificial neural networks;neuron-specific activation functions;AF templates;generalized multilayer perceptrons;netGEN;neuron differentiation;cubic spline function;nonmonotonous AF;ANN structure;cubic spline ANN;sigmoid ANN;synthetic classification problems;time series prediction task;Neurons;Artificial neural networks;Spline;Logistics;Evolution (biology);Shape control;Computer science;Multilayer perceptrons;Biological neural networks;Brain}, 
+doi={10.1109/IJCNN.2002.1007787}, 
+ISSN={1098-7576}, 
+month={May}
+}
+
 % Popularne funkcije %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-@InProceedings{relu,
+@inproceedings{relu,
   title = 	 {Deep Sparse Rectifier Neural Networks},
   author = 	 {Xavier Glorot and Antoine Bordes and Yoshua Bengio},
   booktitle = 	 {Proceedings of the Fourteenth International Conference on Artificial Intelligence and Statistics},
@@ -292,6 +382,20 @@ month={Sep.}
 @inproceedings{lrelu,
   title={Rectifier nonlinearities improve neural network acoustic models},
   author={Maas, Andrew L and Hannun, Awni Y and Ng, Andrew Y}
+}
+
+@inproceedings{softplus, 
+author={ {Hao Zheng} and {Zhanlei Yang} and {Wenju Liu} and {Jizhong Liang} and {Yanpeng Li}}, 
+booktitle={2015 International Joint Conference on Neural Networks (IJCNN)}, 
+title={Improving deep neural networks using softplus units}, 
+year={2015}, 
+volume={}, 
+number={}, 
+pages={1-4}, 
+keywords={backpropagation;neural nets;speech recognition;deep neural networks;softplus units;acoustic modeling;speech recognition tasks;sigmoid units;backpropagation;DNN data training;unbounded activation functions;ReLU;context-independent phoneme recognition tasks;revised RBM pre-training;dropout strategy;Speech;softplus;dropout;deep neural networks;TIMIT}, 
+doi={10.1109/IJCNN.2015.7280459}, 
+ISSN={2161-4407}, 
+month={July}
 }
 
 @article{elish,
