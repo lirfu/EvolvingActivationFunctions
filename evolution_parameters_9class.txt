@@ -1,7 +1,7 @@
 # NN params
 input_size	50  # Generated
 output_size	9  # Generated
-epochs_num	40
+epochs_num	30
 train_patience    5
 convergence_delta   1e-2
 batch_size	256
@@ -29,7 +29,7 @@ worker_num	1
 node_set	ALL
 
 # Stop conditions:
-max_iterations	50
+max_iterations	30
 min_fitness	-1.0
 
 # GA operators
