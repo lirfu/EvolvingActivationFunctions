@@ -991,9 +991,7 @@ f'(x) =
 \end{split}
 \end{equation}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+Funkcija $ELU$ je linearna na pozitivnoj domeni, a u negativnoj domeni postepeno prelazi u zasićenje. Uvedena je kako bi umanjila efekt otklona izlaza neurona, koja nastaje kada je srednja vrijednost izlaza otklonjena od $0$. Aktivacije koje nisu centrirane usporavaju učenje mreže i stoga ih je potrebno centrirati. Jedan pristup je centriranje normalizacijom grupa, a alternativni je odabirom aktivacijske funkcije. $ReLU$ nije centriran jer je u pozitivnoj domeni linearan, a u negativnoj $0$. Tangens hiperbolni je primjer centrirane funkcije. $ELU$ je djelom linearan pa nema problem nestajućeg gradijenta te brže prelazi u zasićenje i time smanjuje razlike između neaktivnih neurona za različite ulazne argumente što ga čini otpornim na šum. Hiperparametar $\alpha$ određuje negativnu vrijednost zasićenja i tipično se postavlja na $1$. Postiže bolje rezultate od funkcije $ReLU$ s normalizacijom grupe. Kada se koristi s normalizacijom grupe ostvaruje nešto lošije rezultate, no i dalje bolje od $ReLU$ i izvedenica. \citep{elu}
 
 \subsection{Skalirana eksponencijalno-linearna jedinica (SELU)}
 \engl{Scaled exponential linear unit}
@@ -1622,7 +1620,7 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
-\subsection{ReLU oblika S (SReLU)}
+\subsection{ReLU oblika S (S-ReLU)}
 \engl{S-shaped ReLU}
 
 \begin{figure}[H]
@@ -2149,9 +2147,9 @@ Proučiti postojeće metode u izgradnji aktivacijskih funkcija u umjetnim neuron
 \kljucnerijeci{Ključne riječi, odvojene zarezima.}
 \end{sazetak}
 
-\engtitle{Optimized output functions for classifiers based on artificial neural networks in the domain of implementation attacks on cryptographic devices}
+\engtitle{Optimized activation functions for classifiers based on artificial neural networks in the domain of implementation attacks on cryptographic devices}
 \begin{abstract}
-Examine existing methods in building output functions in artificial neural networks. Give special attention to evolutionary algorithms of symbolic regression for constructing target functions. Apply evolved output functions in a homogeneous or heterogeneous artificial neural network on datasets DPAv2 and DPAv4 and examine quality measures of the built classifier: accuracy, precision, recall and F measures. Compare the efficiency of acquired methods with existing solutions from the literature. Alongside thesis attach source code of programs, acquired results with necessarry discussion and literature used.
+Examine existing methods in building activation functions in artificial neural networks. Give special attention to evolutionary algorithms of symbolic regression for constructing the targeted functions. Apply evolved activation functions in a homogeneous or heterogeneous artificial neural network on datasets DPAv2 and DPAv4 and examine quality measures of the built classifier: accuracy, precision, recall and F measures. Compare the efficiency of acquired methods with existing solutions from the literature. Alongside thesis attach source code of programs, acquired results with necessarry discussion and literature used.
 
 \keywords{Keywords.}
 \end{abstract}
