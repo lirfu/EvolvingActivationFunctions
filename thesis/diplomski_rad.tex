@@ -192,15 +192,15 @@ t(x) = (f \circ a)(x) = f(a(x))
 U literaturi postoje nekonzistencije oko pojma aktivacijske funkcije. U preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno sa stajališta računalne neuroznanosti jer aktivacija neurona označava pojavu signala odaslanog u akson \citep[p.~234]{neuroscience}. U starijoj literaturi pojam aktivacijske i prijenosne funkcije često se koristi ekvivalentno \citep{evolving_transfer, evo_parsimonious}. U prijedlogu standardizacije \citet{ieee_standardization} aktivacijska funkcija je definirana: \textit{„Algoritam za računanje vrijednosti aktivacije neurona kao funkcije njenog ukupnog ulaza. Ukupan ulaz je tipično težinska suma ulaza u neuron“}. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi gore spomenuta nomenklatura (ulazna, aktivacijska i prijenosna funkcija).
 
 Najpopularnije ulazne funkcije jesu afina funkcija i unakrsna korelacija.
-Afina funkcija \eqref{eq:affine} je skalarni produkt vektora ulaza s vektorom težina neurona uz dodatak vrijednosti praga. Parametri neurona definiraju nagib i pomak ravnine u prostoru ulaza koja opisuje ulaz neurona. Primijenjuje se kada se ulazi u model mogu zapisati vektorom značajki čiji raspored nije bitan.
+Afina funkcija \eqref{eq:affine} je skalarni produkt vektora ulaza s vektorom težina neurona uz dodatak vrijednosti praga. Parametri neurona definiraju nagib i pomak ravnine u prostoru ulaza koja opisuje ulaz neurona. Primjenjuje se kada se ulazi u model mogu zapisati vektorom značajki čiji raspored nije bitan.
 \begin{equation}
 \label{eq:affine}
 f(\vec{x};\mat{W},\vec{b})=\mat{W}^T \cdot \vec{x} + \vec{b}
 \end{equation}
 
-Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Unakrsna korelacija vrlo je slićna operatoru konvolucije te se u literaturi gotovo uvijek naziva konvolucijom. Često se koristi za ekstrakciju obrazaca u slikama \citep{alexnet}, no može se koristiti u problemima koji zahtjevaju obrau slijedova podataka. Jedan takav primjer je klasifikacija teksta u kome različit slijed riječi može prenositi različito značenje \citep{char_cnn}.
+Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Unakrsna korelacija vrlo je slična operatoru konvolucije te se u literaturi gotovo uvijek naziva konvolucijom. Često se koristi za ekstrakciju obrazaca u slikama \citep{alexnet}, no može se koristiti u problemima koji zahtijevaju obradu sljedova podataka. Jedan takav primjer je klasifikacija teksta u kome različit slijed riječi može prenositi različito značenje \citep{char_cnn}.
 
-Znatno su rijeđe ulazne funkcije temeljene na udaljenosti vektora... \citep{function_survey1}
+Znatno su rjeđe ulazne funkcije temeljene na udaljenosti vektora... \citep{function_survey1}
 \todo{*Spomeni distance based aktivacije}
 
 Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i gradijenti teku kroz mrežu, a time utječu na brzinu učenja i inferencije neuronske mreže. Najčešće se koriste slojevite unaprijedne arhitekture zbog jednostavnosti izvedbe. Unaprijedne arhitekture propuštaju podatke samo u jednom smjeru odnosno već izračunati neuroni se ne izračunavaju ponovno, što je posebno pogodno za optimizaciju širenjem unatrag\secref{sec:backprop}. Slojevite arhitekture omogućuju paralelizaciju izvođenja operacija na grafičkim karticama što značajno ubrzava postupke učenja i inferencije. Pri definiciji slojevite arhitekture najčešće je dovoljno navesti samo redoslijed slojeva, no ponekad je potrebno definirati i način povezivanja slojeva npr. pri uporabi preskočnih veza \citep{highwaynet, resnet, densenet}. Prvi sloj služi za postavljanje ulaza mreže i naziva se ulaznim slojem mreže. Posljednji sloj mreže služi nam za ekstrakciju izlaza te mjerenje kakvoće mreže i naziva se izlaznim slojem mreže. Svi slojevi između ulaznog i izlaznog sloja nazivaju se skrivenim slojevima.
@@ -213,10 +213,10 @@ Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno
 \subsubsection{Gradijentni spust}
 \label{sec:gradijentni_spust}
 
-\todoimg{gradijentni spust unimodalna vs višemodalna (gdje preskoći brdo i uleti u bolji optimum)}
+\todoimg{gradijentni spust unimodalna vs višemodalna (gdje preskoči brdo i uleti u bolji optimum)}
 \label{fig:gradientni_spust}
 
-Gradijentni spust je algoritam pronalaska minimuma funkcije vođen gradijentom te funkcije. Za zadanu početnu točku iterativno se pomiče u smjeru suprotnom od gradijenta funkcije u toj točki dok ne zadovolji neki od uvijeta zaustavljanja. Na strmim funkcijama gradijent je često prevelik i može izazvati oscilaciju ili divergenciju \figref{fig:oscilira_divergira}. Stoga se gradijent pri pomaku skalira koeficijentom pomaka $\mu$. Dobro odabran koeficijent pomaka može osigurati bržu konvergenciju, a kod višemodalnih funkcija i pronalazak boljeg optimuma \figref{fig:gradientni_spust}.
+Gradijentni spust je algoritam pronalaska minimuma funkcije vođen gradijentom te funkcije. Za zadanu početnu točku iterativno se pomiče u smjeru suprotnom od gradijenta funkcije u toj točki dok ne zadovolji neki od uvjeta zaustavljanja. Na strmim funkcijama gradijent je često prevelik i može izazvati oscilaciju ili divergenciju \figref{fig:oscilira_divergira}. Stoga se gradijent pri pomaku skalira koeficijentom pomaka $\mu$. Dobro odabran koeficijent pomaka može osigurati bržu konvergenciju, a kod višemodalnih funkcija i pronalazak boljeg optimuma \figref{fig:gradientni_spust}.
 
 Početna točka utječe na ishod algoritma. Kod višemodalnih funkcija s optimumima različitih kvaliteta, početna točka može definirati u koji će lokalni optimum algoritam konvergirati \figref{fig:pocetna_tocka}.
 \newline
@@ -237,15 +237,15 @@ $\vec{x}_{i+1} \gets \vec{x}_i - \eta \cdot \vec{g}_i$
 \label{alg:grad_spust}
 \end{algorithm}
 
-\todoimg{graidjentni spust stope spuštanja (velka, mala, taman)}
+\todoimg{gradijentni spust stope spuštanja (velka, mala, taman)}
 \label{fig:oscilira_divergira}
 
 Broj iteracija definira broj pomaka od početne točke, što definira i trajanje algoritma. Generalno želi se skratiti vrijeme pretraživanja te povećati koeficijent spusta kako bi se koristilo manje pomaka. No u praksi se najčešće nailazi na višemodalne funkcije sa strmim regijama koje izazivaju oscilacije i mogu izazvati divergenciju. Stoga se češće koriste manji pomaci kroz više iteracija. Dodatno se mogu dodati modifikacije gradijenta koje nude ograničavaju veličinu gradijenta (odsijecanje gradijenta i sl.).
 
-\todoimg{gradijentni spust sa početnim točkama (jedna ode u lok, jedna ode u glob, jedna zapne desno na platou)}
+\todoimg{gradijentni spust s početnim točkama (jedna ode u lok, jedna ode u glob, jedna zapne desno na platou)}
 \label{fig:pocetna_tocka}
 
-Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo mali, a sama regija je s obzirom na pomake ogromna \figref{fig:pocetna_tocka}. Kad gradijent postane neupotrebljivo malen kaže se da je \textit{nestao}. U takvim slučajevima pomaže dodavanje momenta koji se akumulira kroz više iteracija i dodaje vektoru gradijenta. Kad algoritam naiđe na regiju s vrlo malim gradijentima, moment pokušava izvuči algoritam iz visoravni pomičući ga u smjeru koji je akumuliran. Kako moment ne bi izvukao algoritam iz optimuma, dodaje mu se koeficijent \textit{zaboravljanja} kojim se stari vektor momenta djelomično zaboravlja u korist novog vektora pomaka (jednadžba \ref{eq:moment_update}). Moment može pomoći i pri zaobilaženju lokalnih optimuma \figref{fig:pocetna_tocka}.
+Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo mali, a sama regija je s obzirom na pomake ogromna \figref{fig:pocetna_tocka}. Kad gradijent postane neupotrebljivo malen kaže se da je \textit{nestao}. U takvim slučajevima pomaže dodavanje momenta koji se akumulira kroz više iteracija i dodaje vektoru gradijenta. Kad algoritam naiđe na regiju s vrlo malim gradijentima, moment pokušava izvući algoritam iz visoravni pomičući ga u smjeru koji je akumuliran. Kako moment ne bi izvukao algoritam iz optimuma, dodaje mu se koeficijent \textit{zaboravljanja} kojim se stari vektor momenta djelomično zaboravlja u korist novog vektora pomaka (jednadžba \ref{eq:moment_update}). Moment može pomoći i pri zaobilaženju lokalnih optimuma \figref{fig:pocetna_tocka}.
 
 \begin{equation}
 \label{eq:moment_update}
@@ -258,7 +258,7 @@ Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo m
 \todoimg{moment prije i na visoravni, moment za savladavanje brda}
 \label{fig:visoravan}
 
-Algoritam je primijenjiv na funkcije proizvoljne dimenzionalnosti uz pretpostavku derivabilnosti u svakoj točki. Za proizvoljnu realnu funkciju, uz dobro odabrane hiperparametre, algoritam će konvergirati u jedan od lokalnih optimuma, no algoritam generalno nema garanciju konvergencije u globalni optimum. Garanciju pronalaska globalnog optimuma nudi jedino za trivijalne unimodalne funkcije uz odgovarajuće hiperparametre algoritma \figref{fig:gradientni_spust}.
+Algoritam je primjenjiv na funkcije proizvoljne dimenzionalnosti uz pretpostavku derivabilnosti u svakoj točki. Za proizvoljnu realnu funkciju, uz dobro odabrane hiperparametre, algoritam će konvergirati u jedan od lokalnih optimuma, no algoritam generalno nema garanciju konvergencije u globalni optimum. Garanciju pronalaska globalnog optimuma nudi jedino za trivijalne unimodalne funkcije uz odgovarajuće hiperparametre algoritma \figref{fig:gradientni_spust}.
 
 Problem odabira hiperparametara proizlazi iz činjenice da u generalno praksi funkcija koja se minimizira nije definirana (već samo skup primjera te funkcije) te se ne može jasno vizualizirati postupak pretrage. Čak i da je definirana funkcija najčešće nije poznata vrijednost globalnog optimuma, a pohlepna pretraga je netraktabilna. Unatoč tome, gradijentni spust efikasno i učinkovito pronalazi optimume koji su dovoljno dobri za većinu praktičnih primjena \citep{yolo}.
 
@@ -326,7 +326,7 @@ L(\theta \probsep x,y) &= - \log \Big[ \prod_{i=1}^C \hat{y}_i^{y_i} \Big] = - \
 
 \subsubsection{Optimizacija širenjem unatrag}
 \label{sec:backprop}
-Funkcija gubitka opisuje pogrešku čitave mreže te ovisi o svakom ugodljivom parametru mreže. Takva formulacija problema omogućuje nam da svaki parametrar mreže ugađa se gradijentnim spustom. Dakle, za parametriziranu funkciju $f(x;\theta)$ traže se parametri $\theta^*$ za koje je gubitak najmanji na podatkovnom skupu.
+Funkcija gubitka opisuje pogrešku čitave mreže te ovisi o svakom prilagodljivom parametru mreže. Takva formulacija problema omogućuje nam da svaki parametar mreže ugađa se gradijentnim spustom. Dakle, za parametriziranu funkciju $f(x;\theta)$ traže se parametri $\theta^*$ za koje je gubitak najmanji na podatkovnom skupu.
 \begin{equation}
 \theta^* = argmin_\theta\ L(\theta \probsep \dataset), \quad \forall (x,y) \in \dataset
 \end{equation}
@@ -403,9 +403,9 @@ S obzirom da se mreža sastoji od ulančanih nelinearnih neurona s parametrima, 
 \end{align}
 
 \subsubsection{Stohastički gradijentni spust}
-U prošlom poglavlju korištena je funkcija gubitka na jednom podatkovnom paru, no želi se minimizirati očekivanje funkcije gubitka \eqref{eq:negloglikelyhood_expect} na cijelom podatkovnom skupu jer se želi izgradit model da aproksimira čitavu uzorkovanu funkciju što bolje. Nažalost, podatkovni skupovi poput spomenutog u poglavlju \ref{sec:dpa_datasets} vrlo su veliki i nije ih praktično koristiti pri optimizaciji gradijentom jer bi se čitavi morali držati u brzoj memoriji. Ovo predstavlja velik problem pri računanju s grafičkim karticama. Očekivanje gubitka služi nam za procjenu smjera i veličine gradijenta. Ako se gradijent procjenjuje na čitavom podatkovnom skupu on će nas dovesti do prvog optimuma koji najčešće nije dobar, odnosno snažno ovisi o odabiru početne točke. 
+U prošlom poglavlju korištena je funkcija gubitka na jednom podatkovnom paru, no želi se minimizirati očekivanje funkcije gubitka \eqref{eq:negloglikelyhood_expect} na cijelom podatkovnom skupu jer se želi izgraditi model da aproksimira čitavu uzorkovanu funkciju što bolje. Nažalost, podatkovni skupovi poput spomenutog u poglavlju \ref{sec:dpa_datasets} vrlo su veliki i nije ih praktično koristiti pri optimizaciji gradijentom jer bi se čitavi morali držati u brzoj memoriji. Ovo predstavlja velik problem pri računanju s grafičkim karticama. Očekivanje gubitka služi nam za procjenu smjera i veličine gradijenta. Ako se gradijent procjenjuje na čitavom podatkovnom skupu on će nas dovesti do prvog optimuma koji najčešće nije dobar, odnosno snažno ovisi o odabiru početne točke. 
 
-S druge strane, ako se gradijent računa na pojedinom podatkovnom paru kao u \eqref{eq:loss_classification} ostvareno je stohastičko kretanje jer će svaki primjer usjeriti gradijent u drugom smjeru. Posljedica toga je dulje vrijeme pretrage, no veća otpornost na loše lokalne optimume. Iako će algoritam generalno konvergirati, postupak je zahtjevan jer za svaki primjer podatkovnog skupa treba provesti korak algoritma. Ovaj problem također ograničava svojstvo ubrzanja grafičkim karticama koje nude masivnu paralelizaciju operacija nad podatcima.
+S druge strane, ako se gradijent računa na pojedinom podatkovnom paru kao u \eqref{eq:loss_classification} ostvareno je stohastičko kretanje jer će svaki primjer usmjeriti gradijent u drugom smjeru. Posljedica toga je dulje vrijeme pretrage, no veća otpornost na loše lokalne optimume. Iako će algoritam generalno konvergirati, postupak je zahtjevan jer za svaki primjer podatkovnog skupa treba provesti korak algoritma. Ovaj problem također ograničava svojstvo ubrzanja grafičkim karticama koje nude masivnu paralelizaciju operacija nad podatcima.
 
 Iz navedenih razloga želi se vršiti procjena gradijenta na "nekoliko" primjera. Podskup takvih primjera naziva se \textbf{mini-grupa} \engl{mini-batch}. Najčešće se uzima najveći broj primjera koji grafička kartica može efikasno obraditi i koji je potencija broja 2. Mini-grupe i dalje zadržavaju stohastičnost kretanja gradijenta (posebice ako je veličina manja od broja klasa), ali procjenjuju bolje od potpuno stohastičnog te brže konvergiraju. Sada formula \eqref{eq:negloglikelyhood_expect_minibatch} poprima oblik koji odgovara očekivanju pojedine mini-grupe $\minibatch_i$.
 \begin{equation}
@@ -416,7 +416,7 @@ L(\theta \probsep \dataset) &= \expect_{(x,y) \sim p_{\minibatch_i}}[L(\theta \p
 \end{split}
 \end{equation}
 
-Mini-grupe se najčešće definiraju prije početka učenja nasumičnim rasporedom. To je najjednostavniji i najbrži pristup, no definiranjem fiksnih mini-grupa unosi induktivnu pristranost jer nije moguće znati je li odabrani raspored idealan za model koji se evaluira. Pristranost se može ublažiti miješanjem podatkovnog skupa između epoha, no skupocijenost te operacije ograničava njeno korištenje u praksi. Također, problem mogu stvoriti mini-grupe pristrane jednoj ili više dominantnih (većinskih) klasa koje će snažno usmjeravati gradijent prema tim klasama i zanemarivati ostale. Taj problem je posebno izražen u nebalansiranim podatkovnim skupovima, a može se zaobići tehnikom težinskog uzorkovanja s ponavljanjem gdje je vjerojatnost odabira primjera obrnuto proporcionalna dominantnosti (brojnosti) njegove klase. Treba paziti da se provede dovoljan broj uzorkovanja tako da je model učen na svakom primjeru podatkovnog skupa.
+Mini-grupe se najčešće definiraju prije početka učenja nasumičnim rasporedom. To je najjednostavniji i najbrži pristup, no definiranjem fiksnih mini-grupa unosi induktivnu pristranost jer nije moguće znati je li odabrani raspored idealan za model koji se evaluira. Pristranost se može ublažiti miješanjem podatkovnog skupa između epoha, no skupocjenost te operacije ograničava njeno korištenje u praksi. Također, problem mogu stvoriti mini-grupe pristrane jednoj ili više dominantnih (većinskih) klasa koje će snažno usmjeravati gradijent prema tim klasama i zanemarivati ostale. Taj problem je posebno izražen u nebalansiranim podatkovnim skupovima, a može se zaobići tehnikom težinskog uzorkovanja s ponavljanjem gdje je vjerojatnost odabira primjera obrnuto proporcionalna dominantnosti (brojnosti) njegove klase. Treba paziti da se provede dovoljan broj uzorkovanja tako da je model učen na svakom primjeru podatkovnog skupa.
 \newline
 \newline
 \begin{algorithm}[H]
@@ -442,7 +442,7 @@ Optimizator brine o pomaku odnosno ažuriranju parametara modela pri gradijentno
 
 Optimizator Adam \engl{adaptive moments} dodatno prati povijest momenta drugog reda kojom prilagođava stopu učenja kako bi smanjio razlike između parametara koji su povijesno dobivali velike ili male gradijente, čime se izglađuje prostor parametara. Povijest drugog momenta prate AdaGrad i RMSProp, no Adam dodatno prati povijest prvog momenta i uključuje centriranje momenata. Adam se pokazao vrlo robusnim optimizatorom i vrlo često se koristi za optimizaciju dubokih neuronskih mreža. \citep{goodfellowbook}
 
-\subsubsection{Promijenjiva stopa učenja}
+\subsubsection{Promjenjiva stopa učenja}
 Tijekom optimizacije gradijentnim spustom uz fiksnu stupu učenja optimizacija će početi oscilirati oko iste vrijednosti, odnosno srednja vrijednost gubitka je konvergirala. Oscilacija se javlja jer je stopa učenja suviše velika za regije u koje vode različiti gradijenti mini-grupa. U takvim situacijama je potrebno smanjiti stopu učenja, no problem je detekcija takvih situacija. Optimizator Adam prilagođava gradijente skaliranjem, odnosno istovjetno možemo reći da prilagođava stopu učenja \citep{goodfellowbook}. Unatoč tome, ponekad je potrebno koristiti dodatne mehanizme smanjivanja stope učenja.
 
 %Jedan način smanjivanja stope je zadavanje ključnih iteracija u kojima se prestaje koristiti stara stopa i koristi se nova. Moguće je zadati stope za svaku od zadanih ključnih iteracija %\citep{onaj rad} ili zadati početnu stopu koja se u ključnoj iteraciji pomnoži konstantom manjom od 1. Pri ovom pristupu problem je odrediti optimalne ključne iteracije ili početnu iteraciju i konstantu.
@@ -450,10 +450,10 @@ Tijekom optimizacije gradijentnim spustom uz fiksnu stupu učenja optimizacija �
 
 %Ključnim iteracijama mogu se proglasiti one u kojima je detektirana konvergencija ili divergencija. Taj pristup omogućava nastavak pretrage, no problem je kako sa sigurnošću detektirati konvergenciju ili divergenciju. Tipično učenje mreže nije monotono, tj. gubitak mreže može na neko vrijeme rasti prije no što nastavi padati, što odgovara ponašanju u lokalnom optimumu. U tom slučaju smanjivanje stope učenja je nepoželjno.
 
-Pristup koji se koristi u ovom radu je zadanu početnu stopu u svakoj iteraciji pomnožiti s konstantom manjom od 1, odnosno stopa se konstantno smanjuje. Korištenje stohastičkog gradijentnog spusta postupak vodi pretragu na sve finije regije. Postupak je slićan postupku simuliranog kaljenja gdje se smanjivanjem temperature sustava smanjuje njegova stohastičnost i postupak konvergira u sve finije regije rješenja. Iako bi u teoriji Adam trebao biti dovoljan, preliminarni eksperimenti pokazuju da dodani mehanizam pomaže učenju mreže.
+Pristup koji se koristi u ovom radu je zadanu početnu stopu u svakoj iteraciji pomnožiti s konstantom manjom od 1, odnosno stopa se konstantno smanjuje. Korištenje stohastičkog gradijentnog spusta postupak vodi pretragu na sve finije regije. Postupak je sličan postupku simuliranog kaljenja gdje se smanjivanjem temperature sustava smanjuje njegova stohastičnost i postupak konvergira u sve finije regije rješenja. Iako bi u teoriji Adam trebao biti dovoljan, preliminarni eksperimenti pokazuju da dodani mehanizam pomaže učenju mreže.
 
 \subsubsection{Inicijalizacija parametara}
-Inicijalizacija parametara mreže odgovara odabiru početne točke pri gradijentnom spustu. Dobrom inicijalizacijom može se osigurati pronalazak boljeg optimuma te u kritičnim slučajevima i osigurati konvergencija mreže. S obzirom da neuronske mreže posjeduju jasnu strukturu (što je posebno izraženo u slojevitim arhitekturama) inicijalizacija ima dodatne utjecaje. U potpuno povezanim slojevima želi se postići da svaki neuron vrši ekstrakciju značajki. Pri tome, u efikasnom sloju svaki će neuron stvoriti svoju značajku. Ako je više neurona inicijalizirano dovoljno slićno, ti neuroni će naučiti izvlaćiti iste značajke. Kaže se da je došlo do \textbf{koadaptacije neurona}.
+Inicijalizacija parametara mreže odgovara odabiru početne točke pri gradijentnom spustu. Dobrom inicijalizacijom može se osigurati pronalazak boljeg optimuma te u kritičnim slučajevima i osigurati konvergencija mreže. S obzirom da neuronske mreže posjeduju jasnu strukturu (što je posebno izraženo u slojevitim arhitekturama) inicijalizacija ima dodatne utjecaje. U potpuno povezanim slojevima želi se postići da svaki neuron vrši ekstrakciju značajki. Pri tome, u efikasnom sloju svaki će neuron stvoriti svoju značajku. Ako je više neurona inicijalizirano dovoljno slično, ti neuroni će naučiti izvlačiti iste značajke. Kaže se da je došlo do \textbf{koadaptacije neurona}.
 
 Inicijalizacija slojevitim nenadziranim učenjem ograničenog Boltzmann-ovog stroja \engl{restricted Boltzmann machine} pokazuje se dobrom \citep{relu6}. Postupak nenadzirano trenira stohastičku mrežu sloj po sloj na ulaznim značajkama kako bi slojevi ostvarili dobru ekstrakciju viših značajki. Nakon treniranja, mreži se dodaje izlazni klasifikacijski sloj i mreža se nadzirano ugađa na skupu za učenje. Iako je ostvarena inicijalizacija vrlo dobra, postupak je vremenski zahtjevan. Uvođenjem 
 
@@ -486,7 +486,7 @@ Koeficijenti normalizacije računaju se isključivo na skupu za učenje, a norma
 \subsubsection{Normalizacija nad grupom}
 \engl{batch normalization}
 
-Pri optimizaciji neuronskih mreža u jednoj iteraciji se optimiziraju svi parametri. Problem pri tome je što predikcija optimizatora za parametre jednog sloja pretpostavlja da će ostali slojevi ostati netaknuti. To uzrokuje promjenu srednje vrijednosti i varijance odziva koja se akumulira prolaskom kroz mrežu. Iz tog razloga koristi se normalizacija grupom koja standardizira odzive neurona po svakoj mini-grupi. Kako to može smanjiti ekspresivnost neurona, koristi se naknadna affina transformacija s učećim parametrima.
+Pri optimizaciji neuronskih mreža u jednoj iteraciji se optimiziraju svi parametri. Problem pri tome je što predikcija optimizatora za parametre jednog sloja pretpostavlja da će ostali slojevi ostati netaknuti. To uzrokuje promjenu srednje vrijednosti i varijance odziva koja se akumulira prolaskom kroz mrežu. Iz tog razloga koristi se normalizacija grupom koja standardizira odzive neurona po svakoj mini-grupi. Kako to može smanjiti ekspresivnost neurona, koristi se naknadna afina transformacija s učećim parametrima.
 \begin{align}
 \mu &= \frac{1}{N} \sum_{i=1}^N h_i \qquad
 \sigma^2 = \frac{1}{N} \sum_{i=1}^N (h_i-\mu)^2 \\
@@ -496,7 +496,7 @@ y_i = \gamma \cdot h_i + \beta
 
 \subsection{Regularizacija}
 \label{sec:regularizacija}
-Decizijska granica opisuje točke u prostoru značajki za koje model dvoji između dviju ili više klasa. Geometrijski, decizijska granica može se interpretirati kao presjek dviju ili više ploha u hiperprostoru. Pri optimizaciji model prilagođava decizijsku granicu kako bi što bolje razvdojio primjere iz podatkovnog skupa koji su različitih klasa, a obuhvatio primjere iste klase. Podatkovni skupovi najčešće sadrže šum zbog nesavršenog uzorkovanja stvarne funkcije, pogrešnog označavanja ili višeznačnosti primjera. Bez regularizacije, model će s ciljem minimiziranja gubitka svoju decizijsku granicu saviti kako bi što ispravnije obuhvatio sve primjere pa čak i šum. Tada se kaže da je model počeo učiti šum odnosno da je \textbf{prenaučen}. Na prenaučenost su posebno osjetljivi složeni modeli kao što su neuronske mreže.
+Decizijska granica opisuje točke u prostoru značajki za koje model dvoji između dviju ili više klasa. Geometrijski, decizijska granica može se interpretirati kao presjek dviju ili više ploha u hiperprostoru. Pri optimizaciji model prilagođava decizijsku granicu kako bi što bolje razdvojio primjere iz podatkovnog skupa koji su različitih klasa, a obuhvatio primjere iste klase. Podatkovni skupovi najčešće sadrže šum zbog nesavršenog uzorkovanja stvarne funkcije, pogrešnog označavanja ili višeznačnosti primjera. Bez regularizacije, model će s ciljem minimiziranja gubitka svoju decizijsku granicu saviti kako bi što ispravnije obuhvatio sve primjere pa čak i šum. Tada se kaže da je model počeo učiti šum odnosno da je \textbf{prenaučen}. Na prenaučenost su posebno osjetljivi složeni modeli kao što su neuronske mreže.
 
 \todoimg{podnaučena, generalizira, prenaučena}
 
@@ -523,7 +523,7 @@ Najčešće se koristi regularizacija \textbf{L2} normom koja akumulira kvadrate
 \subsubsection{Regularizacija šumom}
 Unošenjem šuma u podatke netom prije nego ih dobije model moguće je graditi robusnost modela na šum, ali ujedno to sprječava model da se pretrenira na podatkovnom skupu za treniranje. Jedan primjer može se nasumično zašumiti nekoliko puta te se time povećava efektivna veličina podatkovnog skupa.
 
-U ovom se radu ne koristi regularizacija šumom jer bi mogla imati nepredvidivi utjecaj na učenje. Primjena na slike je vrlo jasna jer uz dovoljno malu amplitudu aditivnog šuma teksture na slici će ostati očuvane zahvaljujući susjedstvu piksela, odnosno izrezivanjem slike obrasci će ostati netaknuti. Značajke podatkovnih skupova navedenih u poglavlju \ref{sec:dpa_datasets} su PCA redukcije originalnih slijedova signala koji su ispunjeni šumom očitavanja.
+U ovom se radu ne koristi regularizacija šumom jer bi mogla imati nepredvidivi utjecaj na učenje. Primjena na slike je vrlo jasna jer uz dovoljno malu amplitudu aditivnog šuma teksture na slici će ostati očuvane zahvaljujući susjedstvu piksela, odnosno izrezivanjem slike obrasci će ostati netaknuti. Značajke podatkovnih skupova navedenih u poglavlju \ref{sec:dpa_datasets} su PCA redukcije originalnih sljedova signala koji su ispunjeni šumom očitavanja.
 
 \todo{ajd svejedno isprobaj, grafi za ljubav}
 \fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -552,7 +552,7 @@ Aktivacijske funkcije su također važan hiperparametar, no u praksi se većinom
 
 \subsubsection{Procjena generalizacije i odabir modela}
 \label{sec:crossval}
-Skup podataka kojim se uči model najčešće ne opisuje stvarnu funkciju potpuno, već sadrži primjere koji se smatraju reprezentativnim i koji su dovoljni za njeno modeliranje. Kako bi se procjenilo koliko dobro naš model procjenjuje stvarnu funkciju model se ispituje na podatcima koji nisu korišteni prilikom učenja, odnosno na neviđenim podatcima. Ta se metoda zove \textbf{unakrsna validacija} \engl{crossvalidation}, a skupovi se nazivaju \textbf{skupom za učenje} \engl{train set} i \textbf{skupom za testiranje} \engl{test set}. Dakako, važno je pobrinuti se da su oba skupa reprezentativna stvarnoj funkciji, ali da ne sadrže iste primjere. U suprotnom mreža će naučiti pogrešnu funkciju što može dati lažno pesimistične rezultate ili će se nepotpuno ili pristrano provesti testiranje što može dovesti do lažno optimističnih rezultata. Postoji više postupaka mjerenja generalizacije modela (k-preklopa, LOOCV, ...) koji osiguravaju da je generalizacija ispitana na svim primjerima, no zbog postojanja službenog skupa za testiranje i zahtjevnosti ostalih postupaka mjerenja u ovom se radu koristi \textbf{metoda izdvajanja} \engl{holdout}.
+Skup podataka kojim se uči model najčešće ne opisuje stvarnu funkciju potpuno, već sadrži primjere koji se smatraju reprezentativnim i koji su dovoljni za njeno modeliranje. Kako bi se procijenilo koliko dobro naš model procjenjuje stvarnu funkciju model se ispituje na podatcima koji nisu korišteni prilikom učenja, odnosno na neviđenim podatcima. Ta se metoda zove \textbf{unakrsna validacija} \engl{crossvalidation}, a skupovi se nazivaju \textbf{skupom za učenje} \engl{train set} i \textbf{skupom za testiranje} \engl{test set}. Dakako, važno je pobrinuti se da su oba skupa reprezentativna stvarnoj funkciji, ali da ne sadrže iste primjere. U suprotnom mreža će naučiti pogrešnu funkciju što može dati lažno pesimistične rezultate ili će se nepotpuno ili pristrano provesti testiranje što može dovesti do lažno optimističnih rezultata. Postoji više postupaka mjerenja generalizacije modela (k-preklopa, LOOCV, ...) koji osiguravaju da je generalizacija ispitana na svim primjerima, no zbog postojanja službenog skupa za testiranje i zahtjevnosti ostalih postupaka mjerenja u ovom se radu koristi \textbf{metoda izdvajanja} \engl{holdout}.
 
 Pri odabiru hiperparametara ili pri odabiru modela potrebno je usporediti dobrote njihovih rezultata. Pri tome se skup za učenje ponovno podijeli na skup za učenje i \textbf{skup za validaciju} \engl{validation set}. Skupom za učenje model se optimizira, a skupom za validaciju ispituje se generalizaciju modela. Između kombinacija hiperparametara odabire se ona za koju model najbolje generalizira na skupu za validaciju te se njome nanovo optimizira model na originalnom skupu za učenje i dobiva konačna mjera generalizacije na skupu za testiranje. Navedeni postupak odgovara algoritmu \textbf{ugniježđene unakrsne provjere} \engl{nested crossvalidation}. U ovom radu se umjesto unakrsne validacije k-preklopa koristi metoda izdvajanja u unutarnjoj i vanjskoj petlji, a postupak je opisan pseudokodom \ref{alg:nested_cv}.
 \newline
@@ -592,7 +592,7 @@ $\bot$	& FN & TN \\ \hline
 \end{tabular}
 \end{equation}
 
-Pri \textbf{binarnoj klasifikaciji} definirana je \textbf{matrica zabune} \eqref{eq:mat_zabune_bin} koja sadrži četiri elementa \eqref{eq:true_groups_bin} koja definiraju vrstu pogodka i pogreške.
+Pri \textbf{binarnoj klasifikaciji} definirana je \textbf{matrica zabune} \eqref{eq:mat_zabune_bin} koja sadrži četiri elementa \eqref{eq:true_groups_bin} koja definiraju vrstu pogotka i pogreške.
 \begin{align}
 \label{eq:true_groups_bin}
 \begin{split}
@@ -608,7 +608,7 @@ Iz tih skupova se tada grade složenije mjere. \textbf{Točnost} je mjera kojom 
 Acc = \frac{TP+TN}{TP+TN+FP+FN}
 \end{equation}
 
-Točnost je dobra mjera, no samo ako je brojnost klasa u podatkovnom skupu balansiran. Ako je brojnost jedne klase puno veća od druge tada će trivijalan klasifikator, koji sve primjere klasificira u tu klasu, davati veliku točnost i razlika naspram ispravnijeg klasifikatora biti će nezamjetna. Stoga se kod nebalansiranih setova češće koristi \textbf{\F1 mjera}, koja uzima u obzir \textbf{preciznost} klasifikatora u razlikovanju pozitivnih primjera od negativnih \eqref{eq:precision} i njegov \textbf{odziv} odnosno obuhvat svih pozitivnih primjera testnog skupa \eqref{eq:recall}. \F1 mjera je definirana kao hamonijska sredina između preciznosti i odziva \eqref{eq:f_measure}. Postoji i generalizirana mjera F$_\beta$ koja dodjeljuje veću težinu preciznosti ili odzivu \eqref{eq:f_beta}, no u ovom radu koristi se samo \F1 koja pridijeljuje jednaku težinu. Harmonijska sredina se koristi jer je najstroža između Pitagorinih mjera za sredinu kao što prokazuje slika \ref{fig:sredine}.
+Točnost je dobra mjera, no samo ako je brojnost klasa u podatkovnom skupu balansiran. Ako je brojnost jedne klase puno veća od druge tada će trivijalan klasifikator, koji sve primjere klasificira u tu klasu, davati veliku točnost i razlika naspram ispravnijeg klasifikatora bit će nezamjetna. Stoga se kod nebalansiranih setova češće koristi \textbf{\F1 mjera}, koja uzima u obzir \textbf{preciznost} klasifikatora u razlikovanju pozitivnih primjera od negativnih \eqref{eq:precision} i njegov \textbf{odziv} odnosno obuhvat svih pozitivnih primjera testnog skupa \eqref{eq:recall}. \F1 mjera je definirana kao harmonijska sredina između preciznosti i odziva \eqref{eq:f_measure}. Postoji i generalizirana mjera F$_\beta$ koja dodjeljuje veću težinu preciznosti ili odzivu \eqref{eq:f_beta}, no u ovom radu koristi se samo \F1 koja pridjeljuje jednaku težinu. Harmonijska sredina se koristi jer je najstroža između Pitagorinih mjera za sredinu kao što prokazuje slika \ref{fig:sredine}.
 \begin{align}
 \text{Preciznost:} \quad P &= \frac{TP}{TP+FP} \label{eq:precision} \\
 \text{Odziv:} \quad R &= \frac{TP}{TP+FN} \label{eq:recall} \\
@@ -663,13 +663,13 @@ FP = FN \implies P^\mu &= R^\mu = F_1^\mu = \frac{\sum_i TP_i}{\sum_i (TP_i+FP_i
 \label{sec:grid_search}
 Najjednostavniji način za pretraživanje hiperparametara je pretraživanje po rešetci. Za svaki hiperparametar koji se optimizira definiraju se vrijednosti koje treba ispitati. Algoritam tada evaluira dani model za svaku kombinaciju hiperparametara i vraća kombinaciju ili model koji ostvaruje najbolje rezultate.
 
-Iako se optimalni hipermarametri mogu nalaziti izvan zadanih skupova i neće biti pronađeni, postupak je brz i daje dovoljno dobre rezultate za praktičnu primjenu. Često je dovoljno da pronađe kombinaciju hiperparametara za koju model ne divergira niti prestaje učiti određen broj iteracija.
+Iako se optimalni hiperparametri mogu nalaziti izvan zadanih skupova i neće biti pronađeni, postupak je brz i daje dovoljno dobre rezultate za praktičnu primjenu. Često je dovoljno da pronađe kombinaciju hiperparametara za koju model ne divergira niti prestaje učiti određen broj iteracija.
 
 \subsection{Svojstva}
 \label{sec:svojstva}
 
 \subsubsection{Univerzalna aproksimacija}
-Teorem univerzalne aproksimacije tvrdi da unaprijedna neuronska mreža može modelirati proizvoljnu Borel mjerljivu funkcju proizvoljno dobro uz nekoliko uvijeta: mora imati linearni izlaz, barem jedan nelinearni skriveni sloj koji koristi sažimajuću funkciju i "dovoljan" broj skrivenih neurona. Dakle, postoji arhitektura i postoje parametri kojima neuronska mreža može modelirati zadani podatkovni skup. No, teorem ne iskazuje kako doći do tih parametara što optimizaciju neuronske mreže čini vrlo teškom \citep{goodfellowbook}. 
+Teorem univerzalne aproksimacije tvrdi da unaprijedna neuronska mreža može modelirati proizvoljnu Borel mjerljivu funkciju proizvoljno dobro uz nekoliko uvjeta: mora imati linearni izlaz, barem jedan nelinearni skriveni sloj koji koristi sažimajuću funkciju i "dovoljan" broj skrivenih neurona. Dakle, postoji arhitektura i postoje parametri kojima neuronska mreža može modelirati zadani podatkovni skup. No, teorem ne iskazuje kako doći do tih parametara što optimizaciju neuronske mreže čini vrlo teškom \citep{goodfellowbook}. 
 
 \subsubsection{Reprezentacija dubinom}
 Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skriveni sloj za predstavljanje proizvoljne Borel mjerljive funkcije, gornja granica veličine tog sloja je eksponencijalno velika naspram broja ulaza što je netraktabilno. Dodavanjem dubine moguće je iskoristiti pravilnosti u funkciji koja se aproksimira kako bi se smanjio potreban broj neurona. Primjer su funkcije simetrične oko neke osi. Ako skriveni slojevi mreže vrše preklapanje te funkcije preko same sebe, uzastopnim preklapanjem dobiva se sve jednostavnija funkcija. Preklapanje mogu vršiti po-dijelovima-linearne aktivacijske funkcije poput ReLU i Maxout. Dakako, ne postoji garancija da stvarna funkcija zadovoljava svojstvo simetrije, no u praksi dublje mreže generaliziraju bolje \citep{alexnet, highwaynet, resnet, densenet}. Postoje i druge interpretacije utjecaja dubine, poput svojstva dekompozicije zadatka na manje cjeline ili interpretacija neuronske mreže kao računalnog programa koje nadilaze temu ovog rada. \citep{goodfellowbook}
@@ -695,7 +695,7 @@ Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu 
 
 \subsection{Problemi}
 \subsubsection{Odabir hiperparametara}
-Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov pravilan odabir značajno utjeće na performanse neuronske mreže. Nažalost nije ih moguće optimalno odabrati u zatvorenom obliku, već se to svodi na problem pretraživanja kao što je pretraživanje po rešetci \secref{sec:grid_search}. Arhitekture mogu poprimiti vrlo složene oblike kao što je predstavljeno radovima \citet{highwaynet}, \citet{resnet}, \citet{densenet}, \citet{inceptionnet} i \citet{yolo} te se najčešće grade ručno s maksimalnom traktabilnom složenošću mreže. Detaljnije o odabiru aktivacijskih funkcija napisano je u poglavlju \ref{sec:aktivacijske_fje}.
+Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njihov pravilan odabir značajno utječe na performanse neuronske mreže. Nažalost nije ih moguće optimalno odabrati u zatvorenom obliku, već se to svodi na problem pretraživanja kao što je pretraživanje po rešetci \secref{sec:grid_search}. Arhitekture mogu poprimiti vrlo složene oblike kao što je predstavljeno radovima \citet{highwaynet}, \citet{resnet}, \citet{densenet}, \citet{inceptionnet} i \citet{yolo} te se najčešće grade ručno s maksimalnom traktabilnom složenošću mreže. Detaljnije o odabiru aktivacijskih funkcija napisano je u poglavlju \ref{sec:aktivacijske_fje}.
 
 \subsubsection{Nestajući gradijent}
 \label{sec:nestajući_grad}
@@ -716,16 +716,16 @@ Vrlo složeni modeli, kao što su neuronske mreže, unatoč regularizaciji sklon
 
 \chapter{Aktivacijske funkcije}
 \label{sec:aktivacijske_fje}
-Aktivacijska funkcija služi unošenju nelinearnosti u neuronsku mrežu i ima utjecaj na njeno učenje. Prilikom inferencije aktivacijske funkcija stvara nelinearnosti u decizijskoj granici koje su parametrizirane parametrima neurona na koji se primijenjuje. U slojevitim arhitekturama aktivacijske funkcije se primijenjuju uzastopno s različitim parametrima i vrše nelinearne projekcije iz jedne dimenzije u drugu.
+Aktivacijska funkcija služi unošenju nelinearnosti u neuronsku mrežu i ima utjecaj na njeno učenje. Prilikom inferencije aktivacijske funkcija stvara nelinearnosti u decizijskoj granici koje su parametrizirane parametrima neurona na koji se primjenjuje. U slojevitim arhitekturama aktivacijske funkcije se primjenjuju uzastopno s različitim parametrima i vrše nelinearne projekcije iz jedne dimenzije u drugu.
 
-Prilikom učenja neuronske mreže važan nam je utjecaj derivacije aktivacijske funkcije na gradijent pri širenju unatrag. Prolaskom unazad gradijent se množi s parametrima slojeva koji se mogu zapisati matricom težina $\mat{W}$. Uzastopnom primijenom matrica težina, ako su loše kondicionirane, može doći do "\textit{isćezavanja}" ili "\textit{eksplozije}" gradijenta.
+Prilikom učenja neuronske mreže važan nam je utjecaj derivacije aktivacijske funkcije na gradijent pri širenju unatrag. Prolaskom unazad gradijent se množi s parametrima slojeva koji se mogu zapisati matricom težina $\mat{W}$. Uzastopnom primjenom matrica težina, ako su loše kondicionirane, može doći do "\textit{nestajanja}" ili "\textit{eksplozije}" gradijenta.
 
 \section{Odabir aktivacijske funkcije}
 Za odabir aktivacijske funkcije ne postoji jasno pravilo. U praksi se odabiru po empirijskim rezultatima i brzinom izvođenja. Iako neke funkcije imaju teorijski potkrijepljena svojstva to ih u praksi ne čini najboljima.
 
 \todo{dokaz da su monotone fje dobre}
 
-\subsection{Aktivacijske funkcije s učećim parametima}
+\subsection{Aktivacijske funkcije s učećim parametrima}
 \todo{članak: učeći parametri u fjama (onaj stari)}
 
 U radu \citet{trained_func} autori istražuju učeće aktivacijske funkcije ...
@@ -764,7 +764,7 @@ f'(x) = 1
 \end{split}
 \end{equation}
 
-Funkcija identiteta je jednostavna i brza, no njome neuronska mreža može naučiti samo linearne funkcije. Ako se primijeni na dva uzastopna sloja neuronske mreže, konačna će funkcija ponovno biti linearna što znači da se mreža ne može koristiti na nelinearnim podatcima. Derivacija funkcije je konstanta $1$ što znaći da je gradijent prolaskom kroz nju očuvan. Funkcija identiteta često se koristi kao funkcija aktivacijske sloja kod regresije, no u dubokim arhitekturama \citep{resnet,densenet} i novijim aktivacijskim funkcijama \citep{swish,elish} koristi se paralelno s nelinearnim funkcijama.
+Funkcija identiteta je jednostavna i brza, no njome neuronska mreža može naučiti samo linearne funkcije. Ako se primijeni na dva uzastopna sloja neuronske mreže, konačna će funkcija ponovno biti linearna što znači da se mreža ne može koristiti na nelinearnim podatcima. Derivacija funkcije je konstanta $1$ što znači da je gradijent prolaskom kroz nju očuvan. Funkcija identiteta često se koristi kao funkcija aktivacijske sloja kod regresije, no u dubokim arhitekturama \citep{resnet,densenet} i novijim aktivacijskim funkcijama \citep{swish,elish} koristi se paralelno s nelinearnim funkcijama.
 \begin{align}
 \begin{split}
 f_l(x) &= w_l \cdot x + b_l \\
@@ -1091,7 +1091,7 @@ Funkcija Swish je pronađena pretragom temeljenom na potpornom učenju. Funkcija
 \end{split}
 \end{equation}
 
-Ova funkcija i njena brža aproksimacija \textit{Tvrdi ELiSH} su kompozicije funkcija, različito definirane na pozitivnoj i negativnoj domeni. ELiSH pozitivnu domenu naslijeđuje od funkcije Swish \eqref{eq:swish}, a negativna je umnožak funkcije ELU \eqref{eq:elu} i sigmoide \eqref{eq:sigmoid}. Obje funkcije su ručno izgrađene s ciljem iskorištavanja dobrog prijenosa informacije koji ostvaruju funkcije Swish i sigmoida te sprečavanjem nestajućeg gradijenta pomoću linearne komponente u funkciji Swish. \citep{elish}
+Ova funkcija i njena brža aproksimacija \textit{Tvrdi ELiSH} su kompozicije funkcija, različito definirane na pozitivnoj i negativnoj domeni. ELiSH pozitivnu domenu nasljeđuje od funkcije Swish \eqref{eq:swish}, a negativna je umnožak funkcije ELU \eqref{eq:elu} i sigmoide \eqref{eq:sigmoid}. Obje funkcije su ručno izgrađene s ciljem iskorištavanja dobrog prijenosa informacije koji ostvaruju funkcije Swish i sigmoida te sprečavanjem nestajućeg gradijenta pomoću linearne komponente u funkciji Swish. \citep{elish}
 
 \subsection{Tvrdi ELiSH}
 \label{func:hard_elish}
@@ -1405,7 +1405,7 @@ f'(x) = cos(x)
 
 Sinusoida se često pojavljuje u radovima pretrage aktivacijskih funkcija \citep{elish} pa tako i u ovom radu te pokazuje obećavajuće rezultate. U radu \citet{taming_waves} autori predstavljaju problematiku učenja sa sinusoidom na jednostavnom problemu. Problem stvaraju brojni lokalni optimumi na koje je izrazito osjetljiv gradijentni spust. Problem je ublažava učenje stohastičkim gradijentnim spustom koji zaglađuje valovitost funkcije gubitka. Dodatno, autori pokazuju da neuronska mreža zapravo ne ovisi snažno o periodičnosti funkcije tako da su rezultate usporedili s ograničenom sinusoidom \eqref{eq:trsin}. Članak nije prošao postupak recenzije jer su dodatni eksperimenti urodili nekonzistentnim rezultatima u usporedbi s tangensom hiperbolnim.
 
-Po uzoru na slićne funkcije kao što je sigmoida \figref{fig:sigmoid} i tangens hiperbolni \figref{fig:tanh}, sinusoida najveću vrijednost gradijenta daje upravo kada je aktivacija jednaka 0 (u ograničenom intervalu).
+Po uzoru na slične funkcije kao što je sigmoida \figref{fig:sigmoid} i tangens hiperbolni \figref{fig:tanh}, sinusoida najveću vrijednost gradijenta daje upravo kada je aktivacija jednaka 0 (u ograničenom intervalu).
 
 \subsection{Ograničeni sinus (TrSin)}
 \label{func:trsin}
@@ -1438,7 +1438,7 @@ cos(x), \quad |x| \leq \frac{\pi}{2} \\
 \end{split}
 \end{equation}
 
-Ograničeni sinus korišten je u radu \citet{taming_waves} za usporedbu s klasičnom sinusoidom i tangensom hiperbolnim. U usporedbi sa sinusom ispituje se utjecaj periodičnosti sinusa na performanse. S tangensom hiperbolnim uspoređene su performanse zbog slićnosti u obliku krivulja.
+Ograničeni sinus korišten je u radu \citet{taming_waves} za usporedbu s klasičnom sinusoidom i tangensom hiperbolnim. U usporedbi sa sinusom ispituje se utjecaj periodičnosti sinusa na performanse. S tangensom hiperbolnim uspoređene su performanse zbog sličnosti u obliku krivulja.
 
 \subsection{Kosinus (cos)}
 
@@ -1693,12 +1693,12 @@ Koristi se u rekurzivnim neuronskim mrežama kako bi se ... LSTM
 \chapter{Optimizacija aktivacijske funkcije genetskim programiranjem}
 
 \section{Genetsko programiranje}
-Genetsko programiranje je područje evolucijskog računarstva koje se bavi algoritmima pretrage hijerarhijskih struktura. Razlikuje se od susjednih područja po tome što je genotip izvršivi program i dobrota jedinke se dobiva njenim izvršavanjem. Genotip tipično poprima stablastu strukturu te u pravilu nema zadanu veličinu, no može se ograničiti. Dijelovi genotipa definirani su jezikom, skupom funkcija i listova koje definiraju prostor pretraživanja. U ovom radu se elementi jezika nazivaju čvorovima. Jezik mora biti zatvoren (izlaz svakov čvora je kompatibilan s ulazom svakog drugog čvora) i dovoljan (rješenje je moguće predstaviti isključivo koristeći elemente jezika). \citep{comp_intelligence}
+Genetsko programiranje je područje evolucijskog računarstva koje se bavi algoritmima pretrage hijerarhijskih struktura. Razlikuje se od susjednih područja po tome što je genotip izvršivi program i dobrota jedinke se dobiva njenim izvršavanjem. Genotip tipično poprima stablastu strukturu te u pravilu nema zadanu veličinu, no može se ograničiti. Dijelovi genotipa definirani su jezikom, skupom funkcija i listova koje definiraju prostor pretraživanja. U ovom radu se elementi jezika nazivaju čvorovima. Jezik mora biti zatvoren (izlaz svakog čvora je kompatibilan s ulazom svakog drugog čvora) i dovoljan (rješenje je moguće predstaviti isključivo koristeći elemente jezika). \citep{comp_intelligence}
 
-Evolucijski algoritmi su intrinzično stohastični te omogućuju globalno i lokalno pretraživanje prostora, za razliku od gradijentnog spusta koji lokalno pretražuje prostor. Dok se lokalnim pretraživanjem pretražuje usko susjedstvo oko točke u prostoru, globalno pretraživanje pretražuje točke po čitavoj dosižnoj domeni. To svojstvo osigurava otpornost evolucijskih algoritama na prepreke koje ograničavaju gradijentni spust \secref{sec:gradijentni_spust}. Opseg pretrage određen je jezikom te ograničenjima pri inicijalizaciji populacije i operatorima pretrage. Treba razlikovati genotipski i fenotipski prostor. Genotipski prostor definiran je jezikom i najvećom dubinom stabla, dok je fenotipski prostor definiran dekoderom koji genotip pretvara u primijenjivo rješenje. Iako ograničenja u genotipu ograničavaju fenotip, mogu imati nepredvidiv utjecaj.
+Evolucijski algoritmi su intrinzično stohastični te omogućuju globalno i lokalno pretraživanje prostora, za razliku od gradijentnog spusta koji lokalno pretražuje prostor. Dok se lokalnim pretraživanjem pretražuje usko susjedstvo oko točke u prostoru, globalno pretraživanje pretražuje točke po čitavoj domeni unutar dosega. To svojstvo osigurava otpornost evolucijskih algoritama na prepreke koje ograničavaju gradijentni spust \secref{sec:gradijentni_spust}. Opseg pretrage određen je jezikom te ograničenjima pri inicijalizaciji populacije i operatorima pretrage. Treba razlikovati genotipski i fenotipski prostor. Genotipski prostor definiran je jezikom i najvećom dubinom stabla, dok je fenotipski prostor definiran dekoderom koji genotip pretvara u primjenjivo rješenje. Iako ograničenja u genotipu ograničavaju fenotip, mogu imati nepredvidiv utjecaj.
 
 \subsection{Građa}
-Kao i ostali evolucijski algoritmi, algoritam genetskog programiranja sastoji se od više elemenata koji definiraju način pretrage. \textbf{Inicijalizator populacije} služi stvaranju početnih točaka iz kojih kreće pretraga i poželjno je da stvara što raznolikija rješenja (globalna pretraga). \textbf{Operator odabira} iz populacije uzima po jedan par jedinki za roditelje i jednu ili dvije jedinke za zamjenu. Pri RouletteWheel odabiru vjerojatnosti odabira jedinki proporcionalna je njihovoj dobroti. Pri turnirskom odabiru nasumično se odabire $n$ jedinki, dvije najbolje postaju roditeljima te ona najlošija biva odabrana za zamjenu. Operatori odabira naginju zadržavanju dobrih genotipa u populaciji i time osiguravaju konvergenciju algoritma (lokalna pretraga). \textbf{Operator križanja} iz genotipa odabranih roditelja izgradi jedno ili dva djeteta koja će biti dio nove populacije. Operatori križanja miješaju genotipove jedinki zadržavajući svojstva dobrih i time pomažu konvergenciji algoritma (lokalna pretraga). \textbf{Operator mutacije} nad stvorenim djetetom unosi nasumičnu izmjenu i time osigurava unos novih informacija u populaciji (globalna pretraga). Često se definira po nekoliko različitih operatora križanja i mutacije koji različito djeluju na pretragu te se time upravlja globalnošću pretrage. Pristup izgradnji nove populacije na temelju stare utjeće na snagu konvergencije algoritma. \textbf{Generacijski pristup} će u svakoj iteraciji čitavu populaciju zamijeniti djecom. Pri tome često se koristi \textbf{elitizam} kojim se garantira očuvanje najbolje jedinke iz stare u novu populaciju. \textbf{Eliminacijski pristup} definira postotak populacije koji će biti zamijenjen djecom.
+Kao i ostali evolucijski algoritmi, algoritam genetskog programiranja sastoji se od više elemenata koji definiraju način pretrage. \textbf{Inicijalizator populacije} služi stvaranju početnih točaka iz kojih kreće pretraga i poželjno je da stvara što raznolikija rješenja (globalna pretraga). \textbf{Operator odabira} iz populacije uzima po jedan par jedinki za roditelje i jednu ili dvije jedinke za zamjenu. Pri RouletteWheel odabiru vjerojatnosti odabira jedinki proporcionalna je njihovoj dobroti. Pri turnirskom odabiru nasumično se odabire $n$ jedinki, dvije najbolje postaju roditeljima te ona najlošija biva odabrana za zamjenu. Operatori odabira naginju zadržavanju dobrih genotipa u populaciji i time osiguravaju konvergenciju algoritma (lokalna pretraga). \textbf{Operator križanja} iz genotipa odabranih roditelja izgradi jedno ili dva djeteta koja će biti dio nove populacije. Operatori križanja miješaju genotipove jedinki zadržavajući svojstva dobrih i time pomažu konvergenciji algoritma (lokalna pretraga). \textbf{Operator mutacije} nad stvorenim djetetom unosi nasumičnu izmjenu i time osigurava unos novih informacija u populaciji (globalna pretraga). Često se definira po nekoliko različitih operatora križanja i mutacije koji različito djeluju na pretragu te se time upravlja globalnošću pretrage. Pristup izgradnji nove populacije na temelju stare utječe na snagu konvergencije algoritma. \textbf{Generacijski pristup} će u svakoj iteraciji čitavu populaciju zamijeniti djecom. Pri tome često se koristi \textbf{elitizam} kojim se garantira očuvanje najbolje jedinke iz stare u novu populaciju. \textbf{Eliminacijski pristup} definira postotak populacije koji će biti zamijenjen djecom.
 \newline
 \newline
 \begin{algorithm}[H]
@@ -1725,7 +1725,7 @@ $populacija \gets populacija'$
 \end{algorithm}
 
 \paragraph{}
-Evolucijski algoritmi podržavaju nekoliko glavnih hiperparametara. \textbf{Veličina populacije} definira broj istovremenih točaka u prostoru te o njoj ovisi vjerojatnost pronalaska optimuma. Operatori mutacije unose izmjene u genomu i njihova primjena se regulira \textbf{vjerojatnošću primjene}. \textbf{Kriteriji zaustavljanja} određuju završetak pretrage i mogu ovisiti o kvaliteti rješenja ili raspoloživim resursima. \textbf{Broj iteracija} analogan je onome u gradijentnom spustu \secref{sec:gradijentni_spust} i često se koristi kao gornja granica za vremenski trošak izvođenja. \textbf{Broj evaluacija} je koristan kada je poznato trajanje pojedine evaluacije želi se sukladno raspoloživom vremenu odrediti veličina populacije. \textbf{Raspoloživo vrijeme} se koristi kao kao i broj iteracija, ali u situacijama kada nije poznato trajanje pojedine iteracije algoritma. \textbf{Kvaliteta rješenja} je koristan kriterij zaustavljanja ako postoji definirana granica zadovoljavajuće kvalitete. Razne inačice evolucijskih algoritama mogu uvesti brojne dodatne hiperparametre.
+Evolucijski algoritmi podržavaju nekoliko glavnih hiperparametara. \textbf{Veličina populacije} definira broj istovremenih točaka u prostoru te o njoj ovisi vjerojatnost pronalaska optimuma. Operatori mutacije unose izmjene u genomu i njihova primjena se regulira \textbf{vjerojatnošću primjene}. \textbf{Kriteriji zaustavljanja} određuju završetak pretrage i mogu ovisiti o kvaliteti rješenja ili raspoloživim resursima. \textbf{Broj iteracija} analogan je onome u gradijentnom spustu \secref{sec:gradijentni_spust} i često se koristi kao gornja granica za vremenski trošak izvođenja. \textbf{Broj evaluacija} je koristan kada je poznato trajanje pojedine evaluacije želi se sukladno raspoloživom vremenu odrediti veličina populacije. \textbf{Raspoloživo vrijeme} se koristi kao i broj iteracija, ali u situacijama kada nije poznato trajanje pojedine iteracije algoritma. \textbf{Kvaliteta rješenja} je koristan kriterij zaustavljanja ako postoji definirana granica zadovoljavajuće kvalitete. Razne inačice evolucijskih algoritama mogu uvesti brojne dodatne hiperparametre.
 
 \iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simbolička regresija}
@@ -1744,12 +1744,12 @@ U literaturi postoje brojni radovi na temu optimizacija aktivacijskih funkcija, 
 
 U radu \citet{swish} autori smanjuju prostor pretraživanja definirajući strukturu funkcija koje se pretražuju u obliku bloka. Blokove definiraju kompozicijom binarne i dviju unarnih funkcija te istražuju rekurzivna proširenja istog bloka (umjesto jedne unarne funkcije ponavlja se blok). Rekurzivna mreža predviđa funkciju na idućem mjestu u bloku temeljem prethodno odabrane funkcije. Izgrađeni blok koristi se kao aktivacijska funkcija dubokih mreža te se postignuta točnost uzima kao vrijednost nagrade za optimizaciju potpornim učenjem. Rezultat pretrage je funkcija $Swish$ \secref{func:swish} koja konzistentno nadjačava $ReLU$ \secref{func:relu} i ostale popularne funkcije.
 
-U radu \citet{elish} autori koriste hibridni genetski algoritam kako bi evoluirali funkciju različito definiranu na pozitivnoj i negativnoj domeni. Dijelovi funkcije su predstavljeni stablima i križaju ih posebnim operatorima koji odvojeno mjenjaju pozitivnu i negativnu stranu. Skup čvorova su osnovne aritmetičke operacije, a listovi su popularne aktivacijske funkcije bez konstanti. Autori predstavljaju i nove aktivacijske funkcije (poglavlja \ref{func:elish}, \ref{func:hard_elish}) koje su ručno izgradili s ciljem kombiniranja dobrih svojstava manjih funkcija. Na tri podatkovna skupa pokazuju da su njihove funkcije najbolje.
+U radu \citet{elish} autori koriste hibridni genetski algoritam kako bi evoluirali funkciju različito definiranu na pozitivnoj i negativnoj domeni. Dijelovi funkcije su predstavljeni stablima i križaju ih posebnim operatorima koji odvojeno mijenjaju pozitivnu i negativnu stranu. Skup čvorova su osnovne aritmetičke operacije, a listovi su popularne aktivacijske funkcije bez konstanti. Autori predstavljaju i nove aktivacijske funkcije (poglavlja \ref{func:elish}, \ref{func:hard_elish}) koje su ručno izgradili s ciljem kombiniranja dobrih svojstava manjih funkcija. Na tri podatkovna skupa pokazuju da su njihove funkcije najbolje.
 
 Rad \citet{cube_spline_func} predstavlja aktivacijsku funkciju definiranu kubnim splajnom. Koristi se genetski algoritam za pronalazak točaka kojima se interpolira aktivacijska funkcija te pronalazak arhitekture čitave mreže. Rezultati pokazuju da pronađene funkcije ostvaruju poboljšanje nad sigmoidom na zadatcima klasifikacije.
 
 \section{Genetsko programiranje s taboo listom}
-Klasičan algoritam genetskog programiranja često dovodi do stvaranja identičnih jedinki u populaciji što loše utječe na globalnost pretrage. Stoga se u ovom radu unosi primjena taboo liste u proces algoritma. Nakon stvaranja djeteta klasičnim koracima (križanje i mutacija) dodaje se dodatan korak u kome se djete mutira dok ne postane jedinstveno. Kako algoritam ne bi zapeo definira se gornja granica dozvoljenog broja mutacija. Kada je stvoreno jedinstveno djete, ono se dodaje u populaciju i zabilježi na kraj taboo liste.
+Klasičan algoritam genetskog programiranja često dovodi do stvaranja identičnih jedinki u populaciji što loše utječe na globalnost pretrage. Stoga se u ovom radu unosi primjena taboo liste u proces algoritma. Nakon stvaranja djeteta klasičnim koracima (križanje i mutacija) dodaje se dodatan korak u kome se dijete mutira dok ne postane jedinstveno. Kako algoritam ne bi zapeo definira se gornja granica dozvoljenog broja mutacija. Kada je stvoreno jedinstveno dijete, ono se dodaje u populaciju i zabilježi na kraj taboo liste.
 \newline
 \newline
 \begin{algorithm}[H]
@@ -1790,7 +1790,7 @@ Zbog ponovljenog mutiranja jedinke treba paziti na balans između mutacija koje 
 
 \subsection{Skup čvorova (prostor pretraživanja)}
 \label{sec:node_set}
-Skup čvorova koji se koriste pri pretraživanju definiraja prostor pretraživanja. Skup čvorova je implementiran tako da razlikuje čvorove različitih stupnjeva i omogućuje operatorima selektivni, nasumično selektivni ili potpuno nasumičan pristup. Početna vrijednost konstante pri dohvatu je postojana i definira se unaprijed, a vrijednost pojedine konstante u stablima mijenja se operatorima.
+Skup čvorova koji se koriste pri pretraživanju definiraju prostor pretraživanja. Skup čvorova je implementiran tako da razlikuje čvorove različitih stupnjeva i omogućuje operatorima selektivni, nasumično selektivni ili potpuno nasumičan pristup. Početna vrijednost konstante pri dohvatu je postojana i definira se unaprijed, a vrijednost pojedine konstante u stablima mijenja se operatorima.
 
 \begin{table}[H]
 \centering
@@ -1848,17 +1848,17 @@ gauss	& \eqref{eq:gauss}		& 1 \\
 
 
 \subsection{Operatori križanja}
-U nastavku opisani operatori križanja primaju dva roditelja, obavljaju križanje i vraćaju jedno dijete. Neki operatori istovremeno stvaraju dva djeteta, no vraćaju samo jedno nasumično odabrano. Ne obavlja se biranje djece prema dobroti zbog skupocijenosti postupka evaluacije, no preporuča se zbog kvalitetnije pretrage.
+U nastavku opisani operatori križanja primaju dva roditelja, obavljaju križanje i vraćaju jedno dijete. Neki operatori istovremeno stvaraju dva djeteta, no vraćaju samo jedno nasumično odabrano. Ne obavlja se biranje djece prema dobroti zbog skupocjenosti postupka evaluacije, no preporučuje se zbog kvalitetnije pretrage.
 
 \subsubsection{Zamijeni podstabla}
-Operator zamjene podstabla odabire u svakom roditelju po jedan čvor i zamijeni ih. Pri zamjeni čvorovi zadržavaju svoju djecu i time su efektivno zamijenjena podstabla. Operator služi za mješanje genotipa s čuvanjem podstruktura koje se pokazuju dobrima. %Očekivano mješanje potpunog binarnog stabla dubine $n$ je $XX$ čvorova.
+Operator zamjene podstabla odabire u svakom roditelju po jedan čvor i zamijeni ih. Pri zamjeni čvorovi zadržavaju svoju djecu i time su efektivno zamijenjena podstabla. Operator služi za miješanje genotipa s čuvanjem podstruktura koje se pokazuju dobrima. %Očekivano miješanje potpunog binarnog stabla dubine $n$ je $XX$ čvorova.
 
 Rubni slučajevi su zamjena korijena stabla i zamjena listova. Pri zamjeni korijena jedno dijete postaje podstablo drugog roditelja. Pri zamjeni listova operator je ekvivalentan operatoru zamjene čvorova odnosno konstanti ako su obje konstante.
 
 % Očekivani odmak od zadnjeg sloja -> Desmos: x-\left(\sum_{n=1}^xn\cdot\frac{2^{\left(n-1\right)}}{2^x-1}\ \right)
 
 \subsubsection{Zamijeni čvorove}
-Operator zamjene čvorova nasumično odabire čvor u stablu s manje čvorova. Zatim nasumično pronalazi čvor istog stupnja u većem stablu i zamijenjuje ih bez zamjene djece. Ako operator ne pronađe čvor istog stupnja, vraća nasumičnog roditelja. Prvo se odabire čvor iz manjeg stabla jer je veća vjerojatnost da će veće stablo sadržavati čvor istog stupnja, što je važno za unarne čvorove.
+Operator zamjene čvorova nasumično odabire čvor u stablu s manje čvorova. Zatim nasumično pronalazi čvor istog stupnja u većem stablu i zamjenjuje ih bez zamjene djece. Ako operator ne pronađe čvor istog stupnja, vraća nasumičnog roditelja. Prvo se odabire čvor iz manjeg stabla jer je veća vjerojatnost da će veće stablo sadržavati čvor istog stupnja, što je važno za unarne čvorove.
 
 \subsubsection{Zamijeni konstante}
 Operator zamjene konstanti nasumično odabire po jednu konstantu u oba roditelja i zamijeni ih. Operator je posebno koristan u kasnijem dijelu optimizacije kada pretraživanje funkcija konvergira, a pretražuju se optimalne konstante. U slučaju da barem jedan roditelj nema niti jednu konstantu, operator vraća nasumičnog roditelja.
@@ -1874,7 +1874,7 @@ Operator vraća nasumičnog roditelja kao dijete. Služi za osnaživanje konverg
 U nastavku opisani operatori mutacije primaju jedno dijete i nad njime obave mutaciju. Operatori koji unose nove čvorove biraju čvorove iz skupa dostupnih čvorova \secref{sec:node_set}.
 
 \subsubsection{Ubaci korijen}
-Operator ubacivanja korijena stabla odabire nasumičan čvor stupnja većeg od 0 iz seta i postavlja ga korijenom stabla. Ako je odabrani čvor unaran, njegovo djete postaje stari korijen. Ako je odabrani čvor većeg stupnja prvo djete postaje korijen roditelja, a ostala njegova djeca popune se nasumičnim listovima iz skupa. Operator služi povećavanju dubine stabla i ključan je za stvaranje kompozicija funkcija.
+Operator ubacivanja korijena stabla odabire nasumičan čvor stupnja većeg od 0 iz seta i postavlja ga korijenom stabla. Ako je odabrani čvor unaran, njegovo dijete postaje stari korijen. Ako je odabrani čvor većeg stupnja prvo dijete postaje korijen roditelja, a ostala njegova djeca popune se nasumičnim listovima iz skupa. Operator služi povećavanju dubine stabla i ključan je za stvaranje kompozicija funkcija.
 
 \subsubsection{Ubaci list}
 Operator ubacivanja lista odabire nasumičan čvor u stablu i zamijeni ga nasumičnim listom iz skupa. Ne postoje ograničenja na mjesto postavljanja lista pa operator može zamijeniti čitavo stablo listom. Iako je vrlo radikalan operator snažno pomaže očuvanju raznolikosti populacije. Operator služi smanjivanju dubine stabla i ključan je za pronalaženje plitkih stabala, što se odražava na brzinu izvođenja pronađenih funkcija.
@@ -1892,7 +1892,7 @@ Operator odabire nasumičnu konstantu u stablu i pribraja joj nasumičnu vrijedn
 Operator odabire nasumičan čvor u stablu i zamijeni ga nasumičnim čvorom iz seta istog stupnja. Stablo se neće promijeniti ako postoji samo jedan čvor tog stupnja u setu. Operator ne mijenja veličinu stabla te služi za postizanje blažih izmjena u genotipu. Treba obratiti pažnju da se izmjene genotipa mogu značajno odraziti na fenotip.
 
 \subsubsection{Izmjeni podstablo}
-Operator odabire nasumičan čvor i na njegovo mjesto postavlja generirano podstablo. Podstablo se generira zadanim inicijalizatorom. Operator unosi snažne izmjene genotipa i služi održavanju raznolikosti populacije i globalnoj pretrazi prostora. Rubni uvijet je kada se generira stablo dubine $1$, što utjecaj operatora čini identičnim operatoru ubacivanja lista.
+Operator odabire nasumičan čvor i na njegovo mjesto postavlja generirano podstablo. Podstablo se generira zadanim inicijalizatorom. Operator unosi snažne izmjene genotipa i služi održavanju raznolikosti populacije i globalnoj pretrazi prostora. Rubni uvjet je kada se generira stablo dubine $1$, što utjecaj operatora čini identičnim operatoru ubacivanja lista.
 
 \subsubsection{Ukloni korijen}
 Operator iz korijena stabla odabire nasumično dijete i njega postavi kao novi korijen. Ako je originalan korijen list, operator ne radi izmjene. Operator je komplementaran operatoru ubacivanja korijena te služi smanjivanju dubine stabla i ključan je za pronalaženje plitkih stabala.
@@ -1901,16 +1901,16 @@ Operator iz korijena stabla odabire nasumično dijete i njega postavi kao novi k
 Operator odabire nasumični unarni čvor i zamjenjuje ga njegovim djetetom. Ako stablo ne sadrži unarne čvorove operator ne unosi izmjene. Operator je posebno koristan pri eliminaciji dubokih kompozicija funkcija koje se znaju pojaviti pri pretraživanju, a koje nije moguće ukloniti operatorom uklanjanja korijena.
 
 \subsubsection{Zamijeni redoslijed djece}
-Operator odabire nasumičan čvor i njemu zamjeni mjesta dvaju djeteta. Ako je čvor stupnja $2$ operator će im zamijeniti mjesta. Ako je čvor stupnja većeg od $2$ operator će nasumično odabrati dva djeteta i njih zamijeniti. Pri tom operator može odabrati isto djete dvaput čime se stablo ne mijenja. Za sve ostale čvorove operator ne unosi izmjene. Operator je koristan za promjenu utjecaja čvorova koji ovise o redoslijedu djece (npr. operator djeljenja, oduzimanja, potenciranja i td.).
+Operator odabire nasumičan čvor i njemu zamjeni mjesta dvaju djeteta. Ako je čvor stupnja $2$ operator će im zamijeniti mjesta. Ako je čvor stupnja većeg od $2$ operator će nasumično odabrati dva djeteta i njih zamijeniti. Pri tom operator može odabrati isto dijete dvaput čime se stablo ne mijenja. Za sve ostale čvorove operator ne unosi izmjene. Operator je koristan za promjenu utjecaja čvorova koji ovise o redoslijedu djece (npr. operator dijeljenja, oduzimanja, potenciranja i td.).
 
 \subsubsection{Inicijaliziraj genotip}
-Operator inicijalizacije genotipa zamijenjuje čitavo stablo novim generiranim stablom. Stablo se generira zadanim inicijalizatorom. Operator snažno pridonosi održavanju raznolikosti populacije i globalnoj pretrazi prostora.
+Operator inicijalizacije genotipa zamjenjuje čitavo stablo novim generiranim stablom. Stablo se generira zadanim inicijalizatorom. Operator snažno pridonosi održavanju raznolikosti populacije i globalnoj pretrazi prostora.
 
 
 %--------------------------------------------------------------------------------------%
 \chapter{Implementacija}
 \section{Razvojna okolina i alati}
-Projekt je implementiran u programskom jeziku Java verzije 8, alatom IntelliJ. Razvojna okolina Deeplearning4j korištena je za učitavanje podatakovnih skupova, pretprocesiranje, izgradnju i optimizaciju neuronskih mreža te podršku izvođenja na grafičkim karticama s podrškom CUDA biblioteke. Obrada podataka i iscrtavanje grafova implementirano je u Jupyter bilježnicama u programskom jeziku Python verzije 3 korištenjem raznih biblioteka (numpy, sk-learn, matplotlib i ostalim).
+Projekt je implementiran u programskom jeziku Java verzije 8, alatom IntelliJ. Razvojna okolina Deeplearning4j korištena je za učitavanje podatkovnih skupova, pretprocesiranje, izgradnju i optimizaciju neuronskih mreža te podršku izvođenja na grafičkim karticama s podrškom CUDA biblioteke. Obrada podataka i iscrtavanje grafova implementirano je u Jupyter bilježnicama u programskom jeziku Python verzije 3 korištenjem raznih biblioteka (numpy, sk-learn, matplotlib i ostalim).
 
 \noindent
 Kod je dostupan na GitHub repozitoriju: \\
@@ -1926,11 +1926,11 @@ Najsloženiji razred je apstraktni razred $Algorithm$ koji čuva parametre i ope
 
 Genotip je definiran apstraktnim razredom $Genotype$ koji čuva svoju vrijednost dobrote i definira nekoliko apstraktnih metoda za rad s genotipom. Primjer implementacije genotipa je razred $symboregression.SymbolicTree$ opisan kasnije. Genotip je moguće serijalizirati u tekst.
 
-Operatori su definirani apstraktnim razredom $Operator$ koji čuva vrijednost važnosti operatora te referencu na generator slučajnih brojeva. Operatori križanja $Crossover$ i mutacije $Mutation$ dodaju svoje apstraktne metode koje je potrebno implementirati i koje se pozivaju u algoritmu. Implementacije generičnih operatora nalaze se u korijenu paketa, dok se operatori specifični za pojedine vrste genotipa nalaze u zasebnim paketima tog genotipa (npr. $genetics.symboregression$). Parametre opetatora moguće je serijalizirati u tekst.
+Operatori su definirani apstraktnim razredom $Operator$ koji čuva vrijednost važnosti operatora te referencu na generator slučajnih brojeva. Operatori križanja $Crossover$ i mutacije $Mutation$ dodaju svoje apstraktne metode koje je potrebno implementirati i koje se pozivaju u algoritmu. Implementacije generičnih operatora nalaze se u korijenu paketa, dok se operatori specifični za pojedine vrste genotipa nalaze u zasebnim paketima tog genotipa (npr. $genetics.symboregression$). Parametre operatora moguće je serijalizirati u tekst.
 
-Metoda odabira jedinki iz populacije definirana je sučeljem $Selector$ koja definira apstraktnu metodu $selectParentsFrom$ koja na ulaz dobiva populaciju, a vraća polje kandidata za roditelje. Ovisno o implementaciji, algoritam odabira može vratiti samo 2 roditelja ($RouletteWheelSelector$) ili 2 roditelja i jedinku koja se zamijenjuje djetetom ($TournamentSelector$). Metode odabira implementirane su u paketu $selectors$.
+Metoda odabira jedinki iz populacije definirana je sučeljem $Selector$ koja definira apstraktnu metodu $selectParentsFrom$ koja na ulaz dobiva populaciju, a vraća polje kandidata za roditelje. Ovisno o implementaciji, algoritam odabira može vratiti samo 2 roditelja ($RouletteWheelSelector$) ili 2 roditelja i jedinku koja se zamjenjuje djetetom ($TournamentSelector$). Metode odabira implementirane su u paketu $selectors$.
 
-Inicijalizator populacije definiran je sučeljem $Initializer$. Uvijet zaustavljanja algoritma definiran je razredom $stopconditions.StopCondition$ čiji objekt se predaje algoritmu. Uvijete zaustavljanja moguće serijalizirati u tekst. Rezultat algoritma opisan je razredom $Result$ kojeg je moguće serijalizirati u tekst.
+Inicijalizator populacije definiran je sučeljem $Initializer$. Uvjet zaustavljanja algoritma definiran je razredom $stopconditions.StopCondition$ čiji objekt se predaje algoritmu. Uvijete zaustavljanja moguće serijalizirati u tekst. Rezultat algoritma opisan je razredom $Result$ kojeg je moguće serijalizirati u tekst.
 
 \subsubsection{Simbolička regresija}
 Implementacija simboličke regresije nalazi se u paketu $genetics.symboregression$. Sadrži operatore križanja definirane paketom $crx$ i operatore mutacije definirane paketom $mut$. Genotip je definiran razredom $SymbolicTree$ koji sadrži referencu na korijenski čvor. Čvorovi su definirani apstraktnim razredom $TreeNode$, a skup dostupnih čvorova s pristupnim metodama definiran je razredom $TreeNodeSet$.
@@ -1938,19 +1938,19 @@ Implementacija simboličke regresije nalazi se u paketu $genetics.symboregressio
 Izvršavanje operacija obilaskom stabla obavlja se objektom sučelja $IExecutable$ koji se definira pri implementaciji čvora. Čvor sadrži i operacije za dohvat i zamjenu djece te izvršnog objekta, a koje su potrebne operatorima križanja i mutacije. Čvor može primiti i dodatan objekt koji može poslužiti čvorovima specijalne namjene.
 
 \subsubsection{Evaluator}
-S obzirom da je postupak treniranja i validacije ćesto vrlo zahtjevan postupak u evaluator je ugrađena memorija evaluiranih aktivacijskih funkcija. Jedinka se prvo serijalizira u tekstualni oblik i uspoređuje s memorijom. Ako je pronađena, dohvaća se njena vrijednost i vraća umjesto ponovljenog treniranja. Postupak je valjan samo ako su eksperimenti ponovljivi za zadane parametre što u ovom projektu vrijedi.
+S obzirom da je postupak treniranja i validacije često vrlo zahtjevan postupak u evaluator je ugrađena memorija evaluiranih aktivacijskih funkcija. Jedinka se prvo serijalizira u tekstualni oblik i uspoređuje s memorijom. Ako je pronađena, dohvaća se njena vrijednost i vraća umjesto ponovljenog treniranja. Postupak je valjan samo ako su eksperimenti ponovljivi za zadane parametre što u ovom projektu vrijedi.
 
 \subsection{Neuronska mreža}
 Neuronska mreža definirana je razredom $CommonModel$ te služi za transparentnu izgradnju mreže iz zadanih parametara, čuvanje instance mreže i povijesti vrijednosti gubitka nakon učenja.
 
 \subsubsection{Zajednički razred za optimizaciju mreža}
-Za potrebe transparentnog učenja, validacije i testiranja neuronskih mreža te ponovljivost eksperimenata i memorijske uštede definiran je razred $TrainProcedureDL4J$. Pri inicijalizaciji razred učitava skupove za treniranje i testiranje. Ako je tako definirano parametrima, značajke skupova se normaliziraju prema skupu za učenje te se, po potrebi, iz izmješanog skupa za učenje gradi skup za validaciju. Mješanje skupa za učenje je konzistentno u svim eksperimentima.
+Za potrebe transparentnog učenja, validacije i testiranja neuronskih mreža te ponovljivost eksperimenata i memorijske uštede definiran je razred $TrainProcedureDL4J$. Pri inicijalizaciji razred učitava skupove za treniranje i testiranje. Ako je tako definirano parametrima, značajke skupova se normaliziraju prema skupu za učenje te se, po potrebi, iz izmiješanog skupa za učenje gradi skup za validaciju. Miješanje skupa za učenje je konzistentno u svim eksperimentima.
 Razred nasljeđuje sučelje s istim metodama kako bi se omogućila drugačija implementacija razreda. Jedan primjer je mogućnost pozivanja skripti koje implementiraju te postupke. Za komunikaciju s Python skriptama izgrađen je pomoćni razred $PythonBridge$.
 
 \subsection{Pomoćni mehanizmi projekta}
 
 \subsubsection{Standardizirana pohrana rezultata}
-Zbog potrebe standardizirane i transparentne pohrane rezultata i parametara eksperimenata definiran je razred $StorageManager$ koji definira zapisivanje podataka i putajne datoteka za različite eksperimente. Opisnik eksperimenta definiran je razredom $Context$, a sadrži naziv podatkovnog skupa i naziv eksperimenta. Metode za pohranu primaju podatke koji se zapisuju i opisnik kojim se izgradi putanja (npr. za Windows sustave: $podatkovni\_skup \textbackslash eksperiment$). Poddirektoriji datoteke grade se automatski, a putanje se grade razdjelnikom ovisnom o operacijskom sustavu (definiran u Javi: $File.separator$). Standardizirana pohrana rezultata uvelike olakšava kasniju obradu podataka.
+Zbog potrebe standardizirane i transparentne pohrane rezultata i parametara eksperimenata definiran je razred $StorageManager$ koji definira zapisivanje podataka i putanje datoteka za različite eksperimente. Opisnik eksperimenta definiran je razredom $Context$, a sadrži naziv podatkovnog skupa i naziv eksperimenta. Metode za pohranu primaju podatke koji se zapisuju i opisnik kojim se izgradi putanja (npr. za Windows sustave: $podatkovni\_skup \textbackslash eksperiment$). Poddirektoriji datoteke grade se automatski, a putanje se grade razdjelnikom ovisnom o operacijskom sustavu (definiran u Javi: $File.separator$). Standardizirana pohrana rezultata uvelike olakšava kasniju obradu podataka.
 
 \subsubsection{Parametri}
 Hiperparametre programa moguće je zadati konfiguracijskom datotekom. Datoteka je formata ključ-vrijednost, odvojeni regularnim izrazom: "$[:\ \textbackslash t]+$". Kroz datoteku moguće je definirati i više vrijednosti parametara koji će se pretraživati po rešetci (npr. $\{p1,p2,p3\}$). Datotekom je moguće zadati sve parametre postupaka, uključujući sjeme korišteno u brojnim procesima. Ako nije zadan važan parametar program će baciti iznimku.
@@ -1960,11 +1960,11 @@ Hiperparametre programa moguće je zadati konfiguracijskom datotekom. Datoteka j
 \subsubsection{Paralelizacija}
 Paralelizaciju je moguće postići vrlo jednostavno paketom $utils.threading$. Prvo je potrebno instancirati razred $WorkArbiter$ koji u sebi sadrži red poslova koje treba obaviti i listu radnika. Posao koji treba izvršiti definira se implementacijom sučelja $Work$. Poslovi se predaju objektu $WorkArbiter$ koja ih stavlja u red. Radnici $Worker$ paralelno i sinkronizirano dohvaćaju i izvršavaju poslove iz reda poslova razreda $WorkArbiter$ koji ih je stvorio. S obzirom da su radnici implementirani kao zasebne dretve, navalom poslova radnici će paralelno uzimati poslove i izvršavati ih.
 
-Čekanje pozivajuće dretve na izvršenje zadataka moguće je ostvariti pozivom metode $waitOn$ koja prima uvijet čekanja $WaitCondition$. Moguće je definirati svoj uvijet (npr. čekanje dok se ne popuni spremnik) ili pričekati dok se svi poslovi ne izvrše, uvijetom koji vraća metoda $getAllFinishedCondition$.
+Čekanje pozivajuće dretve na izvršenje zadataka moguće je ostvariti pozivom metode $waitOn$ koja prima uvjet čekanja $WaitCondition$. Moguće je definirati svoj uvjet (npr. čekanje dok se ne popuni spremnik) ili pričekati dok se svi poslovi ne izvrše, uvjetom koji vraća metoda $getAllFinishedCondition$.
 
 Pri definiranju poslova često je potrebno definirati lokalnu varijablu s modifikatorom $final$ koja se ažurira po početku ili završetku posla. Kako se ne bi trebalo definirati polje (što je česta praksa) definiran je pomoćan generički razred $Holder$ koji nudi metode za dohvat i postavljanje unutarnjeg objekta. Za potrebe nabrajanja definiran je razred $Counter$, a za zajedničko pamćenje dva ili tri objekta definirani su generički razredi $Pair$ i $Triple$.
 
-\subsubsection{Bilježenje napredka algoritma}
+\subsubsection{Bilježenje napretka algoritma}
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{pkg_logs.pdf}
 \centering
@@ -1982,7 +1982,7 @@ DevNullLogger & Ignorira ulaze \\
 StdoutLogger & Standardni izlaz \\
 FileLogger & Zapisuje u zadanu datoteku (s kreiranjem poddirektorija) \\
 SlackLogger & Kanal servisa Slack \\
-MultiLogger & Proslijeđuje listi zadanih implementacija
+MultiLogger & Prosljeđuje listi zadanih implementacija
 \end{tabular}
 \centering
 \caption{Implementacije za bilježenje}
@@ -1990,7 +1990,7 @@ MultiLogger & Proslijeđuje listi zadanih implementacija
 \end{table}
 
 \subsection{Izvršni programi projekta}
-U projektu su napisani brojni izvršni programi čije namjene uključuju demonstraciju dodataka, izvršavanje eksperimenata, ponavljanje eksperimenta s dodatnim bilježenjem i slićno. U nastavku su opisani programi korišteni za izvršavanje eksperimenata.
+U projektu su napisani brojni izvršni programi čije namjene uključuju demonstraciju dodataka, izvršavanje eksperimenata, ponavljanje eksperimenta s dodatnim bilježenjem i slično. U nastavku su opisani programi korišteni za izvršavanje eksperimenata.
 
 \subsubsection{Pohlepna pretraga uobičajenih funkcija}
 \todo{ulazi u program}
