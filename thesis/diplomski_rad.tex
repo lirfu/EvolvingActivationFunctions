@@ -10,6 +10,7 @@
 \usepackage{amsmath}				% Maths.
 \usepackage{subcaption}			% Captions for figures.
 \usepackage{url}					% URLs.
+\usepackage[hidelinks]{hyperref}
 
 \graphicspath{ {./img/} }
 
@@ -183,7 +184,7 @@ Neuronske mreže građene su od međusobno povezanih jedinica, tzv. neurona, mod
 \label{fig:neuron}
 \end{figure}
 
-Način na koji se iz ulaza gradi unutarnje stanje neurona opisan je ulaznom funkcijom. Pretvorba unutarnjeg stanja neurona u izlazni signal opisana je aktivacijskom funkcijom koja se detaljnije obrađuje u poglavlju \ref{sec:aktivacijske_fje}. Ulazna i aktivacijska funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ponekad granica između ulazne i aktivacijske funkcije nije jasna.
+Način na koji se iz ulaza gradi unutarnje stanje neurona opisan je ulaznom funkcijom. Pretvorba unutarnjeg stanja neurona u izlazni signal opisana je aktivacijskom funkcijom koja se detaljnije obrađuje u poglavlju \secref{sec:aktivacijske_fje}. Ulazna i aktivacijska funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ponekad granica između ulazne i aktivacijske funkcije nije jasna.
 
 \begin{equation}
 t(x) = (f \circ a)(x) = f(a(x))
