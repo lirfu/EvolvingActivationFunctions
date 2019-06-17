@@ -213,11 +213,14 @@ Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno
 
 \subsubsection{Gradijentni spust}
 \label{sec:gradijentni_spust}
-
-\todoimg{gradijentni spust unimodalna vs višemodalna (gdje preskoči brdo i uleti u bolji optimum)}
-\label{fig:gradientni_spust}
-
 Gradijentni spust je algoritam pronalaska minimuma funkcije vođen gradijentom te funkcije. Za zadanu početnu točku iterativno se pomiče u smjeru suprotnom od gradijenta funkcije u toj točki dok ne zadovolji neki od uvjeta zaustavljanja. Na strmim funkcijama gradijent je često prevelik i može izazvati oscilaciju ili divergenciju \figref{fig:oscilira_divergira}. Stoga se gradijent pri pomaku skalira koeficijentom pomaka $\mu$. Dobro odabran koeficijent pomaka može osigurati bržu konvergenciju, a kod višemodalnih funkcija i pronalazak boljeg optimuma \figref{fig:gradientni_spust}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.45]{grad_descent_modality.pdf}
+\caption{Za razliku od unimodalnih, višemodalne funkcije mogu navesti gradijentni spust na nemonotoni spust.}
+\label{fig:gradientni_spust}
+\end{figure}
 
 Početna točka utječe na ishod algoritma. Kod višemodalnih funkcija s optimumima različitih kvaliteta, početna točka može definirati u koji će lokalni optimum algoritam konvergirati \figref{fig:pocetna_tocka}.
 \newline
@@ -238,13 +241,21 @@ $\vec{x}_{i+1} \gets \vec{x}_i - \eta \cdot \vec{g}_i$
 \label{alg:grad_spust}
 \end{algorithm}
 
-\todoimg{gradijentni spust stope spuštanja (velka, mala, taman)}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{grad_descent_rate.pdf}
+\caption{Prikazan je utjecaj premalog (plavo), prevelikog (crveno) i optimalnog (zeleno) koeficijenta spusta kroz dvije iteracije. Odabir koeficijenta utječe na brzinu spusta i kvalitetu konačnog rješenja.}
 \label{fig:oscilira_divergira}
+\end{figure}
 
 Broj iteracija definira broj pomaka od početne točke, što definira i trajanje algoritma. Generalno želi se skratiti vrijeme pretraživanja te povećati koeficijent spusta kako bi se koristilo manje pomaka. No u praksi se najčešće nailazi na višemodalne funkcije sa strmim regijama koje izazivaju oscilacije i mogu izazvati divergenciju. Stoga se češće koriste manji pomaci kroz više iteracija. Dodatno se mogu dodati modifikacije gradijenta koje nude ograničavaju veličinu gradijenta (odsijecanje gradijenta i sl.).
 
-\todoimg{gradijentni spust s početnim točkama (jedna ode u lok, jedna ode u glob, jedna zapne desno na platou)}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{grad_descent_start.pdf}
+\caption{Prikazan je utjecaj odabira početne točke na kvalitetu pronađenog optimuma. Loše odabrana točka (desno) može zaustaviti spust.}
 \label{fig:pocetna_tocka}
+\end{figure}
 
 Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo mali, a sama regija je s obzirom na pomake ogromna \figref{fig:pocetna_tocka}. Kad gradijent postane neupotrebljivo malen kaže se da je \textit{nestao}. U takvim slučajevima pomaže dodavanje momenta koji se akumulira kroz više iteracija i dodaje vektoru gradijenta. Kad algoritam naiđe na regiju s vrlo malim gradijentima, moment pokušava izvući algoritam iz visoravni pomičući ga u smjeru koji je akumuliran. Kako moment ne bi izvukao algoritam iz optimuma, dodaje mu se koeficijent \textit{zaboravljanja} kojim se stari vektor momenta djelomično zaboravlja u korist novog vektora pomaka (jednadžba \ref{eq:moment_update}). Moment može pomoći i pri zaobilaženju lokalnih optimuma \figref{fig:pocetna_tocka}.
 
@@ -256,8 +267,12 @@ Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo m
 \end{split}
 \end{equation}
 
-\todoimg{moment prije i na visoravni, moment za savladavanje brda}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{grad_descent_moment.pdf}
+\caption{Prikazan je utjecaj momenta na savladavanje platoa i izbočina. Debljina kružnice označava veličinu momenta.}
 \label{fig:visoravan}
+\end{figure}
 
 Algoritam je primjenjiv na funkcije proizvoljne dimenzionalnosti uz pretpostavku derivabilnosti u svakoj točki. Za proizvoljnu realnu funkciju, uz dobro odabrane hiperparametre, algoritam će konvergirati u jedan od lokalnih optimuma, no algoritam generalno nema garanciju konvergencije u globalni optimum. Garanciju pronalaska globalnog optimuma nudi jedino za trivijalne unimodalne funkcije uz odgovarajuće hiperparametre algoritma \figref{fig:gradientni_spust}.
 
@@ -406,7 +421,7 @@ S obzirom da se mreža sastoji od ulančanih nelinearnih neurona s parametrima, 
 \subsubsection{Stohastički gradijentni spust}
 U prošlom poglavlju korištena je funkcija gubitka na jednom podatkovnom paru, no želi se minimizirati očekivanje funkcije gubitka \eqref{eq:negloglikelyhood_expect} na cijelom podatkovnom skupu jer se želi izgraditi model da aproksimira čitavu uzorkovanu funkciju što bolje. Nažalost, podatkovni skupovi poput spomenutog u poglavlju \ref{sec:dpa_datasets} vrlo su veliki i nije ih praktično koristiti pri optimizaciji gradijentom jer bi se čitavi morali držati u brzoj memoriji. Ovo predstavlja velik problem pri računanju s grafičkim karticama. Očekivanje gubitka služi nam za procjenu smjera i veličine gradijenta. Ako se gradijent procjenjuje na čitavom podatkovnom skupu on će nas dovesti do prvog optimuma koji najčešće nije dobar, odnosno snažno ovisi o odabiru početne točke. 
 
-S druge strane, ako se gradijent računa na pojedinom podatkovnom paru kao u \eqref{eq:loss_classification} ostvareno je stohastičko kretanje jer će svaki primjer usmjeriti gradijent u drugom smjeru. Posljedica toga je dulje vrijeme pretrage, no veća otpornost na loše lokalne optimume. Iako će algoritam generalno konvergirati, postupak je zahtjevan jer za svaki primjer podatkovnog skupa treba provesti korak algoritma. Ovaj problem također ograničava svojstvo ubrzanja grafičkim karticama koje nude masivnu paralelizaciju operacija nad podatcima.
+S druge strane, ako se gradijent računa na pojedinom podatkovnom paru kao u \eqref{eq:loss_classification} ostvareno je stohastičko kretanje jer će svaki primjer usmjeriti gradijent u drugom smjeru. Posljedica toga je duže vrijeme pretrage, no veća otpornost na loše lokalne optimume. Iako će algoritam generalno konvergirati, postupak je zahtjevan jer za svaki primjer podatkovnog skupa treba provesti korak algoritma. Ovaj problem također ograničava svojstvo ubrzanja grafičkim karticama koje nude masivnu paralelizaciju operacija nad podatcima.
 
 Iz navedenih razloga želi se vršiti procjena gradijenta na "nekoliko" primjera. Podskup takvih primjera naziva se \textbf{mini-grupa} \engl{mini-batch}. Najčešće se uzima najveći broj primjera koji grafička kartica može efikasno obraditi i koji je potencija broja 2. Mini-grupe i dalje zadržavaju stohastičnost kretanja gradijenta (posebice ako je veličina manja od broja klasa), ali procjenjuju bolje od potpuno stohastičnog te brže konvergiraju. Sada formula \eqref{eq:negloglikelyhood_expect_minibatch} poprima oblik koji odgovara očekivanju pojedine mini-grupe $\minibatch_i$.
 \begin{equation}
@@ -452,6 +467,12 @@ Tijekom optimizacije gradijentnim spustom uz fiksnu stupu učenja optimizacija �
 %Ključnim iteracijama mogu se proglasiti one u kojima je detektirana konvergencija ili divergencija. Taj pristup omogućava nastavak pretrage, no problem je kako sa sigurnošću detektirati konvergenciju ili divergenciju. Tipično učenje mreže nije monotono, tj. gubitak mreže može na neko vrijeme rasti prije no što nastavi padati, što odgovara ponašanju u lokalnom optimumu. U tom slučaju smanjivanje stope učenja je nepoželjno.
 
 Pristup koji se koristi u ovom radu je zadanu početnu stopu u svakoj iteraciji pomnožiti s konstantom manjom od 1, odnosno stopa se konstantno smanjuje. Korištenje stohastičkog gradijentnog spusta postupak vodi pretragu na sve finije regije. Postupak je sličan postupku simuliranog kaljenja gdje se smanjivanjem temperature sustava smanjuje njegova stohastičnost i postupak konvergira u sve finije regije rješenja. Iako bi u teoriji Adam trebao biti dovoljan, preliminarni eksperimenti pokazuju da dodani mehanizam pomaže učenju mreže.
+
+Dodatno, pokazalo se korisnim koristiti monotono smanjivanje stope učenja tokom učenja. Smanjivanje stope učenja pri stohastičkom gradijentnom spustu smanjuje varijancu gradijenata te omogućava stabilnije i preciznije učenje. U radu se koristi ekponencijalno opadanje stope učenja po epohama. Prije svake epohe, stopa učenja se izračuna prema formuli \eqref{eq:learning_rate_decay}, gdje je $e$ indeks epohe.
+\begin{equation}
+\label{eq:learning_rate_decay}
+\eta_e = \eta_0 \cdot 0.99^e,\quad e \in [0, N]
+\end{equation}
 
 \subsubsection{Inicijalizacija parametara}
 Inicijalizacija parametara mreže odgovara odabiru početne točke pri gradijentnom spustu. Dobrom inicijalizacijom može se osigurati pronalazak boljeg optimuma te u kritičnim slučajevima i osigurati konvergencija mreže. S obzirom da neuronske mreže posjeduju jasnu strukturu (što je posebno izraženo u slojevitim arhitekturama) inicijalizacija ima dodatne utjecaje. U potpuno povezanim slojevima želi se postići da svaki neuron vrši ekstrakciju značajki. Pri tome, u efikasnom sloju svaki će neuron stvoriti svoju značajku. Ako je više neurona inicijalizirano dovoljno slično, ti neuroni će naučiti izvlačiti iste značajke. Kaže se da je došlo do \textbf{koadaptacije neurona}.
@@ -499,9 +520,7 @@ y_i = \gamma \cdot h_i + \beta
 \label{sec:regularizacija}
 Decizijska granica opisuje točke u prostoru značajki za koje model dvoji između dviju ili više klasa. Geometrijski, decizijska granica može se interpretirati kao presjek dviju ili više ploha u hiperprostoru. Pri optimizaciji model prilagođava decizijsku granicu kako bi što bolje razdvojio primjere iz podatkovnog skupa koji su različitih klasa, a obuhvatio primjere iste klase. Podatkovni skupovi najčešće sadrže šum zbog nesavršenog uzorkovanja stvarne funkcije, pogrešnog označavanja ili višeznačnosti primjera. Bez regularizacije, model će s ciljem minimiziranja gubitka svoju decizijsku granicu saviti kako bi što ispravnije obuhvatio sve primjere pa čak i šum. Tada se kaže da je model počeo učiti šum odnosno da je \textbf{prenaučen}. Na prenaučenost su posebno osjetljivi složeni modeli kao što su neuronske mreže.
 
-\todoimg{podnaučena, generalizira, prenaučena}
-
-Kako bi se spriječila prenaučenost ili barem ublažila, koriste se tehnike regularizacije. Pri tome se ne smije pretjerati jer suviše snažna regularizacija može ograničiti sposobnost učenja te model postaje \textbf{podnaučen}. Stoga je potrebno pronaći balans između složenosti modela i jačine regularizacije za koji model dobro \textbf{generalizira}. Pri uporabi neuronskih mreža obično se odabire složen model na koji se primjenjuju razne tehnike regularizacije.
+Kako bi se ublažila prenaučenost modela koriste se tehnike regularizacije. Pri tome se ne smije pretjerati jer suviše snažna regularizacija može ograničiti sposobnost učenja te model može postati \textbf{podnaučen}. Stoga je potrebno pronaći dobar omjer između složenosti modela i jačine regularizacije kako bi dobiveni model dobro \textbf{generalizirao}. Pri uporabi neuronskih mreža obično se odabire vrlo složen model na koji se primjenjuju razne tehnike regularizacije.
 
 \subsubsection{Regularizacija parametara}
 Prenaučenost je često posljedica velikih normi vektora parametara. Stoga se u funkciju gubitka dodaje regularizacijski član po težinama $\Omega(\theta)$. Utjecaj regularizacije moguće je mijenjati hiperparametrom $\alpha$.
@@ -532,17 +551,11 @@ U ovom se radu ne koristi regularizacija šumom jer bi mogla imati nepredvidivi 
 \subsubsection{Rano zaustavljanje}
 Pri učenju modela funkcija gubitka na skupu za učenje i testiranje generalno opada, no u jednom trenu gubitak generalizacije počinje rasti. Zaustavi li se učenje u trenutku kada je gubitak generalizacije najmanji dobiva se optimalan model za zadane hiperparametre. U praksi te funkcije neće biti naročito glatke zbog stohastičkog gradijentnog spusta te će greška generalizacije povremeno i rasti kako savladava lokalne optimume.
 
-Postupak ranog zaustavljanja tretira broj epoha kao hiperparametar koji se pretražuje po liniji. No umjesto da za svaku vrijednost broja epoha nanovo trenira model, ovdje se trenira jednom te odabire vrijednost za koju model generalizira najbolje. To upućuje na potrebu unakrsne validacije \secref{sec:crossval}.
+Postupak ranog zaustavljanja tretira broj epoha kao hiperparametar koji se pretražuje po liniji. No umjesto da se za svaku vrijednost broja epoha nanovo trenira model, ovdje se trenira jednom i odabire vrijednost za koju model generalizira najbolje. Pri mjerenju generalizacije modela koristi se unakrsna validacija \secref{sec:crossval}.
 
 \todoeq{Algoritam ranog zaustavljanja}
 
 U ovom radu detekcija pretreniranosti radi se usporedbom s najboljom pronađenom vrijednosti funkcije gubitka na skupu za validaciju. Ako vrijednost gubitka raste $n$ uzastopnih epoha, to je pokazatelj da se mreža počela pretrenirati. Kao dodatan mehanizam ranijeg zaustavljanja, koji služi za uštedu na vremenu provedenom učenjem, koriste se detekcije divergencije i konvergencije. Divergencija je detektirana ako vrijednost gubitka na skupu za učenje raste, a konvergencija ako se taj gubitak mijenja za manje od $p\%$ najboljeg pronađenog gubitka na skupu za učenje kroz $n$ uzastopnih epoha. Sva tri mehanizma doprinose brojaču epoha i kada brojač dostigne vrijednost $n$ učenje se prekida i odabire se epoha s minimalnim gubitkom na skupu za validaciju. Ako ni jedan mehanizam nije aktiviran, brojač se ponovno postavi na $0$.
-
-\todoeq{mehanizam detekcije pretreniranosti, konvergencije i dvg}
-
-\begin{algorithm}
-
-\end{algorithm}
 
 \subsection{Odabir hiperparametara}
 Do ovdje su navedeni hiperparametri koji se koriste pri spomenutim tehnikama optimizacije neuronske mreže (poglavlja \ref{sec:gradijentni_spust} - \ref{sec:regularizacija}). No neuronska mreža ima i strukturalne hiperparametre.
@@ -686,13 +699,7 @@ Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skrive
 
 \subsubsection{Generalizacija}
 \label{sec:generalizacija}
-\todoimg{underfit-fit-overfit}
-
-Model sa svojstvom generalizacije dobro modelira stvarnu funkciju te ispravno radi na neviđenim primjerima.
-
-\todoimg{train-test U curve}
-
-Ovo je posebno izraženo kod klasifikacije slika gdje za jednu generičku klasu (npr. automobil) postoji neprebrojivo mogućih slika s različitim modelom, bojom ili kutom gledanja automobila. No dostupno je svega nekoliko stotina tisuća primjera koji se smatraju reprezentativnim za tu klasu i njima se želi izgraditi klasifikator koji je robustan na većinu perturbacija slike.
+Model sa svojstvom generalizacije dobro modelira stvarnu funkciju te ispravno radi i na neviđenim primjerima. Ovo je posebno važno pri klasifikaciji slika gdje za pojedinu klasu (npr. automobil) postoji neprebrojivo mogućih slika s različitim modelom, bojom ili kutom gledanja automobila. No dostupno je svega nekoliko stotina tisuća primjera koji se smatraju reprezentativnim za tu klasu i njima se želi izgraditi klasifikator koji je robustan na većinu perturbacija slike. Kako bi model što bolje naučio stvarnu funkciju potreban je velik broj označenih uzoraka. S obzirom da je označavanje podataka često vrlo skupocjeno, istražuju se metode automatizacije poput polu-nadziranog učenja i aktivnog učenja \citep{active_learn}. Augmentacija podataka raznim metodama stvara više primjera iz jednog uzorka stvarne funkcije čime se proširuje podatkovni skup bez potrebe za označavanjem te podiže generalizacijsku moć modela. No, čak i uz navedene metode model i dalje neće dovoljno dobro generalizirati stvarnu funkciju što potvrđuje postojanje neprijateljskih primjera \citep{intriguing_props}.
 
 \subsection{Problemi}
 \subsubsection{Odabir hiperparametara}
@@ -703,7 +710,7 @@ Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njih
 Prolaskom kroz duboku mrežu gradijent se množi matricama težina $\mat{W_i}$. Uzastopno množenje može dovesti do problema ako su svojstvene vrijednosti matrice udaljene od $\pm 1$. Rastavom matrice u umnošku ponovljenom $t$ puta \eqref{eq:vanish_grad} vidljiv je problem. Svojstvene vrijednosti veće od $1$ će rasti, a one manje od $1$ će se smanjivati. \citep{goodfellowbook}
 \begin{equation}
 \label{eq:vanish_grad}
-\mat{W}^t = (\mat{V} diag(\mat{\lambda}) \mat{V}^{-1})^t = \mat{V} diag(\mat{\lambda})^t\mat{V}^{-1}
+\mat{W}^t = (\mat{V} \cdot diag(\mat{\lambda}) \cdot \mat{V}^{-1})^t = \mat{V} \cdot diag(\mat{\lambda})^t \cdot \mat{V}^{-1}
 \end{equation}
 
 Problem eksplodirajućeg gradijenta rješava se odrezivanjem gradijenta koji je prevelik. Problemu nestajućeg gradijenta moguće je pristupiti uvođenjem preskočnih veza u arhitekturu \citep{highwaynet,resnet,densenet} te odabirom aktivacijske funkcije s linearnim svojstvima \citep{elish}.
@@ -726,6 +733,7 @@ Za odabir aktivacijske funkcije ne postoji jasno pravilo. U praksi se odabiru po
 
 \todo{dokaz da su monotone fje dobre}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Aktivacijske funkcije s učećim parametrima}
 \todo{članak: učeći parametri u fjama (onaj stari)}
 
@@ -734,13 +742,14 @@ U radu \citet{trained_func} autori istražuju učeće aktivacijske funkcije ...
 U radu TAF...
 
 \todo{Spomeni i složenije metode: \citep{network_in_network}}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Periodične aktivacijske funkcije}
+U rezultatima pojavljuju se periodične funkcije. Stoga se u ovom poglavlju navode neka njihova svojstva.
+
 \todo{članak: fourier mreža s periodičkim fjama}
 
 Periodične aktivacijske funkcije stvaraju brojne lokalne optimume u funkciji gubitka koji otežavaju učenje neuronskih mreža. S obzirom da se mreže treniraju stohastičkim gradijentnim spustom većina lokalnih optimuma nije vidljiva i ublažava naglašenost lokalnih optimuma. Pri uporabi sinusoide autori pokazuju da će model konvergirati samo ako su težine inicijalizirane dovoljno malim vrijednostima da ulaz ne prelazi interval monotonosti sinusa $[-\frac{\pi}{2}, \frac{\pi}{2}]$. U usporedbi sinusoide s ograničenom sinusoidom na potpuno povezanom modelu pokazuje se nezamjetna razliku u performansama iako oko $40\%$ ulaza neurona završava izvan intervala monotonosti, što upućuje da modeli ne ovise o periodičnosti funkcije. U primjeni na rekurzivnim modelima ne ostvaruje konzistentnu prednost nad monotonim tangensom hiperbolnim zbog čega članak nije prošao postupak recenzije. \citep{taming_waves}
-
-\todo{ostale reference iz taming the waves}
 
 \section{Popularne aktivacijske funkcije}
 U nastavku su navedene popularne aktivacijske funkcije koje je autor pronašao u literaturi i koje su isprobane u ovom radu. Funkcije su pasivne u smislu da ne sadrže učeće parametre te njihov izlaz ovisi isključivo o ulazu  u funkciju. Za svaku funkciju napisana je formula i iscrtan izgled funkcije i njene derivacije te navedena neka poznata svojstva.
@@ -901,11 +910,7 @@ f'(x) =
 \end{split}
 \end{equation}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
-
-
+Funkcija je generalizacija funkcije $ReLU$ \secref{func:relu} kojoj je vrijednost praga $0$. Predložena je kao rješenje za pojavu negativnih pragova pri učenju autoenkodera s metodama regularizacije kao što su sažimajući autoenkoder \engl{contractive autoencoder} i autoenkoder za otklanjanje šuma \engl{denoising autoencoder}. Primjenom funkcije bez regularizacije postižu se usporedivi ili bolji rezultati. Za vrijednost praga tipično se uzima $\theta = 1$. \citep{threlu}
 
 \iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{(CReLU)}
@@ -949,7 +954,7 @@ Funkcija $Softplus$ je strogo pozitivna monotono rastuća glatka funkcija nalik 
 
 U odnosu na $ReLU$, funkcija nema problem nestajućeg gradijenta jer propušta gradijent u negativnoj domeni i ostvaruje veće vrijednosti od $ReLU$. To je svojstvo posebna prednost nad $ReLU$ i sigmoidom pri korištenju tehnike Dropout kojom se blokira doprinos velikog broja neurona. Unatoč teoretskim prednostima funkcija rijetko postiže zadovoljive rezultate. \citep{softplus}
 
-\todoimg{usporedba softplus i relu, možda zgodno za pokazati}
+%\todoimg{usporedba softplus i relu, možda zgodno za pokazati}
 
 \iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Noisy softplus}
@@ -1063,7 +1068,7 @@ f'(x) = \sigma(\beta x) \cdot (1 + \beta x \cdot (1-\sigma(\beta x))
 \beta \text{ može biti definiran ili je učeći parametar}
 \end{equation*}
 
-Funkcija Swish je pronađena pretragom temeljenom na potpornom učenju. Funkcija zadovoljava strukturu kompozicije binarne (umnožak) i dviju unarnih operacija (identitet i sigmoida). Ispitivanje funkcije na nekoliko podatkovnih skupova i na nekoliko dubokih arhitektura s preskočnim vezama ostvaruje konzistentno bolje rezultate u odnosu na nekoliko dotadašnjih najboljih funkcija bez mijenjanja originalnih hiperparametara. Udubina funkcije na negativnoj domeni pokazuje se važnom jer se većina izlaza nalazi upravo tamo. Parametar $\beta$ interpolira funkciju između linearne funkcije ($\beta=0$) i funkcije $ReLU$ ($\beta \rightarrow \infty$). \citep{swish}
+Funkcija Swish je pronađena pretragom temeljenom na potpornom učenju. Funkcija zadovoljava strukturu kompozicije binarne (umnožak) i dviju unarnih operacija (identitet i sigmoida). Ispitivanje funkcije na nekoliko podatkovnih skupova i na nekoliko dubokih arhitektura s preskočnim vezama ostvaruje konzistentno bolje rezultate u odnosu na nekoliko dotadašnjih najboljih funkcija bez mijenjanja originalnih hiperparametara. Udubina funkcije na negativnoj domeni pokazuje se važnom jer se većina izlaza nalazi upravo tamo. Parametar $\beta$ interpolira funkciju između linearne funkcije ($\beta=0$) i funkcije $ReLU$ ($\beta \rightarrow \infty$). Parametar $\beta$ može biti učeći parametar koji pospješuje učenje nekih arhitektura, no tipično se postavlja na fiksnu vrijednost $1$. \citep{swish}
 
 \subsection{ELiSH}
 \label{func:elish}
@@ -1222,6 +1227,8 @@ f'(x) =
 \todo{svojstva}
 \todo{problemi}
 
+Funkcija je tvrda inačica sigmoide nastala Taylor-ovim razvojem linearnog dijela sigmoide oko $0$. Funkcija je .... \citep{hardsigm}
+
 \subsection{Tangens hiperbolni (tanh)}
 \label{func:tanh}
 
@@ -1300,9 +1307,7 @@ tanh^{*'}(x) = \frac{1+sgn(x) \cdot (2x + 4 \cdot 1.41645 \cdot x^3)}{(1 + |x| +
 \end{split}
 \end{align}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+Racionalna aproksimacija tangensa hiperbolnog prati originalnu funkciju s relativnom greškom manjom od $1.8\%$, no uvelike ubrzava njegovo računanje. Umjesto zahtjevnog računanja eksponenta prirodne konstante ova aproksimacija zahtjeva samo 11 naredbi (uzastopno kvadriranje ulaza). Funkcija se pokazala boljom od $ReLU$ na problemu detekcije lica u slikama. Odabir konstanti kojima su skalirani ulaz i izlaz funkcije nije opisan. \citep{rattanh}
 
 \subsection{Ispravljeni tanh}
 \engl{Rectified tanh}
@@ -1316,12 +1321,25 @@ tanh^{*'}(x) = \frac{1+sgn(x) \cdot (2x + 4 \cdot 1.41645 \cdot x^3)}{(1 + |x| +
 
 \begin{equation}
 \label{eq:rectanh}
-???
+\begin{split}
+f(x) &=
+\begin{cases}
+tanh(x),	 		& \text{ako } x > 0 \\
+0,	& \text{inače}
+\end{cases} \\
+&= ReLU(tanh(x))
+\end{split}
+\qquad
+\begin{split}
+f'(x) =
+\begin{cases}
+1-tanh^2(x),	 		& \text{ako } x > 0 \\
+0,	& \text{inače}
+\end{cases}
+\end{split}
 \end{equation}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+Ispravljeni tangens hiperbolni je strogo pozitivan, sadrži oštru nelinearnost u $0$ i na pozitivnoj domeni prelazi u zasićenje. Funkcija je uvedena radi ispitivanja utjeće li magnituda izlaza na klasifikaciju s Dropout-om ili je dovoljna binarna informacija je li neuron upaljen ili ugašen. Pri inferenciji mreže izlazi prolaze kroz 0-1 funkciju te postaju binarni. Usporedbom funkcije s $ReLU$ na potpuno povezanom modelu pokazuje se da su performanse malo lošije. Interpretacija autora je da modeli ne ostvaruju značajan doprinos od neograničenog linearnog dijela $ReLU$ funkcije. \citep{rectanh}
 
 \subsection{Softmax}
 
@@ -2122,7 +2140,7 @@ U ovom poglavlju prikazana je usporedba performansi popularnih aktivacijskih fun
 \subsubsection{Dropout}
 Dropout \citep{dropout} je tehnika regularizacije neuronskih mreža koja ostvaruje dobre rezultate na vrlo dubokim i širokim modelima koji su skloni pretreniranju i koadaptaciji neurona. Radi tako da za vrijeme učenja mreže proporcionalno zadanoj vjerojatnosti nasumično isključuje neurone u oba smjera. Tehnika efikasno sprječava koadaptaciju neurona širokih slojeva jer je vjerojatnost da će dva neurona koji su skloni koadaptaciji biti identično naučena vrlo mala. Isključivani neuroni će ipak učiti jer vjerojatnost da će neuron ostati isključen kroz više iteracija obrnuto proporcionalna broju iteracija.
 
-Negativna posljedica Dropout-a je dulje vrijeme učenja jer je potrebno više iteracija da svaki neuron dobije dovoljan broj efektivnih iteracija učenja. Ta činjenica nije korisna za postupke neuroevolucije kojima trošak evaluacije definira traktabilnost postupka. U sklopu projekta, provedeni su i preliminarni eksperimenti koji su dokazali spomenutu neučinkovitost.
+Negativna posljedica Dropout-a je duže vrijeme učenja jer je potrebno više iteracija da svaki neuron dobije dovoljan broj efektivnih iteracija učenja. Ta činjenica nije korisna za postupke neuroevolucije kojima trošak evaluacije definira traktabilnost postupka. U sklopu projekta, provedeni su i preliminarni eksperimenti koji su dokazali spomenutu neučinkovitost.
 
 \subsubsection{Tensorflow Java API}
 \todo{probo, ali je još u razvoju (puno toga je falilo)}
