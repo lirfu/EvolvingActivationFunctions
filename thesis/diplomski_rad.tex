@@ -193,7 +193,7 @@ Način na koji se iz ulaza gradi unutarnje stanje neurona opisan je ulaznom funk
 t(x) = (f \circ s)(x) = f(s(x))
 \end{equation}
 
-U literaturi postoje nekonzistencije oko pojma aktivacijske funkcije. U preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno prema brojnim današnjim radovima. Neispravno je i sa stajališta računalne neuroznanosti prema kojoj aktivacijska funkcija označava funkciju učestalosti okidanja neurona u ovisnosti o ukupnom statičkom ulazu \citep[p.~234]{neuroscience}. U starijoj literaturi pojam aktivacijske i prijenosne funkcije često se koristi ekvivalentno \citep{evolving_transfer, evo_parsimonious}. U prijedlogu standardizacije \citet{ieee_standardization} aktivacijska funkcija je definirana: \textit{„Algoritam za računanje vrijednosti aktivacije neurona kao funkcije njenog ukupnog ulaza. Ukupan ulaz je tipično težinska suma ulaza u neuron“}. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi gore spomenuta nomenklatura (ulazna, aktivacijska i prijenosna funkcija).
+U literaturi postoje nekonzistencije oko pojma aktivacijske funkcije. U preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno prema brojnim današnjim radovima. Neispravno je i sa stajališta računalne neuroznanosti prema kojoj aktivacijska funkcija označava funkciju učestalosti okidanja neurona u ovisnosti o ukupnom statičkom ulazu \citep[str.~234]{neuroscience}. U starijoj literaturi pojam aktivacijske i prijenosne funkcije često se koristi ekvivalentno \citep{evolving_transfer, evo_parsimonious}. U prijedlogu standardizacije \citet{ieee_standardization} aktivacijska funkcija je definirana: \textit{„Algoritam za računanje vrijednosti aktivacije neurona kao funkcije njenog ukupnog ulaza. Ukupan ulaz je tipično težinska suma ulaza u neuron“}. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi gore spomenuta nomenklatura (ulazna, aktivacijska i prijenosna funkcija).
 
 Najpopularnije ulazne funkcije jesu afina funkcija i unakrsna korelacija.
 Afina funkcija \eqref{eq:affine} je skalarni produkt vektora ulaza s vektorom težina neurona uz dodatak vrijednosti praga. Parametri neurona definiraju nagib i pomak ravnine u prostoru ulaza koja opisuje ulaz neurona. Primjenjuje se kada se ulazi u model mogu zapisati vektorom značajki čiji raspored nije bitan.
@@ -204,7 +204,8 @@ s(\vec{x};\mat{W},\vec{b})=\mat{W}^T \cdot \vec{x} + \vec{b}
 
 Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Unakrsna korelacija vrlo je slična operatoru konvolucije te se u literaturi gotovo uvijek naziva konvolucijom. Često se koristi za ekstrakciju obrazaca u slikama \citep{alexnet}, no može se koristiti u problemima koji zahtijevaju obradu sljedova podataka. Jedan takav primjer je klasifikacija teksta pri kojoj slijed riječi gradi informaciju koja može služiti za detekciju sentimenta i ostale primjene \citep{char_cnn}.
 
-Ulazne funkcije temeljene na udaljenosti vektora koriste se u radijalnim baznim funkcijama...\todo{*Spomeni RBF} U radu \citet{softsign} klasičnoj afinoj funkciji pribraja se L2 norma dodatne linearne funkcije čije elemente nazivaju \textit{kvadratnim filtrima}. Empirijski pokazuju da dodavanje kvadratnih filtara pospješuje performanse modela.
+Ulazne funkcije temeljene na udaljenosti vektora koriste se u radijalnim baznim funkcijama...\todo{*Spomeni RBF} 
+U radu \citet{softsign} klasičnoj afinoj funkciji pribraja se L2 norma dodatne linearne funkcije čije elemente nazivaju \textit{kvadratnim filtrima}. Empirijski pokazuju da dodavanje kvadratnih filtara pospješuje performanse modela.
 
 
 Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i gradijenti teku kroz mrežu, a time utječu na brzinu učenja i inferencije neuronske mreže. Najčešće se koriste slojevite unaprijedne arhitekture zbog jednostavnosti izvedbe. Unaprijedne arhitekture propuštaju podatke samo u jednom smjeru odnosno već izračunati neuroni se ne izračunavaju ponovno, što je posebno pogodno za optimizaciju širenjem unatrag\secref{sec:backprop}. Slojevite arhitekture omogućuju paralelizaciju izvođenja operacija na grafičkim karticama što značajno ubrzava postupke učenja i inferencije. Pri definiciji slojevite arhitekture najčešće je dovoljno navesti samo redoslijed slojeva, no ponekad je potrebno definirati i način povezivanja slojeva npr. pri uporabi preskočnih veza \citep{highwaynet, resnet, densenet}. Prvi sloj služi za postavljanje ulaza mreže i naziva se ulaznim slojem mreže. Posljednji sloj mreže služi za ekstrakciju izlaza te mjerenje kakvoće mreže i naziva se izlaznim slojem mreže. Svi slojevi između ulaznog i izlaznog sloja nazivaju se skrivenim slojevima.
@@ -273,7 +274,7 @@ Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo m
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{grad_descent_moment.pdf}
-\caption{Prikazan je utjecaj momenta na savladavanje platoa i izbočina. Debljina kružnice označava količinu momenta.}
+\caption{Prikazan je utjecaj momenta na savladavanje platoa i izbočina. Debljina kružnice predočava količinu momenta.}
 \label{fig:visoravan}
 \end{figure}
 
@@ -386,7 +387,8 @@ L(\theta \probsep x,y) &= - \sum_{i=1}^C y_i \log \frac{\exp(s_i(x))}{\sum_{j=1}
 
 Derivacijom \eqref{eq:loss_classification_softmax} po ulazima, koristeći pravilo \eqref{eq:partial_rule} dobivamo:
 \begin{align}
-\dfrac{L(\theta \probsep x,y)}{x} &= \dfrac{L(\theta \probsep x,y)}{\vec{s}(x)} \cdot \dfrac{\vec{s}(x)}{x} \nonumber \\
+\label{eq:loss_classification_softmax_deriv}
+\dfrac{L(\theta \probsep x,y)}{x} &= \dfrac{L(\theta \probsep x,y)}{\vec{s}(x)} \cdot \dfrac{s(x)}{x} \nonumber \\
 &= \bigg[ \vec{s}(x) - y \bigg] \cdot \dfrac{s(x)}{x}
 \end{align}
 
@@ -472,7 +474,7 @@ Tijekom optimizacije gradijentnim spustom uz fiksnu stupu učenja optimizacija �
 
 Pristup koji se koristi u ovom radu je zadanu početnu stopu u svakoj iteraciji pomnožiti s konstantom manjom od 1, odnosno stopa se konstantno smanjuje. Korištenje stohastičkog gradijentnog spusta postupak vodi pretragu na sve finije regije. Postupak je sličan postupku simuliranog kaljenja gdje se smanjivanjem temperature sustava smanjuje njegova stohastičnost i postupak konvergira u sve finije regije rješenja. Iako bi u teoriji Adam trebao biti dovoljan, preliminarni eksperimenti pokazuju da dodani mehanizam pomaže učenju mreže.
 
-Dodatno, pokazalo se korisnim koristiti monotono smanjivanje stope učenja tokom učenja. Smanjivanje stope učenja pri stohastičkom gradijentnom spustu smanjuje varijancu gradijenata te omogućava stabilnije i preciznije učenje. U radu se koristi ekponencijalno opadanje stope učenja po epohama. Prije svake epohe, stopa učenja se izračuna prema formuli \eqref{eq:learning_rate_decay}, gdje je $e$ indeks epohe.
+Dodatno, pokazalo se korisnim koristiti monotono smanjivanje stope učenja tijekom učenja. Smanjivanje stope učenja pri stohastičkom gradijentnom spustu smanjuje varijancu gradijenata te omogućava stabilnije i preciznije učenje. U radu se koristi eksponencijalno opadanje stope učenja po epohama. Prije svake epohe, stopa učenja se izračuna prema formuli \eqref{eq:learning_rate_decay}, gdje je $e$ indeks epohe.
 \begin{equation}
 \label{eq:learning_rate_decay}
 \eta_e = \eta_0 \cdot 0.99^e,\quad e \in [0, N]
@@ -1054,7 +1056,7 @@ f'(x) = \lambda
 \end{split}
 \end{equation}
 
-Aktivacijska funkcija $SELU$ izgrađena je za ostvarivanje samo-normalizirajuće neuronske mreže kojom je moguće izgraditi duboke potpuno povezane modele bez potrebe za eksplicitnim tehnikama normalizacije. Funkcija naslijeđuje svojstvo otpornosti na nestajuće i eksplodirajuće gradijente od funkcije $ELU$ \secref{func:elu}. Primjenom funkcije na mreži s prilagođenom inicijalizacijom i regularizacijom ostvaruju se rezultati bolji od ekvivalentnih mreža s primjenjenim tehnikama normalizacije (normalizacija težina, slojeva ili grupom) te specijaliziranih mreža (HighwayNet \citep{highwaynet}, ResNet \citep{resnet}) na brojnim podatkovnim skupovima. Performanse samo-normalizirajućih mreža potkrijepljene su teorijom te su definirane vrijednosti parametara $\alpha \approx 1.6733$ i $\lambda \approx 1.0507$ za normalizirane ulaze u sloj. \citep{selu}
+Aktivacijska funkcija $SELU$ izgrađena je za ostvarivanje samo-normalizirajuće neuronske mreže kojom je moguće izgraditi duboke potpuno povezane modele bez potrebe za eksplicitnim tehnikama normalizacije. Funkcija nasljeđuje svojstvo otpornosti na nestajuće i eksplodirajuće gradijente od funkcije $ELU$ \secref{func:elu}. Primjenom funkcije na mreži s prilagođenom inicijalizacijom i regularizacijom ostvaruju se rezultati bolji od ekvivalentnih mreža s primijenjenim tehnikama normalizacije (normalizacija težina, slojeva ili grupom) te specijaliziranih mreža (HighwayNet \citep{highwaynet}, ResNet \citep{resnet}) na brojnim podatkovnim skupovima. Performanse samo-normalizirajućih mreža potkrijepljene su teorijom te su definirane vrijednosti parametara $\alpha \approx 1.6733$ i $\lambda \approx 1.0507$ za normalizirane ulaze u sloj. \citep{selu}
 
 \iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{(GELU)}
@@ -1217,9 +1219,7 @@ f'(x) = \sigma(x)(1-\sigma(x))
 \end{split}
 \end{equation}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+Sigmoida kao aktivacijska funkcija svoje korijene vuče iz biologije \citep[str.~16]{neuroscience}. Funkcija je kontinuirana i strogo pozitivna sa zasićenjem u $1$ na pozitivnoj domeni i zasićenjem u $0$ na negativnoj domeni. Funkciju se može smatrati relaksiranom funkcijom skoka. Za velike parametre neurona sigmoida se približava funkciji skoka te za malu perturbaciju ulaza oko 0 daje veliku promjenu izlaza što otežava postupak učenja. Derivacija sigmoide je zvonolika funkcija s vrhom u $0.25$. Množenjem gradijenta s njenom derivacijom \eqref{eq:loss_classification_softmax_deriv} gradijent se brzo smanjuje što pridonosi pojavi nestajućeg gradijenta. Iz tog razloga je gotovo nemoguće učiti duboke modele sa sigmoidom te su razvijene nove funkcije s ciljem očuvanja gradijenta.
 
 \subsection{Tvrda sigmoida}
 \label{func:hard_sigmoid}
@@ -1272,9 +1272,7 @@ f'(x) = 1 - tanh^2(x)
 \end{split}
 \end{equation}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+Tangens hiperbolni je sličan sigmoidi, no nije strogo pozitivan. Zasićenja u $\pm 1$ čine ga pogodnim za rekurzivne modele koji zahtijevaju sposobnost dodavanja i oduzimanja vrijednosti između slojeva. Derivacija je oštrija i poprima veće vrijednosti u odnosu na sigmoidu, s vrhom u $1$, što je pogodnije za prijenos gradijenta pri učenju dubokih i rekurzivnih modela.
 
 \subsection{Tvrdi tangens hiperbolni}
 \engl{Hard tanh}
@@ -1363,40 +1361,7 @@ f'(x) =
 \end{split}
 \end{equation}
 
-Ispravljeni tangens hiperbolni je strogo pozitivan, sadrži oštru nelinearnost u $0$ i na pozitivnoj domeni prelazi u zasićenje. Funkcija je uvedena radi ispitivanja utjeće li magnituda izlaza na klasifikaciju s Dropout-om ili je dovoljna binarna informacija je li neuron upaljen ili ugašen. Pri inferenciji mreže izlazi prolaze kroz 0-1 funkciju te postaju binarni. Usporedbom funkcije s $ReLU$ na potpuno povezanom modelu pokazuje se da su performanse malo lošije. Interpretacija autora je da modeli ne ostvaruju značajan doprinos od neograničenog linearnog dijela $ReLU$ funkcije. \citep{rectanh}
-
-\subsection{Softmax}
-
-\todoimg{}
-
-\begin{equation}
-\label{eq:softmax}
-\begin{split}
-f(\vec{x}) = \frac{e^{\vec{x}}}{\sum_ie^{\vec{x_i}}}
-\end{split}
-\qquad
-\begin{split}
-f'(x) = \frac{e^x}{1+e^x}
-\end{split}
-\end{equation}
-
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
-
-\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Maxout}
-
-\todoimg{}
-
-\begin{equation}
-???
-\end{equation}
-
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
-\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Ispravljeni tangens hiperbolni je strogo pozitivan, sadrži oštru nelinearnost u $0$ i na pozitivnoj domeni prelazi u zasićenje. Funkcija je uvedena radi ispitivanja utječe li magnituda izlaza na klasifikaciju s Dropout-om ili je dovoljna binarna informacija je li neuron upaljen ili ugašen. Pri inferenciji mreže izlazi prolaze kroz 0-1 funkciju te postaju binarni. Usporedbom funkcije s $ReLU$ na potpuno povezanom modelu pokazuje se da su performanse malo lošije. Interpretacija autora je da modeli ne ostvaruju značajan doprinos od neograničenog linearnog dijela $ReLU$ funkcije. \citep{rectanh}
 
 \subsection{Softsign}
 
@@ -1418,7 +1383,7 @@ f'(x) = \frac{1 + |x| - x \cdot sign(x)}{(1+|x|)^2}
 \end{split}
 \end{equation}
 
-Funkcija dijeli slićnost s tangensom hiperbolnim \secref{func:tanh}, no za razliku od eksponencijalno konvergirajuće funkcije $tanh$, $softsign$ konvergira kvadratno. Za razliku od $tanh$ čiji slojevi sekvencijalno prelaze u zasićenje, svi $softsign$ slojevi sporije prelaze u zasićenje i to rade zajednički. Aktivacije $tanh$ gomilaju se u ekstremima (u zasićenju) i u sredini, dok kod $softsign$ osim sredine većina aktivacija djeluje na zglobovima funkcije u kojima je nelinearnost najveća, a gradijenti i dalje prolaze. \citep{xavier}
+Funkcija dijeli sličnost s tangensom hiperbolnim \secref{func:tanh}, no za razliku od eksponencijalno konvergirajuće funkcije $tanh$, $softsign$ konvergira kvadratno. Za razliku od $tanh$ čiji slojevi sekvencijalno prelaze u zasićenje, svi $softsign$ slojevi sporije prelaze u zasićenje i to rade zajednički. Aktivacije $tanh$ gomilaju se u ekstremima (u zasićenju) i u sredini, dok kod $softsign$ osim sredine većina aktivacija djeluje na zglobovima funkcije u kojima je nelinearnost najveća, a gradijenti i dalje prolaze. \citep{xavier}
 
 Funkcija je originalno predstavljena u radu \citet{softsign_orig} i testirana s nekoliko eksperimenata u području računalnog vida. No, taj rad je u vremenu pisanja ovog rada bio nedostupan autorima. Stoga je ostavljena referenca za znatiželjne čitatelje.
 
@@ -1538,6 +1503,7 @@ f'(x) =
 Ograničeni kosinus autori nisu pronašli u literaturi, no navodi se zbog potrebe ispitivanja ovisnosti o periodičnosti kosinusa (po uzoru na poglavlje \ref{func:trsin}).
 \fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Parabola $x^2$}
 
 \begin{figure}[H]
@@ -1559,6 +1525,7 @@ f'(x) = 2x
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Kubna parabola $x^3$}
@@ -1584,6 +1551,7 @@ f'(x) = 3x^2
 \todo{problemi}
 \fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Gaussova krivulja bez normalizacije}
 
 \begin{figure}[H]
@@ -1607,6 +1575,44 @@ f'(x) = -2x \cdot f(x)
 \todo{koji problem rješava}
 \todo{svojstva}
 \todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Softmax}
+
+\begin{figure}[H]
+\includegraphics[width=.9\textwidth]{Softmax.pdf}
+\centering
+\caption{Tri različita ulazna pravca te odziv funkcije $Softmax$ i njene derivacije na pravce}
+\label{fig:softmax}
+\end{figure}
+
+\begin{equation}
+\label{eq:softmax}
+\begin{split}
+f(\vec{x}) = \frac{e^{\vec{x}}}{\sum_ie^{\vec{x}_i}}
+\end{split}
+\qquad
+\begin{split}
+f'(\vec{x}) = f(\vec{x}) \cdot (1-f(\vec{x}))
+\end{split}
+\end{equation}
+
+Softmax se tipično koristi kao izlazni sloj klasifikacijske mreže. Funkcija nije skalarna već na ulazu zahtjeva vektor. Eksponentom ulaza ističu se veće vrijednosti ulaza, a dijeljenjem sa sumom normaliziraju izlazi (suma izlaza je jednaka $1$). Time se izlaz mreže može smatrati vjerojatnosnom distribucijom što je izrazito korisno za zadatke klasifikacije. Osim što se iz izlaza može zaključiti koja je klasa najvjerojatnija, funkcija definira i koliko je mreža sigurna u svoju predikciju. Njenim korištenjem drastično se pojednostavljuje derivacija funkcije gubitka za klasifikaciju \eqref{eq:loss_classification_softmax} što ubrzava učenje mreže.
+% Korištenjem funkcije u skrivenim slojevima mreže ostvaruje se kaskada klasifikatora, jer time svaki sloj predstavlja klasifikator na temelju značajki prethodnog sloja.
+
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Maxout}
+
+\todoimg{}
+
+\begin{equation}
+???
+\end{equation}
+
+\todo{koji problem rješava}
+\todo{svojstva}
+\todo{problemi}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Adaptivne aktivacijske funkcije}
@@ -1790,8 +1796,8 @@ U radu \citet{elish} autori koriste hibridni genetski algoritam kako bi evoluira
 
 Rad \citet{cube_spline_func} predstavlja aktivacijsku funkciju definiranu kubnim splajnom. Koristi se genetski algoritam za pronalazak točaka kojima se interpolira aktivacijska funkcija te pronalazak arhitekture čitave mreže. Rezultati pokazuju da pronađene funkcije ostvaruju poboljšanje nad sigmoidom na zadatcima klasifikacije.
 
-\section{Genetsko programiranje s taboo listom}
-Klasičan algoritam genetskog programiranja često dovodi do stvaranja identičnih jedinki u populaciji što loše utječe na globalnost pretrage. Stoga se u ovom radu unosi primjena taboo liste u proces algoritma. Nakon stvaranja djeteta klasičnim koracima (križanje i mutacija) dodaje se dodatan korak u kome se dijete mutira dok ne postane jedinstveno. Kako algoritam ne bi zapeo definira se gornja granica dozvoljenog broja mutacija. Kada je stvoreno jedinstveno dijete, ono se dodaje u populaciju i zabilježi na kraj taboo liste.
+\section{Genetsko programiranje s tabu listom}
+Klasičan algoritam genetskog programiranja često dovodi do stvaranja identičnih jedinki u populaciji što loše utječe na globalnost pretrage. Stoga se u ovom radu unosi primjena tabu liste u proces algoritma. Nakon stvaranja djeteta klasičnim koracima (križanje i mutacija) dodaje se dodatan korak u kome se dijete mutira dok ne postane jedinstveno. Kako algoritam ne bi zapeo definira se gornja granica dozvoljenog broja mutacija. Kada je stvoreno jedinstveno dijete, ono se dodaje u populaciju i zabilježi na kraj tabu liste.
 \newline
 \newline
 \begin{algorithm}[H]
@@ -1799,9 +1805,9 @@ Klasičan algoritam genetskog programiranja često dovodi do stvaranja identičn
 \KwIn{funkcija $f(x)$}
 \KwIn{kriterij zaustavljanja $K$}
 \KwIn{veličina populacije $N$}
-\KwIn{veličina taboo liste $T$}
+\KwIn{veličina tabu liste $T$}
 $InicijalizirajPopulaciju(populacija, N)$ \;
-$taboo \gets StvoriPraznuTabooListu(T)$ \;
+$tabu \gets StvoriPraznuTabuListu(T)$ \;
 \While{$K$ nije zadovoljen}{
 $x^* \gets OdaberiNajbolju(x, populacija)$ \;
 definiraj novu populaciju: $populacija'$ \;
@@ -1809,12 +1815,12 @@ definiraj novu populaciju: $populacija'$ \;
 $(p_1, p_2) \gets OdaberiRoditelje(populacija)$ \;
 $c \gets OperatorKrižanja(p_1, p_2)$ \;
 $OperatorMutacije(c)$ \;
-\While{$x \in taboo$}{
+\While{$x \in tabu$}{
 	$OperatorMutacije(c)$
 }
-$DodajNaKraj(c, taboo)$ \;
-\If{$|taboo| > T$}{
-	$UkloniPrvog(taboo)$
+$DodajNaKraj(c, tabu)$ \;
+\If{$|tabu| > T$}{
+	$UkloniPrvog(tabu)$
 }
 $DodajPopulaciji(c, populacija')$
 }
@@ -1822,11 +1828,11 @@ $populacija \gets populacija'$
 }
 \KwResult{pronađena optimalna jedinka $x^*$}
 \;
-\caption{Genetsko programiranje s taboo listom}
+\caption{Genetsko programiranje s tabu listom}
 \label{alg:gp_taboo}
 \end{algorithm}
 
-Veličina taboo liste definira koliko se često smije pojaviti već postojeća jedinka u populaciji. U ovom radu se istražuje utjecaj na razini broja iteracija. Na primjer, ako je populacija veličine $10$ jedinki tada će veličina taboo liste za $2$ iteracije biti veličine $20$. Za vrijednost $0$ algoritam se ponaša identično klasičnom algoritmu genetskog programiranja.
+Veličina tabu liste definira koliko se često smije pojaviti već postojeća jedinka u populaciji. U ovom radu se istražuje utjecaj na razini broja iteracija. Na primjer, ako je populacija veličine $10$ jedinki tada će veličina tabu liste za $2$ iteracije biti veličine $20$. Za vrijednost $0$ algoritam se ponaša identično klasičnom algoritmu genetskog programiranja.
 
 Zbog ponovljenog mutiranja jedinke treba paziti na balans između mutacija koje povećavaju ili smanjuju dubinu stabla. U suprotnom će jedinke vrlo brzo postati vrlo velike što je nepoželjno za pretraživanje aktivacijskih funkcija \citep{swish} ili će ostati suviše male što ograničava pretraživanje šireg prostora.
 
@@ -2102,7 +2108,7 @@ Stopa učenja & $10^{-3}$, $5 \cdot 10^{-4}$, $10^{-4}$
 \subsection{Izgradnja aktivacijskih funkcija simboličkom regresijom}
 \todo{Tablica}
 \todo{Komentar}
-\todoimg{boxplot usporedba po taboo veličini}
+\todoimg{boxplot usporedba po tabu veličini}
 
 \subsection{Izgradnja heterogenog rasporeda aktivacijskih funkcija}
 \todo{Ne znam hoću li stići i ovo izvrtiti. Za najbolju prethodnu arhitekturu ću pronaći najbolji raspored uobičajenih fja po slojevima mreže (npr. sin-relu).}
@@ -2150,7 +2156,7 @@ U ovom poglavlju prikazana je usporedba performansi popularnih aktivacijskih fun
 
 \todo{Tablica}
 \todo{Komentar}
-\todoimg{boxplot usporedba po taboo veličini}
+\todoimg{boxplot usporedba po tabu veličini}
 
 \subsection{Izgradnja heterogenog rasporeda aktivacijskih funkcija}
 \todo{Ne znam hoću li stići i ovo izvrtiti. Za najbolju prethodnu arhitekturu ću pronaći najbolji raspored uobičajenih fja po slojevima mreže (npr. sin-relu).}
