@@ -163,6 +163,9 @@
 \caption{Statistike podskupa za učenje i testiranje skupa DPAv4}
 \end{figure}
 
+\todo{popravi grid na featurima (na 50 ga nema, postavi range na 51)}
+\todo{štedi farbu, koristi grafove bez popune}
+
 \todo{Mjere dobrote klasifikacije}
 
 \subsection{Dosadašnji rezultati}
@@ -199,12 +202,12 @@ Afina funkcija \eqref{eq:affine} je skalarni produkt vektora ulaza s vektorom te
 s(\vec{x};\mat{W},\vec{b})=\mat{W}^T \cdot \vec{x} + \vec{b}
 \end{equation}
 
-Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Unakrsna korelacija vrlo je slična operatoru konvolucije te se u literaturi gotovo uvijek naziva konvolucijom. Često se koristi za ekstrakciju obrazaca u slikama \citep{alexnet}, no može se koristiti u problemima koji zahtijevaju obradu sljedova podataka. Jedan takav primjer je klasifikacija teksta u kome različit slijed riječi može prenositi različito značenje \citep{char_cnn}.
+Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Unakrsna korelacija vrlo je slična operatoru konvolucije te se u literaturi gotovo uvijek naziva konvolucijom. Često se koristi za ekstrakciju obrazaca u slikama \citep{alexnet}, no može se koristiti u problemima koji zahtijevaju obradu sljedova podataka. Jedan takav primjer je klasifikacija teksta pri kojoj slijed riječi gradi informaciju koja može služiti za detekciju sentimenta i ostale primjene \citep{char_cnn}.
 
-Znatno su rjeđe ulazne funkcije temeljene na udaljenosti vektora... \citep{function_survey1}
-\todo{*Spomeni distance based aktivacije}
+Ulazne funkcije temeljene na udaljenosti vektora koriste se u radijalnim baznim funkcijama...\todo{*Spomeni RBF} U radu \citet{softsign} klasičnoj afinoj funkciji pribraja se L2 norma dodatne linearne funkcije čije elemente nazivaju \textit{kvadratnim filtrima}. Empirijski pokazuju da dodavanje kvadratnih filtara pospješuje performanse modela.
 
-Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i gradijenti teku kroz mrežu, a time utječu na brzinu učenja i inferencije neuronske mreže. Najčešće se koriste slojevite unaprijedne arhitekture zbog jednostavnosti izvedbe. Unaprijedne arhitekture propuštaju podatke samo u jednom smjeru odnosno već izračunati neuroni se ne izračunavaju ponovno, što je posebno pogodno za optimizaciju širenjem unatrag\secref{sec:backprop}. Slojevite arhitekture omogućuju paralelizaciju izvođenja operacija na grafičkim karticama što značajno ubrzava postupke učenja i inferencije. Pri definiciji slojevite arhitekture najčešće je dovoljno navesti samo redoslijed slojeva, no ponekad je potrebno definirati i način povezivanja slojeva npr. pri uporabi preskočnih veza \citep{highwaynet, resnet, densenet}. Prvi sloj služi za postavljanje ulaza mreže i naziva se ulaznim slojem mreže. Posljednji sloj mreže služi nam za ekstrakciju izlaza te mjerenje kakvoće mreže i naziva se izlaznim slojem mreže. Svi slojevi između ulaznog i izlaznog sloja nazivaju se skrivenim slojevima.
+
+Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i gradijenti teku kroz mrežu, a time utječu na brzinu učenja i inferencije neuronske mreže. Najčešće se koriste slojevite unaprijedne arhitekture zbog jednostavnosti izvedbe. Unaprijedne arhitekture propuštaju podatke samo u jednom smjeru odnosno već izračunati neuroni se ne izračunavaju ponovno, što je posebno pogodno za optimizaciju širenjem unatrag\secref{sec:backprop}. Slojevite arhitekture omogućuju paralelizaciju izvođenja operacija na grafičkim karticama što značajno ubrzava postupke učenja i inferencije. Pri definiciji slojevite arhitekture najčešće je dovoljno navesti samo redoslijed slojeva, no ponekad je potrebno definirati i način povezivanja slojeva npr. pri uporabi preskočnih veza \citep{highwaynet, resnet, densenet}. Prvi sloj služi za postavljanje ulaza mreže i naziva se ulaznim slojem mreže. Posljednji sloj mreže služi za ekstrakciju izlaza te mjerenje kakvoće mreže i naziva se izlaznim slojem mreže. Svi slojevi između ulaznog i izlaznog sloja nazivaju se skrivenim slojevima.
 
 Potpuno povezana arhitektura je najjednostavnija arhitektura. Svaki neuron u potpuno povezanom sloju aktivira se pomoću svih izlaza iz prethodnog sloja. Za naučeni potpuno povezani sloj kaže se da vrši ekstrakciju značajki iz svojih ulaza. Geometrijski gledano, svaki neuron vrši nelinearno mapiranje značajki iz dimenzije prethodnog sloja u novu dimenziju s ciljem modeliranja boljih značajki.
 
@@ -342,7 +345,7 @@ L(\theta \probsep x,y) &= - \log \Big[ \prod_{i=1}^C \hat{y}_i^{y_i} \Big] = - \
 
 \subsubsection{Optimizacija širenjem unatrag}
 \label{sec:backprop}
-Funkcija gubitka opisuje pogrešku čitave mreže te ovisi o svakom prilagodljivom parametru mreže. Takva formulacija problema omogućuje nam da svaki parametar mreže ugađa se gradijentnim spustom. Dakle, za parametriziranu funkciju $f(x;\theta)$ traže se parametri $\theta^*$ za koje je gubitak najmanji na podatkovnom skupu.
+Funkcija gubitka opisuje pogrešku čitave mreže te ovisi o svakom prilagodljivom parametru mreže. Takva formulacija problema omogućuje da svaki parametar mreže ugađa se gradijentnim spustom. Dakle, za parametriziranu funkciju $f(x;\theta)$ traže se parametri $\theta^*$ za koje je gubitak najmanji na podatkovnom skupu.
 \begin{equation}
 \theta^* = argmin_\theta\ L(\theta \probsep \dataset), \quad \forall (x,y) \in \dataset
 \end{equation}
@@ -391,6 +394,7 @@ S obzirom da se mreža sastoji od ulančanih nelinearnih neurona s parametrima, 
 
 Želi li se mrežu učiti gradijentnim spustom, svaki parametar mreže treba imati pristup gradijentu funkcije gubitka. S obzirom da je neuron parametrizirana funkcija, pomoću koje se ulančavanjem gradi mreža, dovoljno je pokazati da pojedini neuron osigurava svojim parametrima pristup gradijentu te da gradijent šalje svojim prethodnicima s kojima je povezan. Da je to ostvarivo dokazuju izrazi:
 \begin{align}
+\label{eq:backprop_activation}
 \begin{split}
 \pfrac{L(x,y;\theta)}{s(x;w)} &= \pfrac{L(x,y;\theta)}{o(x;w)} \cdot \pfrac{o(x;w)}{s(x;w)} \\
 &= \pfrac{L(x,y;\theta)}{o(x;w)} \cdot f'(x)
@@ -419,7 +423,7 @@ S obzirom da se mreža sastoji od ulančanih nelinearnih neurona s parametrima, 
 \end{align}
 
 \subsubsection{Stohastički gradijentni spust}
-U prošlom poglavlju korištena je funkcija gubitka na jednom podatkovnom paru, no želi se minimizirati očekivanje funkcije gubitka \eqref{eq:negloglikelyhood_expect} na cijelom podatkovnom skupu jer se želi izgraditi model da aproksimira čitavu uzorkovanu funkciju što bolje. Nažalost, podatkovni skupovi poput spomenutog u poglavlju \ref{sec:dpa_datasets} vrlo su veliki i nije ih praktično koristiti pri optimizaciji gradijentom jer bi se čitavi morali držati u brzoj memoriji. Ovo predstavlja velik problem pri računanju s grafičkim karticama. Očekivanje gubitka služi nam za procjenu smjera i veličine gradijenta. Ako se gradijent procjenjuje na čitavom podatkovnom skupu on će nas dovesti do prvog optimuma koji najčešće nije dobar, odnosno snažno ovisi o odabiru početne točke. 
+U prošlom poglavlju korištena je funkcija gubitka na jednom podatkovnom paru, no želi se minimizirati očekivanje funkcije gubitka \eqref{eq:negloglikelyhood_expect} na cijelom podatkovnom skupu jer se želi izgraditi model da aproksimira čitavu uzorkovanu funkciju što bolje. Nažalost, podatkovni skupovi poput spomenutog u poglavlju \ref{sec:dpa_datasets} vrlo su veliki i nije ih praktično koristiti pri optimizaciji gradijentom jer bi se čitavi morali držati u brzoj memoriji. Ovo predstavlja velik problem pri računanju s grafičkim karticama. Očekivanje gubitka služi za procjenu smjera i veličine gradijenta. Ako se gradijent procjenjuje na čitavom podatkovnom skupu on će nas dovesti do prvog optimuma koji najčešće nije dobar, odnosno snažno ovisi o odabiru početne točke. 
 
 S druge strane, ako se gradijent računa na pojedinom podatkovnom paru kao u \eqref{eq:loss_classification} ostvareno je stohastičko kretanje jer će svaki primjer usmjeriti gradijent u drugom smjeru. Posljedica toga je duže vrijeme pretrage, no veća otpornost na loše lokalne optimume. Iako će algoritam generalno konvergirati, postupak je zahtjevan jer za svaki primjer podatkovnog skupa treba provesti korak algoritma. Ovaj problem također ograničava svojstvo ubrzanja grafičkim karticama koje nude masivnu paralelizaciju operacija nad podatcima.
 
@@ -456,10 +460,10 @@ Mini-grupe se najčešće definiraju prije početka učenja nasumičnim raspored
 \subsubsection{Optimizator}
 Optimizator brine o pomaku odnosno ažuriranju parametara modela pri gradijentnom spustu. Dosad su objašnjena dva pristupa: klasični s koeficijentom pomaka (algoritam \ref{alg:grad_spust}) i s dodatkom momenta \eqref{eq:moment_update}.
 
-Optimizator Adam \engl{adaptive moments} dodatno prati povijest momenta drugog reda kojom prilagođava stopu učenja kako bi smanjio razlike između parametara koji su povijesno dobivali velike ili male gradijente, čime se izglađuje prostor parametara. Povijest drugog momenta prate AdaGrad i RMSProp, no Adam dodatno prati povijest prvog momenta i uključuje centriranje momenata. Adam se pokazao vrlo robusnim optimizatorom i vrlo često se koristi za optimizaciju dubokih neuronskih mreža. \citep{goodfellowbook}
+Optimizator Adam \engl{adaptive moments} dodatno prati povijest momenta drugog reda kojom prilagođava stopu učenja kako bi smanjio razlike između parametara koji su povijesno dobivali velike ili male gradijente, čime se izglađuje prostor parametara. Povijest drugog momenta prate AdaGrad i RMSProp, no Adam dodatno prati povijest prvog momenta i uključuje centriranje momenata. Adam se pokazao vrlo robusnim optimizatorom i vrlo često se koristi za optimizaciju dubokih neuronskih mreža. \citep[poglavlje~8.5]{goodfellowbook}
 
 \subsubsection{Promjenjiva stopa učenja}
-Tijekom optimizacije gradijentnim spustom uz fiksnu stupu učenja optimizacija će početi oscilirati oko iste vrijednosti, odnosno srednja vrijednost gubitka je konvergirala. Oscilacija se javlja jer je stopa učenja suviše velika za regije u koje vode različiti gradijenti mini-grupa. U takvim situacijama je potrebno smanjiti stopu učenja, no problem je detekcija takvih situacija. Optimizator Adam prilagođava gradijente skaliranjem, odnosno istovjetno možemo reći da prilagođava stopu učenja \citep{goodfellowbook}. Unatoč tome, ponekad je potrebno koristiti dodatne mehanizme smanjivanja stope učenja.
+Tijekom optimizacije gradijentnim spustom uz fiksnu stupu učenja optimizacija će početi oscilirati oko iste vrijednosti, odnosno srednja vrijednost gubitka je konvergirala. Oscilacija se javlja jer je stopa učenja suviše velika za regije u koje vode različiti gradijenti mini-grupa. U takvim situacijama je potrebno smanjiti stopu učenja, no problem je detekcija takvih situacija. Optimizator Adam prilagođava gradijente skaliranjem, što se može interpretirati i prilagođavanjem stope učenja. Unatoč tome, ponekad je potrebno koristiti dodatne mehanizme smanjivanja stope učenja.
 
 %Jedan način smanjivanja stope je zadavanje ključnih iteracija u kojima se prestaje koristiti stara stopa i koristi se nova. Moguće je zadati stope za svaku od zadanih ključnih iteracija %\citep{onaj rad} ili zadati početnu stopu koja se u ključnoj iteraciji pomnoži konstantom manjom od 1. Pri ovom pristupu problem je odrediti optimalne ključne iteracije ili početnu iteraciju i konstantu.
 %\todo{fali tekst (nađi onaj rad)}
@@ -487,21 +491,17 @@ W_{i,j} \sim \normal(0, \frac{2}{n_{ulaza}+n_{izlaza}})
 \end{equation}
 
 \subsubsection{Normalizacija značajki}
-Podatci najčešće nisu uzorkovani iz normalne distribucije. To stvara problem jer prisiljava mrežu da uči srednju vrijednost i varijancu što usporava učenje i stvara numeričke probleme. Stoga je korisno prije korištenja svesti značajke na normalnu distribuciju sa sredinom $0$ i varijancom $1$. To se izvodi računanjem koeficijenata distribucije te oduzimanjem sredine i dijeljenjem s varijancom.
+Podatci najčešće nisu uzorkovani iz normalne distribucije. To stvara problem jer prisiljava mrežu da uči srednju vrijednost i varijancu podataka što usporava učenje i stvara numeričke probleme. Stoga je korisno prije korištenja svesti značajke na normalnu distribuciju sa sredinom $0$ i varijancom $1$. To se izvodi računanjem koeficijenata distribucije te oduzimanjem sredine i dijeljenjem s varijancom.
 
-Koeficijenti se računaju iz značajki podatkovnog skupa za učenje. Koeficijent varijance ovisi o koeficijentu sredine pa se njihovo računanje ne može paralelizirati, no to ne predstavlja velik problem s obzirom da se računaju samo jednim prolazom kroz skup.
-\begin{equation}
-\vec{\mu} = \frac{1}{N} \sum_{\vec{x}\in \dataset} \vec{x}
-\end{equation}
-\begin{equation}
-\vec{\sigma^2} = \frac{1}{N-1} \sum_{\vec{x}\in \dataset} (\vec{x}-\vec{\mu})^2
-\end{equation}
-
-Prije no što se značajke predaju modelu normaliziraju se formulom \eqref{eq:feat_norm}.
-\begin{equation}
+Koeficijenti se računaju iz značajki podatkovnog skupa za učenje (\ref{eq:feat_norm_mean}, \ref{eq:feat_norm_var}). Koeficijent varijance ovisi o koeficijentu sredine pa se njihovo računanje ne može paralelizirati, no to ne predstavlja velik problem s obzirom da se računaju samo jednim prolazom kroz skup. Prije no što se značajke predaju modelu normaliziraju se formulom \eqref{eq:feat_norm}.
+\begin{align}
+\label{eq:feat_norm_mean}
+&\vec{\mu} = \frac{1}{N} \sum_{\vec{x}\in \dataset} \vec{x} \\
+\label{eq:feat_norm_var}
+&\vec{\sigma^2} = \frac{1}{N-1} \sum_{\vec{x}\in \dataset} (\vec{x}-\vec{\mu})^2 \\
 \label{eq:feat_norm}
-\vec{z} = \frac{\vec{x} - \vec{\mu}}{\vec{\sigma^2}}
-\end{equation}
+&\vec{z} = \frac{\vec{x} - \vec{\mu}}{\vec{\sigma^2}}
+\end{align}
 
 Koeficijenti normalizacije računaju se isključivo na skupu za učenje, a normalizacija se mora primijeniti prilikom inferencije odnosno na skupu za testiranje.
 
@@ -709,10 +709,10 @@ Iako se optimalni hiperparametri mogu nalaziti izvan zadanih skupova i neće bit
 \label{sec:svojstva}
 
 \subsubsection{Univerzalna aproksimacija}
-Teorem univerzalne aproksimacije tvrdi da unaprijedna neuronska mreža može modelirati proizvoljnu Borel mjerljivu funkciju proizvoljno dobro uz nekoliko uvjeta: mora imati linearni izlaz, barem jedan nelinearni skriveni sloj koji koristi sažimajuću funkciju i "dovoljan" broj skrivenih neurona. Dakle, postoji arhitektura i postoje parametri kojima neuronska mreža može modelirati zadani podatkovni skup. No, teorem ne iskazuje kako doći do tih parametara što optimizaciju neuronske mreže čini vrlo teškom \citep{goodfellowbook}. 
+Teorem univerzalne aproksimacije tvrdi da unaprijedna neuronska mreža može modelirati proizvoljnu Borel mjerljivu funkciju proizvoljno dobro uz nekoliko uvjeta: mora imati linearni izlaz, barem jedan nelinearni skriveni sloj koji koristi sažimajuću funkciju i "dovoljan" broj skrivenih neurona. Dakle, postoji arhitektura i postoje parametri kojima neuronska mreža može modelirati zadani podatkovni skup. No, teorem ne iskazuje kako doći do tih parametara što optimizaciju neuronske mreže čini netrivijalnom \citep[poglavlje~6.4.1]{goodfellowbook}. 
 
 \subsubsection{Reprezentacija dubinom}
-Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skriveni sloj za predstavljanje proizvoljne Borel mjerljive funkcije, gornja granica veličine tog sloja je eksponencijalno velika naspram broja ulaza što je netraktabilno. Dodavanjem dubine moguće je iskoristiti pravilnosti u funkciji koja se aproksimira kako bi se smanjio potreban broj neurona. Primjer su funkcije simetrične oko neke osi. Ako skriveni slojevi mreže vrše preklapanje te funkcije preko same sebe, uzastopnim preklapanjem dobiva se sve jednostavnija funkcija. Preklapanje mogu vršiti po-dijelovima-linearne aktivacijske funkcije poput ReLU i Maxout. Dakako, ne postoji garancija da stvarna funkcija zadovoljava svojstvo simetrije, no u praksi dublje mreže generaliziraju bolje \citep{alexnet, highwaynet, resnet, densenet}. Postoje i druge interpretacije utjecaja dubine, poput svojstva dekompozicije zadatka na manje cjeline ili interpretacija neuronske mreže kao računalnog programa koje nadilaze temu ovog rada. \citep{goodfellowbook}
+Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skriveni sloj za predstavljanje proizvoljne Borel mjerljive funkcije, gornja granica veličine tog sloja je eksponencijalno velika naspram broja ulaza što je netraktabilno. Dodavanjem dubine moguće je iskoristiti pravilnosti u funkciji koja se aproksimira kako bi se smanjio potreban broj neurona. Primjer su funkcije simetrične oko neke osi. Ako skriveni slojevi mreže vrše preklapanje te funkcije preko pravca u njenom hiperprostoru, uzastopnim preklapanjem dobiva se sve jednostavnija funkcija. Preklapanje mogu vršiti po dijelovima linearne aktivacijske funkcije poput ReLU i Maxout. Dakako, ne postoji garancija da stvarna funkcija zadovoljava svojstvo simetrije, no u praksi dublje mreže generaliziraju bolje \citep{alexnet, highwaynet, resnet, densenet}. Postoje i druge interpretacije utjecaja dubine, poput svojstva dekompozicije zadatka na manje cjeline ili interpretacije neuronske mreže kao računalnog programa, no one nadilaze temu ovog rada. \citep[poglavlje~6.4.1]{goodfellowbook}
 
 \iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \todo{*VC dimenzija \citep{vc_dimension}}
@@ -733,7 +733,7 @@ Arhitektura, prijenosne funkcije i parametri definiraju neuronsku mrežu te njih
 
 \subsubsection{Nestajući gradijent}
 \label{sec:nestajući_grad}
-Prolaskom kroz duboku mrežu gradijent se množi matricama težina $\mat{W_i}$. Uzastopno množenje može dovesti do problema ako su svojstvene vrijednosti matrice udaljene od $\pm 1$. Rastavom matrice u umnošku ponovljenom $t$ puta \eqref{eq:vanish_grad} vidljiv je problem. Svojstvene vrijednosti veće od $1$ će rasti, a one manje od $1$ će se smanjivati. \citep{goodfellowbook}
+Prolaskom kroz duboku mrežu gradijent se množi matricama težina $\mat{W_i}$. Uzastopno množenje može dovesti do problema ako su svojstvene vrijednosti matrice udaljene od $\pm 1$. Rastavom matrice u umnošku ponovljenom $t$ puta \eqref{eq:vanish_grad} vidljiv je problem. Svojstvene vrijednosti veće od $1$ će rasti, a one manje od $1$ će se smanjivati. \citep[poglavlje~8.2.5]{goodfellowbook}
 \begin{equation}
 \label{eq:vanish_grad}
 \mat{W}^t = (\mat{V} \cdot diag(\mat{\lambda}) \cdot \mat{V}^{-1})^t = \mat{V} \cdot diag(\mat{\lambda})^t \cdot \mat{V}^{-1}
@@ -750,17 +750,14 @@ Vrlo složeni modeli, kao što su neuronske mreže, unatoč regularizaciji sklon
 
 \chapter{Aktivacijske funkcije}
 \label{sec:aktivacijske_fje}
-Aktivacijska funkcija služi unošenju nelinearnosti u neuronsku mrežu i ima utjecaj na njeno učenje. Prilikom inferencije aktivacijske funkcija stvara nelinearnosti u decizijskoj granici koje su parametrizirane parametrima neurona na koji se primjenjuje. U slojevitim arhitekturama aktivacijske funkcije se primjenjuju uzastopno s različitim parametrima i vrše nelinearne projekcije iz jedne dimenzije u drugu.
+Aktivacijska funkcija služi unošenju nelinearnosti u neuronsku mrežu i ima utjecaj na njeno učenje. Prilikom inferencije aktivacijska funkcija stvara nelinearnosti u decizijskoj granici koje su parametrizirane parametrima neurona. U slojevitim arhitekturama aktivacijske funkcije se primjenjuju uzastopno s različitim parametrima neurona. Time vrše nelinearnu projekciju prostora iz jedne dimenzije u drugu te utječu na jednostavnost i kvalitetu konačne klasifikacije. Prilikom učenja neuronske mreže važan je utjecaj derivacije aktivacijske funkcije na gradijent pri širenju unatrag. Prolaskom unatrag gradijent se množi s derivacijom aktivacijske funkcije \eqref{eq:backprop_activation} što može izazvati nestajanje ili eksploziju gradijenta.
 
-Prilikom učenja neuronske mreže važan nam je utjecaj derivacije aktivacijske funkcije na gradijent pri širenju unatrag. Prolaskom unazad gradijent se množi s parametrima slojeva koji se mogu zapisati matricom težina $\mat{W}$. Uzastopnom primjenom matrica težina, ako su loše kondicionirane, može doći do "\textit{nestajanja}" ili "\textit{eksplozije}" gradijenta.
+Za odabir aktivacijske funkcije ne postoji jasno pravilo. U praksi se odabiru po empirijskim rezultatima i brzinom izvođenja. Iako neke funkcije imaju teorijski potkrijepljena svojstva to ih u praksi ne čini najboljima. Tipično se odabire $ReLU$, a za skrivene slojeve rekurzivnih modela odabire se $tanh$.
 
-\section{Odabir aktivacijske funkcije}
-Za odabir aktivacijske funkcije ne postoji jasno pravilo. U praksi se odabiru po empirijskim rezultatima i brzinom izvođenja. Iako neke funkcije imaju teorijski potkrijepljena svojstva to ih u praksi ne čini najboljima.
-
-\todo{dokaz da su monotone fje dobre}
+%\todo{dokaz da su monotone fje dobre}
 
 \iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Aktivacijske funkcije s učećim parametrima}
+\subsubsection{Aktivacijske funkcije s učećim parametrima}
 \todo{članak: učeći parametri u fjama (onaj stari)}
 
 U radu \citet{trained_func} autori istražuju učeće aktivacijske funkcije ...
@@ -770,12 +767,12 @@ U radu TAF...
 \todo{Spomeni i složenije metode: \citep{network_in_network}}
 \fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Periodične aktivacijske funkcije}
-U rezultatima pojavljuju se periodične funkcije. Stoga se u ovom poglavlju navode neka njihova svojstva.
+\subsubsection{Periodične aktivacijske funkcije}
+U rezultatima pretrage ovog rada i \citet{swish} često pojavljuju se periodične funkcije. Stoga su u nastavku opisani radovi na temu svojstva periodičkih funkcija u neuronskim mrežama koje je autor uspio pronaći.
 
-\todo{članak: fourier mreža s periodičkim fjama}
+%\todo{članak: fourier mreža s periodičkim fjama}
 
-Periodične aktivacijske funkcije stvaraju brojne lokalne optimume u funkciji gubitka koji otežavaju učenje neuronskih mreža. S obzirom da se mreže treniraju stohastičkim gradijentnim spustom većina lokalnih optimuma nije vidljiva i ublažava naglašenost lokalnih optimuma. Pri uporabi sinusoide autori pokazuju da će model konvergirati samo ako su težine inicijalizirane dovoljno malim vrijednostima da ulaz ne prelazi interval monotonosti sinusa $[-\frac{\pi}{2}, \frac{\pi}{2}]$. U usporedbi sinusoide s ograničenom sinusoidom na potpuno povezanom modelu pokazuje se nezamjetna razliku u performansama iako oko $40\%$ ulaza neurona završava izvan intervala monotonosti, što upućuje da modeli ne ovise o periodičnosti funkcije. U primjeni na rekurzivnim modelima ne ostvaruje konzistentnu prednost nad monotonim tangensom hiperbolnim zbog čega članak nije prošao postupak recenzije. \citep{taming_waves}
+Periodične aktivacijske funkcije stvaraju brojne lokalne optimume u funkciji gubitka koji otežavaju učenje neuronskih mreža. S obzirom da se mreže treniraju stohastičkim gradijentnim spustom većina lokalnih optimuma nije vidljiva i ublažava naglašenost lokalnih optimuma. Pri uporabi sinusoide autori pokazuju da će model konvergirati samo ako su težine inicijalizirane dovoljno malim vrijednostima da ulaz ne prelazi interval monotonosti sinusa $[-\frac{\pi}{2}, \frac{\pi}{2}]$. U usporedbi sinusoide s ograničenom sinusoidom na potpuno povezanom modelu pokazuje se nezamjetna razliku u performansama iako oko $40\%$ ulaza neurona završava izvan intervala monotonosti, što upućuje da modeli ne ovise snažno o periodičnosti funkcije. U primjeni na rekurzivnim modelima ostvaruje prednost nad monotonim tangensom hiperbolnim, no autori navode teškoću optimizacije u nekim situacijama. \citep{taming_waves}
 
 \section{Popularne aktivacijske funkcije}
 U nastavku su navedene popularne aktivacijske funkcije koje je autor pronašao u literaturi i koje su isprobane u ovom radu. Funkcije su pasivne u smislu da ne sadrže učeće parametre te njihov izlaz ovisi isključivo o ulazu  u funkciju. Za svaku funkciju napisana je formula i iscrtan izgled funkcije i njene derivacije te navedena neka poznata svojstva.
@@ -1225,6 +1222,7 @@ f'(x) = \sigma(x)(1-\sigma(x))
 \todo{problemi}
 
 \subsection{Tvrda sigmoida}
+\label{func:hard_sigmoid}
 \engl{Hard sigmoid}
 
 \begin{figure}[H]
@@ -1249,11 +1247,9 @@ f'(x) =
 \end{split}
 \end{equation}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+Funkcija je tvrda inačica sigmoide nastala Taylor-ovim razvojem prvog reda oko nule. Funkcija omogućava učenje oštrih granica, pod cijenu zaustavljanja gradijenta u regijama zasićenja. U regije zasićenja funkcije moguće je dodati šum koji sprječava zaustavljanje gradijenta i pomaže optimizaciji. Kako učenje napreduje, šum se postepeno smanjuje kako bi se osigurala konvergencija algoritma. \citep{hardsigm}
 
-Funkcija je tvrda inačica sigmoide nastala Taylor-ovim razvojem linearnog dijela sigmoide oko $0$. Funkcija je .... \citep{hardsigm}
+Iako se u ovom radu pri primjeni tvrde funkcije ne dodaje šum, funkcija ostvaruje bolje rezultate od popularne funkcije $ReLU$.
 
 \subsection{Tangens hiperbolni (tanh)}
 \label{func:tanh}
@@ -1312,6 +1308,8 @@ f'(x) =
 \end{equation}
 
 Tvrdi tangens hiperbolni je linearizirana aproksimacija tangensa hiperbolnog korištena u radu \citet{collobert_phd}. Iako nema glatkoću originalne funkcije i ne propušta gradijent izvan intervala $[-1,1]$, jednako dobro pomaže generalizaciji mreže. Koristan je zbog veće brzine izvođenja funkcije i derivacije u odnosu na tangens hiperbolni.
+
+U radu \citet{hardsigm} u regije zasićenja dodaje se šum kao što je opisano u poglavlju \ref{func:hard_sigmoid}. Iako se u ovom radu ne dodaje šum kao ni kod tvrde sigmoide, funkcija ostvaruje rezultate bolje od popularne funkcije $ReLU$.
 
 \subsection{Racionalna aproksimacija tanh}
 \engl{Rational tanh}
@@ -1420,9 +1418,9 @@ f'(x) = \frac{1 + |x| - x \cdot sign(x)}{(1+|x|)^2}
 \end{split}
 \end{equation}
 
-\todo{koji problem rješava}
-\todo{svojstva}
-\todo{problemi}
+Funkcija dijeli slićnost s tangensom hiperbolnim \secref{func:tanh}, no za razliku od eksponencijalno konvergirajuće funkcije $tanh$, $softsign$ konvergira kvadratno. Za razliku od $tanh$ čiji slojevi sekvencijalno prelaze u zasićenje, svi $softsign$ slojevi sporije prelaze u zasićenje i to rade zajednički. Aktivacije $tanh$ gomilaju se u ekstremima (u zasićenju) i u sredini, dok kod $softsign$ osim sredine većina aktivacija djeluje na zglobovima funkcije u kojima je nelinearnost najveća, a gradijenti i dalje prolaze. \citep{xavier}
+
+Funkcija je originalno predstavljena u radu \citet{softsign_orig} i testirana s nekoliko eksperimenata u području računalnog vida. No, taj rad je u vremenu pisanja ovog rada bio nedostupan autorima. Stoga je ostavljena referenca za znatiželjne čitatelje.
 
 \subsection{Sinus (sin)}
 
@@ -1447,7 +1445,7 @@ f'(x) = cos(x)
 %Sinus je periodička funkcija te nema teorijsku podlogu za uporabu u neuronskim mrežama, za razliku od monotonih funkcija.
 %\todo{članak dokaz univerzalne aproksimacije monotonih fja}
 
-Sinusoida se često pojavljuje u radovima pretrage aktivacijskih funkcija \citep{elish} pa tako i u ovom radu te pokazuje obećavajuće rezultate. U radu \citet{taming_waves} autori predstavljaju problematiku učenja sa sinusoidom na jednostavnom problemu. Problem stvaraju brojni lokalni optimumi na koje je izrazito osjetljiv gradijentni spust. Problem je ublažava učenje stohastičkim gradijentnim spustom koji zaglađuje valovitost funkcije gubitka. Dodatno, autori pokazuju da neuronska mreža zapravo ne ovisi snažno o periodičnosti funkcije tako da su rezultate usporedili s ograničenom sinusoidom \eqref{eq:trsin}. Članak nije prošao postupak recenzije jer su dodatni eksperimenti urodili nekonzistentnim rezultatima u usporedbi s tangensom hiperbolnim.
+Sinusoida se često pojavljuje u radovima pretrage aktivacijskih funkcija \citep{elish} pa tako i u ovom radu te pokazuje obećavajuće rezultate. U radu \citet{taming_waves} autori predstavljaju problematiku učenja sa sinusoidom na jednostavnom zadatku aproksimacije sinusoide. Problem stvaraju brojni lokalni optimumi na koje je izrazito osjetljiv gradijentni spust. Problem ublažava učenje stohastičkim gradijentnim spustom koji zaglađuje valovitost funkcije gubitka. Dodatno, autori pokazuju da neuronska mreža zapravo ne ovisi snažno o periodičnosti funkcije tako da su rezultate usporedili s ograničenom sinusoidom \eqref{eq:trsin}.
 
 Po uzoru na slične funkcije kao što je sigmoida \figref{fig:sigmoid} i tangens hiperbolni \figref{fig:tanh}, sinusoida najveću vrijednost gradijenta daje upravo kada je aktivacija jednaka 0 (u ograničenom intervalu).
 
@@ -2081,14 +2079,14 @@ Stopa učenja & $10^{-3}$, $5 \cdot 10^{-4}$, $10^{-4}$
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{greedy_9_acc.pdf}
 \centering
-\caption{Postignuta točnost aktivacijskih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
+\caption{Postignuta točnost aktivacijskih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon decimalne točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
 \label{fig:greedy_9_acc}
 \end{figure}
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{greedy_9_f1.pdf}
 \centering
-\caption{Postignuta F1 mjera aktivacijskih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
+\caption{Postignuta F1 mjera aktivacijskih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon decimalne točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
 \label{fig:greedy_9_f1}
 \end{figure}
 
@@ -2118,14 +2116,14 @@ U ovom poglavlju prikazana je usporedba performansi popularnih aktivacijskih fun
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{greedy_256_acc.pdf}
 \centering
-\caption{Postignuta točnost aktivacijskih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
+\caption{Postignuta točnost aktivacijskih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon decimalne točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
 \label{fig:greedy_256_acc}
 \end{figure}
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{greedy_256_f1.pdf}
 \centering
-\caption{Postignuta F1 mjera aktivacijskih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
+\caption{Postignuta F1 mjera aktivacijskih funkcija na različitim arhitekturama. Vrijednosti u ćelijama su tri najznačajnije znamenke nakon decimalne točke. Na vrijednosti mjere $0.5$ tekst mijenja boju iz bijele u crnu.}
 \label{fig:greedy_256_f1}
 \end{figure}
 
