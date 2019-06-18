@@ -163,9 +163,6 @@
 \caption{Statistike podskupa za učenje i testiranje skupa DPAv4}
 \end{figure}
 
-\todo{popravi grid na featurima (na 50 ga nema, postavi range na 51)}
-\todo{štedi farbu, koristi grafove bez popune}
-
 \todo{Mjere dobrote klasifikacije}
 
 \subsection{Dosadašnji rezultati}
@@ -187,13 +184,14 @@ Neuronske mreže građene su od međusobno povezanih jedinica, tzv. neurona, mod
 \label{fig:neuron}
 \end{figure}
 
-Način na koji se iz ulaza gradi unutarnje stanje neurona opisan je ulaznom funkcijom. Pretvorba unutarnjeg stanja neurona u izlazni signal opisana je aktivacijskom funkcijom koja se detaljnije obrađuje u poglavlju \secref{sec:aktivacijske_fje}. Ulazna i aktivacijska funkcija definiraju prijenosnu funkciju koja ujedno opisuje ponašanje cijelog neurona. Pojam prijenosne funkcije je potreban jer ponekad granica između ulazne i aktivacijske funkcije nije jasna.
+Način na koji se iz ulaza gradi unutarnje stanje neurona opisan je ulaznom funkcijom. Pretvorba unutarnjeg stanja neurona u izlazni signal opisana je aktivacijskom funkcijom. Ulazna i aktivacijska funkcija opisuju ponašanje neurona \eqref{eq:neuron_functions}. Iako je ova nomenklatura dobra u većini modernih radova, ponekad razlika između ulazne i izlazne funkcije nije očigledna (kao kod radijalne bazne funkcije).
 
 \begin{equation}
-t(x) = (f \circ s)(x) = f(s(x))
+\label{eq:neuron_functions}
+n(x) = (f \circ s)(x) = f(s(x))
 \end{equation}
 
-U literaturi postoje nekonzistencije oko pojma aktivacijske funkcije. U preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno prema brojnim današnjim radovima. Neispravno je i sa stajališta računalne neuroznanosti prema kojoj aktivacijska funkcija označava funkciju učestalosti okidanja neurona u ovisnosti o ukupnom statičkom ulazu \citep[str.~234]{neuroscience}. U starijoj literaturi pojam aktivacijske i prijenosne funkcije često se koristi ekvivalentno \citep{evolving_transfer, evo_parsimonious}. U prijedlogu standardizacije \citet{ieee_standardization} aktivacijska funkcija je definirana: \textit{„Algoritam za računanje vrijednosti aktivacije neurona kao funkcije njenog ukupnog ulaza. Ukupan ulaz je tipično težinska suma ulaza u neuron“}. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi gore spomenuta nomenklatura (ulazna, aktivacijska i prijenosna funkcija).
+U literaturi postoje nekonzistencije oko pojma aktivacijske funkcije. U preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno prema brojnim današnjim radovima. Neispravno je i sa stajališta računalne neuroznanosti prema kojoj aktivacijska funkcija označava funkciju učestalosti okidanja neurona u ovisnosti o ukupnom statičkom ulazu \citep[str.~234]{neuroscience}. U starijoj literaturi pojam aktivacijske i prijenosne funkcije često se koristi ekvivalentno \citep{evolving_transfer, evo_parsimonious}. U prijedlogu standardizacije \citet{ieee_standardization} aktivacijska funkcija je definirana: \textit{„Algoritam za računanje vrijednosti aktivacije neurona kao funkcije njenog ukupnog ulaza. Ukupan ulaz je tipično težinska suma ulaza u neuron“}. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi gore spomenuta nomenklatura (ulazna i aktivacijska funkcija).
 
 Najpopularnije ulazne funkcije jesu afina funkcija i unakrsna korelacija.
 Afina funkcija \eqref{eq:affine} je skalarni produkt vektora ulaza s vektorom težina neurona uz dodatak vrijednosti praga. Parametri neurona definiraju nagib i pomak ravnine u prostoru ulaza koja opisuje ulaz neurona. Primjenjuje se kada se ulazi u model mogu zapisati vektorom značajki čiji raspored nije bitan.
@@ -204,9 +202,7 @@ s(\vec{x};\mat{W},\vec{b})=\mat{W}^T \cdot \vec{x} + \vec{b}
 
 Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjednosti ulaznih značajki. Unakrsna korelacija vrlo je slična operatoru konvolucije te se u literaturi gotovo uvijek naziva konvolucijom. Često se koristi za ekstrakciju obrazaca u slikama \citep{alexnet}, no može se koristiti u problemima koji zahtijevaju obradu sljedova podataka. Jedan takav primjer je klasifikacija teksta pri kojoj slijed riječi gradi informaciju koja može služiti za detekciju sentimenta i ostale primjene \citep{char_cnn}.
 
-Ulazne funkcije temeljene na udaljenosti vektora koriste se u radijalnim baznim funkcijama...\todo{*Spomeni RBF} 
 U radu \citet{softsign} klasičnoj afinoj funkciji pribraja se L2 norma dodatne linearne funkcije čije elemente nazivaju \textit{kvadratnim filtrima}. Empirijski pokazuju da dodavanje kvadratnih filtara pospješuje performanse modela.
-
 
 Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i gradijenti teku kroz mrežu, a time utječu na brzinu učenja i inferencije neuronske mreže. Najčešće se koriste slojevite unaprijedne arhitekture zbog jednostavnosti izvedbe. Unaprijedne arhitekture propuštaju podatke samo u jednom smjeru odnosno već izračunati neuroni se ne izračunavaju ponovno, što je posebno pogodno za optimizaciju širenjem unatrag\secref{sec:backprop}. Slojevite arhitekture omogućuju paralelizaciju izvođenja operacija na grafičkim karticama što značajno ubrzava postupke učenja i inferencije. Pri definiciji slojevite arhitekture najčešće je dovoljno navesti samo redoslijed slojeva, no ponekad je potrebno definirati i način povezivanja slojeva npr. pri uporabi preskočnih veza \citep{highwaynet, resnet, densenet}. Prvi sloj služi za postavljanje ulaza mreže i naziva se ulaznim slojem mreže. Posljednji sloj mreže služi za ekstrakciju izlaza te mjerenje kakvoće mreže i naziva se izlaznim slojem mreže. Svi slojevi između ulaznog i izlaznog sloja nazivaju se skrivenim slojevima.
 
@@ -659,9 +655,9 @@ Točnost je dobra mjera, no samo ako je brojnost klasa u podatkovnom skupu balan
 \end{align}
 
 \begin{figure}[h]
-\includegraphics[width=\textwidth]{Pitagorine_sredine.pdf}
+\includegraphics[width=.9\textwidth]{Pitagorine_sredine.pdf}
 \centering
-\caption{Pitagorine mjere za sredinu između dviju vrijednosti}
+\caption{Pitagorine mjere za sredinu između dviju vrijednosti. Po apscisi su brojevi koji se uspoređuju s brojem $5$, a po ordinati vrijednosti mjere.}
 \label{fig:sredine}
 \end{figure}
 
@@ -1580,7 +1576,7 @@ f'(x) = -2x \cdot f(x)
 \subsection{Softmax}
 
 \begin{figure}[H]
-\includegraphics[width=.9\textwidth]{Softmax.pdf}
+\includegraphics[width=\textwidth]{Softmax.pdf}
 \centering
 \caption{Tri različita ulazna pravca te odziv funkcije $Softmax$ i njene derivacije na pravce}
 \label{fig:softmax}
@@ -2000,10 +1996,10 @@ Razred nasljeđuje sučelje s istim metodama kako bi se omogućila drugačija im
 \subsubsection{Standardizirana pohrana rezultata}
 Zbog potrebe standardizirane i transparentne pohrane rezultata i parametara eksperimenata definiran je razred $StorageManager$ koji definira zapisivanje podataka i putanje datoteka za različite eksperimente. Opisnik eksperimenta definiran je razredom $Context$, a sadrži naziv podatkovnog skupa i naziv eksperimenta. Metode za pohranu primaju podatke koji se zapisuju i opisnik kojim se izgradi putanja (npr. za Windows sustave: $podatkovni\_skup \textbackslash eksperiment$). Poddirektoriji datoteke grade se automatski, a putanje se grade razdjelnikom ovisnom o operacijskom sustavu (definiran u Javi: $File.separator$). Standardizirana pohrana rezultata uvelike olakšava kasniju obradu podataka.
 
-\subsubsection{Parametri}
+\subsubsection{Hiperparametri}
 Hiperparametre programa moguće je zadati konfiguracijskom datotekom. Datoteka je formata ključ-vrijednost, odvojeni regularnim izrazom: "$[:\ \textbackslash t]+$". Kroz datoteku moguće je definirati i više vrijednosti parametara koji će se pretraživati po rešetci (npr. $\{p1,p2,p3\}$). Datotekom je moguće zadati sve parametre postupaka, uključujući sjeme korišteno u brojnim procesima. Ako nije zadan važan parametar program će baciti iznimku.
 
-\todo{grid search mehanizam}
+Hiperparametri za učenje neuronskih mreža su definirani razredom $TrainParams$ i njima se služi razred za optimizaciju mreža. Hiperparametri za evoluciju aktivacijskih funkcija definirani su razredom $EvolvingActivationParams$ koji naslijeđuje $TrainParams$ te kojim se služi izvršni program $EvolvingActivationProgram$.
 
 \subsubsection{Paralelizacija}
 Paralelizaciju je moguće postići vrlo jednostavno paketom $utils.threading$. Prvo je potrebno instancirati razred $WorkArbiter$ koji u sebi sadrži red poslova koje treba obaviti i listu radnika. Posao koji treba izvršiti definira se implementacijom sučelja $Work$. Poslovi se predaju objektu $WorkArbiter$ koja ih stavlja u red. Radnici $Worker$ paralelno i sinkronizirano dohvaćaju i izvršavaju poslove iz reda poslova razreda $WorkArbiter$ koji ih je stvorio. S obzirom da su radnici implementirani kao zasebne dretve, navalom poslova radnici će paralelno uzimati poslove i izvršavati ih.
@@ -2013,12 +2009,15 @@ Paralelizaciju je moguće postići vrlo jednostavno paketom $utils.threading$. P
 Pri definiranju poslova često je potrebno definirati lokalnu varijablu s modifikatorom $final$ koja se ažurira po početku ili završetku posla. Kako se ne bi trebalo definirati polje (što je česta praksa) definiran je pomoćan generički razred $Holder$ koji nudi metode za dohvat i postavljanje unutarnjeg objekta. Za potrebe nabrajanja definiran je razred $Counter$, a za zajedničko pamćenje dva ili tri objekta definirani su generički razredi $Pair$ i $Triple$.
 
 \subsubsection{Bilježenje napretka algoritma}
+
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{pkg_logs.pdf}
 \centering
 \caption{Paket $utils.logs$}
 \label{fig:pkg_logs}
 \end{figure}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Pri izvršavanju algoritma učenja ili pretrage predaje se objekt koji implementira sučelje $ILogger$. Objekt nudi metode za selektivno bilježenje informacija o izvođenju programa ili algoritma ovisno o njihovom tipu. Metode selektivnog bilježenja inspirirane su objektom $Log$ Java razvojne biblioteke operacijskog sustava Android. Postoji nekoliko izvedbi koje preusmjeravaju ulaze ostalim mehanizmima. Tablica \ref{tab:loggers} prikazuje implementacije i njihovo odredište.
 
@@ -2041,12 +2040,12 @@ MultiLogger & Prosljeđuje listi zadanih implementacija
 U projektu su napisani brojni izvršni programi čije namjene uključuju demonstraciju dodataka, izvršavanje eksperimenata, ponavljanje eksperimenta s dodatnim bilježenjem i slično. U nastavku su opisani programi korišteni za izvršavanje eksperimenata.
 
 \subsubsection{Pohlepna pretraga uobičajenih funkcija}
-\todo{ulazi u program}
-\todo{grid-search}
+Razred ovog programa je $GreedySearchProgram$. Program služi za pohlepnu pretragu opisanu u poglavlju \ref{sec:greedy_dpav4} te za eksperimentiranje kombinacijama hiperparametara. Ne prima ulaze već je predodređen za aktivno mijenjanje koda. Na početku programa se nalaze zajednički hiperparametri te su definirane funkcije i arhitekture čije kombinacije želimo ispitati. Sadrži i mehanizam nastavljanja eksperimenata ako je došlo do prekida. Pod nastavljanjem se misli na nastavak pretraživanja po rešetci, samo učenje mreže nije moguće nastaviti. Na dnu programa nalaze se vrijednosti hiperparametara koje se pretražuju za svaku kombinaciju funkcije i arhitekture.
 
 \subsubsection{Izgradnja aktivacijskih funkcija simboličkom regresijom}
-\todo{ulazi u program}
-\todo{procesni način rada}
+Razred ovog programa je $EvolvingActivationProgram$. Program služi pokretanju eksperimenata s evolucijom aktivacijske funkcije. Osnovni ulaz u program je putanja do datoteke s hiperparametrima algoritma. Drugi ulaz je putanja do .jar datoteke tog istog programa i nije nužan. Njime se program prebacuje u procesni način rada, pri čemu se svaki eksperiment pokreće u zasebnom procesu. Ovime se prisiljava oslobađanje memorije prethodnog eksperimenta koja može procuriti iz nepoznatih razloga. Gašenjem glavnog procesa automatski se gasi i proces djete.
+
+Prilikom izvršavanja može doći do velikih zahtjeva za memorijom. Ako nisu postavljene gornje granice memorijskih zahtjeva, doći će do prekida programa. Za povećavanje gornje memorijske granice JVM-a, prilikom pokretanja JVM-u se treba zadati zastavica, npr. $-Xmx4g$ koja postavlja granicu na 4GB. Za ograničavanje memorije koju DL4j zauzima izvan gomile i na grafičkim karticama, treba se zadati zastavica, npr. $-Dorg.bytedeco.javacpp.maxbytes=3g$ koja postavlja granicu na 3GB.
 
 %--------------------------------------------------------------------------------------%
 \chapter{Rezultati}
@@ -2055,7 +2054,7 @@ U projektu su napisani brojni izvršni programi čije namjene uključuju demonst
 \section{DPAv4}
 
 \subsection{Usporedba uobičajenih aktivacijskih funkcija}
-
+\label{sec:greedy_dpav4}
 U ovom poglavlju prikazana je usporedba performansi popularnih aktivacijskih funkcija. Ispitivane su kombinacije arhitektura i aktivacijskih funkcija te su priložene postignute mjere točnosti i F1 mjere na skupu za testiranje. Za svaku kombinaciju arhitekture i aktivacijske funkcije provedeno je pretraživanje hiperparametara po rešetci i zabilježeni su najbolji postignuti rezultati. Zajednički i pretraživani hiperparametri navedeni su tablici \ref{tab:hp_common}. Najbolje kombinacije hiperparametara su navedene u dodatku \ref{app:grid_hp}.
 
 \begin{table}
