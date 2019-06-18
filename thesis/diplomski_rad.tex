@@ -253,11 +253,11 @@ Broj iteracija definira broj pomaka od početne točke, što definira i trajanje
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{grad_descent_start.pdf}
-\caption{Prikazan je utjecaj odabira početne točke na kvalitetu pronađenog optimuma. Loše odabrana točka (desno) može zaustaviti spust.}
+\caption{Prikazan je utjecaj odabira početne točke na kvalitetu pronađenog optimuma. Loše odabrana točka (lijevo i desno) može navesti algoritam izvan poželjne regije (sredina) i zaustaviti algoritam u lokalnom optimumu.}
 \label{fig:pocetna_tocka}
 \end{figure}
 
-Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo mali, a sama regija je s obzirom na pomake ogromna \figref{fig:pocetna_tocka}. Kad gradijent postane neupotrebljivo malen kaže se da je \textit{nestao}. U takvim slučajevima pomaže dodavanje momenta koji se akumulira kroz više iteracija i dodaje vektoru gradijenta. Kad algoritam naiđe na regiju s vrlo malim gradijentima, moment pokušava izvući algoritam iz visoravni pomičući ga u smjeru koji je akumuliran. Kako moment ne bi izvukao algoritam iz optimuma, dodaje mu se koeficijent \textit{zaboravljanja} kojim se stari vektor momenta djelomično zaboravlja u korist novog vektora pomaka (jednadžba \ref{eq:moment_update}). Moment može pomoći i pri zaobilaženju lokalnih optimuma \figref{fig:pocetna_tocka}.
+Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo mali, a sama regija je s obzirom na pomake velika (slika \ref{fig:pocetna_tocka}, desno). Kad gradijent postane neupotrebljivo malen kaže se da je \textit{nestao}. U takvim slučajevima pomaže dodavanje momenta koji se akumulira kroz više iteracija i dodaje vektoru gradijenta. Kad algoritam naiđe na regiju s vrlo malim gradijentima, moment pokušava izvući algoritam iz visoravni pomičući ga u smjeru koji je akumuliran. Kako moment ne bi izvukao algoritam iz optimuma, dodaje mu se koeficijent \textit{zaboravljanja} kojim se stari vektor momenta djelomično zaboravlja u korist novog vektora pomaka (jednadžba \ref{eq:moment_update}). Moment može pomoći i pri zaobilaženju lokalnih optimuma \figref{fig:visoravan}.
 
 \begin{equation}
 \label{eq:moment_update}
@@ -270,7 +270,7 @@ Problem se javlja ako algoritam odluta u visoravan na kojoj su gradijenti vrlo m
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{grad_descent_moment.pdf}
-\caption{Prikazan je utjecaj momenta na savladavanje platoa i izbočina. Debljina kružnice označava veličinu momenta.}
+\caption{Prikazan je utjecaj momenta na savladavanje platoa i izbočina. Debljina kružnice označava količinu momenta.}
 \label{fig:visoravan}
 \end{figure}
 
@@ -552,8 +552,34 @@ U ovom se radu ne koristi regularizacija šumom jer bi mogla imati nepredvidivi 
 Pri učenju modela funkcija gubitka na skupu za učenje i testiranje generalno opada, no u jednom trenu gubitak generalizacije počinje rasti. Zaustavi li se učenje u trenutku kada je gubitak generalizacije najmanji dobiva se optimalan model za zadane hiperparametre. U praksi te funkcije neće biti naročito glatke zbog stohastičkog gradijentnog spusta te će greška generalizacije povremeno i rasti kako savladava lokalne optimume.
 
 Postupak ranog zaustavljanja tretira broj epoha kao hiperparametar koji se pretražuje po liniji. No umjesto da se za svaku vrijednost broja epoha nanovo trenira model, ovdje se trenira jednom i odabire vrijednost za koju model generalizira najbolje. Pri mjerenju generalizacije modela koristi se unakrsna validacija \secref{sec:crossval}.
-
-\todoeq{Algoritam ranog zaustavljanja}
+\newline
+\newline
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\KwIn{model $m$}
+\While{($++i < I\ \wedge\ t < T$)}{
+uči model jednu epohu $m$ \;
+izmjeri gubitak treniranja $L_{train}$ \;
+izmjeri gubitak validacije $L_{validate}$ \;
+\If{$L_{train} \in \{NaN, \pm\infty\}$}{
+	izađi iz petlje \;
+}
+\eIf{$(|\frac{L_{train}-L^*_{train}}{L^*_{train}}| \le \delta) \vee (L_{train} \ge L^*_{train}) \vee (L_{validate} \ge L^*_{validate})$}{
+	$t++$
+}{
+	$t = 0$
+}
+\If{$L_{validate}<L^*_{validate}$}{
+	$i^* = i$
+}
+$L^*_{train} = max\{L^*_{train},L_{train}\}$ \;
+$L^*_{validate} = max\{L^*_{validate},L_{validate}\}$ \;
+}
+\KwResult{pronađen optimalan broj iteracija $i^*$}
+\;
+\caption{Algoritam ranog zaustavljanja s dodatnim mehanizmima korišten u radu}
+\label{alg:nested_cv}
+\end{algorithm}
 
 U ovom radu detekcija pretreniranosti radi se usporedbom s najboljom pronađenom vrijednosti funkcije gubitka na skupu za validaciju. Ako vrijednost gubitka raste $n$ uzastopnih epoha, to je pokazatelj da se mreža počela pretrenirati. Kao dodatan mehanizam ranijeg zaustavljanja, koji služi za uštedu na vremenu provedenom učenjem, koriste se detekcije divergencije i konvergencije. Divergencija je detektirana ako vrijednost gubitka na skupu za učenje raste, a konvergencija ako se taj gubitak mijenja za manje od $p\%$ najboljeg pronađenog gubitka na skupu za učenje kroz $n$ uzastopnih epoha. Sva tri mehanizma doprinose brojaču epoha i kada brojač dostigne vrijednost $n$ učenje se prekida i odabire se epoha s minimalnim gubitkom na skupu za validaciju. Ako ni jedan mehanizam nije aktiviran, brojač se ponovno postavi na $0$.
 
@@ -1928,7 +1954,7 @@ Operator inicijalizacije genotipa zamjenjuje čitavo stablo novim generiranim st
 %--------------------------------------------------------------------------------------%
 \chapter{Implementacija}
 \section{Razvojna okolina i alati}
-Projekt je implementiran u programskom jeziku Java verzije 8, alatom IntelliJ. Razvojna okolina Deeplearning4j korištena je za učitavanje podatkovnih skupova, pretprocesiranje, izgradnju i optimizaciju neuronskih mreža te podršku izvođenja na grafičkim karticama s podrškom CUDA biblioteke. Obrada podataka i iscrtavanje grafova implementirano je u Jupyter bilježnicama u programskom jeziku Python verzije 3 korištenjem raznih biblioteka (numpy, sk-learn, matplotlib i ostalim).
+Projekt je implementiran u programskom jeziku Java verzije 8, alatom IntelliJ. Razvojna okolina Deeplearning4j \citep{dl4j} korištena je za učitavanje podatkovnih skupova, pretprocesiranje, izgradnju i optimizaciju neuronskih mreža te podršku izvođenja na grafičkim karticama s podrškom CUDA biblioteke. Obrada podataka i iscrtavanje grafova funkcija i rezultata implementirano je Python skriptama i Jupyter bilježnicama u programskom jeziku Python verzije 3 korištenjem raznih biblioteka (numpy, sk-learn, matplotlib i ostalim). Slike neurona i gradijentnog spusta iscrtane su alatom \textit{draw.io}.
 
 \noindent
 Kod je dostupan na GitHub repozitoriju: \\
