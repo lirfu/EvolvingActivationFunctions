@@ -75,7 +75,7 @@ public class Dl4jDataset implements DataSetIterator {
     @Override
     public DataSet next() {
         BatchPair b = cacher_.next();
-//        System.out.println(Arrays.toString(b.getVal()[0]));
+//        System.out.println(Arrays.toString(b.getSecond()[0]));
         return new DataSet(Nd4j.create(b.getKey()), Nd4j.create(b.getVal()));
     }
 

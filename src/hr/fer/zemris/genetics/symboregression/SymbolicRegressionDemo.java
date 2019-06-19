@@ -93,7 +93,7 @@ public class SymbolicRegressionDemo {
 
         System.out.println("Top 5 results:");
         for (Triple<Long, String, Double> g : algo.getResultBundle().getOptimumHistory()) {
-            System.out.println(g.getKey() + ". " + g.getVal() + "   (" + g.getExtra() + ")");
+            System.out.println(g.getFirst() + ". " + g.getSecond() + "   (" + g.getThird() + ")");
         }
 
         System.out.println("Done!");

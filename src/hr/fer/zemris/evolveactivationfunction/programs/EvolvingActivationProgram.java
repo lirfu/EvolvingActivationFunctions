@@ -265,8 +265,8 @@ public class EvolvingActivationProgram {
         DerivableSymbolicTree[] top = new DerivableSymbolicTree[optima.size()];
         for (int i = 0; i < optima.size(); i++) {
             Triple<Long, String, Double> g = optima.get(i);
-            top[i] = new DerivableSymbolicTree(SymbolicTree.parse(g.getVal(), set));
-            evo_logger.i("--> f" + (i + 1) + ": " + g.getVal() + "  (" + g.getExtra() + ") at iteration " + g.getKey());
+            top[i] = new DerivableSymbolicTree(SymbolicTree.parse(g.getSecond(), set));
+            evo_logger.i("--> f" + (i + 1) + ": " + g.getSecond() + "  (" + g.getThird() + ") at iteration " + g.getFirst());
         }
 
         // Create function images.

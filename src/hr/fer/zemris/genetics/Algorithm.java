@@ -101,6 +101,7 @@ public abstract class Algorithm {
                 population_[i].evaluate(evaluator_);
             } catch (Exception | Error e) {
                 log_.e(e.toString());
+                e.printStackTrace();
                 population_[i] = null;
             } finally { // Ensure no dead-locks.
                 synchronized (done_jobs) {
@@ -195,11 +196,11 @@ public abstract class Algorithm {
         if (top_optima_num_ > 0) {
             for (Genotype g : population_) {
                 // If list isn't filled yet or is better then last.
-                if (optima_list_.size() < top_optima_num_ || g.compareTo((double) optima_list_.getLast().getExtra()) < 0) {
+                if (optima_list_.size() < top_optima_num_ || g.compareTo((double) optima_list_.getLast().getThird()) < 0) {
                     String serial = g.serialize();
                     boolean unique = true;
                     for (Triple<Long, String, Double> opt : optima_list_) {
-                        if (opt.getVal().equals(serial)) {
+                        if (opt.getSecond().equals(serial)) {
                             unique = false;
                             break;
                         }
@@ -208,7 +209,7 @@ public abstract class Algorithm {
                         optima_list_.add(new Triple<>(iterations_, g.serialize(), g.fitness_));
                 }
             }
-            Collections.sort(optima_list_, (x, y) -> (int) Math.signum(x.getExtra() - y.getExtra())); // Best first.
+            Collections.sort(optima_list_, (x, y) -> (int) Math.signum(x.getThird() - y.getThird())); // Best first.
             for (int i = 0; i < optima_list_.size() - top_optima_num_; i++) { // Remove worst.
                 optima_list_.removeLast();
             }
