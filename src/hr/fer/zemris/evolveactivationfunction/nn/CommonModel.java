@@ -35,13 +35,16 @@ public class CommonModel implements IModel {
      *
      * @param params       Parameters used in the training process.
      * @param architecture Architecture of the network.
-     * @param activations  Array of activation functions. Must define either one common activation function) or one function per layer.
+     * @param activations  Array of activation functions. Must define either one common activation function or one function per layer.
      */
     public CommonModel(@NotNull TrainParams params, @NotNull NetworkArchitecture architecture, @NotNull IActivation[] activations) {
-        boolean common_act = false;
-        if (architecture.layersNum() > 1 && activations.length == 1) { // Single common activation.
-            common_act = true;
-        } else if (architecture.layersNum() > 0 && activations.length == 0 || activations.length != architecture.layersNum()) {
+        if (architecture.layersNum() > 1 && activations.length == 1) { // Single common activation, use same for all.
+            IActivation a = activations[0];
+            activations = new IActivation[architecture.layersNum()];
+            for (int i = 0; i < activations.length; i++) {
+                activations[i] = a;
+            }
+        } else if (activations.length != architecture.layersNum()) {
             throw new IllegalArgumentException("Activation function ill defined! Please provide one common function or one function per layer.");
         }
 
@@ -64,10 +67,6 @@ public class CommonModel implements IModel {
         if (params.dropout_keep_prob() < 1.) {
             conf.dropOut(params.dropout_keep_prob());
         }
-        // Apply common function globally if it is defined.
-        if (common_act) {
-            conf.activation(activations[0]);
-        }
 
         // Define inner layer descriptors.
         NeuralNetConfiguration.ListBuilder list = conf.list();
@@ -78,7 +77,7 @@ public class CommonModel implements IModel {
             if (params.batch_norm()) {
                 list.layer(l_i++, new MyBatchNormalizationConf.Builder(false).build());
             }
-            list.layer(l_i++, new ActivationLayer(common_act ? activations[0] : activations[a_i++]));
+            list.layer(l_i++, new ActivationLayer(activations[a_i++]));
         }
         // Define output layer and loss.
         list.layer(l_i, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
