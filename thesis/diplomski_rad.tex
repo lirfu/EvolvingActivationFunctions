@@ -80,37 +80,37 @@
 
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl256_tr_instances.pdf}
+\includegraphics[width=\textwidth]{ds_nl256_tr_instances.pdf}
 \centering
 \caption{PCA redukcija skupa za učenje}
 \label{fig:dpa2_train_pca}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl256_ts_instances.pdf}
+\includegraphics[width=\textwidth]{ds_nl256_ts_instances.pdf}
 \centering
 \caption{PCA redukcija skupa za testiranje}
 \label{fig:dpa2_test_pca}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl256_tr_inputs.pdf}
+\includegraphics[width=\textwidth]{ds_nl256_tr_inputs.pdf}
 \centering
 \caption{Distribucija značajki skupa za učenje}
 \label{fig:dpa2_train_inputs}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl256_ts_inputs.pdf}
+\includegraphics[width=\textwidth]{ds_nl256_ts_inputs.pdf}
 \centering
 \caption{Distribucija značajki skupa za testiranje}
 \label{fig:dpa2_test_inputs}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl256_tr_outputs.pdf}
+\includegraphics[width=\textwidth]{ds_nl256_tr_outputs.pdf}
 \centering
 \caption{Distribucija oznaka skupa za učenje}
 \label{fig:dpa2_train_outputs}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl256_ts_outputs.pdf}
+\includegraphics[width=\textwidth]{ds_nl256_ts_outputs.pdf}
 \centering
 \caption{Distribucija oznaka skupa za testiranje}
 \label{fig:dpa2_test_outputs}
@@ -125,37 +125,37 @@
 
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl9_tr_instances.pdf}
+\includegraphics[width=\textwidth]{ds_nl9_tr_instances.pdf}
 \centering
 \caption{PCA redukcija skupa za učenje}
 \label{fig:dpa4_train_pca}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl9_ts_instances.pdf}
+\includegraphics[width=\textwidth]{ds_nl9_ts_instances.pdf}
 \centering
 \caption{PCA redukcija skupa za testiranje}
 \label{fig:dpa4_test_pca}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl9_tr_inputs.pdf}
+\includegraphics[width=\textwidth]{ds_nl9_tr_inputs.pdf}
 \centering
 \caption{Distribucija značajki skupa za učenje}
 \label{fig:dpa4_train_inputs}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl9_ts_inputs.pdf}
+\includegraphics[width=\textwidth]{ds_nl9_ts_inputs.pdf}
 \centering
 \caption{Distribucija značajki skupa za testiranje}
 \label{fig:dpa4_test_inputs}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl9_tr_outputs.pdf}
+\includegraphics[width=\textwidth]{ds_nl9_tr_outputs.pdf}
 \centering
 \caption{Distribucija oznaka skupa za učenje}
 \label{fig:dpa4_train_outputs}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
-\includegraphics[width=\textwidth]{nl9_ts_outputs.pdf}
+\includegraphics[width=\textwidth]{ds_nl9_ts_outputs.pdf}
 \centering
 \caption{Distribucija oznaka skupa za testiranje}
 \label{fig:dpa4_test_outputs}
@@ -779,7 +779,7 @@ U nastavku su navedene popularne aktivacijske funkcije koje je autor pronašao u
 \engl{Identity function}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Identity.pdf}
+\includegraphics[width=\textwidth]{func_Identity.pdf}
 \centering
 \caption{Funkcija identiteta i njena derivacija}
 \label{fig:identity}
@@ -810,7 +810,7 @@ f_1(f_2(x)) &= w_1 \cdot (w_2 \cdot x + b_2) + b_1 \\
 \engl{Rectified linear unit}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{ReLU.pdf}
+\includegraphics[width=\textwidth]{func_ReLU.pdf}
 \centering
 \caption{Funkcija ReLU i njena derivacija}
 \label{fig:relu}
@@ -843,7 +843,7 @@ Problem u negativnoj domeni je mogućnost blokiranja gradijenta i neaktivnih neu
 \engl{Leaky ReLU}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{LReLU.pdf}
+\includegraphics[width=\textwidth]{func_LReLU.pdf}
 \centering
 \caption{Funkcija LReLU i njena derivacija za $\alpha=0.1$}
 \label{fig:lrelu}
@@ -906,7 +906,7 @@ f'(x) =
 \engl{Thresholded ReLU}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{ThReLU.pdf}
+\includegraphics[width=\textwidth]{func_ThReLU.pdf}
 \centering
 \caption{Funkcija ThReLU i njena derivacija}
 \label{fig:threlu}
@@ -951,7 +951,7 @@ Funkcija je generalizacija funkcije $ReLU$ \secref{func:relu} kojoj je vrijednos
 \subsection{Softplus}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Softplus.pdf}
+\includegraphics[width=\textwidth]{func_Softplus.pdf}
 \centering
 \caption{Softplus i njegova derivacija}
 \label{fig:softplus}
@@ -996,7 +996,7 @@ U odnosu na $ReLU$, funkcija nema problem nestajućeg gradijenta jer propušta g
 \engl{Exponential linear unit}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{ELU.pdf}
+\includegraphics[width=\textwidth]{func_ELU.pdf}
 \centering
 \caption{Funkcija ELU i njena derivacija}
 \label{fig:elu}
@@ -1027,7 +1027,7 @@ Funkcija $ELU$ je linearna na pozitivnoj domeni, a u negativnoj domeni postepeno
 \engl{Scaled exponential linear unit}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{SELU.pdf}
+\includegraphics[width=\textwidth]{func_SELU.pdf}
 \centering
 \caption{Funkcija SELU i njena derivacija}
 \label{fig:selu}
@@ -1069,7 +1069,7 @@ Aktivacijska funkcija $SELU$ izgrađena je za ostvarivanje samo-normalizirajuće
 \label{func:swish}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Swish.pdf}
+\includegraphics[width=\textwidth]{func_Swish.pdf}
 \centering
 \caption{Funkcija Swish i njena derivacija}
 \label{fig:swish}
@@ -1096,7 +1096,7 @@ Funkcija Swish je pronađena pretragom temeljenom na potpornom učenju. Funkcija
 \engl{Exponential Linear Sigmoid Squashing}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{ELiSH.pdf}
+\includegraphics[width=\textwidth]{func_ELiSH.pdf}
 \centering
 \caption{Funkcija ELiSH i njena derivacija}
 \label{fig:elish}
@@ -1124,7 +1124,7 @@ Ova funkcija i njena brža aproksimacija \textit{Tvrdi ELiSH} su kompozicije fun
 \engl{Hard ELiSH}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Hard_ELiSH.pdf}
+\includegraphics[width=\textwidth]{func_Hard_ELiSH.pdf}
 \centering
 \caption{Funkcija Tvrdi ELiSH i njena derivacija}
 \label{fig:hard_elish}
@@ -1161,7 +1161,7 @@ Ova funkcija je aproksimacija funkcije ELiSH opisane u poglavlju \ref{func:elish
 \label{func:relun}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{ReLU6.pdf}
+\includegraphics[width=\textwidth]{func_ReLU6.pdf}
 \centering
 \caption{Funkcija ReLU6 i njena derivacija}
 \label{fig:relu6}
@@ -1198,7 +1198,7 @@ S obzirom da je ReLUn neuron aktivan samo na relativno uskoj regiji u pozitivnoj
 \engl{Sigmoid}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Sigmoid.pdf}
+\includegraphics[width=\textwidth]{func_Sigmoid.pdf}
 \centering
 \caption{Sigmoida i njena derivacija}
 \label{fig:sigmoid}
@@ -1222,7 +1222,7 @@ Sigmoida kao aktivacijska funkcija svoje korijene vuče iz biologije \citep[str.
 \engl{Hard sigmoid}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Hard_sigmoid.pdf}
+\includegraphics[width=\textwidth]{func_Hard_sigmoid.pdf}
 \centering
 \caption{Tvrda sigmoida i njena derivacija}
 \label{fig:hard_sigmoid}
@@ -1251,7 +1251,7 @@ Iako se u ovom radu pri primjeni tvrde funkcije ne dodaje šum, funkcija ostvaru
 \label{func:tanh}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{tanh.pdf}
+\includegraphics[width=\textwidth]{func_tanh.pdf}
 \centering
 \caption{Funkcija tanh i njena derivacija}
 \label{fig:tanh}
@@ -1274,7 +1274,7 @@ Tangens hiperbolni je sličan sigmoidi, no nije strogo pozitivan. Zasićenja u $
 \engl{Hard tanh}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Hard_tanh.pdf}
+\includegraphics[width=\textwidth]{func_Hard_tanh.pdf}
 \centering
 \caption{Tvrdi tanh i njegova derivacija}
 \label{fig:hard_tanh}
@@ -1309,7 +1309,7 @@ U radu \citet{hardsigm} u regije zasićenja dodaje se šum kao što je opisano u
 \engl{Rational tanh}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Rational_tanh.pdf}
+\includegraphics[width=\textwidth]{func_Rational_tanh.pdf}
 \centering
 \caption{Racionalni tanh i njegova derivacija}
 \label{fig:rational_tanh}
@@ -1331,7 +1331,7 @@ Racionalna aproksimacija tangensa hiperbolnog prati originalnu funkciju s relati
 \engl{Rectified tanh}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Rectified_tanh.pdf}
+\includegraphics[width=\textwidth]{func_Rectified_tanh.pdf}
 \centering
 \caption{Ispravljeni tanh i njegova derivacija}
 \label{fig:rectified_tanh}
@@ -1362,7 +1362,7 @@ Ispravljeni tangens hiperbolni je strogo pozitivan, sadrži oštru nelinearnost 
 \subsection{Softsign}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Softsign.pdf}
+\includegraphics[width=\textwidth]{func_Softsign.pdf}
 \centering
 \caption{Softsign i njegova derivacija}
 \label{fig:softsign}
@@ -1386,7 +1386,7 @@ Funkcija je originalno predstavljena u radu \citet{softsign_orig} i testirana s 
 \subsection{Sinus (sin)}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Sin.pdf}
+\includegraphics[width=\textwidth]{func_Sin.pdf}
 \centering
 \caption{Sinusoida i njegova derivacija}
 \label{fig:sin}
@@ -1415,7 +1415,7 @@ Po uzoru na slične funkcije kao što je sigmoida \figref{fig:sigmoid} i tangens
 \engl{Truncated sine}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{TrSin.pdf}
+\includegraphics[width=\textwidth]{func_TrSin.pdf}
 \centering
 \caption{Ograničeni sinus i njegova derivacija}
 \label{fig:trsin}
@@ -1446,7 +1446,7 @@ Ograničeni sinus korišten je u radu \citet{taming_waves} za usporedbu s klasi�
 \subsection{Kosinus (cos)}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Cos.pdf}
+\includegraphics[width=\textwidth]{func_Cos.pdf}
 \centering
 \caption{Kosinus i njegova derivacija}
 \label{fig:cos}
@@ -1473,7 +1473,7 @@ cos(x) = sin(x + \frac{\pi}{2}) \approx sin(x + 1.571)
 \engl{Truncated cosine}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{TrCos.pdf}
+\includegraphics[width=\textwidth]{func_TrCos.pdf}
 \centering
 \caption{Ograničeni kosinus i njegova derivacija}
 \end{figure}
@@ -1503,7 +1503,7 @@ Ograničeni kosinus autori nisu pronašli u literaturi, no navodi se zbog potreb
 \subsection{Parabola $x^2$}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Pow2.pdf}
+\includegraphics[width=\textwidth]{func_Pow2.pdf}
 \centering
 \caption{Parabola i njena derivacija}
 \end{figure}
@@ -1527,7 +1527,7 @@ f'(x) = 2x
 \subsection{Kubna parabola $x^3$}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Pow3.pdf}
+\includegraphics[width=\textwidth]{func_Pow3.pdf}
 \centering
 \caption{Kubna parabola i njena derivacija}
 \end{figure}
@@ -1551,7 +1551,7 @@ f'(x) = 3x^2
 \subsection{Gaussova krivulja bez normalizacije}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Gauss.pdf}
+\includegraphics[width=\textwidth]{func_Gauss.pdf}
 \centering
 \caption{Gaussova krivulja bez normalizacije i njena derivacija}
 \label{fig:gauss}
@@ -1576,7 +1576,7 @@ f'(x) = -2x \cdot f(x)
 \subsection{Softmax}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{Softmax.pdf}
+\includegraphics[width=\textwidth]{func_Softmax.pdf}
 \centering
 \caption{Tri različita ulazna pravca te odziv funkcije $Softmax$ i njene derivacije na pravce}
 \label{fig:softmax}
@@ -1670,7 +1670,7 @@ f'(x) =
 \engl{S-shaped ReLU}
 
 \begin{figure}[H]
-\includegraphics[width=\textwidth]{PLU.pdf}
+\includegraphics[width=\textwidth]{func_PLU.pdf}
 \centering
 \caption{Funkcija PLU i njena derivacija}
 \end{figure}
@@ -2107,7 +2107,20 @@ Stopa učenja & $10^{-3}$, $5 \cdot 10^{-4}$, $10^{-4}$
 \subsection{Izgradnja aktivacijskih funkcija simboličkom regresijom}
 \todo{Tablica}
 \todo{Komentar}
-\todoimg{boxplot usporedba po tabu veličini}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{GP_9class_acc.pdf}
+\centering
+\caption{Točnosti po veličini tabu liste}
+\label{fig:gp_9_acc}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{GP_9class_f1.pdf}
+\centering
+\caption{F1 mjera po veličini tabu liste}
+\label{fig:gp_9_f1}
+\end{figure}
 
 \subsection{Izgradnja heterogenog rasporeda aktivacijskih funkcija}
 \todo{Ne znam hoću li stići i ovo izvrtiti. Za najbolju prethodnu arhitekturu ću pronaći najbolji raspored uobičajenih fja po slojevima mreže (npr. sin-relu).}
@@ -2155,7 +2168,20 @@ U ovom poglavlju prikazana je usporedba performansi popularnih aktivacijskih fun
 
 \todo{Tablica}
 \todo{Komentar}
-\todoimg{boxplot usporedba po tabu veličini}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{GP_256class_acc.pdf}
+\centering
+\caption{Točnosti po veličini tabu liste}
+\label{fig:gp_256_acc}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=\textwidth]{GP_256class_f1.pdf}
+\centering
+\caption{F1 mjera po veličini tabu liste}
+\label{fig:gp_256_f1}
+\end{figure}
 
 \subsection{Izgradnja heterogenog rasporeda aktivacijskih funkcija}
 \todo{Ne znam hoću li stići i ovo izvrtiti. Za najbolju prethodnu arhitekturu ću pronaći najbolji raspored uobičajenih fja po slojevima mreže (npr. sin-relu).}
