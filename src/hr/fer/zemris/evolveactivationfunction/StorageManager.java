@@ -7,6 +7,7 @@ import hr.fer.zemris.data.UnsafeDatasetDescriptor;
 import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
+import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.logs.FileLogger;
 import hr.fer.zemris.utils.logs.ILogger;
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
@@ -21,6 +22,7 @@ import org.nd4j.linalg.factory.Nd4j;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -30,17 +32,14 @@ import java.util.List;
  * sol<br>
  * - dataset1_name<br>
  * - - experiment1_name<br>
- * - - - - activations<br>
- * - - - - - L1.txt<br>
- * - - - - - L2.txt<br>
+ * - - - - activations.csv<br>
  * - - - - model.zip<br>
  * - - - - parameters.txt<br>
  * - - - - predictions.txt<br>
  * - - - - results.txt<br>
  * - - - - train.log<br>
  * - - experiment2_name<br>
- * - - - - activations<br>
- * - - - - - L1.txt<br>
+ * - - - - activations.csv<br>
  * - - - - model.zip<br>
  * - - - - parameters.txt<br>
  * - - - - predictions.txt<br>
@@ -58,7 +57,7 @@ public class StorageManager {
     public static final String sol_dir_name_ = current_dir_ + "sol" + File.separator;
     public static final String tmp_dir_name_ = current_dir_ + "tmp" + File.separator;
     public static final String sol_model_name_ = "model.zip";
-    public static final String sol_activations_dir_ = "activations";
+    public static final String sol_activations_file_ = "activations.csv";
     public static final String sol_predictions_name_ = "predictions.txt";
     public static final String sol_result_name_ = "results.txt";
     public static final String sol_stats_name_ = "stats.dl4jlog";
@@ -172,11 +171,20 @@ public class StorageManager {
     }
 
     /**
-     * Stores the predictions of the given context.
+     * Stores the activations of the given context.
      */
-    public static void storeActivations(List<INDArray> activations, Context c, int batch_index) throws IOException {
-        for (int i = 1; i <= activations.size(); i++) {
-            Nd4j.writeTxt(activations.get(i - 1), createFile(createExperimentPath(c) + sol_activations_dir_ + File.separator + 'L' + i + '_' + batch_index).getPath());
+    public static void storeActivations(long[][] activations, Triple<Double, Double, Integer> params, Context c) throws IOException {
+        FileLogger log = new FileLogger(createExperimentPath(c) + sol_activations_file_, false);
+        log.d(params.toString());
+        for (long[] a : activations) {
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            for (long v : a) {
+                if (i++ > 0)
+                    sb.append('\t');
+                sb.append(v);
+            }
+            log.d(sb.toString());
         }
     }
 

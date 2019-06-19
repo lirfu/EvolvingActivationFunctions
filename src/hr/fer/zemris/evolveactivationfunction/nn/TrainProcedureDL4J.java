@@ -7,6 +7,7 @@ import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Stopwatch;
+import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.Utilities;
 import hr.fer.zemris.utils.logs.ILogger;
 import org.deeplearning4j.api.storage.StatsStorageRouter;
@@ -452,52 +453,73 @@ public class TrainProcedureDL4J implements ITrainProcedure {
     }
 
 
-    private void collectModelActivations_internal(CommonModel model, Context c, DataSet ds) throws IOException {
+    private void collectModelActivations_internal(CommonModel model, Context c, Triple<Double, Double, Integer> range_n_buckets, DataSet ds) throws IOException {
         MultiLayerNetwork m = model.getModel();
         DataSetIterator iter = new TestDataSetIterator(ds, params_.batch_size());
 
         // Prepare layers for measuring.
-        for (Layer l : m.getLayers()) {
-            if (params_.batch_norm() && l instanceof MyBatchNormalization
-                    || !params_.batch_norm() && l instanceof MyDenseLayer) {
-                ((IOpenLayer) l).setMeasuring(true);
+        int layer_num = 0;
+        for (Layer lay : m.getLayers()) {
+            if (params_.batch_norm() && lay instanceof MyBatchNormalization
+                    || !params_.batch_norm() && lay instanceof MyDenseLayer) {
+                ((IOpenLayer) lay).setMeasuring(true);
+                layer_num++;
             }
         }
 
-        int batch_index = 0;
-        while (iter.hasNext()) {
-            DataSet batch = iter.next();
-            m.output(batch.getFeatures());  // Forward propagate to store activations.
+        double min = range_n_buckets.getFirst(), max = range_n_buckets.getSecond();
+        int bucket_num = range_n_buckets.getThird();
+        long[][] layerwise_buckets = new long[layer_num][bucket_num];
 
-            LinkedList<INDArray> layer_wise = new LinkedList<>();
-            for (Layer l : m.getLayers()) {
-                if (params_.batch_norm() && l instanceof MyBatchNormalization
-                        || !params_.batch_norm() && l instanceof MyDenseLayer) {
-                    layer_wise.add(((IOpenLayer) l).getActivation());
+        // Line for bucket sorting.
+        double k = (bucket_num - 2) / (max - min);
+        double l = bucket_num / 2. - k * (max + min) / 2.;
+
+        // Collect activations.
+        while (iter.hasNext()) {
+            // Forward propagate to remember activations.
+            DataSet batch = iter.next();
+            m.output(batch.getFeatures());
+
+            // Layerwise count bucket occasions.
+            int l_i = 0;
+            for (Layer lay : m.getLayers()) {
+                if (params_.batch_norm() && lay instanceof MyBatchNormalization
+                        || !params_.batch_norm() && lay instanceof MyDenseLayer) {
+                    INDArray act = ((IOpenLayer) lay).getActivation();
+
+                    for (int i = 0; i < act.length(); i++) {
+                        // Calculate index from defined line.
+                        int b_i = Math.max(0, Math.min(bucket_num - 1, (int) Math.floor(l + k * act.getDouble(i))));
+                        layerwise_buckets[l_i][b_i]++;
+                    }
+                    l_i++;
                 }
             }
-            StorageManager.storeActivations(layer_wise, c, batch_index++);
         }
 
+        // Store buckets.
+        StorageManager.storeActivations(layerwise_buckets, range_n_buckets, c);
+
         // Close layers for measuring.
-        for (Layer l : m.getLayers()) {
-            if (params_.batch_norm() && l instanceof MyBatchNormalization
-                    || !params_.batch_norm() && l instanceof MyDenseLayer) {
-                ((IOpenLayer) l).setMeasuring(false);
+        for (Layer lay : m.getLayers()) {
+            if (params_.batch_norm() && lay instanceof MyBatchNormalization
+                    || !params_.batch_norm() && lay instanceof MyDenseLayer) {
+                ((IOpenLayer) lay).setMeasuring(false);
             }
         }
     }
 
-    public void collectModelActivationsOnTrain(CommonModel model, Context c) throws IOException {
-        collectModelActivations_internal(model, c, train_set_);
+    public void collectModelActivationsOnTrain(CommonModel model, Context c, Triple<Double, Double, Integer> range_n_buckets) throws IOException {
+        collectModelActivations_internal(model, c, range_n_buckets, train_set_);
     }
 
-    public void collectModelActivationsOnTrainJoined(CommonModel model, Context c) throws IOException {
-        collectModelActivations_internal(model, c, construct_joined_dataset());
+    public void collectModelActivationsOnTrainJoined(CommonModel model, Context c, Triple<Double, Double, Integer> range_n_buckets) throws IOException {
+        collectModelActivations_internal(model, c, range_n_buckets, construct_joined_dataset());
     }
 
-    public void collectModelActivationsOnTest(CommonModel model, Context c) throws IOException {
-        collectModelActivations_internal(model, c, test_set_);
+    public void collectModelActivationsOnTest(CommonModel model, Context c, Triple<Double, Double, Integer> range_n_buckets) throws IOException {
+        collectModelActivations_internal(model, c, range_n_buckets, test_set_);
     }
 
     public void release_train() {
@@ -509,7 +531,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 //        StorageManager.storeModel(((CommonModel) model), context);
         StorageManager.storeTrainParameters(params_, context);
         StorageManager.storeResults(result.getKey(), context);
-//        StorageManager.storePredictions((INDArray) result.getVal(), context);
+//        StorageManager.storePredictions((INDArray) result.getSecond(), context);
     }
 
     /**
