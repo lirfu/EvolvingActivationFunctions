@@ -85,8 +85,8 @@ public class SlackLogger implements ILogger {
 
             client.execute(httpPost);
             client.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Couldn't send message to Slack -> " + e.toString());
         }
     }
 
