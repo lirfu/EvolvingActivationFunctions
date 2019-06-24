@@ -146,19 +146,14 @@ P\left(t\right) = \sum_{g}{} f\left(g,t\right) + N\left(t\right)
 Dva poznata modela emisije električne energije \engl {power leakage model} kod SCA su model Hammingove težine \engl {Hamming weight, HW} i model Hammingove udaljenosti \engl {Hamming distance, HD}. Model Hammingove težine pretpostavlja da je potrošnja električne energije korelirana s Hammingovom težinom podataka unutar kriptografskog algoritma. Model Hammingove udaljenosti promatra broj promjene bitova iz prethodnog stanja algoritma u trenutno stanje.
 
 \subsection{SCA razlučitelji}
+SCA razlučitelji \engl {SCA distinguishers} su statistički modeli temeljem kojih se gradi veza između mjerenja fizikalnih svojstava uređaja i tajnog ključa. Pretpostavljanjem postojanja veze između mjerenja fizikalnih svojstava kriptografskog uređaja i tajnog ključa, napadi se dijele na one koji pretpostavljaju čvrstu vezu mjerenja i tajnog ključa te one koji zaključuju na temelju statističkog modela temeljenog na mjerenjima. Razlučitelji se koriste kod napada statističkim modelom.
 
-\todo{}
-
-SCA razlučitelji \engl {SCA distinguishers} su statistički modeli na temelju kojih se gradi veza između mjerenja fizikalnih svojstava uređaja i tajnog ključa. Prema pretpostavci veze između mjerenja fizikalnih svojstava kriptografskog uređaja i tajnog ključa, napadi se dijele u dvije skupine: one koji pretpostavljaju čvrstu vezu mjerenja i tajnog ključa i one koji zaključuju na temelju statističkog modela koji u obzir uzima mjerenja. Razlučitelji se koriste kod druge skupine napada. Kod DPA često se koriste sljedeći razlučitelji: razlika srednjih vrijednosti \engl {Difference of Means, DOM}, T-test, test varijance, Pearsonova korelacija, korelacija Spearmanovog ranga \engl {Spearman's Rank Correlation} \citep{gierlichs2009empirical}.
-
-U nastavku je opisan DPA napad s razlučiteljem razlike srednjih vrijednosti. Za opise ostalih razlučitelja, čitatelj se upućuje pogledati \citep{gierlichs2009empirical}.
-
+Za DPA često se koriste sljedeći razlučitelji: razlika srednjih vrijednosti \engl {Difference of Means, DOM}, T-test, test varijance, Pearsonova korelacija, korelacija Spearmanovog ranga \engl {Spearman's Rank Correlation}. \citep{gierlichs2009empirical} U nastavku je opisan DPA napad s razlučiteljem razlike srednjih vrijednosti.
 
 \subsection{Opis DPA}
-
 \todo{}
 
-Ukoliko se želi provesti postupak diferencijalne analize potrošnje električne energije, potreban je veći broj tragova ($\approx 10^3$). U početku se izgrade dvije matrice, matrica tragova i matrica hipoteza. Obe matrice imaju jednak broj redaka i on je jednak broju tragova. Broj stupaca kod matrice tragova jednak je broju uzoraka prikupljenih mjerenjem, dok kod matrice hipoteza, broj stupaca jednak je broju mogućih vrijednosti jednog bajta ključa ($AES \in [0,255]$, $DES \in [0,64]$). 
+Ukoliko se želi provesti postupak diferencijalne analize potrošnje električne energije, potreban je velik broj tragova ($\approx 10^3$). U početku se grade dvije matrice, matrica tragova i matrica hipoteza. Obje matrice imaju jednak broj redaka i on je jednak broju tragova. Broj stupaca kod matrice tragova jednak je broju uzoraka prikupljenih mjerenjem, dok kod matrice hipoteza, broj stupaca jednak je broju mogućih vrijednosti jednog bajta ključa ($AES \in [0,255]$, $DES \in [0,64]$). 
 
 Neka selekcijska funkcija $D(H, b)$ računa vrijednost ciljanog bita $b$ jednog okteta kriptiranog teksta $H$, pomoću 1 okteta hipotetskog ključa $\Psi$. Tragovi se zatim podijele u dvije grupe. Oni tragovi za koje vrijedi $D(H, b) = 1$ stavljaju se u jednu grupu (\textit{$G_1$}), a za one koje vrijedi $D(H, b) = 0$ u drugu (\textit{$G_2$}). Ako je hipotetska vrijednost jednog okteta $\Psi$ tajnog ključa $K$ točna, tada će prosječna vrijednost tragova iz \textit{$G_1$} biti veća nego prosječna vrijednost tragova iz \textit{$G_2$}. Ako je vrijednost $\Psi$ bila pogrešna, tada će funkcija $D(H, b)$ s jednakom vjerojatnošću od $p=\frac{1}{2}$ svrstavati tragove u \textit{$G_1$} ili \textit{$G_2$}. Posljedično, prosječni tragovi će se poklapati. Jednadžbe \ref{eq:dpaex1} i \ref{eq:dpaex2} dokazuju prethodno rečeno, a algoritmom \ref{algo:aes_dpa} opisan je postupak otkrivanja tajnog ključa u AES \engl {Advanced Encryption Standard} kriptografskom algoritmu pomoću diferencijalne analize potrošnje električne energije. Ovakav DPA napad, uz razlučitelj razlike srednjih vrijednosti, prvi su opisali Kocher i ostali 1999. \citep{2009empirical}.
 
@@ -2469,14 +2464,13 @@ Negativna posljedica Dropout-a je duže vrijeme učenja jer je potrebno više it
 \subsubsection{TensorFlow Java API}
 Na početku projekta isproban je TensorFlow API za Javu i napisan je mali demonstracijski program. Iako program radi, usporedba postupka učenja i rezultata s identičnim programom u Python-u pokazuje razlike. Dodatno, kako u trenutku pisanja rada ovaj API još uvijek nije pod garancijom stabilnosti i nedostaju implementacije ključnih elemenata, odustalo se od rada s tom bibliotekom.
 
-%--------------------------------------------------------------------------------------%
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Buduća istraživanja}
-\todo{Primjena CNN na sirovim vremenskim uzorcima po uzoru na onaj rad}
 \todo{Ispitivanje učinkovitosti korištene optimizacije na ostalim zadatcima}
 \todo{Operatori različitog utjecaja i uzorkovanje s rastućim pragom osjetljivosti na izmjene populacije. Operatori imaju definiranu snagu, kako vrijeme ide sve manje se biraju (putujuća sigmoida) snažni operatori -> konvergencija kao sim. kaljenje}
 \todo{Paralelna evolucija arhitekture i aktivacijskih fja \citep{cnn_evolution}}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%--------------------------------------------------------------------------------------%
 \chapter{Zaključak}
 \todo{Radi/Ne radi}
 \todo{Pronađene zanimljivosti}
