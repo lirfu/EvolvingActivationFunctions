@@ -139,6 +139,39 @@ public class TreeNodeSet {
         return null;
     }
 
+    /**
+     * Traverses all buckets and returns the <code>index</code>'th encountered node.
+     */
+    public TreeNode getNode(int index) {
+        for (ArrayList<TreeNode> bucket : node_buckets_) {
+            for (TreeNode n : bucket) {
+                if (index-- == 0) {
+                    return n;
+                }
+            }
+        }
+        return null;
+    }
+
+    public TreeNode getNode(int bucket_index, int index) {
+        return node_buckets_.get(bucket_index).get(index);
+    }
+
+    public int getBucketsNum() {
+        return node_buckets_.size();
+    }
+
+    public int getBucketSize(int bucket_index) {
+        return node_buckets_.get(bucket_index).size();
+    }
+
+    public int getTotalSize() {
+        int size = 0;
+        for (ArrayList<TreeNode> bucket : node_buckets_)
+            size += bucket.size();
+        return size;
+    }
+
     public static class Builder {
         private Random r_ = new Random();
         private LinkedList<TreeNode> nodes_ = new LinkedList<>();

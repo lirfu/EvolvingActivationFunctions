@@ -2,6 +2,7 @@ package hr.fer.zemris.evolveactivationfunction.tree;
 
 import hr.fer.zemris.evolveactivationfunction.tree.nodes.DerivableNode;
 import hr.fer.zemris.evolveactivationfunction.tree.nodes.*;
+import hr.fer.zemris.genetics.symboregression.TreeNode;
 
 import java.util.LinkedList;
 
@@ -261,7 +262,20 @@ public enum TreeNodeSets implements Listable<DerivableNode> {
         public DerivableNode[] list() {
             LinkedList<DerivableNode> nodes = new LinkedList<>();
             for (TreeNodeSets s : TreeNodeSets.values()) {
-                if (s.equals(ALL) || s.list().length > 1) continue;
+                if (s.equals(ALL) || s.equals(UNARY) || s.list().length != 1 || nodes.contains(s.list()[0])) continue;
+                nodes.add(s.list()[0]);
+            }
+            return nodes.toArray(new DerivableNode[]{});
+        }
+    },
+    UNARY {
+        @Override
+        public DerivableNode[] list() {
+            LinkedList<DerivableNode> nodes = new LinkedList<>();
+            for (TreeNodeSets s : TreeNodeSets.values()) {
+//                DerivableNode n = s.list()[0];
+                if (s.equals(UNARY) || s.equals(ALL)
+                        || s.list().length != 1 || s.list()[0].getChildrenNum() != 1 || nodes.contains(s.list()[0])) continue;
                 nodes.add(s.list()[0]);
             }
             return nodes.toArray(new DerivableNode[]{});
