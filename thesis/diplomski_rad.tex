@@ -54,13 +54,13 @@
 % Ispis stranice s napomenom o umetanju izvornika rada. Uklonite naredbu \izvornik ako želite izbaciti tu stranicu.
 \izvornik
 
-\zahvala{ZAHVALA'n'STUFF}
+\zahvala{TODO: ZAHVALE}
 
 \tableofcontents
 
 %--------------------------------------------------------------------------------------%
 \chapter{Uvod}
-Kriptografski uređaji postali su nezamjenjiv element digitalne infrastrukture modernog društva. Služe za prikrivanje važnih informacija, poput bankovnih transakcija i autorskih djela, i ograničavanje pristupa neovlaštenim osobama. S obzirom na vrijednost informacije koju prikrivaju, česta meta su napada. Znanstvena zajednica provodi etičke napade i analize sigurnosnih sustava, ali i predlaže poboljšanja sigurnosti kriptografskih uređaja, s ciljem da se obznane njihove slabosti i na vijeme spriječe nedetektirani napadi. Analiza emisija kriptografskog uređaja je jedan primjer napada koji je gotovo nemoguće detektirati.
+Kriptografski uređaji postali su nezamjenjiv element digitalne infrastrukture modernog društva. Služe za prikrivanje važnih informacija, poput bankovnih transakcija i autorskih djela, i ograničavanje pristupa neovlaštenim osobama. S obzirom na vrijednost informacije koju prikrivaju, česta meta su napada. Znanstvena zajednica provodi etičke napade i analize sigurnosnih sustava, ali i predlaže poboljšanja sigurnosti kriptografskih uređaja, s ciljem da se obznane njihove slabosti i na vrijeme spriječe nedetektirani napadi. Analiza emisija kriptografskog uređaja je jedan primjer napada koji je gotovo nemoguće detektirati.
 
 Duboko učenje se pokazalo vrlo uspješnim na teškim problemima u raznim domenama primjene, pa tako i u napadima na kriptografske uređaje. No optimizacija dubokih modela je vrlo složen proces s raznim hiperparametrima čijim ugađanjem se mogu postići velike razlike u performansama dubokih modela. Jedan od hiperparametara je odabir aktivacijske funkcije koja definira nelinearnost dubokog modela. Iako postoje aktivacijske funkcije s teorijskom pozadinom, pokazuje se da nisu uvijek najbolji odabir. Kombinacijom aktivacijskih funkcija moguće je pospješiti optimizaciju dubokih modela i povećati efektivni kapacitet modela. Stoga je istraživanje aktivacijskih funkcija vrlo važna komponenta u razvoju dubokog učenja.
 
@@ -92,19 +92,19 @@ AES-256 & 8 & 14
 AES koristi četiri operacije čijom se iterativnom primjenom s različitim ekspanzijama ključa ostvaruje enkripcija. Za sve operacije i za čitav algoritam definiran je inverz.
 \begin{enumerate}
 \item
-\textbf{ZamijeniBajtove} nelinearno izmijenjuje svaki bajt matrice stanja pomoću tablice supstitucije (S-box). Svaki bajt matrice stanja predstavlja lokaciju u tablici sa koje se uzima zamjenski bajt. Tablica supstitucije je nepromijenjiva i javno dostupna.
+\textbf{ZamijeniBajtove} nelinearno izmjenjuje svaki bajt matrice stanja pomoću tablice supstitucije (S-box). Svaki bajt matrice stanja predstavlja lokaciju u tablici sa koje se uzima zamjenski bajt. Tablica supstitucije je nepromjenjiva i javno dostupna.
 
 \item
-\textbf{PosmakniRetke} ciklički posmiče retke za broj mjesta koji odgovara indeksu retka (npr. trećem retku se posmiću dva bajta).
+\textbf{PosmakniRetke} ciklički posmiče retke za broj mjesta koji odgovara indeksu retka (npr. trećem retku se posmiču dva bajta).
 
 \item
 \textbf{IzmješajStupce} nad svakim stupcem zasebno provodi polinomijalno modulo-množenje s konstantnim i javno poznatim polinomom. 
 
 \item
-\textbf{DodajPodključ} operatorom ekskluzivno-ili (XOR) matrici stanja dodaje se podključ stvoren iterativnom ekspanzijom originalnog ključa.
+\textbf{DodajPotključ} operatorom ekskluzivno-ili (XOR) matrici stanja dodaje se potključ stvoren iterativnom ekspanzijom originalnog ključa.
 \end{enumerate}
 
-Ekspanzijom ključa se između svake dvije iteracije algoritma iz originalnog stvara novi podključ. Pri prvom dodavanju podključa, ekspanzija nije primijenjena i originalni ključ se direktno dodaje stanju. Svi naredni podključevi generiraju se iz podključa prethodne iteracije dodavanjem nelinearne transformacije podbloka prethodne iteracije.
+Ekspanzijom ključa se između svake dvije iteracije algoritma iz originalnog stvara novi potključ. Pri prvom dodavanju potključa, ekspanzija nije primijenjena i originalni ključ se direktno dodaje stanju. Svi naredni potključevi generiraju se iz potključa prethodne iteracije dodavanjem nelinearne transformacije podbloka prethodne iteracije.
 
 %\todoeq{Algoritam key expansion}
 
@@ -113,39 +113,39 @@ Ekspanzijom ključa se između svake dvije iteracije algoritma iz originalnog st
 \section{Diferencijalna analiza potrošnje električne energije (DPA)}
 \engl{Differential Power Analysis}
 
-Moderni kriptografski uređaj je elektronički uređaj na kojem se izvodi kriptografski algoritam \citep{mangard2008power}. Izvršavanje kriptografskih algoritama na fizičkim uređajima otvara nove probleme u sigurnosti algoritama. U stvarnom svijetu područje interesa ne predstavlja samo sigurnost kriptografskog algoritma, već cijelog okruženja u kojem se algoritam izvodi. Primjeri nekih kriptografskih uređaja su pametne kartice i \textit{USB} uređaji.
+Moderni kriptografski uređaj je elektronički uređaj na kojem se izvodi kriptografski algoritam i koji čuva kriptografski ključ \citep{paa_book}. Izvršavanje kriptografskih algoritama na fizičkim uređajima otvara nove probleme u sigurnosti algoritama. U stvarnom svijetu područje interesa ne predstavlja samo sigurnost kriptografskog algoritma, već cijelog okruženja u kojem se algoritam izvodi. Primjeri nekih kriptografskih uređaja su pametne kartice i \textit{USB} uređaji.
 
-Uspješan napad na kriptografski uređaj označava otkrivanje tajnog ključa pohranjenog na uređaju. Neovlaštena osoba koja pokušava saznati tajni ključ pohranjen na uređaju naziva se napadač, a pokušaj neovlaštenog otkrivanja tajnog ključa naziva se napad. Da bi se provjerila sigurnost kriptografskog uređaja, potrebno je uvesti pretpostavke o informacijama kojima napadač može pristupiti. Najjača pretpostvka koja se nadovezuje na Kerckhoffovo načelo \footnote{Kriptografski algoritam mora biti siguran i onda kada su sve informacije o njemu poznate, a nepoznat samo tajni ključ.} jest da napadač zna detalje o kriptografskom uređaju.
+Uspješan napad na kriptografski uređaj označava otkrivanje tajnog ključa pohranjenog na uređaju. Neovlaštena osoba koja pokušava saznati tajni ključ pohranjen na uređaju naziva se napadač, a pokušaj neovlaštenog otkrivanja tajnog ključa naziva se napad. Da bi se provjerila sigurnost kriptografskog uređaja, potrebno je uvesti pretpostavke o informacijama kojima napadač može pristupiti. Najjača pretpostavka koja se nadovezuje na Kerckhoffovo načelo \footnote{Kriptografski algoritam mora biti siguran i onda kada su sve informacije o njemu poznate, a nepoznat samo tajni ključ.} jest da napadač zna detalje o kriptografskom uređaju.
 
 \section{Implementacijski napadi}
 \label{sec:implatt}
 
 Implementacijski napadi iskorištavaju slabosti fizičkog uređaja za neovlašteni pristup podatcima. Među dominantnijim su napadima na kriptografske uređaje zbog svoje povoljne cijene i učinkovitosti \citep{picekphd}. Postoje pasivni i aktivni implementacijski napadi. Pasivnim napadom generalno se ne ometa rad kriptografskog uređaja te se izvodi mjerenjima uređaja u radu. Aktivni napadi uključuju fizičku izmjenu s ciljem izmjene predviđenog rada uređaja. Prema invazivnosti napada, implementacijski napadi dijele se na neinvazivne, polu-invazivne (pristup vanjskim dijelovima uređaja) i invazivne (pristup aktivnom sklopovlju uređaja) \citep{picekphd}. 
 
-Napadi koji mjere sporedna svojstva kriptografskih uređaja \engl{side-channel attacks} su među najčešćim napadima. Među popularnijim su i napadi sondiranjem \engl{probing attacks} \citep{mangard2008power} te napadi analizom pogreški \engl{fault attacks}.
+Napadi koji mjere sporedna svojstva kriptografskih uređaja \engl{side-channel attacks} su među najčešćim napadima. Među popularnijim su i napadi sondiranjem \engl{probing attacks} \citep{paa_book} te napadi analizom pogreški \engl{fault attacks}.
 
 %Slika \ref {fig:sca} primjer je napada koji koristi potrošnju električne energije kao sporedno svojstvo kriptografskog uređaja.
 
 \section{Potrošnja električne energije}
-Prema podjeli u \ref{sec:implatt}, napadi koji koriste sporedna fizikalna svojstva kriptigrafskih uređaja (\textit{SCA}) pripadaju pasivnim, odnosno neinvazivnim napadima. Kod takvih napada iskorištavaju se saznanja o potrošnji električne energije \engl{power analysis attack, PAA}, elektromagnetskom zračenju, vremenu izvođenja ili zvuku koji proizvodi uređaj \citep{picekphd}. U nastavku je detaljnije objašnjen napad koji se zasniva na saznanju o potrošnji električne energije. Signal koji opisuje potrošnju električne energije zove se trag.
+Prema podjeli u \ref{sec:implatt}, napadi koji koriste sporedna fizikalna svojstva kriptografskih uređaja (\textit{SCA}) pripadaju pasivnim, odnosno neinvazivnim napadima. Kod takvih napada iskorištavaju se saznanja o potrošnji električne energije \engl{power analysis attack, PAA}, elektromagnetskom zračenju, vremenu izvođenja ili zvuku koji proizvodi uređaj \citep{picekphd}. U nastavku je detaljnije objašnjen napad koji se zasniva na saznanju o potrošnji električne energije. Signal koji opisuje potrošnju električne energije zove se trag.
 
 %\todoimg{Napad koji koristi sporedna fizikalna svojstva kriptografskog uređaja}
 
-\textit{PAA} iskorištava činjenicu da trenutna potrošnja električne energije uređaja ovisi o trenutnim podacima u registrima i o kriptografskim operacijama koje se izvode. PAA napadi dijele se na direktne napade i dvorazinske napade. Među direktne PAA napade spadaju: jednostavna analiza potrošnje električne energije \engl {simple power analysis, SPA}, diferencijalna analiza potrošnje električne energije \engl {differential power analysis, DPA}, korelacijska analiza potrošnje električne energije \engl {correlation power analysis, CPA} te kolizijski napadi \engl {collision attacks, CA}. Dvorazniski PAA napadi su napadi podudaranjem s obrascem \engl {template attacks}, stohastički modeli \engl {stohastic models} te linearna regresijska analiza \engl {linear regression analysis, LRA} \citep{batina2014}.
+\textit{PAA} iskorištava činjenicu da trenutna potrošnja električne energije uređaja ovisi o trenutnim podacima u registrima i o kriptografskim operacijama koje se izvode. PAA napadi dijele se na direktne napade i dvorazinske napade. Među direktne PAA napade spadaju: jednostavna analiza potrošnje električne energije \engl {simple power analysis, SPA}, diferencijalna analiza potrošnje električne energije \engl {differential power analysis, DPA}, korelacijska analiza potrošnje električne energije \engl {correlation power analysis, CPA} te kolizijski napadi \engl {collision attacks, CA}. Dvorazinski PAA napadi su napadi podudaranjem s obrascem \engl {template attacks}, stohastički modeli \engl {stohastic models} te linearna regresijska analiza \engl {linear regression analysis, LRA} \citep{sca_lectures}.
 
 \subsection{Potrošnja elektroničkog sklopovlja}
-Najkorištenija tehnologija ekeltroničkog sklopovlja CMOS \engl{Complementary Metal–Oxide Semiconductor} koristi se za implementaciju osnovnih logičkih vrata kojima se grade složenije komponente poput registara i bistabila. Logička vrata izgrađena su dvama komplementarnim funkcijama, jednom prema pozitivnom potencijalu i njenim komplementom prema negativnom potencijalu. Pri promjeni izlaza, zbog kašnjenja poluvodičkih tranzistora, privremeno se stvara kratki spoj koji se očituje skokom u potrošnji energije.
+Najkorištenija tehnologija elektroničkog sklopovlja CMOS \engl{Complementary Metal–Oxide Semiconductor} koristi se za implementaciju osnovnih logičkih vrata kojima se grade složenije komponente poput registara i bistabila. Logička vrata izgrađena su dvama komplementarnim funkcijama, jednom prema pozitivnom potencijalu i njenim komplementom prema negativnom potencijalu. Pri promjeni izlaza, zbog kašnjenja poluvodičkih tranzistora, privremeno se stvara kratki spoj koji se očituje skokom u potrošnji energije.
 
 %\todoimg{NILI logička vrata implementirana pomoću CMOS tehnologije}
 
-Ukupna disipacija električne energije uređaja je proporcionalna broju logičkih vrata koja promijenje stanje. Jednadžbom \eqref{eq:pwdisipation} prikazan je spomenuti pojednostavljen model za potrošnju električne energije.
+Ukupna disipacija električne energije uređaja je proporcionalna broju logičkih vrata koja promijene stanje. Jednadžbom \eqref{eq:pwdisipation} prikazan je spomenuti pojednostavljen model za potrošnju električne energije.
 
 \begin{equation}
 \label{eq:pwdisipation}
 P\left(t\right) = \sum_{g}{} f\left(g,t\right) + N\left(t\right)
 \end{equation}
 
-\noindent gdje $f(g,t)$ predstavlja potrošnju električne energije vrata $g$ u trenutku $t$, a $N(t)$ predstavlja visokofrekventni šum zbog nesavršenosti izvora energije, generatora takta ili valjskog utjecaja.
+\noindent gdje $f(g,t)$ predstavlja potrošnju električne energije vrata $g$ u trenutku $t$, a $N(t)$ predstavlja visokofrekventni šum zbog nesavršenosti izvora energije, generatora takta ili vanjskog utjecaja.
 
 \subsection{Modeli emisije električne energije}
 Dva poznata modela emisije električne energije \engl {power leakage model} kod SCA su model Hammingove težine \engl {Hamming weight, HW} i model Hammingove udaljenosti \engl {Hamming distance, HD}. Model Hammingove težine pretpostavlja da je potrošnja električne energije korelirana s Hammingovom težinom podataka unutar kriptografskog algoritma. Model Hammingove udaljenosti promatra broj promjene bitova iz prethodnog stanja algoritma u trenutno stanje.
@@ -153,7 +153,7 @@ Dva poznata modela emisije električne energije \engl {power leakage model} kod 
 \subsection{SCA razlučitelji}
 SCA razlučitelji \engl {SCA distinguishers} su statistički modeli temeljem kojih se gradi veza između mjerenja fizikalnih svojstava uređaja i tajnog ključa. Pretpostavljanjem postojanja veze između mjerenja fizikalnih svojstava kriptografskog uređaja i tajnog ključa, napadi se dijele na one koji pretpostavljaju čvrstu vezu mjerenja i tajnog ključa te one koji zaključuju na temelju statističkog modela temeljenog na mjerenjima. Razlučitelji se koriste kod napada statističkim modelom.
 
-Za DPA često se koriste sljedeći razlučitelji: razlika srednjih vrijednosti \engl {Difference of Means, DOM}, T-test, test varijance, Pearsonova korelacija, korelacija Spearmanovog ranga \engl {Spearman's Rank Correlation}. \citep{gierlichs2009empirical} U nastavku je opisan DPA napad s razlučiteljem razlike srednjih vrijednosti.
+Za DPA često se koriste sljedeći razlučitelji: razlika srednjih vrijednosti \engl {Difference of Means, DOM}, T-test, test varijance, Pearsonova korelacija, korelacija Spearmanovog ranga \engl {Spearman's Rank Correlation} \citep{gierlichs2009empirical}. U nastavku je opisan DPA napad s razlučiteljem razlike srednjih vrijednosti.
 
 \subsection{Opis DPA}
 Postupak diferencijalne analize potrošnje električne energije zahtjeva velik broj tragova ($\approx 10^3$). Na početku se grade matrica tragova i matrica hipoteza. Broj redaka obje matrice jednak je broju tragova. Broj stupaca matrice tragova jednak je broju uzoraka prikupljenih mjerenjem, a kod matrice hipoteza broj stupaca jednak je broju mogućih vrijednosti jednog okteta ključa. 
@@ -224,9 +224,9 @@ Slika \ref{fig:dpacompare} pokazuje vrijednost matrice $\Delta$ za jedan oktet $
 \label{fig:dpacompare}
 \end{figure}
 
-Prethodno opisani postupak pripada u neprofilirane napade analizom potrošnje električne energije, u kojem napadač ne posjeduje kopiju kriptografskog uređaja na kojem bi unaprijed izgradio model otkrivanja tajnog ključa. S druge strane analiza potrošnje električne energije može se koristiti u profiliranim napadima klasifikacijom traga, gdje trag može karakterizirati Hammingovu težinu izlaza algoritma ili samu vrijednost. Ukoliko napadač posjeduje kopiju kriptografskog uređaja, on može naučiti model koji prema potrošnji električne energije razlikuje tragove. Tako naučeni model može se zatim iskoristiti na originalnom kriptografskom uređaju. Ovaj rad bavi se profiliranim napadom analizom potrošnje električne energije, odnosno problemom klasifikacije tragova. 
+Prethodno opisani postupak pripada u neprofilirane napade analizom potrošnje električne energije, u kojem napadač ne posjeduje kopiju kriptografskog uređaja na kojem bi unaprijed izgradio model otkrivanja tajnog ključa. S druge strane analiza potrošnje električne energije može se koristiti u profiliranim napadima klasifikacijom traga, gdje trag može karakterizirati Hammingovu težinu izlaza algoritma ili samu vrijednost. Ako napadač posjeduje kopiju kriptografskog uređaja, on može naučiti model koji prema potrošnji električne energije razlikuje tragove. Tako naučeni model može se zatim iskoristiti na originalnom kriptografskom uređaju. Ovaj rad bavi se profiliranim napadom analizom potrošnje električne energije, odnosno problemom klasifikacije tragova. 
 
-% O detaljnijem objašnjenju implementacijskih napada preporuča se pogledati \citep{mangard2008power}. 
+% O detaljnijem objašnjenju implementacijskih napada preporučuje se pogledati \citep{mangard2008power}. 
 
 \section{DPAcontest skupovi podataka}
 \label{sec:dpa_datasets}
@@ -243,7 +243,7 @@ DPAcontest v2 je objavljen 2010. godine i predstavlja mjerenja potrošnje elektr
 Y(k^*) = \underbrace{\SBOXi{C_{b_1} \oplus k^*}}_{\text{prethodna vrijednost registra}} \oplus \underbrace{C_{b_2}}_{\text{oktet enkripcije}},
 \end{equation}
 
-Objavljene su dvije inačice skupa. Jedna inačica sadrži 256 razreda koji predstavljaju vrijednost bajta mjerenog registra. Druga inačica sadrži 9 razreda koji predstavljaju Hammingovu težinu mjerenog registra. Taj je skup vrlo nebalansiran zbog velike razlike u entropiji informacije predstavljene središnjim klasama i rubnih klasa (težinu $0$ ili $8$ možemo dobiti samo jednim oktetom, a težinu $4$ sa čak $70$ okteta). U ovom radu za DPAv4 koristi se inačica s 256 razreda i predviđa se vrijednost mjerenog registra.
+Objavljene su dvije inačice skupa. Jedna inačica sadrži 256 razreda koji predstavljaju vrijednost bajta mjerenog registra. Druga inačica sadrži 9 razreda koji predstavljaju Hammingovu težinu mjerenog registra. Taj je skup vrlo nebalansiran zbog velike razlike u entropiji informacije predstavljene središnjim klasama i rubnih klasa (težinu $0$ ili $8$ možemo dobiti samo jednim oktetom, a težinu $4$ s čak $70$ okteta). U ovom radu za DPAv4 koristi se inačica s 256 razreda i predviđa se vrijednost mjerenog registra.
 
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
@@ -286,7 +286,7 @@ Objavljene su dvije inačice skupa. Jedna inačica sadrži 256 razreda koji pred
 \end{figure}
 
 \subsection{DPAcontest v4}
-DPAcontest v4 je objavljen 2013. godine i predstavlja mjerenja potrošnje električne energije softverske implementacije maskiranog AES-128 algoritma. Maskiranje nema utjecaja jer je maska poznata, što postupak čini ekvivalentnim nemaskiranom slučaju. Signal je mjeren pri primjeni S-tablice u prvom koraku algotirma \eqref{eq:dpav4}, gdje je $P_i$ oktet ulaznog podatka. Ulazi su manje šumoviti s omjerom signala naspram šuma: $SNR \in [0.1188, 5.8577]$.
+DPAcontest v4 je objavljen 2013. godine i predstavlja mjerenja potrošnje električne energije softverske implementacije maskiranog AES-128 algoritma. Maskiranje nema utjecaja jer je maska poznata, što postupak čini ekvivalentnim nemaskiranom slučaju. Signal je mjeren pri primjeni S-tablice u prvom koraku algoritma \eqref{eq:dpav4}, gdje je $P_i$ oktet ulaznog podatka. Ulazi su manje šumoviti s omjerom signala naspram šuma: $SNR \in [0.1188, 5.8577]$.
 
 \begin{equation}
 \label{eq:dpav4}
@@ -336,12 +336,9 @@ Kao i za prethodni, objavljene su dvije inačice skupa. U ovom radu se za ovaj s
 \end{figure}
 
 \subsection{Dosadašnji rezultati}
-U radu \citet{samiotis_dr} autori uspoređuju nekoliko konvolucijskih neuronskih mreža na DPAv2 i DPAv4 podatkovnim skupovima. Uspoređuju i rezultate treniranja na manjim podskupovima radi ispitivanja efikasnosti modela za manji broj uzoraka (što je sekundarni cilj DPA natjecanja).
-\todo{rezultati po skupovima}
+U radu \citet{samiotis_dr} autori uspoređuju nekoliko konvolucijskih neuronskih mreža na DPAv2 i DPAv4 podatkovnim skupovima. Uspoređuju i rezultate treniranja na manjim podskupovima radi ispitivanja efikasnosti modela za manji broj uzoraka (što je sekundarni cilj DPA natjecanja). Uspoređujući rezultate mreža učenih na skupovima DPAv2 veličine 1k, 10k, 50k i 100k najbolje rezultate postižu na 10k i 100k s točnostima $0.275$ i $0.273$. Modeli poput SVM-a i linearne regresije postižu najbolje rezultate, no oni ne nadilaze nasumičan klasifikator. Na DPAv4 modeli ostvaruju najbolje rezultate na najvećim skupovima s vrijednostima $0.851$ i $0.845$. SVM postiže bolje rezultate s vrijednostima $0.955$ i $0.960$. 
 
-\todo{On the Performance of Convolutional Neural Networks for Side-channel Analysis (ista ekipa)}
-\todo{Power Analysis Attack Based on the MLP in DPA Contest v4}
-\todo{Practical improvements of side-channel attacks on AES: feedback from the 2nd DPA contest}
+Slične rezultate objavljuju \citet{picek_cnn_dpa} u kojem potpuno povezane neuronske mreže postižu rezultate usporedive konvolucijskim mrežama. Koriste modele dubine između 2-6 i širine između 10-50, s aktivacijskom funkcijom tanh ili ReLU.
 
 %--------------------------------------------------------------------------------------%
 \chapter{Klasifikator temeljen na umjetnim neuronskim mrežama}
@@ -2273,6 +2270,7 @@ Za svaku kombinaciju arhitekture i aktivacijske funkcije provedeno je pretraživ
 
 Pretragom na skupu DPAv2 pojavljuju se jasne razlike između funkcija i između arhitektura. Na dvoslojnim arhitekturama najboljima se pokazuju sinus, kosinus i sigmoida, na troslojnim sinus, swish i sigmoida, a na četveroslojnim swish, sinus i sigmoida. Funkcijama exp, pow3, softmax, softplus i threlu mreža konzistentno nije uspješno naučena. 
 
+\iffalse
 \todoimg{mjesta aktivacije top 4 funkcije po arh}
 \todo{Komentar}
 
@@ -2281,6 +2279,7 @@ Pretragom na skupu DPAv2 pojavljuju se jasne razlike između funkcija i između 
 
 Zanimljivost se pojavljuje kod funkcije pow2 na prijelazu iz dvoslojnih u troslojne arhitekture. Odjednom mrežu više nije moguće naučiti.
 \todo{analiza slučaja pow2}
+\fi
 
 \begin{figure}[ht]
 \includegraphics[width=\textwidth]{greedy_256_arch_quality.pdf}
@@ -2289,7 +2288,7 @@ Zanimljivost se pojavljuje kod funkcije pow2 na prijelazu iz dvoslojnih u troslo
 \label{fig:greedy_256_arch_quality}
 \end{figure}
 
-Arhitekture $[50-50-50]$ i $[50-50-50-50]$ imaju najlošije rezultate po svim funkcijama što upućuje na manjak njihove reprezentativne moći. Usporedbom rezultata po arhitekturama \figref{fig:greedy_256_arch_quality} najveću ostvarenu vrijednost i najveću srednju vrijednost ostvaruje arhitektura [500-500], no zbog velike raspršenosti rezultata oko sredine i memorijske zahtjevnosti ta arhitektura nije odabrana. U daljnjim eksperimentima koristi se arhitektura \textbf{[300-300]} jer ostvaruje drugu najveću srednju vrijednost i najmanju raspršenost. Koristi se najčešća kombinacija hiperparametara za tu arhitekturu, pod \textbf{indeksom 5} tablice \ref{tab:hp_comb}.
+Arhitekture $[50-50-50]$ i $[50-50-50-50]$ imaju najlošije rezultate po svim funkcijama što upućuje na manjak njihove reprezentativne moći. Usporedbom rezultata po arhitekturama \figref{fig:greedy_256_arch_quality} najveću ostvarenu vrijednost i najveću srednju vrijednost ostvaruje arhitektura [500-500], no zbog velike raspršenosti rezultata oko sredine i memorijske zahtjevnosti ta arhitektura nije odabrana. U daljnjim eksperimentima koristi se arhitektura \textbf{[300-300]} jer ostvaruje drugu najveću srednju vrijednost i najmanju raspršenost. Koristi se najčešća kombinacija hiperparametara za tu arhitekturu: koeficijent L2 regularizacije je $10^{-4}$, a stopa učenja je $5\cdot 10^{-4}$.
 
 \clearpage
 
@@ -2310,7 +2309,7 @@ Arhitekture $[50-50-50]$ i $[50-50-50-50]$ imaju najlošije rezultate po svim fu
 \label{fig:greedy_9_f1}
 \end{figure}
 
-Usporedbom točnosti sve kombinacije su više-manje kompetitivne, no usporedom F1 mjere razlike su snažnije istaknute. Ponovno se najboljim pokazuje sinusoida 
+Usporedbom točnosti sve kombinacije su više-manje kompetitivne, no usporedom F1 mjere razlike su snažnije istaknute. Ponovno se najboljim pokazuje sinusoida, a na dvoslojnim arhitekturama i kosinus. Funkcija $exp$ i $pow3$ mreža konstantno nije naučila, a ponovno se pojavljuje nemogućnost treniranja troslojnih arhitektura $pow2$ funkcijom.
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{greedy_9_arch_quality.pdf}
@@ -2324,7 +2323,7 @@ Usporedbom rezultata po arhitekturama \figref{fig:greedy_9_arch_quality} najviš
 \clearpage
 
 \section{Izgradnja aktivacijskih funkcija genetskim \\ programiranjem s tabu listom}
-U ovom poglavlju prikazani rezultati ostvareni izgradnjom aktivacijskih funkcija genetskim programiranjem. Za svaki eksperiment odabrani su nepromijenjivi hiperparametri i arhitektura iz prethodnog poglavlja i mijenjana je jedino aktivacijska funkcija. Jedina razlika: zbog traktabilnosti postupka \textbf{broj epoha učenja je smanjen na 30}. Rezultati su uspoređeni s rezultatima identičnih postava iz prethodnog poglavlja. 
+U ovom poglavlju prikazani rezultati ostvareni izgradnjom aktivacijskih funkcija genetskim programiranjem. Za svaki eksperiment odabrani su nepromjenjivi hiperparametri i arhitektura iz prethodnog poglavlja i mijenjana je jedino aktivacijska funkcija. Jedina razlika: zbog traktabilnosti postupka \textbf{broj epoha učenja je smanjen na 30}. Rezultati su uspoređeni s rezultatima identičnih postava iz prethodnog poglavlja. 
 
 \begin{table}[H]
 \centering
@@ -2359,11 +2358,59 @@ Broj iteracija tabu diverzifikacije & 1000 \\
 \label{tab:gp_hiperparams}
 \end{table}
 
-Parametri evolucije su zajednički svim eksperimentima i dani su tablicom \ref{tab:gp_hiperparams}. Vrijednost veličine tabu liste je mijenjana po broju populacija (veličina je broj zapamćenih populacija pomnožen s brojem jedinki u populaciji). Za svaku veličinu tabu liste provedeno je nekoliko eksperimenata s različitim sjemenima nasumičnog generatora.
+Parametri evolucije su zajednički svim eksperimentima i dani su tablicom \ref{tab:gp_hiperparams}. Vrijednost veličine tabu liste je mijenjana po broju populacija (veličina je broj zapamćenih populacija pomnožen s brojem jedinki u populaciji). Za svaku veličinu tabu liste provedeno je 10 eksperimenata s različitim sjemenjima nasumičnog generatora.
 
 \subsection{DPAv2}
-\todo{Tablica top 10}
-\todo{Komentar}
+Na DPAv2 podatkovnom skupu pronađene su aktivacijske funkcije koje poboljšavaju generalizacijsku moć mreže u odnosu na popularne funkcije. Najbolja pronađena funkcija daje rezultate ekvivalentne najboljem rezultatu prethodnih eksperimenata za mrežu sa znatno više parametara ([500-500]). Najbolje pronađene funkcije (tablica \ref{tab:dpav2_top5}) sadrže periodičku komponentu (sinus ili kosinus).
+
+\begin{table}[H]
+\begin{tabular}{lrrr}
+Funkcija & Točnost & F1 mjera & Taboo veličina \\
+\hline
+\eqref{eq:dpav2_func1} & 0.587 & 0.582 & 2 \\
+\eqref{eq:dpav2_func2} & 0.585 & 0.581 & 3 \\
+\eqref{eq:dpav2_func3} & 0.585 & 0.580 & 0 \\
+\eqref{eq:dpav2_func4} & 0.585 & 0.579 & 0 \\
+\eqref{eq:dpav2_func5} & 0.582 & 0.577 & 3 \\
+\end{tabular}
+\centering
+\caption{Najboljih 5 pronađenih aktivacijskih funkcija}
+\label{tab:dpav2_top5}
+\end{table}
+
+\begin{align}
+\label{eq:dpav2_func1}
+\begin{split}
+&(\cos(x-0.08517142337885375 - 0.8924356742911872 - 3 \\
+&\quad -0.08517142337885375 - 0.09079641165917596))^2
+\end{split}
+\end{align}
+\begin{align}
+\label{eq:dpav2_func2}
+\begin{split}
+&elu (elu (\min (1.0,\min (1.0,hsigm (x)) \cdot 0.8102254104210314) \cdot \sin (x)))
+\end{split}
+\end{align}
+\begin{align}
+\label{eq:dpav2_func3}
+\begin{split}
+(\cos(1.0 + x))^2
+\end{split}
+\end{align}
+\begin{align}
+\label{eq:dpav2_func4}
+\begin{split}
+-swish(swish(\cos(x - 0.8949527515835601))) \cdot x
+\end{split}
+\end{align}
+\begin{align}
+\label{eq:dpav2_func5}
+\begin{split}
+&swish (elu (\sin (\cos (x - 1.0 + 0.1607274601962161^9))))
+\end{split}
+\end{align}
+
+U odnosu na najbolji rezultat prethodnih eksperimenata za korištenu arhitekturu, postupak je pronašao bolje aktivacijske funkcije, no vrijednost poboljšanja je vrlo niska (za F1 mjeru je oko $0.01$). Povećavanjem tabu liste algoritam pokazuje se trend porasta prosječne kvalitete rješenja. U odnosu na klasično genetsko programiranje (tabu veličina 0), tabu lista poboljšava i stabilnost postupka s obzirom na pronađene kvalitete rješenja (raspršenost je manja).
 
 \begin{figure}[H]
 \includegraphics[width=.9\textwidth]{GP_256class_acc_plus.pdf}
@@ -2385,8 +2432,55 @@ Parametri evolucije su zajednički svim eksperimentima i dani su tablicom \ref{t
 \fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{DPAv4}
-\todo{Tablica top 10}
-\todo{Komentar}
+Na DPAv4 podatkovnom skupu najbolje pronađene aktivacijske funkcije daju rezultate ekvivalentne najboljem rezultatu prethodnih eksperimenata. Najbolje pronađene funkcije spomenute su u tablici \ref{tab:dpav4_top5}.
+
+\begin{table}[H]
+\begin{tabular}{lrrr}
+Funkcija & Točnost & F1 mjera & Taboo veličina \\
+\hline
+\eqref{eq:dpav4_func1} & 0.966 & 0.952 & 3 \\
+\eqref{eq:dpav4_func2} & 0.966 & 0.950 & 1 \\
+\eqref{eq:dpav4_func3} & 0.966 & 0.948 & 2 \\
+\eqref{eq:dpav4_func4} & 0.966 & 0.948 & 3 \\
+\eqref{eq:dpav4_func5} & 0.962 & 0.947 & 4 \\
+\end{tabular}
+\centering
+\caption{Najboljih 5 pronađenih aktivacijskih funkcija}
+\label{tab:dpav4_top5}
+\end{table}
+
+\begin{align}
+\label{eq:dpav4_func1}
+\begin{split}
+\sin (\min (\sin (\min (x,0.5068783911631836) + 1.0),-0.9990098031722499) + x)
+\end{split}
+\end{align}
+\begin{align}
+\label{eq:dpav4_func2}
+\begin{split}
+\cos (x)
+\end{split}
+\end{align}
+\begin{align}
+\label{eq:dpav4_func3}
+\begin{split}
+ReLU (abs (x) \cdot x)
+\end{split}
+\end{align}
+\begin{align}
+\label{eq:dpav4_func4}
+\begin{split}
+\cos (x) \cdot 0.9815578450294762
+\end{split}
+\end{align}
+\begin{align}
+\label{eq:dpav4_func5}
+\begin{split}
+\frac{x - \exp(x - 1.0)}{1.0}
+\end{split}
+\end{align}
+
+U odnosu na najbolji rezultat prethodnih eksperimenata za korištenu arhitekturu, postupak je povećao kvalitetu mreže, ali za vrlo malu vrijednost (oko $0.01$ za F1 mjeru) i povećanje nije konzistentno za za sve veličine tabu liste. Povećavanjem veličine tabu liste razlike u kvaliteti rješenja su vrlo male i raspršenost rezultata varira.
 
 \begin{figure}[H]
 \includegraphics[width=.9\textwidth]{GP_9class_acc_plus.pdf}
@@ -2408,7 +2502,7 @@ Parametri evolucije su zajednički svim eksperimentima i dani su tablicom \ref{t
 \fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %--------------------------------------------------------------------------------------%
-\chapter{Neiskorištene isprobane metode}
+\chapter{Isprobane metode koje nisu korištene}
 U nastavku su navedene metode koje su isprobane, ali nisu korištene u konačnom rješenju.
 
 \subsubsection{Učeći parametri}
@@ -2417,7 +2511,7 @@ Neke aktivacijske funkcije uvode dodatne učeće parametre kako bi poboljšale s
 Iako ih je moguće implementirati kao čvor stabla, u ovom se radu ne koriste učeći parametri zbog kompleksnosti implementacije i umjesto njih se pri genetskom programiranju koriste isključivo konstante.
 
 \subsubsection{Permutacija primjera između grupa}
-Permutacija primjera između grupa primijenjuje se između epoha učenja neuronske mreže tako da se prije izgradnje minigrupa čitav skup permutira. Postupak ima regularizacijski efekt i pospješuje rezultate. Pri stohastičkom gradijentnom spustu stohastičnost gradijenata je naglašena i poboljšana je otpornost na lokalne optimume.
+Permutacija primjera između grupa primjenjuje se između epoha učenja neuronske mreže tako da se prije izgradnje minigrupa čitav skup permutira. Postupak ima regularizacijski efekt i pospješuje rezultate. Pri stohastičkom gradijentnom spustu stohastičnost gradijenata je naglašena i poboljšana je otpornost na lokalne optimume.
 
 U inicijalnim eksperimentima, permutacija grupa je pokazala poboljšanje F1 mjere i do $0.06$ na DPAv4 skupu. No, postupak je vremenski i memorijski zahtjevan u trenutnoj paralelnoj implementaciji jer pri svakom početku učenja zahtjeva stvaranje kopije čitavog skupa. Postupak je vrlo jednostavno moguće ostvariti ako se implementira poseban iterator podataka sa stohastičkim uzorkovanjem, no nije implementiran zbog vremenskih ograničenja projekta i slabo dokumentiranih mehanizama biblioteke DL4j.
 
@@ -2437,9 +2531,11 @@ Na početku projekta isproban je TensorFlow API za Javu i napisan je mali demons
 \fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Zaključak}
-\todo{Radi/Ne radi}
-\todo{Pronađene zanimljivosti}
-\todo{Pouka za doma}
+Potpuno povezane umjetne neuronske mreže korištene su za klasifikacijski zadatak predviđanja kriptografskog ključa iz naponskih mjerenja kriptografskog uređaja. Za mjerenja su korišteni podatkovni skupovi DPAv2 i DPAv4 s reduciranim brojem ulaznih značajki. Performanse mreža uspoređene su na nekoliko odabira arhitekture i aktivacijske funkcije te je korišten postupak izgradnje aktivacijske funkcije genetskim programiranjem.
+
+Pokazuje se da odabir aktivacijske funkcije utječe na performanse neuronske mreže. Najboljom funkcijom pokazala se sinusoida, rijetko korištena u modernoj literaturi dubokog učenja. Izgradnjom aktivacijskih pronađena su mala poboljšanja u svojstvu generalizacije mreže.
+
+Uvođenjem tabu liste u algoritam genetskog programiranja moguće je poboljšati kvalitetu pronađenih rješenja i usmjeriti postupak pretrage prema neistraženim rješenjima.
 
 \bibliography{literatura}
 \bibliographystyle{fer}
@@ -2447,14 +2543,14 @@ Na početku projekta isproban je TensorFlow API za Javu i napisan je mali demons
 \begin{sazetak}
 Proučiti postojeće metode u izgradnji aktivacijskih funkcija u umjetnim neuronskim mrežama. Posebnu pažnju posvetiti evolucijskim algoritmima simboličke regresije za izgradnju ciljanih funkcija. Ustanoviti moguće nedostatke postojećih algoritama ili mogućnost poboljšanja. Primijeniti evoluirane aktivacijske funkcije u homogenoj ili heterogenoj umjetnoj neuronskoj mreži na skupovima DPAv2 i DPAv4 te odrediti mjere kvalitete izgrađenog klasifikatora: točnost, preciznost, odziv te F mjere. Usporediti učinkovitost ostvarenih postupaka s postojećim rješenjima iz literature. Radu priložiti izvorne tekstove programa, dobivene rezultate uz potrebna objašnjenja i korištenu literaturu.
 
-\kljucnerijeci{Ključne riječi, odvojene zarezima.}
+\kljucnerijeci{AES,SCA,DPA,kriptografija,umjetna neuronska mreža,aktivacijska funkcija,neuroevolucija,genetsko programiranje,tabu lista}
 \end{sazetak}
 
 \engtitle{Optimized activation functions for classifiers based on artificial neural networks in the domain of implementation attacks on cryptographic devices}
 \begin{abstract}
 Examine existing methods in building activation functions in artificial neural networks. Give special attention to evolutionary algorithms of symbolic regression for constructing the targeted functions. Apply evolved activation functions in a homogeneous or heterogeneous artificial neural network on datasets DPAv2 and DPAv4 and examine quality measures of the built classifier: accuracy, precision, recall and F measures. Compare the efficiency of acquired methods with existing solutions from the literature. Alongside thesis attach source code of programs, acquired results with necessarry discussion and literature used.
 
-\keywords{Keywords.}
+\keywords{AES,SCA,DPA,cryptography,artificial neural network,activation function, neuroevolution,genetic programming,taboo list}
 \end{abstract}
 
 \appendix
