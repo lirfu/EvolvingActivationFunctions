@@ -55,7 +55,16 @@
 % Ispis stranice s napomenom o umetanju izvornika rada. Uklonite naredbu \izvornik ako želite izbaciti tu stranicu.
 \izvornik
 
-\zahvala{TODO: ZAHVALE}
+\zahvala{
+\paragraph{}
+Zahvaljujem mentoru prof. dr. sc. Domagoju Jakoboviću na svoj pomoći koju mi je darovao tijekom studiranja. 
+
+\paragraph{}
+Posebno zahvaljujem Karlu Kneževiću, mag. ing., na nesebičnoj podršci i savjetovanju pri razvoju i izradi diplomskog rada.
+
+\paragraph{}
+Zahvaljujem svojoj obitelji na razumijevanju, potpori i ljubavi tijekom čitavog školovanja te strpljenju u kasnim noćnim satima.
+}
 
 \tableofcontents
 
@@ -204,21 +213,18 @@ Slika \ref{fig:dpacompare} pokazuje vrijednost matrice $\Delta$ za jedan oktet $
 
 \begin{figure}[H]
 \centering
-
 \begin{subfigure}{.8\textwidth}
 \includegraphics[width=\textwidth]{dpacorrect.jpg}
 \centering
 \caption{Ispravan oktet ključa $\psi$}
 \label{fig:dpacorrect}
 \end{subfigure}
-
 \begin{subfigure}{.8\textwidth}
 \includegraphics[width=\textwidth]{dpawrong.jpg}
 \centering
 \caption{Neispravan oktet ključa $\psi$}
 \label{fig:dpawrong}
 \end{subfigure}
-
 \caption{Primjer traga $T_i$ i vrijednosti u matrici $\Delta$ za ispravno \ref{fig:dpacorrect} i neispravno \ref{fig:dpawrong} pretpostavljenu vrijednost okteta $\Psi$}
 \label{fig:dpacompare}
 \end{figure}
@@ -361,6 +367,8 @@ Način na koji se iz ulaza gradi unutarnje stanje neurona opisan je ulaznom funk
 \label{eq:neuron_functions}
 n(x) = (f \circ s)(x) = f(s(x))
 \end{equation}
+
+\newpage
 
 U literaturi postoje nekonzistencije oko pojma aktivacijske funkcije. U preglednim znanstvenim radovima \citep{function_survey1, function_survey2, function_survey3} pojam aktivacijske funkcije predstavlja ulaznu funkciju, što je neispravno prema brojnim današnjim radovima. Neispravno je i sa stajališta računalne neuroznanosti prema kojoj aktivacijska funkcija označava funkciju učestalosti okidanja neurona u ovisnosti o ukupnom statičkom ulazu \citep[str.~234]{neuroscience}. U starijoj literaturi pojam aktivacijske i prijenosne funkcije često se koristi ekvivalentno \citep{evolving_transfer, evo_parsimonious}. U prijedlogu standardizacije \citet{ieee_standardization} aktivacijska funkcija je definirana kao: \textit{„Algoritam za računanje vrijednosti aktivacije neurona kao funkcije njenog ukupnog ulaza. Ukupan ulaz je tipično težinska suma ulaza u neuron“}. S obzirom na nekonzistencije u literaturi i iz potrebe razlikovanja funkcija koje prikupljaju i odašilju signale iz neurona u ovom se radu koristi gore spomenuta nomenklatura (ulazna i aktivacijska funkcija).
 
@@ -534,6 +542,9 @@ Derivacijom funkcije gubitka za regresiju \eqref{eq:loss_regression} po ulazima,
 \end{align}
 
 Derivacija funkcije gubitka za klasifikaciju može se drastično pojednostaviti ako se za funkciju izlaznog sloja mreže odabere funkcija \textit{softmax} \eqref{eq:softmax_for_loss}, a izlazi se kodiraju \textit{one-hot} oznakama \eqref{eq:onehot}. Ulaz u funkciju softmax su aktivacije neurona izlaznog sloja koje su ovdje označene vektorom $\vec{s}(x)$.
+
+\newpage
+
 \begin{equation}
 \label{eq:softmax_for_loss}
 \hat{y}(\vec{x}) = \text{softmax}(\vec{s}(x)) = \frac{\exp(\vec{s}(x))}{\sum_{i=1}^{C} exp(s_i(x))}
@@ -565,6 +576,9 @@ Derivacijom \eqref{eq:loss_classification_softmax} po ulazima, koristeći pravil
 S obzirom da se mreža sastoji od ulančanih nelinearnih neurona s parametrima, gradijent gubitka mora se proslijediti sekvencijalno širenjem unazad (prema ulazima u mrežu). Pojedini neuron može se smatrati parametriziranom funkcijom koju je moguće prikazati grafom. Ulazni gradijent prolaskom kroz neuron širi se na parametre i ulaze neurona koji vode do neurona koji mu prethode. Dodatno, gradijent se širi u suprotnom smjeru od toka podataka. Iz toga proizlazi naziv \textit{širenjem unazad} \engl{backpropagation}.
 
 Želi li se mrežu učiti gradijentnim spustom, svaki parametar mreže treba imati pristup gradijentu funkcije gubitka. S obzirom da je neuron parametrizirana funkcija, pomoću koje se ulančavanjem gradi mreža, dovoljno je pokazati da pojedini neuron osigurava svojim parametrima pristup gradijentu te da gradijent šalje svojim prethodnicima s kojima je povezan. Da je to ostvarivo dokazuju izrazi:
+
+\newpage
+
 \begin{align}
 \label{eq:backprop_activation}
 \begin{split}
@@ -665,9 +679,7 @@ W_{i,j} \sim \normal(0, \frac{2}{n_{ulaza}+n_{izlaza}})
 \end{equation}
 
 \subsubsection{Normalizacija značajki}
-Podatci najčešće nisu uzorkovani iz normalne distribucije. To stvara problem jer prisiljava mrežu da uči srednju vrijednost i varijancu podataka što usporava učenje i stvara numeričke probleme. Stoga je korisno prije korištenja svesti značajke na normalnu distribuciju sa sredinom $0$ i varijancom $1$. To se izvodi računanjem koeficijenata distribucije te oduzimanjem sredine i dijeljenjem s varijancom.
-
-Koeficijenti se računaju iz značajki podatkovnog skupa za učenje (\ref{eq:feat_norm_mean}, \ref{eq:feat_norm_var}). Koeficijent varijance ovisi o koeficijentu sredine pa se njihovo računanje ne može paralelizirati, no to ne predstavlja velik problem s obzirom da se računaju samo jednim prolazom kroz skup. Prije no što se značajke predaju modelu normaliziraju se formulom \eqref{eq:feat_norm}.
+Podatci najčešće nisu uzorkovani iz normalne distribucije. To stvara problem jer prisiljava mrežu da uči srednju vrijednost i varijancu podataka što usporava učenje i stvara numeričke probleme. Stoga je korisno prije korištenja svesti značajke na normalnu distribuciju sa sredinom $0$ i varijancom $1$. To se izvodi računanjem koeficijenata distribucije te oduzimanjem sredine i dijeljenjem s varijancom. Koeficijenti se računaju iz značajki podatkovnog skupa za učenje (\ref{eq:feat_norm_mean}, \ref{eq:feat_norm_var}). Koeficijent varijance ovisi o koeficijentu sredine pa se njihovo računanje ne može paralelizirati, no to ne predstavlja velik problem s obzirom da se računaju samo jednim prolazom kroz skup. Prije no što se značajke predaju modelu normaliziraju se formulom \eqref{eq:feat_norm}.
 \begin{align}
 \label{eq:feat_norm_mean}
 &\vec{\mu} = \frac{1}{N} \sum_{\vec{x}\in \dataset} \vec{x} \\
@@ -757,7 +769,7 @@ inicijaliziraj nestrpljivost $t \gets 0$ \\
 }
 \end{algorithmic}
 \caption{Algoritam ranog zaustavljanja s dodatnim mehanizmima korišten u radu}
-\label{alg:nested_cv}
+\label{alg:early_stop}
 \end{algorithm}
 
 U ovom radu detekcija pretreniranosti radi se usporedbom s najboljom pronađenom vrijednosti funkcije gubitka na skupu za validaciju. Ako vrijednost gubitka raste $n$ uzastopnih epoha, to je pokazatelj da se mreža počela pretrenirati. Kao dodatan mehanizam ranijeg zaustavljanja, koji služi za uštedu na vremenu provedenom učenjem, koriste se detekcije divergencije i konvergencije. Divergencija je detektirana ako vrijednost gubitka na skupu za učenje raste, a konvergencija ako se taj gubitak mijenja za manje od $p\%$ najboljeg pronađenog gubitka na skupu za učenje kroz $n$ uzastopnih epoha. Sva tri mehanizma doprinose brojaču epoha i kada brojač dostigne vrijednost $n$ učenje se prekida i odabire se epoha s minimalnim gubitkom na skupu za validaciju. Ako ni jedan mehanizam nije aktiviran, brojač se ponovno postavi na $0$.
@@ -830,7 +842,7 @@ Iz tih skupova se tada grade složenije mjere. \textbf{Točnost} je mjera kojom 
 Acc = \frac{TP+TN}{TP+TN+FP+FN}
 \end{equation}
 
-Točnost je dobra mjera, no samo ako je brojnost klasa u podatkovnom skupu balansiran. Ako je brojnost jedne klase puno veća od druge tada će trivijalan klasifikator, koji sve primjere klasificira u tu klasu, davati veliku točnost i razlika naspram ispravnijeg klasifikatora bit će nezamjetna. Stoga se kod nebalansiranih setova češće koristi \textbf{\F1 mjera}, koja uzima u obzir \textbf{preciznost} klasifikatora u razlikovanju pozitivnih primjera od negativnih \eqref{eq:precision} i njegov \textbf{odziv} odnosno obuhvat svih pozitivnih primjera testnog skupa \eqref{eq:recall}. \F1 mjera je definirana kao harmonijska sredina između preciznosti i odziva \eqref{eq:f_measure}. Postoji i generalizirana mjera F$_\beta$ koja dodjeljuje veću težinu preciznosti ili odzivu \eqref{eq:f_beta}, no u ovom radu koristi se samo \F1 koja pridjeljuje jednaku težinu. Harmonijska sredina se koristi jer je najstroža između Pitagorinih mjera za sredinu kao što prokazuje slika \ref{fig:sredine}.
+Točnost je dobra mjera, no samo ako je brojnost klasa u podatkovnom skupu balansiran. Ako je brojnost jedne klase puno veća od druge tada će trivijalan klasifikator, koji sve primjere klasificira u tu klasu, davati veliku točnost i razlika naspram ispravnijeg klasifikatora bit će nezamjetna. Stoga se kod nebalansiranih skupova češće koristi \textbf{\F1 mjera}, koja uzima u obzir \textbf{preciznost} klasifikatora u razlikovanju pozitivnih primjera od negativnih \eqref{eq:precision} i njegov \textbf{odziv} odnosno obuhvat svih pozitivnih primjera testnog skupa \eqref{eq:recall}. \F1 mjera je definirana kao harmonijska sredina između preciznosti i odziva \eqref{eq:f_measure}. Postoji i generalizirana mjera F$_\beta$ koja dodjeljuje veću težinu preciznosti ili odzivu \eqref{eq:f_beta}, no u ovom radu koristi se samo \F1 koja pridjeljuje jednaku težinu. Harmonijska sredina se koristi jer je najstroža između Pitagorinih mjera za sredinu.
 \begin{align}
 \text{Preciznost:} \quad P &= \frac{TP}{TP+FP} \label{eq:precision} \\
 \text{Odziv:} \quad R &= \frac{TP}{TP+FN} \label{eq:recall} \\
@@ -838,12 +850,14 @@ Točnost je dobra mjera, no samo ako je brojnost klasa u podatkovnom skupu balan
 \text{F}_\beta: \quad F_\beta &= (1 + \beta^2) \cdot \frac{P \cdot R}{\beta ^2 \cdot P + R} \label{eq:f_beta}
 \end{align}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[h]
 \includegraphics[width=.9\textwidth]{Pitagorine_sredine.pdf}
 \centering
 \caption{Pitagorine mjere za sredinu između dviju vrijednosti. Po apscisi su brojevi koji se uspoređuju s brojem $5$, a po ordinati vrijednosti mjere.}
 \label{fig:sredine}
 \end{figure}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Mjere binarne klasifikacije mogu se primijeniti pri \textbf{višeklasnoj klasifikaciji}, no matrica zabune je dimenzija $C\times C$ gdje je $C$ broj klasa. Elementi matrice računaju se slično kao i kod binarne klasifikacije, ali za svaku klasu posebno.
 \begin{align}
@@ -885,7 +899,7 @@ FP = FN \implies P^\mu &= R^\mu = F_1^\mu = \frac{\sum_i TP_i}{\sum_i (TP_i+FP_i
 \label{sec:grid_search}
 Najjednostavniji način za pretraživanje hiperparametara je pretraživanje po rešetci. Za svaki hiperparametar koji se optimizira definiraju se vrijednosti koje treba ispitati. Algoritam tada evaluira dani model za svaku kombinaciju hiperparametara i vraća kombinaciju ili model koji ostvaruje najbolje rezultate.
 
-Iako se optimalni hiperparametri mogu nalaziti izvan zadanih skupova i neće biti pronađeni, postupak je brz i daje dovoljno dobre rezultate za praktičnu primjenu. Često je dovoljno da pronađe kombinaciju hiperparametara za koju model ne divergira niti prestaje učiti određen broj iteracija.
+Iako se optimalni hiperparametri mogu nalaziti izvan zadanih skupova i neće biti pronađeni, postupak je brz i daje dovoljno dobre rezultate za praktičnu primjenu. Često je dovoljno pronaći kombinaciju hiperparametara za koju model ne divergira niti prestaje učiti određen broj iteracija.
 
 \subsection{Svojstva}
 \label{sec:svojstva}
@@ -2222,7 +2236,7 @@ Pri izvršavanju algoritma učenja ili pretrage predaje se objekt koji implement
 
 \begin{table}[h]
 \begin{tabular}{ll}
-Klasa & Odredište \\
+Razred & Odredište \\
 \hline
 DevNullLogger & Ignorira ulaze \\
 StdoutLogger & Standardni izlaz \\
@@ -2277,7 +2291,7 @@ Stopa učenja & $10^{-3}$, $5 \cdot 10^{-4}$, $10^{-4}$
 \label{tab:hp_common}
 \end{table}
 
-Za svaku kombinaciju arhitekture i aktivacijske funkcije provedeno je pretraživanje hiperparametara po rešetci s usporedbom na skupu za validaciju. Skup za validaciju nastao je nasumičnim djeljenjem skupa za treniranje u omjeru $80:20$, a podjela skupa je konzistentna u svim mjerenjima u ovom radu. Zajednički i pretraživani hiperparametri navedeni su tablici \ref{tab:hp_common}. Kombinacije hiperparametara s najboljim postignućem navedene su u dodatku \ref{app:grid_hp}. Navedeni su najbolji postignuti rezultati na netaknutom skupu za testiranje.
+Za svaku kombinaciju arhitekture i aktivacijske funkcije provedeno je pretraživanje hiperparametara po rešetci s usporedbom na skupu za validaciju. Skup za validaciju nastao je nasumičnim djeljenjem skupa za treniranje u omjeru $80:20$, a podjela skupa je konzistentna u svim mjerenjima u ovom radu. Zajednički i pretraživani hiperparametri navedeni su tablici \ref{tab:hp_common}. Navedeni su najbolji postignuti rezultati na netaknutom skupu za testiranje.
 
 \subsection{DPAv2}
 
@@ -2385,7 +2399,7 @@ Broj iteracija tabu diverzifikacije & 1000 \\
 \label{tab:gp_hiperparams}
 \end{table}
 
-Parametri evolucije su zajednički svim eksperimentima i dani su tablicom \ref{tab:gp_hiperparams}. Vrijednost veličine tabu liste je mijenjana po broju populacija (veličina je broj zapamćenih populacija pomnožen s brojem jedinki u populaciji). Za svaku veličinu tabu liste provedeno je 10 eksperimenata s različitim sjemenjima nasumičnog generatora.
+Parametri evolucije su zajednički svim eksperimentima i dani su tablicom \ref{tab:gp_hiperparams}. Vrijednost veličine tabu liste je mijenjana po broju populacija (veličina je broj zapamćenih populacija pomnožen s brojem jedinki u populaciji). Za svaku veličinu tabu liste provedeno je 10 eksperimenata s različitim sjemenjima nasumičnog generatora ($s \in [42,51]$).
 
 \subsection{DPAv2}
 Na DPAv2 podatkovnom skupu pronađene su aktivacijske funkcije koje poboljšavaju generalizacijsku moć mreže u odnosu na popularne funkcije. Najbolja pronađena funkcija daje rezultate ekvivalentne najboljem rezultatu prethodnih eksperimenata za mrežu sa znatno više parametara ([500-500]). Najbolje pronađene funkcije (tablica \ref{tab:dpav2_top5}) sadrže periodičku komponentu (sinus ili kosinus).
@@ -2502,7 +2516,7 @@ Funkcija & Točnost & F1 mjera & Taboo veličina \\
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{dpav4_gp_f5.pdf}
 \centering
-\caption{$\frac{x - \exp(x - 1.0)}{1.0}$}
+\caption{$x - \exp(x - 1.0)$}
 \label{fig:dpav4_gp_f5}
 \end{figure}
 
@@ -2579,6 +2593,7 @@ Examine existing methods in building activation functions in artificial neural n
 \keywords{AES,SCA,DPA,cryptography,artificial neural network,activation function, neuroevolution,genetic programming,taboo list}
 \end{abstract}
 
+\iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
 \chapter{Hiperparametri pretrage po rešetci}
 \label{app:grid_hp}
@@ -2615,5 +2630,7 @@ Indeks & Koeficijent L2 reg. & Stopa učenja \\
 \caption{Skup \textbf{DPAv2}: Optimalne kombinacije hiperparametara za aktivacijske funkcije na različitim arhitekturama. Vrijednosti u ćelijama označavaju kombinacije hiperparametara navedene u tablici \ref{tab:hp_comb}}
 \label{fig:greedy_256_hp}
 \end{figure}
+\fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \end{document}
