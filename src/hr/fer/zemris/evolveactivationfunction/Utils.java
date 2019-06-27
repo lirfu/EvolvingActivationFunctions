@@ -68,7 +68,7 @@ public class Utils {
                     s = "gauss (" + token + ")";
                     break;
                 default:
-                    s = "UNKNOWN";
+                    s = n.getName()+" ("+token+")";
             }
             str[0] = str[0].replaceFirst(token, s);
             return false;
