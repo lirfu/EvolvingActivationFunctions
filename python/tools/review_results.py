@@ -1,4 +1,4 @@
-#!/usr/bin python
+#!/usr/bin/python3
 
 import os
 import os.path as path
@@ -60,8 +60,8 @@ for e in experiments:
 #		print('')
 #	print('MAXIMA:')
 	m = max([r[-1] for r in tabl])
-	if float(m) < 0.5:
-		continue
+#	if float(m) < 0.5:
+#		continue
 #	print(m)
 #	print(tabl)
 	for i in range(len(tabl)):
