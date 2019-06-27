@@ -23,6 +23,7 @@ import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.evaluation.classification.ROCMultiClass;
 import org.nd4j.linalg.activations.IActivation;
 import org.nd4j.linalg.activations.impl.ActivationReLU;
+import org.nd4j.linalg.activations.impl.ActivationReLU6;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.iterator.TestDataSetIterator;
@@ -37,16 +38,17 @@ public class RetrainProgram {
     public static void main(String[] args) throws IOException, InterruptedException {
         TreeNodeSet set = TreeNodeSetFactory.build(new Random(), TreeNodeSets.ALL);
         String[] ds = new String[]{
-                "res/noiseless_data/noiseless_all_training_256class.arff",
-                "res/noiseless_data/noiseless_all_testing_256class.arff"
+                "res/noiseless_data/noiseless_all_training_9class.arff",
+                "res/noiseless_data/noiseless_all_testing_9class.arff"
         };
 
-        String dataset_name = "noiseless_all_training_256class";
-        String orig_experiment_name = "common_functions_v2/common_functions_v2_fc(300)-fc(300)_sin[x]/5";
+        String dataset_name = "noiseless_all_training_9class";
+        String architecture = "fc(500)-fc(500)";
 
-        String architecture = "fc(300)-fc(300)";
         String function = "sin[x]";
-        String new_experiment_name = "ReadActivations";
+        String orig_experiment_name = "common_functions_v2/common_functions_v2_" + architecture + "_sin[x]/6_BEST";
+
+//        String new_experiment_name = "ReadActivations";
         Triple<Double, Double, Integer> range_n_buckets = new Triple<>(-7., 7., 101);
 
         IActivation acti = new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse(function, set)));
@@ -55,9 +57,9 @@ public class RetrainProgram {
 
         TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(ds[0], ds[1], pb);
         CommonModel model = train_procedure.createModel(new NetworkArchitecture(architecture), new IActivation[]{acti});
-        Context context = train_procedure.createContext(new_experiment_name);
+        Context context = train_procedure.createContext(orig_experiment_name);
 
-        ILogger log = new MultiLogger(new StdoutLogger(), StorageManager.createTrainingLogger(context)); // Log to stdout.
+        ILogger log = new MultiLogger(new StdoutLogger()); // Log to stdout.
 //        FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
         FileStatsStorage stat_storage = null;
 
@@ -70,15 +72,15 @@ public class RetrainProgram {
 
         Stopwatch timer = new Stopwatch();
         timer.start();
-        train_procedure.train_itersearch(model, log, stat_storage);
+        train_procedure.train_joined(model, log, stat_storage);
         System.out.println("===> (" + Utilities.formatMiliseconds(timer.lap()) + ") Training done!");
 
         timer.start();
         Pair<ModelReport, Object> result = train_procedure.test(model);
         log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().toString());
 
-        StorageManager.storeTrainParameters(p, context);
-        StorageManager.storeResults(result.getKey(), context);
+        //StorageManager.storeTrainParameters(p, context);
+        //StorageManager.storeResults(result.getKey(), context);
 //        StorageManager.storePredictions((INDArray) result.getSecond(), context);
 
         timer.start();

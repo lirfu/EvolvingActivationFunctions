@@ -6,6 +6,10 @@ import math as m
 import os
 import os.path as path
 
+# FIXME Manually enter your function
+f = lambda x: x
+f_d = lambda x: x
+
 # Will be automatically modified.
 func_range_min = -5.
 func_range_max = 5.
@@ -71,6 +75,6 @@ if len(sys.argv) != 1:
 filename = sys.argv[0]
 data = load_array(filename)
 data = normalize(data)
-draw_data(data, m.sin, m.cos)
+draw_data(data, f, f_d)
 store_img(filename)
 plt.show()
