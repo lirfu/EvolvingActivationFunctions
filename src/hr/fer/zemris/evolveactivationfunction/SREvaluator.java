@@ -70,15 +70,13 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
 
     public Pair<ModelReport, Object> evaluateModel(DerivableSymbolicTree g, StatsStorageRouter storage, String name) {
         Stopwatch timer = new Stopwatch();
-        IActivation[] activations = new IActivation[architecture_.layersNum()];
-        for (int i = 0; i < activations.length; i++)
-            activations[i] = new CustomFunction(g.copy());
-
         timer.start();
-        IModel model = tmpl_procedure_.createModel(architecture_, activations);
+
+        IModel model = buildModelFrom(g);
 //        tmpl_procedure_.train(model, log_, storage);
         tmpl_procedure_.train_itersearch(model, log_, storage);
         Pair<ModelReport, Object> res = tmpl_procedure_.validate(model);
+
         log_.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + name + "(" + res.getKey().f1() + ")");
         return res;
     }
