@@ -72,7 +72,7 @@ Zahvaljujem svojoj obitelji na razumijevanju, potpori i ljubavi tijekom čitavog
 \chapter{Uvod}
 Kriptografski uređaji postali su nezamjenjiv element digitalne infrastrukture modernog društva. Služe za sakrivanje važnih informacija, poput bankovnih transakcija i autorskih djela, i ograničavanje pristupa neovlaštenim osobama. S obzirom na vrijednost informacije koju prikrivaju, česta su meta napada. Znanstvena zajednica provodi etičke napade i analize sigurnosnih sustava, ali i predlaže poboljšanja sigurnosti kriptografskih uređaja, s ciljem da se obznane njihove slabosti i na vrijeme spriječe nedetektirani napadi. Analiza emisija kriptografskog uređaja omogućava jednu vrstu napada koju je gotovo nemoguće detektirati.
 
-Duboko učenje se pokazalo vrlo uspješnim na teškim problemima u raznim domenama primjene, pa tako i u napadima na kriptografske uređaje. No optimizacija dubokih modela je vrlo složen proces s raznim hiperparametrima čijim se ugađanjem mogu postići velike razlike u performansama. Jedan od hiperparametara je aktivacijska funkcija koja definira nelinearnost dubokog modela. Iako postoje aktivacijske funkcije s teorijski potkrijepljenim svojstvima, ne pokazuju se uvijek najboljim odabirom. Kombinacijom aktivacijskih funkcija moguće je pospješiti optimizaciju dubokih modela i povećati efektivni kapacitet modela. Stoga je istraživanje aktivacijskih funkcija vrlo važna komponenta u razvoju dubokog učenja.
+Duboko učenje se pokazalo vrlo uspješnim na teškim problemima u raznim domenama primjene, pa tako i u napadima na kriptografske uređaje. No optimizacija dubokih modela vrlo je složen proces s raznim hiperparametrima čijim se ugađanjem mogu postići velike razlike u performansama. Jedan od hiperparametara je aktivacijska funkcija koja definira nelinearnost dubokog modela. Iako postoje aktivacijske funkcije s teorijski potkrijepljenim svojstvima, ne pokazuju se uvijek najboljim odabirom. Kombinacijom aktivacijskih funkcija moguće je pospješiti optimizaciju dubokih modela i povećati efektivni kapacitet modela. Stoga je istraživanje aktivacijskih funkcija vrlo važna komponenta u razvoju dubokog učenja.
 
 Aktivacijske funkcije moguće je predstaviti stablom što otvara mogućnost optimizacije genetskim programiranjem. Iako je primjena evolucijskih algoritama u kontekstu neuroevolucije vrlo skupa zbog dugotrajnog postupka učenja, njihova primjena omogućava istraživanje optimalnih hiperparametara za postizanje boljih rezultata.
 
@@ -84,7 +84,7 @@ Ovaj rad se temelji na spomenutim područjima te su priloženi kratki opisi podr
 \section{Napredni standard enkripcije (AES)}
 \engl{Advanced Encryption Standard}
 
-AES je vrlo često korišten algoritam enkripcije simetričnim ključem opisan standardom \citet{aes_standard}. Ulazni podatci i izlaz iz algoritma definirani su 128-bitnim blokovima. Veličinu ključa je moguće zadati, a podržane su veličine od 128, 192 i 256 bita. Navedene veličine tipično se definiraju brojem riječi koje predstavljaju blokove od 4B (128b = 16B = 4 riječi). Prilikom izvršavanja broj iteracija algoritma ovisi o veličini ključa prema tablici \ref{tab:aes_rounds}. Na početku algoritma ulaz se kopira u matricu stanja veličine 4B$\times$4B popunjavajući stupac po stupac. Tijekom izvršavanja algoritma matrica se modificira i po završetku predstavlja izlaz algoritma.
+AES je vrlo često korišten algoritam enkripcije simetričnim ključem opisan standardom \citep{aes_standard}. Ulazni podatci i izlaz iz algoritma definirani su 128-bitnim blokovima. Veličinu ključa je moguće zadati, a podržane su veličine od 128, 192 i 256 bita. Navedene veličine tipično se definiraju brojem riječi koje predstavljaju blokove od 4B (128b = 16B = 4 riječi). Prilikom izvršavanja broj iteracija algoritma ovisi o veličini ključa prema tablici \ref{tab:aes_rounds}. Na početku algoritma ulaz se kopira u matricu stanja veličine 4B$\times$4B popunjavajući stupac po stupac. Tijekom izvršavanja algoritma matrica se modificira i po završetku predstavlja izlaz algoritma.
 
 \begin{table}[H]
 \begin{tabular}{lrr}
@@ -102,10 +102,10 @@ AES-256 & 8 & 14
 AES koristi četiri operacije čijom se iterativnom primjenom s različitim potključevima ostvaruje enkripcija. Za sve operacije i za čitav algoritam definiran je inverz.
 \begin{enumerate}
 \item
-\textbf{ZamijeniBajtove} nelinearno izmjenjuje svaki bajt matrice stanja pomoću tablice supstitucije (S-box). Svaki bajt matrice stanja predstavlja lokaciju u tablici sa koje se uzima zamjenski bajt. Tablica supstitucije je nepromjenjiva i javno dostupna.
+\textbf{ZamijeniOktete} nelinearno izmjenjuje svaki oktet matrice stanja pomoću tablice supstitucije (S-box). Svaki oktet matrice stanja predstavlja lokaciju u tablici sa koje se uzima zamjenski oktet. Tablica supstitucije je nepromjenjiva i javno dostupna.
 
 \item
-\textbf{PosmakniRetke} ciklički posmiče retke za broj mjesta koji odgovara indeksu retka (npr. trećem retku se posmiču dva bajta).
+\textbf{PosmakniRetke} ciklički posmiče retke za broj mjesta koji odgovara indeksu retka (npr. trećem retku se posmiču dva okteta).
 
 \item
 \textbf{IzmješajStupce} nad svakim stupcem zasebno provodi polinomijalno modulo-množenje s konstantnim i javno poznatim polinomom. 
@@ -123,7 +123,7 @@ Ekspanzijom ključa se između svake dvije iteracije algoritma iz izvornog klju�
 \section{Diferencijalna analiza potrošnje električne energije (DPA)}
 \engl{Differential Power Analysis}
 
-Moderni kriptografski uređaj je elektronički uređaj na kojem se izvodi kriptografski algoritam i koji čuva kriptografski ključ \citep{paa_book}. Izvršavanje kriptografskih algoritama na fizičkim uređajima otvara nove probleme u sigurnosti algoritama. U stvarnom svijetu područje interesa ne predstavlja samo sigurnost kriptografskog algoritma, već cijelog okruženja u kojem se algoritam izvodi. Primjeri nekih kriptografskih uređaja su pametne kartice i \textit{USB} uređaji.
+Moderni kriptografski uređaj je elektronički uređaj na kojem se izvodi kriptografski algoritam i koji čuva kriptografski ključ \citep{paa_book}. Izvršavanje kriptografskih algoritama na sklopovskim uređajima otvara nove probleme u sigurnosti algoritama. U stvarnom svijetu područje interesa ne predstavlja samo sigurnost kriptografskog algoritma, već cijelog okruženja u kojem se algoritam izvodi. Primjeri nekih kriptografskih uređaja su pametne kartice i \textit{USB} uređaji.
 
 Uspješan napad na kriptografski uređaj označava otkrivanje tajnog ključa pohranjenog na uređaju. Neovlaštena osoba koja pokušava saznati tajni ključ pohranjen na uređaju naziva se napadač, a pokušaj neovlaštenog otkrivanja tajnog ključa naziva se napad. Da bi se provjerila sigurnost kriptografskog uređaja, potrebno je uvesti pretpostavke o informacijama kojima napadač može pristupiti. Najjača pretpostavka koja se nadovezuje na Kerckhoffovo načelo \footnote{Kriptografski algoritam mora biti siguran i onda kada su sve informacije o njemu poznate, a nepoznat samo tajni ključ.} jest da napadač zna detalje o kriptografskom uređaju.
 
@@ -235,7 +235,7 @@ Prethodno opisani postupak pripada u neprofilirane napade analizom potrošnje el
 
 \section{DPAcontest skupovi podataka}
 \label{sec:dpa_datasets}
-DPAcontest v2 i v4 skupovi podataka izgrađeni su s ciljem standardizacije izvedbi napada na kriptografske uređaje za potrebe usporedivosti rezultata ostvarenih u znanstvenoj zajednici. Podatkovni skupovi su javno dostupni na službenoj stranici natjecanja \citep{dpa}. Podatci predstavljaju mjerenja potrošnje električne energije pri radu AES algoritma implementiranog fizički (DPAv2) ili softverski (DPAv4) i vrijednosti bajta mjerenog registra. Pojedino mjerenje se sastoji od 3253 točke, od kojih je odabrano 50 točaka koje su Pearsonovom koeficijentom najsnažnije korelirane s izlazom \citep{samiotis_dr}. Oba skupa sadrže po $10^5$ mjerenja i podijeljeni su na skupove za treniranje i testiranje u omjeru $2:1$.
+DPAcontest v2 i v4 skupovi podataka izgrađeni su s ciljem standardizacije izvedbi napada na kriptografske uređaje za potrebe usporedivosti rezultata ostvarenih u znanstvenoj zajednici. Podatkovni skupovi su javno dostupni na službenoj stranici natjecanja \citep{dpa}. Podatci predstavljaju mjerenja potrošnje električne energije pri radu AES algoritma implementiranog sklopovski (DPAv2) ili programski (DPAv4) i vrijednosti okteta mjerenog registra. Pojedino mjerenje se sastoji od 3253 točke, od kojih je odabrano 50 točaka koje su Pearsonovom koeficijentom najsnažnije korelirane s izlazom \citep{samiotis_dr}. Oba skupa sadrže po $10^5$ mjerenja i podijeljeni su na skupove za treniranje i testiranje u omjeru $2:1$.
 
 % We use two datasets that mainly differ in the amount of noise and the side-channel leakage distribution -- DPAcontest v2 \citep{dpacontestv2} and DPAcontest v4 \citep{dpacontestv4}.
 % We select 50 points of interests with the highest correlation between the class value and data set for all analyzed datasets and investigate scenarios with a different number of classes -- 9 classes and 256 classes.
@@ -248,7 +248,7 @@ DPAcontest v2 je objavljen 2010. godine i predstavlja mjerenja potrošnje elektr
 Y(k^*) = \underbrace{\SBOXi{C_{b_1} \oplus k^*}}_{\text{prethodna vrijednost registra}} \oplus \underbrace{C_{b_2}}_{\text{oktet enkripcije}},
 \end{equation}
 
-Objavljene su dvije inačice skupa. Jedna inačica sadrži 256 razreda koji predstavljaju vrijednost bajta mjerenog registra. Druga inačica sadrži 9 razreda koji predstavljaju Hammingovu težinu mjerenog registra. Drugi skup je vrlo nebalansiran zbog velike razlike u entropiji informacije predstavljene središnjim klasama i rubnim klasama (težinu $0$ ili $8$ možemo dobiti samo po jednim oktetom, a težinu $4$ s čak $70$ okteta). U ovom radu se za DPAv2 koristi inačica s 256 razreda i predviđa se vrijednost okteta mjerenog registra.
+Objavljene su dvije inačice skupa. Jedna inačica sadrži 256 razreda koji predstavljaju vrijednost okteta mjerenog registra. Druga inačica sadrži 9 razreda koji predstavljaju Hammingovu težinu mjerenog registra. Drugi skup je vrlo nebalansiran zbog velike razlike u entropiji informacije predstavljene središnjim klasama i rubnim klasama (težinu $0$ ili $8$ možemo dobiti samo po jednim oktetom, a težinu $4$ s čak $70$ okteta). U ovom radu se za DPAv2 koristi inačica s 256 razreda i predviđa se vrijednost okteta mjerenog registra.
 
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
@@ -291,7 +291,7 @@ Objavljene su dvije inačice skupa. Jedna inačica sadrži 256 razreda koji pred
 \end{figure}
 
 \subsection{DPAcontest v4}
-DPAcontest v4 je objavljen 2013. godine i predstavlja mjerenja potrošnje električne energije softverske implementacije maskiranog AES-128 algoritma. Maskiranje nema utjecaja jer je maska poznata, što postupak čini ekvivalentnim nemaskiranom slučaju. Signal je mjeren pri primjeni S-tablice u prvom koraku algoritma \eqref{eq:dpav4}, gdje je $P_i$ oktet ulaznog podatka. Ulazi su manje šumoviti s omjerom signala naspram šuma: $SNR \in [0.1188, 5.8577]$.
+DPAcontest v4 je objavljen 2013. godine i predstavlja mjerenja potrošnje električne energije programske implementacije maskiranog AES-128 algoritma. Maskiranje nema utjecaja jer je maska poznata, što postupak čini ekvivalentnim nemaskiranom slučaju. Signal je mjeren pri primjeni S-tablice u prvom koraku algoritma \eqref{eq:dpav4}, gdje je $P_i$ oktet ulaznog podatka. Ulazi su manje šumoviti s omjerom signala naspram šuma: $SNR \in [0.1188, 5.8577]$.
 
 \begin{equation}
 \label{eq:dpav4}
@@ -383,12 +383,12 @@ Unakrsna korelacija, za razliku od afine funkcije, koristi informaciju o susjedn
 
 U radu \citet{softsign} klasičnoj afinoj funkciji pribraja se L2 norma dodatne linearne funkcije čije elemente nazivaju \textit{kvadratnim filtrima}. Empirijski pokazuju da dodavanje kvadratnih filtara pospješuje performanse modela.
 
-Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i gradijenti teku kroz mrežu, a time utječu na brzinu učenja i inferencije neuronske mreže. Najčešće se koriste slojevite unaprijedne arhitekture zbog jednostavnosti izvedbe. Unaprijedne arhitekture propuštaju podatke samo u jednom smjeru odnosno već izračunati neuroni se ne izračunavaju ponovno, što je posebno pogodno za optimizaciju širenjem unatrag \secref{sec:backprop}. Slojevite arhitekture omogućuju paralelizaciju izvođenja operacija na grafičkim karticama što značajno ubrzava postupke učenja i inferencije. Pri definiciji slojevite arhitekture najčešće je dovoljno navesti samo redoslijed slojeva, no ponekad je potrebno definirati i način povezivanja slojeva npr. pri uporabi preskočnih veza \citep{highwaynet, resnet, densenet}. Prvi sloj služi za postavljanje ulaza mreže i naziva se ulaznim slojem mreže. Posljednji sloj mreže služi za predikciju izlaza te mjerenje kakvoće mreže i naziva se izlaznim slojem mreže. Svi slojevi između ulaznog i izlaznog sloja nazivaju se skrivenim slojevima.
+Povezivanjem neurona gradi se arhitektura mreže koja određuje kako podatci i gradijenti teku kroz mrežu, a time utječu na brzinu učenja i inferencije neuronske mreže. Najčešće se koriste slojevite unaprijedne arhitekture zbog jednostavnosti izvedbe. Unaprijedne arhitekture propuštaju podatke samo u jednom smjeru, odnosno već izračunati neuroni se ne izračunavaju ponovno, što je posebno pogodno za optimizaciju širenjem unatrag \secref{sec:backprop}. Slojevite arhitekture omogućuju paralelizaciju izvođenja operacija na grafičkim karticama što značajno ubrzava postupke učenja i inferencije. Pri definiciji slojevite arhitekture najčešće je dovoljno navesti samo redoslijed slojeva, no ponekad je potrebno definirati i način povezivanja slojeva npr. pri uporabi preskočnih veza \citep{highwaynet, resnet, densenet}. Prvi sloj služi za postavljanje ulaza mreže i naziva se ulaznim slojem mreže. Posljednji sloj mreže služi za predikciju izlaza te mjerenje kakvoće mreže i naziva se izlaznim slojem mreže. Svi slojevi između ulaznog i izlaznog sloja nazivaju se skrivenim slojevima.
 
 Potpuno povezana arhitektura najjednostavnija je arhitektura. Svaki neuron u potpuno povezanom sloju aktivira se pomoću svih izlaza iz prethodnog sloja. Za naučeni potpuno povezani sloj kaže se da vrši ekstrakciju značajki iz svojih ulaza. Geometrijski gledano, sloj vrši nelinearno mapiranje značajki iz dimenzije prethodnog sloja u novu dimenziju s ciljem modeliranja boljih značajki.
 
 \subsection{Optimizacija umjetne neuronske mreže}
-Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno kaže se da mreža 'uči'. Optimizacija parametara najčešće se izvodi gradijentnim spustom, uz pretpostavku derivabilnosti svih komponenata neuronske mreže. Kada ta pretpostavka ne vrijedi koriste se algoritmi kombinatorne optimizacije poput algoritma roja čestica koji se spominje u \citet{skripta_nenr}. U ovom radu neuronske mreže optimiraju se gradijentnim spustom.
+Optimizacijom parametara neuronska mreža prilagođava se danom zadatku, odnosno kaže se da mreža 'uči'. Optimizacija parametara najčešće se izvodi gradijentnim spustom, uz pretpostavku derivabilnosti svih komponenata neuronske mreže. Kada ta pretpostavka ne vrijedi koriste se algoritmi pretrage poput algoritma roja čestica koji se spominje u \citet{skripta_nenr}. U ovom radu neuronske mreže optimiraju se gradijentnim spustom.
 
 \subsubsection{Gradijentni spust}
 \label{sec:gradijentni_spust}
@@ -660,7 +660,7 @@ Tijekom optimizacije gradijentnim spustom uz fiksnu stupu učenja optimizacija �
 
 %Ključnim iteracijama mogu se proglasiti one u kojima je detektirana konvergencija ili divergencija. Taj pristup omogućava nastavak pretrage, no problem je kako sa sigurnošću detektirati konvergenciju ili divergenciju. Tipično učenje mreže nije monotono, tj. gubitak mreže može na neko vrijeme rasti prije no što nastavi padati, što odgovara ponašanju u lokalnom optimumu. U tom slučaju smanjivanje stope učenja je nepoželjno.
 
-Pristup koji se koristi u ovom radu je zadanu početnu stopu u svakoj iteraciji pomnožiti s konstantom manjom od 1, odnosno stopa se konstantno smanjuje. Uz stohastičan spust, postupak ostvaruje efekt sličan simuliranom kaljenju gdje se smanjivanjem temperature sustava smanjuje njegova stohastičnost i postupak konvergira u dobre regije rješenja. Smanjivanje stope učenja pri stohastičkom gradijentnom spustu smanjuje varijancu gradijenata te omogućava stabilnije i preciznije učenje. U radu se koristi eksponencijalno opadanje stope učenja po epohama. Prije svake epohe, stopa učenja se izračuna prema formuli \eqref{eq:learning_rate_decay}, gdje je $e$ indeks epohe. Za $30$ iteracija, vrijednost opada na $73\%$, a za $40$ iteracija na $67\%$ početne stope učenja. Iako bi u teoriji Adam trebao biti dovoljan, preliminarni eksperimenti pokazuju da dodani mehanizam pomaže pri učenju mreže.
+Pristup koji se koristi u ovom radu je zadanu početnu stopu u svakoj iteraciji pomnožiti s konstantom manjom od $1$, odnosno stopa se konstantno smanjuje. Uz stohastičan spust, postupak ostvaruje efekt sličan simuliranom kaljenju gdje se smanjivanjem temperature sustava smanjuje njegova stohastičnost i postupak konvergira u dobre regije rješenja. Smanjivanje stope učenja pri stohastičkom gradijentnom spustu smanjuje varijancu gradijenata te omogućava stabilnije i preciznije učenje. U radu se koristi eksponencijalno opadanje stope učenja po epohama. Prije svake epohe, stopa učenja se izračuna prema formuli \eqref{eq:learning_rate_decay}, gdje je $e$ indeks epohe. Za $30$ iteracija, vrijednost opada na $73\%$, a za $40$ iteracija na $67\%$ početne stope učenja. Iako bi u teoriji Adam trebao biti dovoljan, preliminarni eksperimenti pokazuju da dodani mehanizam pomaže pri učenju mreže.
 \begin{equation}
 \label{eq:learning_rate_decay}
 \eta_e = \eta_0 \cdot 0.99^e,\quad e \in [0, N]
@@ -717,10 +717,10 @@ Prenaučenost je često posljedica velikih normi vektora parametara. Stoga se u 
 
 Najčešće se koristi regularizacija \textbf{L2} normom koja akumulira kvadrate svih parametara modela. Pri ažuriranju parametra formula dobiva skaliranu vrijednost tog parametra što smanjuje vrijednost negativnog gradijenta.
 \begin{equation}
-\Omega(\vec{\theta}) = \frac{1}{2} \|\vec{w}\|_2^2 = \frac{1}{2} \sum_i w_i^2
+\Omega(\vec{\theta}) = \frac{\alpha}{2} \sum_i ||\theta_i||^2
 \end{equation}
 \begin{equation}
-\vec{\theta}_{i+1} \gets \vec{\theta}_i - \eta \cdot \vec{g}_i + \alpha \cdot \theta
+\vec{\theta}_{i+1} \gets (1- \eta \alpha) \cdot \vec{\theta}_i - \eta \cdot \vec{g}_i
 \end{equation}
 
 %\todo{*Spomeni pokoju još (L1, adversarial iz Hintona, ...)}
@@ -806,7 +806,7 @@ Inicijaliziraj $m$ \\
 Optimiziraj $m$ hiperparametrima $k^*$ na $\dataset_{train}$ \\
 Izmjeri konačnu generalizaciju $g$ na $\dataset_{test}$ \\
 \STATE{\textbf{Izlaz:} \\
-	$m^*$ -- pronađeni optimalni model
+	$m$ -- pronađeni optimalni model
 }
 \end{algorithmic}
 \caption{Ugniježđena unakrsna provjera}
@@ -837,7 +837,7 @@ Pri \textbf{binarnoj klasifikaciji} definirana je \textbf{matrica zabune} \eqref
 \end{split}
 \end{align}
 
-Iz tih skupova se tada grade složenije mjere. \textbf{Točnost} je mjera kojom se iskazuje postotak točno pogođenih primjera:
+Iz tih skupova se grade složenije mjere. \textbf{Točnost} je mjera kojom se iskazuje postotak točno pogođenih primjera:
 \begin{equation}
 Acc = \frac{TP+TN}{TP+TN+FP+FN}
 \end{equation}
@@ -905,7 +905,7 @@ Iako se optimalni hiperparametri mogu nalaziti izvan zadanih skupova i neće bit
 \label{sec:svojstva}
 
 \subsubsection{Univerzalna aproksimacija}
-Teorem univerzalne aproksimacije tvrdi da unaprijedna neuronska mreža može modelirati proizvoljnu Borel mjerljivu funkciju proizvoljno dobro uz nekoliko uvjeta: mora imati linearni izlaz, barem jedan nelinearni skriveni sloj koji koristi sažimajuću funkciju i "dovoljan" broj skrivenih neurona. Dakle, postoji arhitektura i postoje parametri kojima neuronska mreža može modelirati zadani podatkovni skup. No, teorem ne iskazuje kako doći do tih parametara što optimizaciju neuronske mreže čini netrivijalnom \citep[poglavlje~6.4.1]{goodfellowbook}. 
+Teorem univerzalne aproksimacije tvrdi da unaprijedna neuronska mreža može modelirati proizvoljnu Borel mjerljivu funkciju proizvoljno dobro uz nekoliko uvjeta: mora imati linearni izlaz, barem jedan nelinearni skriveni sloj koji koristi sažimajuću funkciju i "dovoljan" broj skrivenih neurona. Dakle, postoji arhitektura i postoje parametri kojima neuronska mreža može modelirati zadani podatkovni skup. No, teorem ne iskazuje kako doći do tih parametara što optimizaciju neuronske mreže čini teškom \citep[poglavlje~6.4.1]{goodfellowbook}. 
 
 \subsubsection{Reprezentacija dubinom}
 Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skriveni sloj za predstavljanje proizvoljne Borel mjerljive funkcije, gornja granica veličine tog sloja je eksponencijalno velika naspram broja ulaza što je netraktabilno. Dodavanjem dubine moguće je iskoristiti pravilnosti u funkciji koja se aproksimira kako bi se smanjio potreban broj neurona. Primjer su funkcije simetrične oko neke osi. Ako skriveni slojevi mreže vrše preklapanje te funkcije preko pravca u njenom hiperprostoru, uzastopnim preklapanjem dobiva se sve jednostavnija funkcija. Preklapanje mogu vršiti po dijelovima linearne aktivacijske funkcije poput ReLU i Maxout. Dakako, ne postoji garancija da stvarna funkcija zadovoljava svojstvo simetrije, no u praksi dublje mreže generaliziraju bolje \citep{alexnet, highwaynet, resnet, densenet}. Postoje i druge interpretacije utjecaja dubine, poput svojstva dekompozicije zadatka na manje cjeline ili interpretacije neuronske mreže kao računalnog programa, no one nadilaze temu ovog rada. \citep[poglavlje~6.4.1]{goodfellowbook}
@@ -921,7 +921,7 @@ Iako je prema teoremu univerzalne aproksimacije dovoljan jedan nelinearni skrive
 
 \subsubsection{Generalizacija}
 \label{sec:generalizacija}
-Model sa svojstvom generalizacije dobro modelira stvarnu funkciju te ispravno radi i na neviđenim primjerima. Ovo je posebno važno pri klasifikaciji slika gdje za pojedinu klasu (npr. automobil) postoji neprebrojivo mogućih slika s različitim modelom, bojom ili kutom gledanja automobila. No dostupno je svega nekoliko stotina tisuća primjera koji se smatraju reprezentativnim za tu klasu i njima se želi izgraditi klasifikator koji je robustan na većinu perturbacija slike. Kako bi model što bolje naučio stvarnu funkciju potreban je velik broj označenih uzoraka. S obzirom da je označavanje podataka često vrlo skupocjeno, istražuju se metode automatizacije poput polu-nadziranog učenja i aktivnog učenja \citep{active_learn}. Augmentacija podataka raznim metodama stvara više primjera iz jednog uzorka stvarne funkcije čime se proširuje podatkovni skup bez potrebe za označavanjem te podiže generalizacijsku moć modela. No, čak i uz navedene metode model i dalje neće dovoljno dobro generalizirati stvarnu funkciju što potvrđuje postojanje neprijateljskih primjera \citep{intriguing_props}.
+Model sa svojstvom generalizacije dobro modelira stvarnu funkciju te ispravno radi i na neviđenim primjerima. Ovo je posebno važno pri klasifikaciji slika gdje za pojedinu klasu (npr. automobil) postoji neprebrojivo mogućih slika s različitim modelom, bojom ili kutom gledanja automobila. No dostupno je svega nekoliko stotina tisuća primjera koji se smatraju reprezentativnim za tu klasu i njima se želi izgraditi klasifikator koji je robustan na većinu perturbacija slike. Kako bi model što bolje naučio stvarnu funkciju potreban je velik broj označenih uzoraka. S obzirom da je označavanje podataka često vrlo skupocjeno, istražuju se metode automatizacije poput polu-nadziranog učenja i aktivnog učenja \citep{active_learn}. Augmentacija podataka raznim metodama stvara više primjera iz jednog primjera stvarne funkcije čime se proširuje podatkovni skup bez potrebe za označavanjem te podiže generalizacijsku moć modela. No, čak i uz navedene metode model i dalje neće dovoljno dobro generalizirati stvarnu funkciju što potvrđuje postojanje neprijateljskih primjera \citep{intriguing_props}.
 
 \subsection{Problemi}
 \subsubsection{Odabir hiperparametara}
@@ -950,7 +950,7 @@ Aktivacijska funkcija unosi nelinearnost u neuronsku mrežu i ima utjecaj na nje
 
 Za odabir aktivacijske funkcije ne postoji jasno pravilo. U praksi se odabiru po empirijskim rezultatima i brzinom izvođenja. Iako neke funkcije imaju teorijski potkrijepljena svojstva to ih u praksi ne čini najboljima. Tipično se odabire $ReLU$, a za skrivene slojeve rekurzivnih modela odabire se $tanh$.
 
-Funkcije poput ReLU, njegovih izvedenica i ELiSH mogu sadržavati diskontinuitete u derivaciji funkcije. Pri širenju gradijenta unatrag ti se diskontinuiteti zanemaruju i uzima se vrijednost u koju funkcija teži s jedne strane. Dikontinuiteti u funkciji mogu se interpretirati kao različiti režimi rada neurona. Dobar primjer je ReLU kod kojeg je za negativne ulaze neuron neaktivan.
+Funkcije poput ReLU, njegovih izvedenica i ELiSH mogu sadržavati diskontinuitete u derivaciji funkcije. Pri širenju gradijenta unatrag ti se diskontinuiteti zanemaruju i uzima se vrijednost u koju funkcija teži s jedne strane. Dikontinuiteti u funkciji mogu se interpretirati kao granice između režima rada neurona. Dobar primjer je ReLU kod kojeg je za negativne ulaze neuron neaktivan, a za pozitivne linearan.
 
 %\todo{dokaz da su monotone fje dobre}
 
@@ -1795,7 +1795,7 @@ f'(\vec{x}) = f(\vec{x}) \cdot (1-f(\vec{x}))
 \end{split}
 \end{equation}
 
-Softmax se tipično koristi kao izlazni sloj klasifikacijske mreže. Funkcija nije skalarna već na ulazu zahtjeva vektor. Eksponentom ulaza ističu se veće vrijednosti ulaza, a dijeljenjem sa sumom normaliziraju izlazi (suma izlaza je jednaka $1$). Time se izlaz mreže može smatrati vjerojatnosnom distribucijom što je izrazito korisno za zadatke klasifikacije. Osim što se iz izlaza može zaključiti koja je klasa najvjerojatnija, funkcija definira i koliko je mreža sigurna u svoju predikciju. Njenim korištenjem drastično se pojednostavljuje derivacija funkcije gubitka za klasifikaciju \eqref{eq:loss_classification_softmax} što ubrzava učenje mreže.
+Softmax se tipično koristi kao izlazni sloj klasifikacijske mreže. Funkcija nije skalarna već na ulazu zahtjeva vektor. Eksponentom ulaza ističu se razlike između ulaza, a dijeljenjem sa sumom normaliziraju izlazi (suma izlaza je jednaka $1$). Time se izlaz mreže može smatrati vjerojatnosnom distribucijom što je izrazito korisno za zadatke klasifikacije. Osim što se iz izlaza može zaključiti koja je klasa najvjerojatnija, funkcija definira i koliko je mreža sigurna u svoju predikciju. Njenim korištenjem drastično se pojednostavljuje derivacija funkcije gubitka za klasifikaciju \eqref{eq:loss_classification_softmax} što ubrzava učenje mreže.
 % Korištenjem funkcije u skrivenim slojevima mreže ostvaruje se kaskada klasifikatora, jer time svaki sloj predstavlja klasifikator na temelju značajki prethodnog sloja.
 
 \iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1983,7 +1983,7 @@ Simbolička regresija je postupak izgradnje funkcije koja dobro aproksimira uzor
 \fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Neuroevolucija genetskim programiranjem}
-Proizvoljnu neuronsku mrežu moguće je predstaviti stablom, gdje su čvorovi mreže ulazne i aktivacijske funkcije neurona te dodatne operacije (normalizacija grupe, dropout i ostali). Takav pristup korišten je u \citet{evo_atari} algoritmom kartezijevog genetskog programiranja. Metoda NEAT dijeli graf na neurone i težine istovremeno pretražuje prostor arhitektura i težina \citep{neat}. Postoje i metode indirektne evolucije arhitekture neuronskih mreža čiji genotip je potrebno dekodirati. Takve metode smanjuju prostor pretraživanja i time efikasno istražuju vrlo složene arhitekture \citep{gruau}.
+Proizvoljnu neuronsku mrežu moguće je predstaviti stablom, gdje su čvorovi mreže ulazne i aktivacijske funkcije neurona te dodatne operacije (normalizacija grupe, dropout i ostali). Takav pristup korišten je u radovima \citep{evo_atari,evo_hetero_net} algoritmom kartezijevog genetskog programiranja, a srodan pristup opisuju \citet{mixed_cgp}. Metoda NEAT dijeli graf na neurone i težine istovremeno pretražuje prostor arhitektura i težina \citep{neat}. Postoje i metode indirektne evolucije arhitekture neuronskih mreža čiji genotip je potrebno dekodirati. Takve metode smanjuju prostor pretraživanja i time efikasno istražuju vrlo složene arhitekture \citep{gruau}.
 
 \iffalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \todo{negdje spomeni da su neuralke zapravo vrlo ograničene jer se ograničava prostor mogućnosti zadavanjem fiksnih aktivacijskih fja, arhitekture i načina optimizacije (induktivna pristranost ograničavanjem skupa hipoteza). leži negdje između GP i ručno izgrađenih modela (jer je neuralka samo stablo funkcija kao u TF). CGP unosi ograničenje strukture što je bliže neuralki i daje zanimljive rezultate (atari cgp). Čini se da im godi balans između strukture i nasumičnosti.}
@@ -2101,8 +2101,13 @@ softmax	& \eqref{eq:softmax}		& 1 \\
 \end{tabular}
 \end{tabular}
 \caption{Popis čvorova korištenih pri pretrazi}
+\label{tab:nodes}
 \end{table}
 
+
+Iako se čvorovi u desnom dijelu tablice \ref{tab:nodes} mogu predstaviti vlastitim stablom dubine veće od 2, njihova prisutnost omogućava pretraživanje kompozicija aktivacijskih funkcija, kao što je opisano u radu \citep{elish}, te ubrzava postupak pretrage.
+
+\newpage
 
 \subsection{Operatori križanja}
 U nastavku opisani operatori križanja primaju dva roditelja, obavljaju križanje i vraćaju jedno dijete. Neki operatori istovremeno stvaraju dva djeteta, no vraćaju samo jedno nasumično odabrano. Ne obavlja se biranje djece prema dobroti zbog skupocjenosti postupka evaluacije, no preporučuje se zbog kvalitetnije pretrage.
@@ -2546,7 +2551,7 @@ U odnosu na najbolji rezultat prethodnih eksperimenata za korištenu arhitekturu
 U nastavku su navedene metode koje su isprobane, ali nisu korištene u konačnom rješenju.
 
 \subsubsection{Učeći parametri}
-Neke aktivacijske funkcije uvode dodatne učeće parametre kako bi poboljšale stabilnost učenja i konačne performanse \citep{prelu, apl, network_in_network}. Ti parametri povećavaju kapacitet mreže i ostvaruju heterogenu mrežu kojoj svaki neuron prilagođava aktivacijsku sebi.
+Neke aktivacijske funkcije uvode dodatne učeće parametre kako bi poboljšale stabilnost učenja i konačne performanse \citep{prelu, apl, network_in_network}. Ti parametri povećavaju kapacitet mreže i ostvaruju heterogenu mrežu kojoj svaki neuron može prilagođavati aktivacijsku funkciju.
 
 Iako ih je moguće implementirati kao čvor stabla, u ovom se radu ne koriste učeći parametri zbog kompleksnosti implementacije i umjesto njih se pri genetskom programiranju koriste isključivo konstante.
 
@@ -2576,6 +2581,8 @@ Potpuno povezane umjetne neuronske mreže korištene su za klasifikacijski zadat
 Pokazuje se da odabir aktivacijske funkcije utječe na performanse neuronske mreže. Najboljom funkcijom pokazala se sinusoida, rijetko korištena u modernoj literaturi dubokog učenja. Izgradnjom aktivacijskih pronađena su mala poboljšanja u svojstvu generalizacije mreže.
 
 Uvođenjem tabu liste u algoritam genetskog programiranja moguće je poboljšati kvalitetu pronađenih rješenja i usmjeriti postupak pretrage prema neistraženim rješenjima.
+
+Daljnje istraživanje uključuje interpretaciju dobrih rezultata koje ostvaruju periodične aktivacijske funkcije na podatkovnim skupovima DPAv2 i DPAv4 te detaljniju analizu generalizacije mreže na nebalansiranom DPAv4.
 
 \bibliography{literatura}
 \bibliographystyle{fer}
