@@ -1,0 +1,44 @@
+# NN params
+input_size	50  # Generated
+output_size	9  # Generated
+epochs_num	30
+train_patience    5
+convergence_delta   1e-2
+batch_size	256
+normalize_features	true
+shuffle_batches	false
+batch_norm true
+learning_rate	5.0E-4
+decay_rate	0.99
+decay_step	1
+regularization_coef	1.0E-4
+dropout_keep_prob	1.0
+seed	42 # {42,43,44,45,46,47,48,49,50,51}
+name	noiseless_all_training_256class  # Generated
+train_percentage	0.8
+architecture	fc(300)-fc(300)
+
+# GA params
+algorithm GENERATION_TABOO
+population_size	12
+mutation_prob	0.3
+elitism	true
+taboo_size	0
+taboo_attempts	1000
+worker_num	1
+node_set	UNARY
+
+# Stop conditions:
+max_iterations	30
+min_fitness	-1.0
+
+# GA operators
+crx.vec.onepoint						1
+crx.vec.uniform							1
+mut.vec.generate_multiple				1
+mut.vec.generate_single					1
+
+# Dataset
+train_path	res/noiseless_data/noiseless_all_training_256class.arff
+test_path	res/noiseless_data/noiseless_all_testing_256class.arff
+experiment_name	ga_het_taboo0
