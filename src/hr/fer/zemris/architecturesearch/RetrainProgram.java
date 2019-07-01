@@ -2,6 +2,7 @@ package hr.fer.zemris.architecturesearch;
 
 import hr.fer.zemris.evolveactivationfunction.Context;
 import hr.fer.zemris.evolveactivationfunction.StorageManager;
+import hr.fer.zemris.evolveactivationfunction.Utils;
 import hr.fer.zemris.evolveactivationfunction.nn.*;
 import hr.fer.zemris.evolveactivationfunction.tree.DerivableSymbolicTree;
 import hr.fer.zemris.evolveactivationfunction.tree.TreeNodeSetFactory;
@@ -36,43 +37,22 @@ import java.util.Random;
 
 public class RetrainProgram {
     public static void main(String[] args) throws IOException, InterruptedException {
-        TreeNodeSet set = TreeNodeSetFactory.build(new Random(), TreeNodeSets.ALL);
         String[] ds = new String[]{
-                "res/noiseless_data/noiseless_all_training_9class.arff",
-                "res/noiseless_data/noiseless_all_testing_9class.arff"
+                "res/noiseless_data/noiseless_all_training_256class.arff",
+                "res/noiseless_data/noiseless_all_testing_256class.arff"
         };
 
-        String dataset_name = "noiseless_all_training_9class";
-        String architecture = "fc(500)-fc(500)";
+        String architecture = "fc(300)-fc(300)";
+        String function = "swish[elu[sin[cos[+[-[x,1.0],pow3[pow3[0.1607274601962161]]]]]]]";
+//        String orig_experiment_name = "common_functions_v2/common_functions_v2_" + architecture + "_sin[x]/6_BEST";
+        String orig_experiment_name = "gp_activation_taboo3/1";
 
-        String function = "sin[x]";
-        String orig_experiment_name = "common_functions_v2/common_functions_v2_" + architecture + "_sin[x]/6_BEST";
-
-//        String new_experiment_name = "ReadActivations";
-        Triple<Double, Double, Integer> range_n_buckets = new Triple<>(-7., 7., 101);
-
-        IActivation acti = new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse(function, set)));
-        TrainParams p = StorageManager.loadTrainParameters(new Context(dataset_name, orig_experiment_name));
-        TrainParams.Builder pb = new TrainParams.Builder().cloneFrom(p);
-
-        TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(ds[0], ds[1], pb);
-        CommonModel model = train_procedure.createModel(new NetworkArchitecture(architecture), new IActivation[]{acti});
-        Context context = train_procedure.createContext(orig_experiment_name);
-
-        ILogger log = new MultiLogger(new StdoutLogger()); // Log to stdout.
-//        FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
-        FileStatsStorage stat_storage = null;
-
-        log.d("===> Dataset:\n" + train_procedure.describeDatasets());
-        log.d("===> Timestamp: " + LocalDateTime.now().toString());
-        log.d("===> Architecture: " + architecture);
-        log.d("===> Activation function: " + acti.toString());
-        log.d("===> Parameters:");
-        log.d(p.toString());
-
+        ILogger log = new StdoutLogger();
         Stopwatch timer = new Stopwatch();
-        timer.start();
-        train_procedure.train_joined(model, log, stat_storage);
+
+        Pair<CommonModel, TrainProcedureDL4J> r = Utils.retrainModel(architecture, function, orig_experiment_name, ds[0], ds[1], log);
+        CommonModel model = r.getKey();
+        TrainProcedureDL4J train_procedure = r.getVal();
         System.out.println("===> (" + Utilities.formatMiliseconds(timer.lap()) + ") Training done!");
 
         timer.start();
@@ -81,10 +61,13 @@ public class RetrainProgram {
 
         //StorageManager.storeTrainParameters(p, context);
         //StorageManager.storeResults(result.getKey(), context);
-//        StorageManager.storePredictions((INDArray) result.getSecond(), context);
+        //StorageManager.storePredictions((INDArray) result.getSecond(), context);
+
+        Context c = train_procedure.createContext(orig_experiment_name);
+        Triple<Double, Double, Integer> range_n_buckets = new Triple<>(-7., 7., 101);
 
         timer.start();
-        train_procedure.collectModelActivationsOnTrainJoined(model, context, range_n_buckets);
+        train_procedure.collectModelActivationsOnTest(model, c, range_n_buckets);
         System.out.println("Collection: " + Utilities.formatMiliseconds(timer.stop()));
     }
 }
