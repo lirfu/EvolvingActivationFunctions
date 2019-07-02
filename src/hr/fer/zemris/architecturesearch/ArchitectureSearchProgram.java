@@ -16,20 +16,18 @@ import hr.fer.zemris.genetics.symboregression.TreeNodeSet;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.utils.*;
-import hr.fer.zemris.utils.logs.ILogger;
-import hr.fer.zemris.utils.logs.MultiLogger;
-import hr.fer.zemris.utils.logs.SlackLogger;
-import hr.fer.zemris.utils.logs.StdoutLogger;
+import hr.fer.zemris.utils.logs.*;
 import hr.fer.zemris.utils.threading.WorkArbiter;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
 import org.nd4j.linalg.activations.IActivation;
+import org.nd4j.linalg.activations.impl.ActivationReLU6;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class ArchitectureSearchProgram {
-    private static SlackLogger slack = new SlackLogger("Logger", "slack_webhook.txt");
+    private static ILogger slack = new StdoutLogger(); // new SlackLogger("Logger", "slack_webhook.txt");
 
     public static void main(String[] args) {
         try {
@@ -43,7 +41,7 @@ public class ArchitectureSearchProgram {
         Stopwatch stopwatch = new Stopwatch();
 
         // Paralelization.
-        final WorkArbiter arbiter = new WorkArbiter("W", 2);
+        final WorkArbiter arbiter = new WorkArbiter("W", 1);
 
         // Create a common instance of train params.
         String experiment_name = "common_functions_v2";
@@ -65,28 +63,28 @@ public class ArchitectureSearchProgram {
         // Run experiments.
         TreeNodeSet set = TreeNodeSetFactory.build(new Random(), TreeNodeSets.ALL);
         LinkedList<IActivation> activations = new LinkedList<>();
-//        activations.add(new ActivationReLU());
-//        activations.add(new ActivationReLU6());
-//        activations.add(new ActivationELU());
-//        activations.add(new ActivationSELU());
-//        activations.add(new ActivationLReLU());
-//        activations.add(new ActivationThresholdedReLU());
-//        activations.add(new ActivationSwish());
-//        activations.add(new ActivationSigmoid());
-//        activations.add(new ActivationHardSigmoid());
-//        activations.add(new ActivationTanH());
-//        activations.add(new ActivationHardTanH());
-//        activations.add(new ActivationRationalTanh());
-//        activations.add(new ActivationRectifiedTanh());
-//        activations.add(new ActivationSoftmax());
-//        activations.add(new ActivationSoftPlus());
-//        activations.add(new ActivationSoftSign());
-//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("sin[x]", set))));
-//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("cos[x]", set))));
-//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("exp[x]", set))));
-//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow2[x]", set))));
-//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow3[x]", set))));
-//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("gauss[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("relu[x]", set))));
+        activations.add(new ActivationReLU6());
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("elu[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("selu[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("lrelu[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("threlu[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("swish[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("sigm[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("hsigm[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("tanh[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("htanh[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("rattanh[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("rectanh[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("softmax[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("softplus[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("softsign[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("sin[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("cos[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("exp[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow2[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow3[x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("gauss[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("trsin[x]", set))));
 //        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("trcos[x]", set))));
 //        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("plu[x]", set))));
@@ -98,11 +96,12 @@ public class ArchitectureSearchProgram {
 
         for (String[] ds : new String[][]{
 //                new String[]{"res/noiseless_data/noiseless_all_training_9class.arff", "res/noiseless_data/noiseless_all_testing_9class.arff"}
-                new String[]{"res/noiseless_data/noiseless_all_training_256class.arff", "res/noiseless_data/noiseless_all_testing_256class.arff"}
+//                new String[]{"res/noiseless_data/noiseless_all_training_256class.arff", "res/noiseless_data/noiseless_all_testing_256class.arff"}
+                new String[]{"res/noisy_data/noisy_all_training_9class.arff", "res/noisy_data/noisy_all_testing_9class.arff"}
         }) {
 
             for (String architecture : new String[]{
-                    "fc(100)-fc(100)", "fc(200)-fc(200)", "fc(300)-fc(300)", "fc(400)-fc(400)", "fc(500)-fc(500)",
+                    /*"fc(100)-fc(100)", */"fc(200)-fc(200)", "fc(300)-fc(300)", "fc(400)-fc(400)", "fc(500)-fc(500)",
                     "fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)",
                     "fc(200)-fc(50)-fc(200)", "fc(200)-fc(100)-fc(200)", "fc(300)-fc(300)-fc(300)",
                     "fc(50)-fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)-fc(200)"
