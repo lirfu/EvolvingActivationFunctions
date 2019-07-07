@@ -84,6 +84,7 @@
 \usepackage{multirow}
 \usepackage{hyperref}
 \usepackage{subcaption}
+\usepackage{wrapfig}
 
 \graphicspath{ {./res/} }
 
@@ -132,7 +133,7 @@ Zavod za elektroniku, mikroelektroniku, računalne i inteligentne sustave \\
 \item Kriptografski uređaji su nezamjenjiv element digitalne infrastrukture modernog društva
 \item Pametne kartice (bankovne kartice, identifikacijski dokumenti)
 \item Kriptoalgoritam štiti povjerljive podatke
-\item Dobar kriptoalgoritam je siguran, no sklopovlje emitira informacije u okoliš
+\item Dobar kriptoalgoritam može biti siguran, no sklopovlje emitira informacije u okolinu
 
 \end{itemize}
 
@@ -148,7 +149,7 @@ Zavod za elektroniku, mikroelektroniku, računalne i inteligentne sustave \\
 \item Pretpostavka: emitirane informacije i sadržaj registara su korelirani
 \item Cilj: otkriti tajni ključ na temelju izmjerenih emisija (razlučitelj)
 \item Uvjeti: uređaj mora biti uključen i mora sadržavati tajni ključ
-\item Postoji više vrsta: aktivni i pasivni
+\item Postoji više vrsta napada, grupirani su u aktivne i pasivne
 \end{itemize}
 
 \end{frame}
@@ -162,7 +163,7 @@ Zavod za elektroniku, mikroelektroniku, računalne i inteligentne sustave \\
 \begin{itemize}
 \item Ideja: iskoristiti korelaciju između potrošnje el. energije uređaja i podataka zapisanih na uređaju
 \item Napad koji je iznimno teško detektirati
-\item Postoji više pristupa, među najpoznatijim je DPA
+\item Postoji više pristupa, među najpoznatijim je diferencijalna analiza potrošnje el. energije
 \end{itemize}
 
 \end{frame}
@@ -175,11 +176,25 @@ Zavod za elektroniku, mikroelektroniku, računalne i inteligentne sustave \\
 \frametitle{Podatkovni skupovi}
 \begin{itemize}
 \item Napad na AES-128
-\item Ulaz: trag potrošnje el. energije, probran Pearsonovim koeficijentima
+\item Ulaz: trag potrošnje el. energije, reduciran Pearsonovom korelacijom
+\item Izlaz: predikcija vrijednosti okteta ili Hammingove težine
 \item DPAv2: FPGA implementacija
 \item DPAv4: programska implementacija
-\item predikcija vrijednosti okteta ili Hammingove težine
 \end{itemize}
+\begin{figure}
+\centering
+\begin{subfigure}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{ds_nl256_tr_outputs.pdf}
+  \caption{Vrijednosti okteta, DPAv4}
+\end{subfigure}
+\begin{subfigure}{.49\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{ds_nl9_tr_outputs.pdf}
+  \caption{Hammongove težine, DPAv4}
+\end{subfigure}
+\end{figure}
+
 \end{frame}
 
 %------------------------------------------------
@@ -197,12 +212,13 @@ Neuronska mreža
 \item Regularizacija: L2, normalizacija grupom
 \end{itemize}
 
-Pretraga po rešetki
+Pretraga hiperparametara po rešetki
 
 \begin{itemize}
 \item Optimizacija stope učenja i L2 koeficijenta
 \item Usporedba arhitektura i aktivacijskih funkcija
 \item Odabir arhitektura, optimalnih za većinu funkcija
+\item F1 mjera -- harmonijska sredina preciznosti i odziva (makro)
 \end{itemize}
 \end{frame}
 
@@ -255,6 +271,11 @@ Pretraga po rešetki
 \begin{frame}
 \frametitle{Izgradnja aktivacijskih funkcija}
 
+\begin{wrapfigure}{r}{3cm}
+  \includegraphics[width=\linewidth]{LReLU_tree.pdf}
+  \caption{Funkcija LReLU}
+\end{wrapfigure}
+
 Genetsko programiranje
 
 \begin{itemize}
@@ -269,6 +290,7 @@ Evolucija aktivacijske funkcije
 \item AF kao simboličko stablo
 \item Čvorovi: ulaz, konstanta, matematičke op. i popularne AF
 \item Po nekoliko operatora križanja i mutacije
+\item Usporedba rezultata po veličini tabu liste s prethodno ostvarenim (rešetkom)
 \end{itemize}
 
 \end{frame}
@@ -355,7 +377,6 @@ Evolucija aktivacijske funkcije
 \frametitle{Zaključak}
 
 \begin{itemize}
-\item Sklopovlje je i dalje relativno sigurno
 \item Odabir AF ima utjecaj na performanse mreže
 \item Utjecaj AF može biti nepredvidiv
 \item Tabu lista pokazuje znakove poboljšanja
@@ -367,7 +388,7 @@ Otvorena pitanja za budući rad:
 \item Zašto su pronađene AF dobre (distribucija ulaza, kvaliteta gradijenta)?
 \item Kakav utjecaj ima periodičnost AF?
 \item Kakve AF algoritam pronalazi za dublje arhitekture?
-\item Kakav je utjecaj tabu liste na ostalim problemima?
+\item Kakav je utjecaj tabu liste na širem skupu evolucijskih algoritmima i problema na kojima se primijenjuju?
 \end{itemize}
 
 \end{frame}
