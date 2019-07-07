@@ -244,7 +244,7 @@ public class EvolvingActivationProgram {
         // Retrain.
         Stopwatch timer = new Stopwatch();
         timer.start();
-        IModel model = train_proc.createModel(params.architecture(), activations);
+        CommonModel model = train_proc.createModel(params.architecture(), activations);
         // Find best epoch.
         int best_apoch = train_proc.train_itersearch(model, evo_logger, null);
         params.epochs_num(best_apoch);
@@ -258,6 +258,12 @@ public class EvolvingActivationProgram {
         train_proc.storeResults(model, c, result);
         evo_logger.i("===> Final best: \n" + best + "  (" + best.getFitness() + ")");
         evo_logger.i(result.getKey().toString());
+
+        // Collect and store activations.
+        evo_logger.i("===> Collecting activations");
+        Triple<Double, Double, Integer> range_n_buckets = new Triple<>(-7., 7., 101);
+        train_proc.collectModelActivationsOnTest(model, c, range_n_buckets);
+        evo_logger.i("===> Done!");
 
         // Extract tops to display.
         LinkedList<Triple<Long, String, Double>> optima = algo.getResultBundle().getOptimumHistory();
