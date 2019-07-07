@@ -171,6 +171,39 @@ public class StorageManager {
     }
 
     /**
+     * Stores a custom matrix.
+     */
+    public static void storeCustomArray(INDArray array, Context c, String filename) throws IOException {
+        Nd4j.writeTxt(array, createExperimentPath(c) + filename);
+    }
+
+    /**
+     * Load a custom matrix.
+     */
+    public static INDArray loadCustomArray(Context c, String filename) throws IOException {
+        return Nd4j.readTxt(createExperimentPath(c) + filename);
+    }
+
+    /**
+     * Stores a custom string.
+     */
+    public static void storeCustomString(String string, Context c, String filename) throws IOException {
+        new FileLogger(createExperimentPath(c) + filename, false).i(string);
+    }
+
+    /**
+     * Load a custom string.
+     */
+    public static String loadCustomString(Context c, String filename) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(createExperimentPath(c) + filename));
+        StringBuilder sb = new StringBuilder();
+        String s;
+        while ((s = reader.readLine()) != null)
+            sb.append(s).append('\n');
+        return sb.toString();
+    }
+
+    /**
      * Stores the activations of the given context.
      */
     public static void storeActivations(long[][] activations, Triple<Double, Double, Integer> params, Context c) throws IOException {
@@ -231,7 +264,7 @@ public class StorageManager {
      */
     public static void storeResults(ModelReport report, Context c) throws IOException {
         FileLogger log = new FileLogger(createExperimentPath(c) + sol_result_name_, false);
-        log.d(report.toString());
+        log.d(report.serialize());
     }
 
     /**
