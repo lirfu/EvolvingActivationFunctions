@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class ArchitectureSearchProgram {
-    private static ILogger slack = new StdoutLogger(); // new SlackLogger("Logger", "slack_webhook.txt");
+    private static ILogger slack = new SlackLogger("Logger", "slack_webhook.txt");
 
     public static void main(String[] args) {
         try {
@@ -64,7 +64,7 @@ public class ArchitectureSearchProgram {
         TreeNodeSet set = TreeNodeSetFactory.build(new Random(), TreeNodeSets.ALL);
         LinkedList<IActivation> activations = new LinkedList<>();
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("relu[x]", set))));
-        activations.add(new ActivationReLU6());
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("min[6,relu[x]]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("elu[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("selu[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("lrelu[x]", set))));
@@ -89,81 +89,86 @@ public class ArchitectureSearchProgram {
 //        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("trcos[x]", set))));
 //        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("plu[x]", set))));
 
-
         final int skip = 0;
         int i = 0;
         final LinkedList<Pair<Double, String>> top_results = new LinkedList<>();
 
         for (String[] ds : new String[][]{
-//                new String[]{"res/noiseless_data/noiseless_all_training_9class.arff", "res/noiseless_data/noiseless_all_testing_9class.arff"}
+                new String[]{"res/noiseless_data/noiseless_all_training_9class.arff", "res/noiseless_data/noiseless_all_testing_9class.arff"}
 //                new String[]{"res/noiseless_data/noiseless_all_training_256class.arff", "res/noiseless_data/noiseless_all_testing_256class.arff"}
-                new String[]{"res/noisy_data/noisy_all_training_9class.arff", "res/noisy_data/noisy_all_testing_9class.arff"}
+//                new String[]{"res/noisy_data/noisy_all_training_9class.arff", "res/noisy_data/noisy_all_testing_9class.arff"}
         }) {
 
             for (String architecture : new String[]{
-                    /*"fc(100)-fc(100)", */"fc(200)-fc(200)", "fc(300)-fc(300)", "fc(400)-fc(400)", "fc(500)-fc(500)",
+                    /*"fc(100)-fc(100)", "fc(200)-fc(200)", "fc(300)-fc(300)", "fc(400)-fc(400)", "fc(500)-fc(500)",
                     "fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)",
                     "fc(200)-fc(50)-fc(200)", "fc(200)-fc(100)-fc(200)", "fc(300)-fc(300)-fc(300)",
-                    "fc(50)-fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)-fc(200)"
+                    "fc(50)-fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)-fc(200)"*/
+//                    "fc(198)-fc(174)"
+                    "fc(313)-fc(18)-fc(141)"
             }) {
 
                 for (IActivation acti : activations) {
                     if (i++ < skip) continue;
 
-                    // Create grid search experiments.
-                    List<Experiment<TrainParams>> experiments =
-                            new GridSearch<TrainParams>(experiment_name + '_' + architecture + '_' + acti.toString())
-                                    .buildGridSearchExperiments(common_params, grid_search_modifiers);
+                    try {
+                        // Create grid search experiments.
+                        List<Experiment<TrainParams>> experiments =
+                                new GridSearch<TrainParams>(experiment_name + '_' + architecture + '_' + acti.toString())
+                                        .buildGridSearchExperiments(common_params, grid_search_modifiers);
 
-                    final Holder<ModelReport> best_result = new Holder<>();
-                    final Holder<Experiment<TrainParams>> best_experiment = new Holder<>();
-                    final Counter ctr = new Counter(0);
+                        final Holder<ModelReport> best_result = new Holder<>();
+                        final Holder<Experiment<TrainParams>> best_experiment = new Holder<>();
+                        final Counter ctr = new Counter(0);
 
-                    for (Experiment<TrainParams> e : experiments) {
+                        for (Experiment<TrainParams> e : experiments) {
 
-                        arbiter.postWork(() -> {
-                            try {
-                                ModelReport r = run_experiment(ds, architecture, acti, e, true);
+                            arbiter.postWork(() -> {
+                                try {
+                                    ModelReport r = run_experiment(ds, architecture, acti, e, true);
 
-                                // Update best result.
-                                synchronized (best_result) {
-                                    if (!best_result.isDefined()
-                                            || best_result.get().f1() < r.f1()
-                                            || (best_result.get().f1() == r.f1()
-                                            && best_result.get().accuracy() < r.accuracy())) {
-                                        best_result.set(r);
-                                        best_experiment.set(e);
+                                    // Update best result.
+                                    synchronized (best_result) {
+                                        if (!best_result.isDefined()
+                                                || best_result.get().f1() < r.f1()
+                                                || (best_result.get().f1() == r.f1()
+                                                && best_result.get().accuracy() < r.accuracy())) {
+                                            best_result.set(r);
+                                            best_experiment.set(e);
+                                        }
                                     }
+
+                                    // Update wait condition.
+                                    ctr.increment();
+                                } catch (IOException | InterruptedException exc) {
+                                    exc.printStackTrace();
                                 }
+                            });
+                        }
 
-                                // Update wait condition.
-                                ctr.increment();
-                            } catch (IOException | InterruptedException exc) {
-                                exc.printStackTrace();
-                            }
-                        });
+                        // Wait for all experiments to finish.
+                        arbiter.waitOn(() -> ctr.value() == experiments.size());
+
+                        // Retrain with best hyperparameters.
+                        best_experiment.get().setName(best_experiment.get().getName() + "_BEST");
+                        ModelReport result = run_experiment(ds, architecture, acti, best_experiment.get(), false);
+
+                        // Update top results.
+                        StringBuilder sb = new StringBuilder();
+                        new Formatter(sb).format("%-23s  %-15s  %.3f  %.3f  %.3f",
+                                architecture,
+                                acti.toString().substring(0, Math.min(15, acti.toString().length())),
+                                result.accuracy(), result.f1(), result.f1_micro()
+                        );
+
+                        // Add, sort and remove worst.
+                        top_results.addLast(new Pair<>(result.accuracy() + 10 * result.f1(), sb.toString()));
+                        top_results.sort((a, b) -> (int) (b.getKey() - a.getKey()));
+                        if (top_results.size() > 10)
+                            top_results.removeLast();
+                    } catch (Exception e) {
+                        slack.e("Exception in experiment:\n  -> " + ds[0] + "\n  -> " + architecture + "\n  -> " + acti.toString());
                     }
-
-                    // Wait for all experiments to finish.
-                    arbiter.waitOn(() -> ctr.value() == experiments.size());
-
-                    // Retrain with best hyperparameters.
-                    best_experiment.get().setName(best_experiment.get().getName() + "_BEST");
-                    ModelReport result = run_experiment(ds, architecture, acti, best_experiment.get(), false);
-
-                    // Update top results.
-                    StringBuilder sb = new StringBuilder();
-                    new Formatter(sb).format("%-23s  %-15s  %.3f  %.3f  %.3f",
-                            architecture,
-                            acti.toString().substring(0, Math.min(15, acti.toString().length())),
-                            result.accuracy(), result.f1(), result.f1_micro()
-                    );
-
-                    // Add, sort and remove worst.
-                    top_results.addLast(new Pair<>(result.accuracy() + 10 * result.f1(), sb.toString()));
-                    top_results.sort((a, b) -> (int) (b.getKey() - a.getKey()));
-                    if (top_results.size() > 10)
-                        top_results.removeLast();
                 }
             }
         }
@@ -210,7 +215,7 @@ public class ArchitectureSearchProgram {
         } else {
             train_procedure.train_joined(model, log, stat_storage);
             result = train_procedure.test(model);
-//            train_procedure.collectModelActivationsOnTest(model, context);  // Very time and memory intensive.
+            train_procedure.collectModelActivationsOnTest(model, context, new Triple<>(-7., 7., 101));
         }
 
         log.d("===> (" + Utilities.formatMiliseconds(timer.stop()) + ") Result:\n" + result.getKey().toString());
