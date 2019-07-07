@@ -10,6 +10,7 @@ sol
 test/gen
 out
 .ignore
+*.zip
 
 # DL4J memory crash dumps
 dl4j-memory-crash-dump*
@@ -34,3 +35,6 @@ slack_webhook.txt
 *.out
 *.run.xml
 *.log
+*.nav
+*.snm
+*.dic
