@@ -4,6 +4,8 @@ package hr.fer.zemris.utils;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -70,5 +72,21 @@ public class Utilities {
             sb.append("xxx...");
         }
         return sb.toString();
+    }
+
+    public static <T> LinkedList<T> listByRepeating(T element, int times) {
+        LinkedList<T> list = new LinkedList<>();
+        for (int i = 0; i < times; i++) {
+            list.add(element);
+        }
+        return list;
+    }
+
+    public static <T> ArrayList<T> arrayByRepeating(T element, int times) {
+        ArrayList<T> arr = new ArrayList<>();
+        for (int i = 0; i < times; i++) {
+            arr.add(element);
+        }
+        return arr;
     }
 }
