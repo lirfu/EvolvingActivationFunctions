@@ -6,6 +6,9 @@ import org.deeplearning4j.nn.conf.layers.Layer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Fully connected layer descriptor expects a layer width to be specified.
+ */
 public class FCLayerDescriptor extends ALayerDescriptor {
     private static Pattern pattern = Pattern.compile("\\((.*)\\)");
     private int neurons_num_;

@@ -8,6 +8,9 @@ import org.nd4j.linalg.activations.IActivation;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Convolutional layer descriptor expects a number of parameters (check the <code>serialize</code> method implementation).
+ */
 public class ConvLayerDescriptor extends ALayerDescriptor {
     private static Pattern pattern = Pattern.compile("\\((.*),(.*),(.*),(.*),(.*)\\)");
     private int kernels_num_, kernel_width_, kernel_height_;
