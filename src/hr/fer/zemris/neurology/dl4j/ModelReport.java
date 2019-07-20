@@ -5,12 +5,18 @@ import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
 import hr.fer.zemris.evolveactivationfunction.nn.IModel;
 import hr.fer.zemris.utils.ISerializable;
 import hr.fer.zemris.utils.Utilities;
+import org.deeplearning4j.nn.api.Model;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.nd4j.evaluation.EvaluationAveraging;
 import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.evaluation.classification.ROCMultiClass;
+import org.nd4j.linalg.factory.Nd4j;
 
+import javax.validation.constraints.Null;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Defines the models' results from testing.
@@ -26,8 +32,8 @@ public class ModelReport implements IReport, ISerializable {
     }
 
     @Override
-    public void build(TrainParams params, IModel model, Evaluation eval, ROCMultiClass roc) {
-        name_ = params.name();
+    public void build(String name, @NotNull IModel model, @NotNull Evaluation eval, @Nullable ROCMultiClass roc) {
+        name_ = name;
         accuracy_ = eval.accuracy();
 
         precision_macro_ = eval.precision(EvaluationAveraging.Macro);
@@ -43,7 +49,7 @@ public class ModelReport implements IReport, ISerializable {
             aucpr_ = roc.calculateAverageAUCPR();
         }
 
-        confusion_matrix_ = eval.confusionMatrix();
+        confusion_matrix_ = eval.getConfusion().toCSV();
         train_losses_ = model.getTrainLosses();
         test_losses_ = model.getTestLosses();
     }
@@ -196,4 +202,67 @@ public class ModelReport implements IReport, ISerializable {
     public String toString() {
         return serialize_internal(false);
     }
+
+//    public static ModelReport averageFrom(String name, ModelReport... reports) {
+//        ModelReport report = new ModelReport();
+//        report.name_ = name;
+//
+//        report.test_losses_ = Utilities.listByRepeating(0.0, reports[0].train_losses_.size());
+//        report.test_losses_ = Utilities.listByRepeating(0.0, reports[0].test_losses_.size());
+//        report.confusion_matrix_ =
+//
+//        // Accumulate.
+//        for (ModelReport mr : reports) {
+//            report.accuracy_ += mr.accuracy();
+//            report.precision_macro_ += mr.precision();
+//            report.recall_macro_ += mr.recall();
+//            report.f1_macro_ += mr.f1();
+//            report.precision_micro_ += mr.precision_micro();
+//            report.recall_micro_ += mr.recall_micro();
+//            report.f1_micro_ += mr.f1_micro();
+//            report.auc_ += mr.auc();
+//            report.aucpr_ += mr.aucpr();
+//
+//            int i = 0;
+//            for (Double v : mr.train_losses_) {
+//                if (i >= report.train_losses_.size()) {
+//                    report.train_losses_.add(v);
+//                }
+//                report.train_losses_.set(i, report.train_losses_.get(i) + v);
+//                i++;
+//            }
+//
+//            i = 0;
+//            for (Double v : mr.test_losses_) {
+//                if (i >= report.test_losses_.size()) {
+//                    report.test_losses_.add(v);
+//                }
+//                report.test_losses_.set(i, report.test_losses_.get(i) + v);
+//                i++;
+//            }
+//
+//
+//        }
+//
+//        // Average.
+//        int n = reports.length;
+//        report.accuracy_ /= n;
+//        report.precision_macro_ /= n;
+//        report.recall_macro_ /= n;
+//        report.f1_macro_ /= n;
+//        report.precision_micro_ /= n;
+//        report.recall_micro_ /= n;
+//        report.f1_micro_ /= n;
+//        report.auc_ /= n;
+//        report.aucpr_ /= n;
+//
+//        for (int i = 0; i < report.train_losses_.size(); i++) {
+//            report.train_losses_.set(i, report.train_losses_.get(i) / n);
+//        }
+//        for (int i = 0; i < report.test_losses_.size(); i++) {
+//            report.test_losses_.set(i, report.test_losses_.get(i) / n);
+//        }
+//
+//        return report;
+//    }
 }

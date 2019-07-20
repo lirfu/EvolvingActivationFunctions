@@ -373,7 +373,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         m.doEvaluation(it, eval/*, roc*/);
 
         ModelReport report = new ModelReport();
-        report.build(params_, model, eval, null);
+        report.build(params_.name(), model, eval, null);
 
         return new Pair<>(report, m.output(dataset.getFeatures()));
     }
