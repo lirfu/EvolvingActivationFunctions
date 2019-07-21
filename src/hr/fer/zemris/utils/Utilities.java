@@ -3,10 +3,10 @@ package hr.fer.zemris.utils;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
+import hr.fer.zemris.genetics.symboregression.IInstantiable;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Random;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Utilities {
@@ -74,6 +74,27 @@ public class Utilities {
         return sb.toString();
     }
 
+    public static float[] initEmptyArray(int size, float value) {
+        float[] arr = new float[size];
+        for (int i = 0; i < size; i++)
+            arr[i] = value;
+        return arr;
+    }
+
+    public static double[] initEmptyArray(int size, double value) {
+        double[] arr = new double[size];
+        for (int i = 0; i < size; i++)
+            arr[i] = value;
+        return arr;
+    }
+
+    public static <T> T[] initEmptyArray(int size, T value) {
+        T[] arr = (T[]) new Object[size];
+        for (int i = 0; i < size; i++)
+            arr[i] = value;
+        return arr;
+    }
+
     public static <T> LinkedList<T> listByRepeating(T element, int times) {
         LinkedList<T> list = new LinkedList<>();
         for (int i = 0; i < times; i++) {
@@ -88,5 +109,43 @@ public class Utilities {
             arr.add(element);
         }
         return arr;
+    }
+
+    public static <T extends Comparable> ArrayList<Pair<T, Integer>> sortWithIndices(T[] array) {
+        ArrayList<Pair<T, Integer>> result = new ArrayList<>();
+        for (int i = 0; i < array.length; i++) {
+            result.add(new Pair<>(array[i], i));
+        }
+
+        result.sort(Comparator.comparing(Pair::getKey));
+
+        return result;
+    }
+
+    public static Float[] objectifyArray(float[] array) {
+        Float[] result = new Float[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static Double[] objectifyArray(double[] array) {
+        Double[] result = new Double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i];
+        }
+        return result;
+    }
+
+    public static String join(char c, int[] arr) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < arr.length; i++) {
+            if (i > 0) {
+                sb.append(',');
+            }
+            sb.append(arr[i]);
+        }
+        return sb.toString();
     }
 }

@@ -134,7 +134,7 @@ public class ExampleModel implements IModel {
             roc.eval(next.getLabels(), output);
         }
         if (report != null) {
-            report.build(params_.name(), this, eval, roc);
+            report.build(params_.name(), this, eval, roc, dataset);
         }
     }
 

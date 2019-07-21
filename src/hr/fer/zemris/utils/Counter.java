@@ -24,4 +24,9 @@ public class Counter {
     public int value() {
         return ctr_;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(ctr_);
+    }
 }
