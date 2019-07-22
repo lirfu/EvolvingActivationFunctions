@@ -165,16 +165,16 @@
     <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:windows-x86_64:1.0.0-beta3" level="project" />
     <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:linux-ppc64le:1.0.0-beta3" level="project" />
     <orderEntry type="library" name="Maven: org.nd4j:nd4j-native:linux-armhf:1.0.0-beta3" level="project" />
-    <orderEntry type="library" name="Maven: org.deeplearning4j:deeplearning4j-cuda-9.0:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.deeplearning4j:deeplearning4j-cuda-10.0:1.0.0-beta3" level="project" />
     <orderEntry type="library" name="Maven: org.bytedeco:javacpp:1.4.3" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda-platform:9.0-7.0-1.4.1" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:linux-ppc64le:9.0-7.0-1.4.1" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:macosx-x86_64:9.0-7.0-1.4.1" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:windows-x86_64:9.0-7.0-1.4.1" level="project" />
-    <orderEntry type="library" name="Maven: org.nd4j:nd4j-cuda-9.0:1.0.0-beta3" level="project" />
-    <orderEntry type="library" name="Maven: org.nd4j:nd4j-cuda-9.0:linux-x86_64:1.0.0-beta3" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:9.0-7.0-1.4.1" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:linux-x86_64:9.0-7.0-1.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda-platform:10.0-7.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:linux-ppc64le:10.0-7.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:macosx-x86_64:10.0-7.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:windows-x86_64:10.0-7.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-cuda-10.0:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.nd4j:nd4j-cuda-10.0:linux-x86_64:1.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:10.0-7.3-1.4.3" level="project" />
+    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:cuda:linux-x86_64:10.0-7.3-1.4.3" level="project" />
     <orderEntry type="library" name="Maven: org.nd4j:nd4j-native-api:1.0.0-beta3" level="project" />
     <orderEntry type="library" name="Maven: org.deeplearning4j:deeplearning4j-ui_2.10:1.0.0-beta3" level="project" />
     <orderEntry type="library" name="Maven: org.deeplearning4j:deeplearning4j-play_2.10:1.0.0-beta3" level="project" />
