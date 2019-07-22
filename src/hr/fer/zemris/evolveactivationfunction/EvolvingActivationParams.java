@@ -314,6 +314,10 @@ public class EvolvingActivationParams extends TrainParams {
         return activation_;
     }
 
+    public void activation(String activation) {
+        activation_ = activation;
+    }
+
     public String[] node_set() {
         return node_set_;
     }

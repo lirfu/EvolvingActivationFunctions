@@ -246,8 +246,8 @@ public class EvolvingActivationProgram {
         timer.start();
         CommonModel model = train_proc.createModel(params.architecture(), activations);
         // Find best epoch.
-        int best_apoch = train_proc.train_itersearch(model, evo_logger, null);
-        params.epochs_num(best_apoch);
+        int best_epoch = train_proc.train_itersearch(model, evo_logger, null);
+        params.epochs_num(best_epoch);
         // Train for best amount of epochs and test.
         model = train_proc.createModel(params.architecture(), activations); // Reinitialized model.
         train_proc.train_joined(model, evo_logger, null); // Train on joined train-val set.
@@ -255,6 +255,7 @@ public class EvolvingActivationProgram {
         evo_logger.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + best.serialize());
 
         // Store results.
+        params.activation(best.serialize());
         train_proc.storeResults(model, c, result);
         evo_logger.i("===> Final best: \n" + best + "  (" + best.getFitness() + ")");
         evo_logger.i(result.getKey().toString());
