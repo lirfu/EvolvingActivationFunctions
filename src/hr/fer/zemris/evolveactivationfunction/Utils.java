@@ -17,6 +17,7 @@ import hr.fer.zemris.utils.logs.ILogger;
 import hr.fer.zemris.utils.logs.MultiLogger;
 import hr.fer.zemris.utils.logs.StdoutLogger;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
+import org.jetbrains.annotations.Nullable;
 import org.nd4j.linalg.activations.IActivation;
 
 import java.io.IOException;
@@ -96,18 +97,31 @@ public class Utils {
         return str[0];
     }
 
-    public static Pair<CommonModel, TrainProcedureDL4J> retrainModel(String arch, String function, String experiment_name, String train_ds_path, String test_ds_path, ILogger log) throws IOException, InterruptedException {
+    public static Pair<CommonModel, TrainProcedureDL4J> retrainModel(NetworkArchitecture arch, String function, String experiment_name, String train_ds_path, String test_ds_path, ILogger log) throws IOException, InterruptedException {
+        EvolvingActivationParams p = StorageManager.loadEvolutionParameters(new Context(
+                StorageManager.dsNameFromPath(train_ds_path, false),
+                experiment_name));
+        EvolvingActivationParams.Builder pb = new EvolvingActivationParams.Builder().cloneFrom(p);
+
+        if (function == null) {
+            function = p.activation();
+            if (function == null) {
+                throw new IllegalStateException("Activation function is not defined!");
+            }
+        }
+        if (arch == null) {
+            arch = p.architecture();
+            if (arch == null) {
+                throw new IllegalStateException("Architecture not defined!");
+            }
+        }
+
         IActivation acti = new CustomFunction(new DerivableSymbolicTree(
                 DerivableSymbolicTree.parse(function, TreeNodeSetFactory.build(new Random(), TreeNodeSets.ALL))
         ));
-        TrainParams p = StorageManager.loadTrainParameters(new Context(
-                StorageManager.dsNameFromPath(train_ds_path, false),
-                experiment_name)
-        );
-        TrainParams.Builder pb = new TrainParams.Builder().cloneFrom(p);
 
         TrainProcedureDL4J train_procedure = new TrainProcedureDL4J(train_ds_path, test_ds_path, pb);
-        CommonModel model = train_procedure.createModel(new NetworkArchitecture(arch), new IActivation[]{acti});
+        CommonModel model = train_procedure.createModel(arch, new IActivation[]{acti});
 
 //        FileStatsStorage stat_storage = StorageManager.createStatsLogger(context);
         FileStatsStorage stat_storage = null;

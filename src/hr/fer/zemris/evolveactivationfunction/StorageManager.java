@@ -249,11 +249,22 @@ public class StorageManager {
     }
 
     /**
-     * Loads the parameters used in given context.
+     * Loads the parameters used in given path.
      */
     public static EvolvingActivationParams loadEvolutionParameters(String path) throws IOException {
         EvolvingActivationParams params = new EvolvingActivationParams();
         for (String line : readEntireFile(path).split("\n"))
+            if (!line.isEmpty())
+                params.parse(line);
+        return params;
+    }
+
+    /**
+     * Loads the parameters used in given context.
+     */
+    public static EvolvingActivationParams loadEvolutionParameters(Context c) throws IOException {
+        EvolvingActivationParams params = new EvolvingActivationParams();
+        for (String line : readEntireFile(createExperimentPath(c) + sol_evo_params_name_).split("\n"))
             if (!line.isEmpty())
                 params.parse(line);
         return params;
