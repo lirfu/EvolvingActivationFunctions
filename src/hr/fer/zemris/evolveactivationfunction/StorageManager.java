@@ -347,8 +347,8 @@ public class StorageManager {
         if (paths.length != 2)
             throw new IllegalArgumentException("Must specify exactly two paths: one for features file and one for labels file.");
 
-        INDArray features = Nd4j.readTxt(paths[0]);
-        INDArray labels = Nd4j.readTxt(paths[1]);
+        INDArray features = Nd4j.readTxt(paths[0].trim());
+        INDArray labels = Nd4j.readTxt(paths[1].trim());
         return new DataSet(features, labels);
     }
 
