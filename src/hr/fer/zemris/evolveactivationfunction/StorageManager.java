@@ -17,6 +17,7 @@ import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.ui.storage.FileStatsStorage;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.api.ops.impl.shape.OneHot;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -24,7 +25,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Manages the structure of resources and solution.
@@ -343,13 +346,26 @@ public class StorageManager {
      * @param paths Paths to two files. The first if to features file, the second if for labels file.
      * @return Constructed dataset.
      */
-    public static DataSet loadSeparateCsvDataset(String[] paths) {
+    public static DataSet loadSeparateCsvDataset(String[] paths) throws IOException, InterruptedException {
         if (paths.length != 2)
             throw new IllegalArgumentException("Must specify exactly two paths: one for features file and one for labels file.");
 
-        INDArray features = Nd4j.readTxt(paths[0].trim());
-        INDArray labels = Nd4j.readTxt(paths[1].trim());
-        return new DataSet(features, labels);
+        INDArray features = Nd4j.readNumpy(paths[0].trim(), ",");
+        INDArray labels = Nd4j.readNumpy(paths[1].trim(), ",");
+
+        // Count unique elements.
+        Set<Float> set = new HashSet<>();
+        for (float v : labels.toFloatVector()) {
+            set.add(v);
+        }
+        int unique = set.size();
+
+        // Produce one-hot labels
+        INDArray labels_oh = Nd4j.zeros(labels.rows(), unique);
+        for (long i = 0; i < labels.rows(); i++)
+            labels_oh.putScalar(new long[]{i, (long) labels.getFloat(i)}, 1.f);
+
+        return new DataSet(features, labels_oh);
     }
 
     /**

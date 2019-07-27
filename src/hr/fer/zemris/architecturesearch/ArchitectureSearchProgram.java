@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class ArchitectureSearchProgram {
-    private static ILogger slack = new SlackLogger("Logger", "slack_webhook.txt");
+    private static ILogger slack = new SlackLogger("lirfu", "slack_webhook.txt");
 
     public static void main(String[] args) {
         try {
@@ -44,7 +44,7 @@ public class ArchitectureSearchProgram {
         final WorkArbiter arbiter = new WorkArbiter("W", 1);
 
         // Create a common instance of train params.
-        String experiment_name = "common_functions_v2";
+        String experiment_name = "test_previous";
         TrainParams.Builder common_params = new TrainParams.Builder()
                 .name(experiment_name)
                 .epochs_num(40)
@@ -105,6 +105,8 @@ public class ArchitectureSearchProgram {
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("*[cos[x],0.9815578450294762]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("/[-[x,exp[-[x,1.0]]],1.0]", set))));
 
+        // total: 24 functions
+
         final int skip = 0;
         int i = 0;
         final LinkedList<Pair<Double, String>> top_results = new LinkedList<>();
@@ -136,8 +138,8 @@ public class ArchitectureSearchProgram {
                     /*"fc(100)-fc(100)", "fc(200)-fc(200)", "fc(300)-fc(300)", "fc(400)-fc(400)", "fc(500)-fc(500)",
                     "fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)",
                     "fc(200)-fc(50)-fc(200)", "fc(200)-fc(100)-fc(200)", "fc(300)-fc(300)-fc(300)",
-                    "fc(50)-fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)-fc(200)",
-                    "fc(198)-fc(174)", "fc(313)-fc(18)-fc(141)"*/
+                    "fc(50)-fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)-fc(200)"*/
+//                    "fc(198)-fc(174)", "fc(313)-fc(18)-fc(141)"
                     "fc(300)-fc(300)", "fc(50)-fc(50)-fc(50)"
             }) {
 
@@ -188,17 +190,20 @@ public class ArchitectureSearchProgram {
 
                         // Update top results.
                         StringBuilder sb = new StringBuilder();
-                        new Formatter(sb).format("%-23s  %-15s  %.3f  %.3f  %.3f",
+                        new Formatter(sb).format("%-23s  %-15s  %.3f  %.3f  %.3f  %.3f  %.3f",
                                 architecture,
                                 acti.toString().substring(0, Math.min(15, acti.toString().length())),
-                                result.accuracy(), result.f1(), result.f1_micro()
+                                result.accuracy(), result.f1(), result.f1_micro(), result.avg_guess_entropy(), result.top3_accuracy()
                         );
+                        String report = sb.toString();
 
                         // Add, sort and remove worst.
-                        top_results.addLast(new Pair<>(result.accuracy() + 10 * result.f1(), sb.toString()));
+                        top_results.addLast(new Pair<>(result.accuracy() + 10 * result.f1(), report));
                         top_results.sort((a, b) -> (int) (b.getKey() - a.getKey()));
                         if (top_results.size() > 10)
                             top_results.removeLast();
+
+                        slack.i(report);
                     } catch (Exception e) {
                         slack.e("Exception in experiment:\n  -> " + ds[0] + "\n  -> " + architecture + "\n  -> " + acti.toString());
                     }
@@ -213,7 +218,7 @@ public class ArchitectureSearchProgram {
         StringBuilder sb = new StringBuilder();
         sb.append("DONE! (").append(Utilities.formatMiliseconds(stopwatch.stop())).append(")");
         sb.append("\nTop " + top_results.size() + " results:");
-        sb.append("\nArchitecture             Function         Acc    F1     F1 (micro)");
+        sb.append("\nArchitecture             Function         Acc    F1     F1 (micro)  AGE  AccTop3");
         for (Pair<Double, String> s : top_results)
             sb.append('\n').append(s.getVal());
 

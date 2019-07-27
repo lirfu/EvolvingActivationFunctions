@@ -82,7 +82,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 
     private void loadDatasets(String train_path, String test_path) throws IOException, InterruptedException {
         if (train_path.contains(";")) {  // Separate features and labels file.
-            String[] files = train_path.split(";");
+            String[] files = train_path.split(" *; *");
             train_set_ = StorageManager.loadSeparateCsvDataset(files);
         } else {  // Single file.
             train_set_ = train_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_path) : StorageManager.loadEntireCsvDataset(train_path);
