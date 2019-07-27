@@ -40,7 +40,7 @@ public class ArchitectureSearchProgram {
     private static void run() throws Exception {
         Stopwatch stopwatch = new Stopwatch();
 
-        // Paralelization.
+        // Parallelzation.
         final WorkArbiter arbiter = new WorkArbiter("W", 1);
 
         // Create a common instance of train params.
@@ -63,8 +63,10 @@ public class ArchitectureSearchProgram {
         // Run experiments.
         TreeNodeSet set = TreeNodeSetFactory.build(new Random(), TreeNodeSets.ALL);
         LinkedList<IActivation> activations = new LinkedList<>();
+
+        // Popular activations.
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("relu[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("min[6,relu[x]]", set))));
+//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("min[6,relu[x]]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("elu[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("selu[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("lrelu[x]", set))));
@@ -75,37 +77,68 @@ public class ArchitectureSearchProgram {
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("tanh[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("htanh[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("rattanh[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("rectanh[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("softmax[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("softplus[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("softsign[x]", set))));
+//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("rectanh[x]", set))));
+//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("softmax[x]", set))));
+//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("softplus[x]", set))));
+//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("softsign[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("sin[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("cos[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("exp[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow2[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow3[x]", set))));
-        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("gauss[x]", set))));
+//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("exp[x]", set))));
+//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow2[x]", set))));
+//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow3[x]", set))));
+//        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("gauss[x]", set))));
         activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("trsin[x]", set))));
 //        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("trcos[x]", set))));
 //        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("plu[x]", set))));
+
+        // GP found activations on DPAv4 for byte.
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow2[cos[-[x,4.153574932708071]]]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("elu[elu[*[min[1.0,*[min[1.0,hsigm[x]],0.8102254104210314]],sin[x]]]]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("pow2[cos[+[1.0,x]]]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("*[-[0.0,swish[swish[cos[-[x,0.8949527515835601]]]]],x]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("swish[elu[sin[cos[+[-[x,1.0],pow3[pow3[0.1607274601962161]]]]]]]", set))));
+
+        // GP found activations on DPAv4 for HW.
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("sin[+[min[sin[+[min[x,0.5068783911631836],1.0]],-0.9990098031722499],x]]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("*[cos[x],0.9910098031767487]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("relu[*[abs[x],x]]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("*[cos[x],0.9815578450294762]", set))));
+        activations.add(new CustomFunction(new DerivableSymbolicTree(DerivableSymbolicTree.parse("/[-[x,exp[-[x,1.0]]],1.0]", set))));
 
         final int skip = 0;
         int i = 0;
         final LinkedList<Pair<Double, String>> top_results = new LinkedList<>();
 
         for (String[] ds : new String[][]{
-                new String[]{"res/noiseless_data/noiseless_all_training_9class.arff", "res/noiseless_data/noiseless_all_testing_9class.arff"}
-//                new String[]{"res/noiseless_data/noiseless_all_training_256class.arff", "res/noiseless_data/noiseless_all_testing_256class.arff"}
-//                new String[]{"res/noisy_data/noisy_all_training_9class.arff", "res/noisy_data/noisy_all_testing_9class.arff"}
+                new String[]{
+                        "res/DPAv2/DPAv2_traces_train_byte.csv ; res/DPAv2/DPAv2_labels_train_byte.csv",
+                        "res/DPAv2/DPAv2_traces_test_byte.csv  ; res/DPAv2/DPAv2_labels_test_byte.csv"
+                },
+                new String[]{
+                        "res/DPAv4/DPAv4_traces_train_byte.csv ; res/DPAv4/DPAv4_labels_train_byte.csv",
+                        "res/DPAv4/DPAv4_traces_test_byte.csv  ; res/DPAv4/DPAv4_labels_test_byte.csv"
+                },
+                new String[]{
+                        "res/AES_Shivam/AES_Shivam_traces_train_byte.csv ; res/AES_Shivam/AES_Shivam_labels_train_byte.csv",
+                        "res/AES_Shivam/AES_Shivam_traces_test_byte.csv  ; res/AES_Shivam/AES_Shivam_labels_test_byte.csv"
+                },
+                new String[]{
+                        "res/ASCAD/ASCAD_traces_train_byte.csv ; res/ASCAD/ASCAD_labels_train_byte.csv",
+                        "res/ASCAD/ASCAD_traces_test_byte.csv  ; res/ASCAD/ASCAD_labels_test_byte.csv"
+                },
+                new String[]{
+                        "res/Random_delay/Random_delay_traces_train_byte.csv ; res/Random_delay/Random_delay_labels_train_byte.csv",
+                        "res/Random_delay/Random_delay_traces_test_byte.csv  ; res/Random_delay/Random_delay_labels_test_byte.csv"
+                }
         }) {
 
             for (String architecture : new String[]{
                     /*"fc(100)-fc(100)", "fc(200)-fc(200)", "fc(300)-fc(300)", "fc(400)-fc(400)", "fc(500)-fc(500)",
                     "fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)",
                     "fc(200)-fc(50)-fc(200)", "fc(200)-fc(100)-fc(200)", "fc(300)-fc(300)-fc(300)",
-                    "fc(50)-fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)-fc(200)"*/
-//                    "fc(198)-fc(174)"
-                    "fc(313)-fc(18)-fc(141)"
+                    "fc(50)-fc(50)-fc(50)-fc(50)", "fc(100)-fc(100)-fc(100)-fc(100)", "fc(200)-fc(200)-fc(200)-fc(200)",
+                    "fc(198)-fc(174)", "fc(313)-fc(18)-fc(141)"*/
+                    "fc(300)-fc(300)", "fc(50)-fc(50)-fc(50)"
             }) {
 
                 for (IActivation acti : activations) {
@@ -245,6 +278,17 @@ public class ArchitectureSearchProgram {
                 @Override
                 public Object[] getValues() {
                     return new Double[]{1e-3, 5e-4, 1e-4};
+                }
+            },
+            new GridSearch.IModifier<TrainParams>() {
+                @Override
+                public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                    return ((TrainParams.Builder) p).seed((Long) value);
+                }
+
+                @Override
+                public Object[] getValues() {
+                    return new Long[]{40L, 41L, 42L, 43L, 44L};
                 }
             }
     };
