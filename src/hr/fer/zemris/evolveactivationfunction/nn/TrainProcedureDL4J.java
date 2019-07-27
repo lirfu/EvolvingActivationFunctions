@@ -45,19 +45,18 @@ public class TrainProcedureDL4J implements ITrainProcedure {
     /**
      * Use given splitted dataset to train and test the network.
      *
-     * @param train_set_path
-     * @param test_set_path
+     * @param train_path
+     * @param test_path
      * @param params_builder
      */
-    public TrainProcedureDL4J(@NotNull String train_set_path, @NotNull String test_set_path, @NotNull TrainParams.Builder params_builder) throws IOException, InterruptedException {
+    public TrainProcedureDL4J(@NotNull String train_path, @NotNull String test_path, @NotNull TrainParams.Builder params_builder) throws IOException, InterruptedException {
         // Set double precision globally.
         Nd4j.setDataType(DataBuffer.Type.FLOAT);
 
-        train_set_ = train_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_set_path) : StorageManager.loadEntireCsvDataset(train_set_path);
-        test_set_ = test_set_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(test_set_path) : StorageManager.loadEntireCsvDataset(test_set_path);
+        loadDatasets(train_path, test_path);
 
         params_ = params_builder
-                .name(StorageManager.dsNameFromPath(train_set_path, false))
+                .name(StorageManager.dsNameFromPath(train_path, false))
                 .input_size(train_set_.numInputs())
                 .output_size(train_set_.numOutcomes())
                 .build();
@@ -70,8 +69,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         Nd4j.setDataType(DataBuffer.Type.FLOAT);
 
         String train_path = params.train_path(), test_path = params.test_path();
-        train_set_ = train_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_path) : StorageManager.loadEntireCsvDataset(train_path);
-        test_set_ = test_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(test_path) : StorageManager.loadEntireCsvDataset(test_path);
+        loadDatasets(train_path, test_path);
 
         // Automatically define necessary parameters.
         params.name(StorageManager.dsNameFromPath(train_path, false));
@@ -80,6 +78,22 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         params_ = params;
 
         initialize();
+    }
+
+    private void loadDatasets(String train_path, String test_path) throws IOException, InterruptedException {
+        if (train_path.contains(";")) {  // Separate features and labels file.
+            String[] files = train_path.split(";");
+            train_set_ = StorageManager.loadSeparateCsvDataset(files);
+        } else {  // Single file.
+            train_set_ = train_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_path) : StorageManager.loadEntireCsvDataset(train_path);
+        }
+
+        if (test_path.contains(";")) {  // Separate features and labels file.
+            String[] files = test_path.split(";");
+            test_set_ = StorageManager.loadSeparateCsvDataset(files);
+        } else {  // Single file.
+            test_set_ = test_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(test_path) : StorageManager.loadEntireCsvDataset(test_path);
+        }
     }
 
     /**

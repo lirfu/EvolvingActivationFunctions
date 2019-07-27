@@ -7,6 +7,7 @@ import hr.fer.zemris.data.UnsafeDatasetDescriptor;
 import hr.fer.zemris.evolveactivationfunction.nn.CommonModel;
 import hr.fer.zemris.neurology.dl4j.TrainParams;
 import hr.fer.zemris.neurology.dl4j.ModelReport;
+import hr.fer.zemris.utils.Pair;
 import hr.fer.zemris.utils.Triple;
 import hr.fer.zemris.utils.logs.FileLogger;
 import hr.fer.zemris.utils.logs.ILogger;
@@ -334,6 +335,21 @@ public class StorageManager {
         set.reset();
 
         return new RecordReaderDataSetIterator(set, instances_num).next();
+    }
+
+    /**
+     * Load dataset defined with a features and a labels file.
+     *
+     * @param paths Paths to two files. The first if to features file, the second if for labels file.
+     * @return Constructed dataset.
+     */
+    public static DataSet loadSeparateCsvDataset(String[] paths) {
+        if (paths.length != 2)
+            throw new IllegalArgumentException("Must specify exactly two paths: one for features file and one for labels file.");
+
+        INDArray features = Nd4j.readTxt(paths[0]);
+        INDArray labels = Nd4j.readTxt(paths[1]);
+        return new DataSet(features, labels);
     }
 
     /**
