@@ -127,16 +127,47 @@ public class EvolvingActivationProgram {
             for (Experiment<TrainParams> experiment : it) {
                 if (ex_i++ < skip) continue;
 
-                ((EvolvingActivationParams) experiment.getParams()).experiment_name(experiment.getName());
-                try {
-                    if (process_mode)
-                        run_child_process((EvolvingActivationParams) experiment.getParams(), jar_path);
-                    else
-                        run((EvolvingActivationParams) experiment.getParams(), set, tree_init);
-                } catch (Exception e) {
-                    slack.e("Exception in experiment '" + experiment.getName() + "'!");
+
+                // FIXME: Quick fix for running across multiple datasets automatically.
+                for (String[] ds : new String[][]{
+                        new String[]{
+                                "res/AES_Shivam/AES_Shivam_traces_train_byte.csv ; res/AES_Shivam/AES_Shivam_labels_train_byte.csv",
+                                "res/AES_Shivam/AES_Shivam_traces_test_byte.csv  ; res/AES_Shivam/AES_Shivam_labels_test_byte.csv"
+                        },
+                        new String[]{
+                                "res/ASCAD/ASCAD_traces_train_byte.csv ; res/ASCAD/ASCAD_labels_train_byte.csv",
+                                "res/ASCAD/ASCAD_traces_test_byte.csv  ; res/ASCAD/ASCAD_labels_test_byte.csv"
+                        },
+                        new String[]{
+                                "res/Random_delay/Random_delay_traces_train_byte.csv ; res/Random_delay/Random_delay_labels_train_byte.csv",
+                                "res/Random_delay/Random_delay_traces_test_byte.csv  ; res/Random_delay/Random_delay_labels_test_byte.csv"
+                        },
+                        //                new String[]{
+//                        "res/DPAv2/DPAv2_traces_train_byte.csv ; res/DPAv2/DPAv2_labels_train_byte.csv",
+//                        "res/DPAv2/DPAv2_traces_test_byte.csv  ; res/DPAv2/DPAv2_labels_test_byte.csv"
+//                },
+                        new String[]{
+                                "res/DPAv4/DPAv4_traces_train_byte.csv ; res/DPAv4/DPAv4_labels_train_byte.csv",
+                                "res/DPAv4/DPAv4_traces_test_byte.csv  ; res/DPAv4/DPAv4_labels_test_byte.csv"
+                        },
+                }) {
+                    ((EvolvingActivationParams) experiment.getParams()).train_path(ds[0]);
+                    ((EvolvingActivationParams) experiment.getParams()).test_path(ds[1]);
+
+
+                    ((EvolvingActivationParams) experiment.getParams()).experiment_name(experiment.getName());
+                    try {
+                        if (process_mode)
+                            run_child_process((EvolvingActivationParams) experiment.getParams(), jar_path);
+                        else
+                            run((EvolvingActivationParams) experiment.getParams(), set, tree_init);
+                    } catch (Exception e) {
+                        System.err.println("Exception in experiment '" + experiment.getName() + "'!   " + e);
+                        slack.e("Exception in experiment '" + experiment.getName() + "'!   " + e);
+                    }
+                    System.gc();
                 }
-                System.gc();
+
             }
         }
         if (process_mode)  // Only main process sends this.
