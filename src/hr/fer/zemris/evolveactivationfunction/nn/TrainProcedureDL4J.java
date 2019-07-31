@@ -409,6 +409,11 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         return test_internal(model, test_set_, batch_size);
     }
 
+    public Pair<ModelReport, Object> test_on(IModel model, String ds_path) throws IOException, InterruptedException {
+        DataSet ds = StorageManager.loadEntireCsvDataset(ds_path);
+        return test_internal(model, ds, params_.batch_size());
+    }
+
     private void earlystop_internal(@NotNull IModel model, @NotNull ILogger log, @Nullable StatsStorageRouter stats_storage, @NotNull DataSet train, @NotNull DataSet test) {
         MultiLayerNetwork m = ((CommonModel) model).getModel();
         m.init();

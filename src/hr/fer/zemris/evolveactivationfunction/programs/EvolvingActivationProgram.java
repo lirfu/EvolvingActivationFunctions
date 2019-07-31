@@ -44,6 +44,29 @@ public class EvolvingActivationProgram {
     private static final String MAX_MEMORY_JVM = "-Xmx4g";
     private static final String MAX_MEMORY_PHYSICAL = "-Dorg.bytedeco.javacpp.maxbytes=3g";
 
+    private static String[][] datasets = new String[][]{
+            new String[]{
+                    "res/AES_Shivam/AES_Shivam_traces_train_byte.csv ; res/AES_Shivam/AES_Shivam_labels_train_byte.csv",
+                    "res/AES_Shivam/AES_Shivam_traces_test_byte.csv  ; res/AES_Shivam/AES_Shivam_labels_test_byte.csv"
+            },
+            new String[]{
+                    "res/ASCAD/ASCAD_traces_train_byte.csv ; res/ASCAD/ASCAD_labels_train_byte.csv",
+                    "res/ASCAD/ASCAD_traces_test_byte.csv  ; res/ASCAD/ASCAD_labels_test_byte.csv"
+            },
+            new String[]{
+                    "res/Random_delay/Random_delay_traces_train_byte.csv ; res/Random_delay/Random_delay_labels_train_byte.csv",
+                    "res/Random_delay/Random_delay_traces_test_byte.csv  ; res/Random_delay/Random_delay_labels_test_byte.csv"
+            },
+            //                new String[]{
+//                        "res/DPAv2/DPAv2_traces_train_byte.csv ; res/DPAv2/DPAv2_labels_train_byte.csv",
+//                        "res/DPAv2/DPAv2_traces_test_byte.csv  ; res/DPAv2/DPAv2_labels_test_byte.csv"
+//                },
+            new String[]{
+                    "res/DPAv4/DPAv4_traces_train_byte.csv ; res/DPAv4/DPAv4_labels_train_byte.csv",
+                    "res/DPAv4/DPAv4_traces_test_byte.csv  ; res/DPAv4/DPAv4_labels_test_byte.csv"
+            },
+    };
+
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Override deserialization of numerical nodes.
@@ -129,28 +152,7 @@ public class EvolvingActivationProgram {
 
 
                 // FIXME: Quick fix for running across multiple datasets automatically.
-                for (String[] ds : new String[][]{
-                        new String[]{
-                                "res/AES_Shivam/AES_Shivam_traces_train_byte.csv ; res/AES_Shivam/AES_Shivam_labels_train_byte.csv",
-                                "res/AES_Shivam/AES_Shivam_traces_test_byte.csv  ; res/AES_Shivam/AES_Shivam_labels_test_byte.csv"
-                        },
-                        new String[]{
-                                "res/ASCAD/ASCAD_traces_train_byte.csv ; res/ASCAD/ASCAD_labels_train_byte.csv",
-                                "res/ASCAD/ASCAD_traces_test_byte.csv  ; res/ASCAD/ASCAD_labels_test_byte.csv"
-                        },
-                        new String[]{
-                                "res/Random_delay/Random_delay_traces_train_byte.csv ; res/Random_delay/Random_delay_labels_train_byte.csv",
-                                "res/Random_delay/Random_delay_traces_test_byte.csv  ; res/Random_delay/Random_delay_labels_test_byte.csv"
-                        },
-                        //                new String[]{
-//                        "res/DPAv2/DPAv2_traces_train_byte.csv ; res/DPAv2/DPAv2_labels_train_byte.csv",
-//                        "res/DPAv2/DPAv2_traces_test_byte.csv  ; res/DPAv2/DPAv2_labels_test_byte.csv"
-//                },
-                        new String[]{
-                                "res/DPAv4/DPAv4_traces_train_byte.csv ; res/DPAv4/DPAv4_labels_train_byte.csv",
-                                "res/DPAv4/DPAv4_traces_test_byte.csv  ; res/DPAv4/DPAv4_labels_test_byte.csv"
-                        },
-                }) {
+                for (String[] ds : datasets) {
                     ((EvolvingActivationParams) experiment.getParams()).train_path(ds[0]);
                     ((EvolvingActivationParams) experiment.getParams()).test_path(ds[1]);
 
@@ -295,6 +297,16 @@ public class EvolvingActivationProgram {
         evo_logger.i("===> Collecting activations");
         Triple<Double, Double, Integer> range_n_buckets = new Triple<>(-7., 7., 101);
         train_proc.collectModelActivationsOnTest(model, c, range_n_buckets);
+        evo_logger.i("===> Done!");
+
+        evo_logger.i("===> Collecting results on other datasets");
+        for (String[] ds : datasets) {
+            StorageManager.storeCustomString(
+                    train_proc.test_on(model, ds[1]).getKey().serialize(),
+                    c,
+                    "Results_" + StorageManager.dsNameFromPath(ds[1], false)+".txt"
+            );
+        }
         evo_logger.i("===> Done!");
 
         // Extract tops to display.
