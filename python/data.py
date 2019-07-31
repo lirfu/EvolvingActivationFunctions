@@ -2,7 +2,7 @@ import csv
 import numpy as np
 import re
 
-def load_data(path):
+def load_arff(path):
     with open(path, 'r') as f:
         data = []
         reader = csv.reader(f, delimiter=',')
