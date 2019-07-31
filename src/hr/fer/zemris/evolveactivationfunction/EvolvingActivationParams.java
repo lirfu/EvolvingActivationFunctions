@@ -28,6 +28,7 @@ public class EvolvingActivationParams extends TrainParams {
     private LinkedList<Mutation> mutations_ = new LinkedList<>();
     private StopCondition condition_ = new StopCondition();
     private int worker_num_;
+    private long algo_seed_;
 
     private NetworkArchitecture architecture_;
     private String activation_;
@@ -232,6 +233,22 @@ public class EvolvingActivationParams extends TrainParams {
                 return null;
             }
         });
+        params.put("algo_seed", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return Long.parseLong(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).algo_seed_ = (Long) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((EvolvingActivationParams.Builder) p).algo_seed((Long) value);
+            }
+        });
     }
 
     public EvolvingActivationParams() {
@@ -242,7 +259,7 @@ public class EvolvingActivationParams extends TrainParams {
                                     LinkedList<Crossover> crossovers, LinkedList<Mutation> mutations,
                                     StopCondition condition, int worker_num,
                                     NetworkArchitecture architecture, String activation, String[] node_set,
-                                    String train_path, String test_path, String experiment_name) {
+                                    String train_path, String test_path, String experiment_name, long algo_seed) {
         super(train_params);
         algorithm_ = algorithm;
         population_size_ = population_size;
@@ -260,6 +277,7 @@ public class EvolvingActivationParams extends TrainParams {
         train_path_ = train_path;
         test_path_ = test_path;
         experiment_name_ = experiment_name;
+        algo_seed_ = algo_seed;
     }
 
     public static void initialize(ISerializable[] available_nodes) {
@@ -326,6 +344,10 @@ public class EvolvingActivationParams extends TrainParams {
         return train_path_;
     }
 
+    public void train_path(String path) {
+        train_path_ = path;
+    }
+
     public String test_path() {
         return test_path_;
     }
@@ -342,6 +364,10 @@ public class EvolvingActivationParams extends TrainParams {
         experiment_name_ = name;
     }
 
+    public Long algo_seed() {
+        return algo_seed_;
+    }
+
     @Override
     public String serialize() {
         StringBuilder sb = new StringBuilder("# NN params\n" + super.serialize());
@@ -351,6 +377,7 @@ public class EvolvingActivationParams extends TrainParams {
         if (activation_ != null)
             sb.append("activation").append('\t').append(activation_).append('\n');
         sb.append("\n# GA params\n")
+                .append("algo_seed").append('\t').append(algo_seed_).append('\n')
                 .append("algorithm").append('\t').append(algorithm_).append('\n')
                 .append("population_size").append('\t').append(population_size_).append('\n')
                 .append("mutation_prob").append('\t').append(mutation_prob_).append('\n')
@@ -429,6 +456,7 @@ public class EvolvingActivationParams extends TrainParams {
         private String train_path_, test_path_;
         private String experiment_name_;
         private int worker_num_ = 1;
+        private long algo_seed_ = 42;
 
         public EvolvingActivationParams build() {
             if (experiment_name_ == null)
@@ -445,7 +473,7 @@ public class EvolvingActivationParams extends TrainParams {
             return new EvolvingActivationParams(super.build(), algorithm_, population_size_, mutation_prob_,
                     elitism_, taboo_size_, taboo_attempts_, crossovers_, mutations_, condition_, worker_num_,
                     architecture_, activation_, node_set_.toArray(new String[]{}),
-                    train_path_, test_path_, experiment_name_);
+                    train_path_, test_path_, experiment_name_, algo_seed_);
         }
 
         public Builder algorithm(AlgorithmType algorithm) {
@@ -529,6 +557,11 @@ public class EvolvingActivationParams extends TrainParams {
             return this;
         }
 
+        public Builder algo_seed(long seed) {
+            algo_seed_ = seed;
+            return this;
+        }
+
         public Builder cloneFrom(@NotNull EvolvingActivationParams p) {
             super.cloneFrom(p);
             algorithm_ = p.algorithm_;
@@ -550,6 +583,7 @@ public class EvolvingActivationParams extends TrainParams {
             test_path_ = p.test_path_;
             experiment_name_ = p.experiment_name_;
             worker_num_ = p.worker_num_;
+            algo_seed_ = p.algo_seed_;
             return this;
         }
     }
