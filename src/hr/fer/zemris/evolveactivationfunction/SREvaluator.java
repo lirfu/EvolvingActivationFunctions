@@ -46,7 +46,8 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
         log_.i("Evaluating: " + s);
         Pair<ModelReport, Object> res = evaluateModel(g, null, s);
 
-        fitness = -res.getKey().f1(); // Negative is for minimization.
+//        fitness = -res.getKey().f1(); // Negative is for minimization.
+        fitness = res.getKey().avg_guess_entropy();
 
         if (!Double.isFinite(fitness)) {
             fitness = 0.;
