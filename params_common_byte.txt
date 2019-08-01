@@ -1,12 +1,12 @@
 # NN params
 epochs_num	40
-train_patience    5
+train_patience    10
 convergence_delta   1e-2
 batch_size	256
 normalize_features	true
 shuffle_batches	false
 batch_norm true
-learning_rate	5.0E-4
+learning_rate	1.0E-3
 decay_rate	0.99
 decay_step	1
 regularization_coef	1.0E-4
@@ -18,7 +18,7 @@ architecture	fc(300)-fc(300)
 # GA params
 algorithm GENERATION_TABOO
 algo_seed	{42,43,44,45,46,47,48,49,50,51}
-population_size	20
+population_size	10
 mutation_prob	0.3
 elitism	true
 taboo_size	10
@@ -30,7 +30,7 @@ default_max_value   255
 
 # Stop conditions:
 max_iterations	50
-min_fitness	-1.0
+min_fitness	-255.000001
 
 # GA operators
 crx.swap_subtree	    1

@@ -50,17 +50,18 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
 
         if (g.depth() > max_depth_) {
             log_.i("Tree too deep! Training skipped...");
-            fitness = Double.POSITIVE_INFINITY;
+            fitness = -1e-6;
         } else {
             log_.i("Evaluating: " + s);
             Pair<ModelReport, Object> res = evaluateModel(g, null, s);
 
-//        fitness = -res.getKey().f1(); // Negative is for minimization.
-            fitness = res.getKey().avg_guess_entropy();
-        }
+            // Algorithm requires minimization in the negative fitness domain.
+//        fitness = -res.getKey().f1();
+            fitness = res.getKey().avg_guess_entropy() - default_max_value_ - 1e-6;
 
-        if (!Double.isFinite(fitness)) {
-            fitness = default_max_value_;
+            if (!Double.isFinite(fitness)) {
+                fitness = 0.;
+            }
         }
 
         if (use_memory_) {
@@ -88,7 +89,7 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
         tmpl_procedure_.train_itersearch(model, log_, storage);
         Pair<ModelReport, Object> res = tmpl_procedure_.validate(model);
 
-        log_.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + name + "(" + res.getKey().f1() + ")");
+        log_.i("(" + Utilities.formatMiliseconds(timer.stop()) + ") Done evaluating: " + name + "(AGE: " + res.getKey().avg_guess_entropy() + ")");
         return res;
     }
 

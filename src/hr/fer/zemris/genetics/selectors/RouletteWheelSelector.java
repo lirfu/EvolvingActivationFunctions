@@ -12,7 +12,7 @@ import java.util.Random;
 
 /**
  * Selects parents based on their fitness using the Roulette wheel method.
- * <p><b>IMPORTANT!</b> This method assumes selection probability is proportional to fitness value.</p>
+ * <p><b>IMPORTANT!</b> Probability is proportional to absolute fitness value. This supports only minimization in the negative fitness domain or maximization in the positive fitness domain.</p>
  */
 public class RouletteWheelSelector implements Selector {
     private final Random rand_;
