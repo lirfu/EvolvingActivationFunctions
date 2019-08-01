@@ -53,7 +53,8 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         // Set double precision globally.
         Nd4j.setDataType(DataBuffer.Type.FLOAT);
 
-        loadDatasets(train_path, test_path);
+        train_set_ = loadDatasets(train_path);
+        test_set_ = loadDatasets(test_path);
 
         params_ = params_builder
                 .name(StorageManager.dsNameFromPath(train_path, false))
@@ -69,7 +70,8 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         Nd4j.setDataType(DataBuffer.Type.FLOAT);
 
         String train_path = params.train_path(), test_path = params.test_path();
-        loadDatasets(train_path, test_path);
+        train_set_ = loadDatasets(train_path);
+        test_set_ = loadDatasets(test_path);
 
         // Automatically define necessary parameters.
         params.name(StorageManager.dsNameFromPath(train_path, false));
@@ -80,19 +82,12 @@ public class TrainProcedureDL4J implements ITrainProcedure {
         initialize();
     }
 
-    private void loadDatasets(String train_path, String test_path) throws IOException, InterruptedException {
-        if (train_path.contains(";")) {  // Separate features and labels file.
-            String[] files = train_path.split(" *; *");
-            train_set_ = StorageManager.loadSeparateCsvDataset(files);
+    private DataSet loadDatasets(String path) throws IOException, InterruptedException {
+        if (path.contains(";")) {  // Separate features and labels file.
+            String[] files = path.split(" *; *");
+            return StorageManager.loadSeparateCsvDataset(files);
         } else {  // Single file.
-            train_set_ = train_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(train_path) : StorageManager.loadEntireCsvDataset(train_path);
-        }
-
-        if (test_path.contains(";")) {  // Separate features and labels file.
-            String[] files = test_path.split(";");
-            test_set_ = StorageManager.loadSeparateCsvDataset(files);
-        } else {  // Single file.
-            test_set_ = test_path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(test_path) : StorageManager.loadEntireCsvDataset(test_path);
+            return path.endsWith(".arff") ? StorageManager.loadEntireArffDataset(path) : StorageManager.loadEntireCsvDataset(path);
         }
     }
 
@@ -410,7 +405,7 @@ public class TrainProcedureDL4J implements ITrainProcedure {
     }
 
     public Pair<ModelReport, Object> test_on(IModel model, String ds_path) throws IOException, InterruptedException {
-        DataSet ds = StorageManager.loadEntireCsvDataset(ds_path);
+        DataSet ds = loadDatasets(ds_path);
         return test_internal(model, ds, params_.batch_size());
     }
 

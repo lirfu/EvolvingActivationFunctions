@@ -59,7 +59,7 @@ public class ReTestingProgram {
         evo_logger.i(proc.describeDatasets());
         evo_logger.i("===> Re-training for function: " + function);
 
-        SREvaluator evaluator = new SREvaluator(proc, params.architecture(), new StdoutLogger(), true);
+        SREvaluator evaluator = new SREvaluator(proc, params.architecture(), new StdoutLogger(), params.max_depth(), params.default_max_value(), true);
         DerivableSymbolicTree best = new DerivableSymbolicTree(SymbolicTree.parse(function, set));
 
         Pair<ModelReport, Object> result = evaluator.evaluateModel(best, null, best.serialize());

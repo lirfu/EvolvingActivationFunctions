@@ -41,7 +41,7 @@ public class EvolvingActivationProgram {
     private static SlackLogger slack = new SlackLogger("lirfu", "slack_webhook.txt");
     private static Process child_process = null;
 
-    private static final String MAX_MEMORY_JVM = "-Xmx4g";
+    private static final String MAX_MEMORY_JVM = "-Xmx3g";
     private static final String MAX_MEMORY_PHYSICAL = "-Dorg.bytedeco.javacpp.maxbytes=3g";
 
     private static String[][] datasets = new String[][]{
@@ -135,7 +135,8 @@ public class EvolvingActivationProgram {
                 else
                     run(common_params, set, tree_init);
             } catch (Exception e) {
-                slack.e("Exception in experiment '" + common_params.name() + "'!");
+                System.err.println("Exception in experiment '" + common_params.name() + "'! " + e);
+                slack.e("Exception in experiment '" + common_params.name() + "'! " + e);
                 synchronized (DATASET_PATH) { // Pause to give parent a chance to catch this child death.
                     DATASET_PATH.wait(1000);
                 }
@@ -237,7 +238,7 @@ public class EvolvingActivationProgram {
         evo_logger.d("===> Parameters:\n" + params.serialize());
         evo_logger.i("===> Dataset distributions:\n" + train_proc.describeDatasets());
 
-        SREvaluator evaluator = new SREvaluator(train_proc, params.architecture(), evo_logger, true);
+        SREvaluator evaluator = new SREvaluator(train_proc, params.architecture(), evo_logger, params.max_depth(), params.default_max_value(), true);
 
         // Build and run the algorithm.
         Algorithm algo = buildAlgorithm(params, set, tree_init, evaluator, rand, evo_logger);
@@ -304,7 +305,7 @@ public class EvolvingActivationProgram {
             StorageManager.storeCustomString(
                     train_proc.test_on(model, ds[1]).getKey().serialize(),
                     c,
-                    "Results_" + StorageManager.dsNameFromPath(ds[1], false)+".txt"
+                    "Results_" + StorageManager.dsNameFromPath(ds[1], false) + ".txt"
             );
         }
         evo_logger.i("===> Done!");
