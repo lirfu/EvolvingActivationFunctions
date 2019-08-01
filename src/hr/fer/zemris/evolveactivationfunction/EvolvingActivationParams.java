@@ -29,6 +29,8 @@ public class EvolvingActivationParams extends TrainParams {
     private StopCondition condition_ = new StopCondition();
     private int worker_num_;
     private long algo_seed_;
+    private int max_depth_;
+    private double default_max_value_;
 
     private NetworkArchitecture architecture_;
     private String activation_;
@@ -249,6 +251,38 @@ public class EvolvingActivationParams extends TrainParams {
                 return ((EvolvingActivationParams.Builder) p).algo_seed((Long) value);
             }
         });
+        params.put("max_depth", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return Integer.parseInt(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).max_depth_ = (Integer) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((EvolvingActivationParams.Builder) p).max_depth((Integer) value);
+            }
+        });
+        params.put("default_max_value", new TrainParamsModifier() {
+            @Override
+            public Object parse(String s) {
+                return Double.parseDouble(s);
+            }
+
+            @Override
+            public void set(TrainParams p, Object value) {
+                ((EvolvingActivationParams) p).default_max_value_ = (Double) value;
+            }
+
+            @Override
+            public IBuilder<TrainParams> modify(IBuilder<TrainParams> p, Object value) {
+                return ((EvolvingActivationParams.Builder) p).default_max_value((Double) value);
+            }
+        });
     }
 
     public EvolvingActivationParams() {
@@ -259,7 +293,7 @@ public class EvolvingActivationParams extends TrainParams {
                                     LinkedList<Crossover> crossovers, LinkedList<Mutation> mutations,
                                     StopCondition condition, int worker_num,
                                     NetworkArchitecture architecture, String activation, String[] node_set,
-                                    String train_path, String test_path, String experiment_name, long algo_seed) {
+                                    String train_path, String test_path, String experiment_name, long algo_seed, int max_depth, double default_max_value) {
         super(train_params);
         algorithm_ = algorithm;
         population_size_ = population_size;
@@ -278,6 +312,8 @@ public class EvolvingActivationParams extends TrainParams {
         test_path_ = test_path;
         experiment_name_ = experiment_name;
         algo_seed_ = algo_seed;
+        max_depth_ = max_depth;
+        default_max_value_ = default_max_value;
     }
 
     public static void initialize(ISerializable[] available_nodes) {
@@ -368,6 +404,14 @@ public class EvolvingActivationParams extends TrainParams {
         return algo_seed_;
     }
 
+    public Integer max_depth() {
+        return max_depth_;
+    }
+
+    public Double default_max_value() {
+        return default_max_value_;
+    }
+
     @Override
     public String serialize() {
         StringBuilder sb = new StringBuilder("# NN params\n" + super.serialize());
@@ -384,6 +428,8 @@ public class EvolvingActivationParams extends TrainParams {
                 .append("elitism").append('\t').append(elitism_).append('\n')
                 .append("taboo_size").append('\t').append(taboo_size_).append('\n')
                 .append("taboo_attempts").append('\t').append(taboo_attempts_).append('\n')
+                .append("max_depth").append('\t').append(max_depth_).append('\n')
+                .append("default_max_value").append('\t').append(default_max_value_).append('\n')
                 .append("worker_num").append('\t').append(worker_num_).append('\n')
                 .append("node_set").append('\t').append(String.join("-", node_set_)).append('\n');
         if (condition_ != null) {
@@ -457,6 +503,8 @@ public class EvolvingActivationParams extends TrainParams {
         private String experiment_name_;
         private int worker_num_ = 1;
         private long algo_seed_ = 42;
+        private int max_depth_ = 5;
+        private double default_max_value_ = 1e6;
 
         public EvolvingActivationParams build() {
             if (experiment_name_ == null)
@@ -473,7 +521,7 @@ public class EvolvingActivationParams extends TrainParams {
             return new EvolvingActivationParams(super.build(), algorithm_, population_size_, mutation_prob_,
                     elitism_, taboo_size_, taboo_attempts_, crossovers_, mutations_, condition_, worker_num_,
                     architecture_, activation_, node_set_.toArray(new String[]{}),
-                    train_path_, test_path_, experiment_name_, algo_seed_);
+                    train_path_, test_path_, experiment_name_, algo_seed_, max_depth_, default_max_value_);
         }
 
         public Builder algorithm(AlgorithmType algorithm) {
@@ -562,6 +610,16 @@ public class EvolvingActivationParams extends TrainParams {
             return this;
         }
 
+        public Builder max_depth(int max_depth) {
+            max_depth_ = max_depth;
+            return this;
+        }
+
+        public Builder default_max_value(double value) {
+            default_max_value_ = value;
+            return this;
+        }
+
         public Builder cloneFrom(@NotNull EvolvingActivationParams p) {
             super.cloneFrom(p);
             algorithm_ = p.algorithm_;
@@ -583,7 +641,10 @@ public class EvolvingActivationParams extends TrainParams {
             test_path_ = p.test_path_;
             experiment_name_ = p.experiment_name_;
             worker_num_ = p.worker_num_;
+
             algo_seed_ = p.algo_seed_;
+            max_depth_ = p.max_depth_;
+            default_max_value_ = p.default_max_value_;
             return this;
         }
     }

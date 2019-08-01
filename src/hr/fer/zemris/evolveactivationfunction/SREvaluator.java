@@ -17,18 +17,23 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
     private TrainProcedureDL4J tmpl_procedure_;
     private NetworkArchitecture architecture_;
     private ILogger log_;
+    private int max_depth_;
+    private double default_max_value_;
 
     private boolean use_memory_;
     private final HashMap<String, Double> memory = new HashMap<>();
 
-    public SREvaluator(TrainProcedureDL4J template_procedure, NetworkArchitecture architecture, ILogger log) {
+    public SREvaluator(TrainProcedureDL4J template_procedure, NetworkArchitecture architecture, ILogger log, int max_depth, double default_max_value) {
         tmpl_procedure_ = template_procedure;
         architecture_ = architecture;
         log_ = log;
+
+        max_depth_ = max_depth;
+        default_max_value_ = default_max_value;
     }
 
-    public SREvaluator(TrainProcedureDL4J template_procedure, NetworkArchitecture architecture, ILogger log, boolean use_memory) {
-        this(template_procedure, architecture, log);
+    public SREvaluator(TrainProcedureDL4J template_procedure, NetworkArchitecture architecture, ILogger log, int max_depth, double default_max_value, boolean use_memory) {
+        this(template_procedure, architecture, log, max_depth, default_max_value);
         use_memory_ = use_memory;
     }
 
@@ -43,14 +48,19 @@ public class SREvaluator extends AEvaluator<DerivableSymbolicTree> {
             }
         }
 
-        log_.i("Evaluating: " + s);
-        Pair<ModelReport, Object> res = evaluateModel(g, null, s);
+        if (g.depth() > max_depth_) {
+            log_.i("Tree too deep! Training skipped...");
+            fitness = Double.POSITIVE_INFINITY;
+        } else {
+            log_.i("Evaluating: " + s);
+            Pair<ModelReport, Object> res = evaluateModel(g, null, s);
 
 //        fitness = -res.getKey().f1(); // Negative is for minimization.
-        fitness = res.getKey().avg_guess_entropy();
+            fitness = res.getKey().avg_guess_entropy();
+        }
 
         if (!Double.isFinite(fitness)) {
-            fitness = 0.;
+            fitness = default_max_value_;
         }
 
         if (use_memory_) {

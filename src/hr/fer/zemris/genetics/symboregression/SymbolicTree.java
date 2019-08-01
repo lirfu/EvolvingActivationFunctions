@@ -79,6 +79,10 @@ public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
         return size_;
     }
 
+    public int depth() {
+        return root_ != null ? root_.getDepth() : 0;
+    }
+
     public void updateSize() {
         size_ = (root_ == null) ? 0 : root_.getSize();
     }
