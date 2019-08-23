@@ -4,10 +4,17 @@ import re
 
 class Tree:
     def __init__(self, string):
-        self.__parse_tree(string)
-
-    def __init__(self, tree):
-        self.root = tree.root.clone()
+        string = string.strip()
+        if string.find('[') < 0:  # Leaf root
+            self.root = parse_node(string).clone()
+        else:
+            self.root = None
+            lst = re.split('[\[,\]]+', string)[:-1]
+            for l in lst:
+                if not self.root:
+                    self.root = parse_node(l)
+                    continue
+                self.__add_node(self.root, parse_node(l))
 
     def get(self, index):
         i = [index]
@@ -15,6 +22,9 @@ class Tree:
 
     def build(self, input):
         return self.root.build(input)
+
+    def update(self, session):
+        self.root.update(session)
 
     def size(self):
         return self.root.size()
@@ -26,19 +36,7 @@ class Tree:
                 return True
             if self.__add_node(parent.children[i], node):  # Recurse into children.
                 return True
-
-    def __parse_tree(self, string):  # Recursive tree parsing
-        string = string.strip()
-        if string.find('[') < 0:  # Leaf root
-            self.root = parse_node(string)
-        else:
-            self.root = None
-            list = re.split('[\[,\]]+', string)[:-1]
-            for l in list:
-                if not self.root:
-                    self.root = parse_node(l)
-                    continue
-                self.__add_node(self.root, parse_node(l))
+        return False
 
     def to_string(self):
         return self.root.to_string()
@@ -55,7 +53,11 @@ class Node:
         n = Node(self.name, self.children_num, self.build_method)
         n.children = []
         for c in self.children:
-            n.children.append(c.clone())
+            if c:
+                n.children.append(c.clone())
+            else:
+                n.children.append(None)
+        return n
 
     def get(self, index):
         if index[0] == 0:
@@ -75,6 +77,10 @@ class Node:
 
     def build(self, input):
         return self.build_method(self.children, input)
+
+    def update(self, session):
+        for c in self.children:
+            c.update(session)
 
     def size(self):
         s = 1
@@ -112,16 +118,19 @@ class LearnableNode(Node):
 
     def __init__(self, value):
         self.var_index = LearnableNode.VARIABLE_INDEX
-        LearnableNode.VARIABLE_INDEX += 1
-
-        super().__init__('l'+str(value), 0, lambda c, input: tf.get_variable("acti_var" + str(self.var_index), shape=input.get_shape()[-1],
-                                         initializer=tf.constant_initializer(0.0), dtype=tf.float32))
         self.value = value
+
+        super().__init__('l'+str(value), 0, lambda c, input: tf.get_variable('acti_var' + str(self.var_index), shape=input.get_shape()[-1],
+                                         initializer=tf.constant_initializer(value), dtype=tf.float32))
+        LearnableNode.VARIABLE_INDEX += 1
 
     def swap(self, node):
         super().swap(node)
         self.var_index, node.var_index = node.var_index, self.var_index
         self.value, node.value = node.value, self.value
+
+    def update(self, session):
+        self.value = tf.contrib.framework.get_variables('acti_var'+str(self.var_index))[0].eval(session=session)
 
     def to_string(self):
         return 'l'+str(self.value)
@@ -133,14 +142,16 @@ def parse_node(s):  # String to node
         return ConstNode(float(s))
     except ValueError:
         pass
-    if re.match('l[0-9.]+', s):  # Learnable node
+    if re.match('l[-]*[0-9.]+', s):  # Learnable node
         try:
             float(s[1:])  # Constant.
             return LearnableNode(float(s[1:]))
         except ValueError:
-            pass
-    return nodes[s]
-
+            return None
+    if s in nodes:
+        return nodes[s].clone()
+    else:
+        raise KeyError('Unknown key: '+s)
 
 nodes = {
     ## Binary
@@ -185,17 +196,53 @@ nodes = {
 
 
 def prelu(x):
-    alpha = parse_node('l')
+    alpha = parse_node('l0')
     pos = tf.nn.relu(x)
     neg = alpha * (x - tf.abs(x)) * 0.5
     return pos + neg
 
 
 if __name__ == '__main__':
-    s = "+[relu[x],tanh[*[l2.69,3.14]]]"
-    # s = "+[12.3,sin[l5.3]]"
-    print("Before:", s)
-    t = Tree(s)
-    print("After: ", t.to_string())
-    print(t.get(0).name)
-    print(t.get(5).name)
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    # Define target function.
+    func_target = lambda x: np.exp(-(x - 3.14) ** 2)
+    # Define model function.
+    func_model = 'relu[-[1,abs[-[x,l1.0]]]]'
+
+    # Generate data.
+    x = np.linspace(-5, 5, 300).reshape([-1, 1])
+    y = np.array([func_target(t) for t in x]).reshape([-1, 1])
+
+    # Build tree.
+    tree = Tree(func_model)
+    tf_truth = tf.placeholder(tf.float32, [None, 1])
+    tf_inp = tf.placeholder(tf.float32, [None, 1])
+    tf_out = tree.build(tf_inp)
+
+    tf_loss = tf.reduce_sum((tf_truth - tf_out) ** 2)
+    tf_optimi = tf.train.GradientDescentOptimizer(0.01).minimize(tf_loss)
+    tf_sess = tf.Session()
+    tf_sess.run(tf.initialize_all_variables())
+
+    # Train learnable nodes.
+    ls_prev = -1
+    for i in range(1,101):
+        ls, _ = tf_sess.run([tf_loss, tf_optimi], {tf_inp: x, tf_truth: y})
+        print('Iter', i, 'has loss:', ls)
+        if abs(ls_prev-ls) < 1e-12:
+            break
+        ls_prev = ls
+    tree.update(tf_sess)
+
+    # Collect final predictions.
+    p = tf_sess.run([tf_out], {tf_inp: x})
+    p = np.array(p).reshape(-1)
+
+    # Plot.
+    plt.figure(figsize=(10,4))
+    plt.plot(x, y, 'b', label='Original function')
+    plt.plot(x, p, 'r', label=tree.to_string())
+    plt.legend()
+    plt.show()
