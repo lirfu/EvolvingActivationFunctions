@@ -41,6 +41,7 @@ import java.util.Random;
 public class TrainProcedureDL4J implements ITrainProcedure {
     private DataSet train_set_, validation_set_ = null, test_set_;
     private TrainParams params_;
+    private NormalizerStandardize norm_;
 
     /**
      * Use given splitted dataset to train and test the network.
@@ -99,10 +100,10 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 
         // Normalize both sets on entire train before splitting.
         if (params_.normalize_features()) {
-            NormalizerStandardize norm = new NormalizerStandardize();
-            norm.fit(train_set_);
-            norm.transform(train_set_);
-            norm.transform(test_set_);
+            norm_ = new NormalizerStandardize();
+            norm_.fit(train_set_);
+            norm_.transform(train_set_);
+            norm_.transform(test_set_);
         }
 
         if (split) { // Split train set into train and validation
@@ -406,6 +407,8 @@ public class TrainProcedureDL4J implements ITrainProcedure {
 
     public Pair<ModelReport, Object> test_on(IModel model, String ds_path) throws IOException, InterruptedException {
         DataSet ds = loadDatasets(ds_path);
+        if (norm_ != null)
+            norm_.transform(ds);
         return test_internal(model, ds, params_.batch_size());
     }
 

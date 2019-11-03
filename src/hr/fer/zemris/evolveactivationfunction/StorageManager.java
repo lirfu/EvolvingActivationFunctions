@@ -195,6 +195,10 @@ public class StorageManager {
         new FileLogger(createExperimentPath(c) + filename, false).i(string);
     }
 
+    public static void storeCustomString(String string, String filepath) throws IOException {
+        new FileLogger(filepath, false).i(string);
+    }
+
     /**
      * Load a custom string.
      */
