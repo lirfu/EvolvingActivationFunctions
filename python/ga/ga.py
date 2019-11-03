@@ -135,3 +135,36 @@ class Genotype:
 
     def clone(self):
         return Genotype(self.tree)
+
+if __name__ == '__main__':
+    import numpy as np
+    import tensorflow as tf
+
+    # Target function.
+    func = lambda x: np.sin(x**2)
+
+    # Generate samples.
+    X = np.linspace(-5, 5, 1000).reshape(-1)
+    Y = np.array([func(x) for x in X]).reshape(-1)
+
+    # Define evaluator (for tree).
+    def evaluator(tree):
+        # Build tf graph.
+        tf_truth = tf.placeholder(tf.float32, [None, 1])
+        tf_inp = tf.placeholder(tf.float32, [None, 1])
+        tf_out = tree.build(tf_inp)
+
+        tf_loss = tf.reduce_sum((tf_truth - tf_out) ** 2)
+        tf_optimi = tf.train.GradientDescentOptimizer(0.01).minimize(tf_loss)
+        tf_sess = tf.Session()
+        tf_sess.run(tf.initialize_all_variables())
+
+        # Train learnable nodes.
+        ls_prev = -1
+        for i in range(1,101):
+            ls, _ = tf_sess.run([tf_loss, tf_optimi], {tf_inp: x, tf_truth: y})
+            print('Iter', i, 'has loss:', ls)
+            if abs(ls_prev - ls) < 1e-12:
+                break
+            ls_prev = ls
+        tree.update(tf_sess)

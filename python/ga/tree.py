@@ -1,5 +1,6 @@
 import tensorflow as tf
 import re
+import math as m
 
 
 class Tree:
@@ -153,7 +154,7 @@ def parse_node(s):  # String to node
     else:
         raise KeyError('Unknown key: '+s)
 
-nodes = {
+tf_nodes = {
     ## Binary
     '+': Node('+', 2, lambda c, input: tf.add(c[0].build(input), c[1].build(input))),
     '-': Node('-', 2, lambda c, input: tf.subtract(c[0].build(input), c[1].build(input))),
@@ -194,6 +195,144 @@ nodes = {
     'x': Node('x', 0, lambda c, input: input)
 }
 
+def relu(x):
+    return max(0, x)
+
+def relu6(x):
+    return min(6, relu(x))
+
+def lrelu(x):
+    return x if x > 0 else 0.1 * x
+
+def threlu(x):
+    return x if x > 1 else 0
+
+def elu(x):
+    return x if x > 0 else m.exp(x) - 1
+
+def selu(x):
+    l = 1.0507009873554804934193349852946
+    alpha = 1.6732632423543772848170429916717
+    return l*x if x > 0 else l*alpha * (m.exp(x) - 1)
+
+def sigmoid(x):
+    return 1. / (1 + m.exp(-x))
+
+def h_sigmoid(x):
+    return min(1, max(0, 0.2 * x + 0.5))
+
+def swish(x):
+    return x * sigmoid(x)
+
+def elish(x):
+    if x >= 0:
+        return swish(x)
+    else:
+        return elu(x) * sigmoid(x)
+
+def h_elish(x):
+    a = lambda t: max(0, min(1, (t + 1) / 2))
+    if x >= 0:
+        return x * a(x)
+    else:
+        return elu(x) * a(x)
+
+def tanh(x):
+    e = m.exp(2 * x)
+    return (e - 1) / (e + 1)
+
+def h_tanh(x):
+    if x < -1:
+        return -1
+    elif x > 1:
+        return 1
+    return x
+
+def rat_tanh(x):
+    dis= x * 2/3.
+    s = signum(dis) * (1 - 1./(1 + abs(dis) + dis**2 + 1.41645 * dis**4))
+    return 1.7159 * s
+
+def rec_tanh(x):
+    return max(0, tanh(x))
+
+def softplus(x):
+    return m.log(1+m.exp(x))
+
+def softsign(x):
+    return x / (1+abs(x))
+
+def sin(x):
+    return m.sin(x)
+
+def cos(x):
+    return m.cos(x)
+
+def tr_sin(x):
+    if x >= -m.pi/2 and x<= m.pi/2:
+        return m.sin(x)
+    elif x > m.pi/2:
+        return 1
+    return -1
+
+def tr_cos(x):
+    if x >= -m.pi/2 and x<= m.pi/2:
+        return m.cos(x)
+    return 0
+
+def pow2(x):
+    return x*x
+
+def pow3(x):
+    return x*x*x
+
+def gauss(x):
+    return m.exp(-x**2)
+
+def softmax(x):
+    return m.exp(x) / sum(m.exp(x))
+
+py_nodes = {
+    ## Binary
+    '+': Node('+', 2, lambda c, input: c[0].build(input) + c[1].build(input)),
+    '-': Node('-', 2, lambda c, input: c[0].build(input) - c[1].build(input)),
+    '*': Node('*', 2, lambda c, input: c[0].build(input) * c[1].build(input)),
+    '/': Node('/', 2, lambda c, input: c[0].build(input) / c[1].build(input)),
+    'min': Node('min', 2, lambda c, input: min(c[0].build(input), c[1].build(input))),
+    'max': Node('max', 2, lambda c, input: max(c[0].build(input), c[1].build(input))),
+    'pow': Node('pow', 2, lambda c, input: m.pow(c[0].build(input), c[1].build(input))),
+    ## Unary
+    'abs': Node('abs', 1, lambda c, input: abs(c[0].build(input))),
+    'neg': Node('neg', 1, lambda c, input: -c[0].build(input)),
+    'sin': Node('sin', 1, lambda c, input: m.sin(c[0].build(input))),
+    'cos': Node('cos', 1, lambda c, input: m.cos(c[0].build(input))),
+    'tan': Node('tan', 1, lambda c, input: m.tan(c[0].build(input))),
+    'exp': Node('exp', 1, lambda c, input: m.exp(c[0].build(input))),
+    'pow2': Node('pow2', 1, lambda c, input: m.pow(c[0].build(input), 2)),
+    'pow3': Node('pow3', 1, lambda c, input: m.pow(c[0].build(input), 3)),
+    'log': Node('log', 1, lambda c, input: m.log(c[0].build(input))),
+    'gauss': Node('gauss', 1, lambda c, input: gauss(c[0].build(input))),
+    'sigmoid': Node('sigmoid', 1, lambda c, input: sigmoid(c[0].build(input))),
+    'swish': Node('swish', 1, lambda c, input: swish(c[0].build(input))),
+    # Relus
+    'relu': Node('relu', 1, lambda c, input: relu(c[0].build(input))),
+    'relu6': Node('relu6', 1, lambda c, input: relu6(c[0].build(input))),
+    'lrelu': Node('lrelu', 1, lambda c, input: lrelu(c[0].build(input)),
+    'selu': Node('selu', 1, lambda c, input: selu(c[0].build(input))),
+    'elu': Node('elu', 1, lambda c, input: elu(c[0].build(input))),
+    #'prelu': Node('prelu', 1, lambda c, input: prelu(input)),
+    # Softies
+    'softmax': Node('softmax', 1, lambda c, input: softmax(c[0].build(input)),
+    'softplus': Node('softplus', 1, lambda c, input: softplus(c[0].build(input))),
+    'softsign': Node('softsign', 1, lambda c, input: softsign(c[0].build(input))),
+    # Hyperbolic
+    'sinh': Node('sinh', 1, lambda c, input: tf.sinh(c[0].build(input))),
+    'cosh': Node('cosh', 1, lambda c, input: tf.cosh(c[0].build(input))),
+    'tanh': Node('tanh', 1, lambda c, input: tf.tanh(c[0].build(input))),
+    # Input
+    'x': Node('x', 0, lambda c, input: input)
+}
+
 
 def prelu(x):
     alpha = parse_node('l0')
@@ -201,6 +340,7 @@ def prelu(x):
     neg = alpha * (x - tf.abs(x)) * 0.5
     return pos + neg
 
+nodes = tf_nodes
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
