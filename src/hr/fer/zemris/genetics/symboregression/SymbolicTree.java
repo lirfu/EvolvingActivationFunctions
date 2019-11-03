@@ -92,8 +92,8 @@ public class SymbolicTree<I, O> extends Genotype<TreeNode<I, O>> {
     }
 
     @Override
-    public TreeNode<I, O> generateParameter(Random rand) {
-        return set_.getRandomNode();
+    public SymbolicTree<I, O> generateInstance(Random rand) {
+        return new SymbolicTree<>(set_, set_.getRandomNode());
     }
 
     /**

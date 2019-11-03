@@ -2298,7 +2298,7 @@ Stopa učenja & $10^{-3}$, $5 \cdot 10^{-4}$, $10^{-4}$
 
 Za svaku kombinaciju arhitekture i aktivacijske funkcije provedeno je pretraživanje hiperparametara po rešetci s usporedbom na skupu za validaciju. Skup za validaciju nastao je nasumičnim djeljenjem skupa za treniranje u omjeru $80:20$, a podjela skupa je konzistentna u svim mjerenjima u ovom radu. Zajednički i pretraživani hiperparametri navedeni su tablici \ref{tab:hp_common}. Navedeni su najbolji postignuti rezultati na netaknutom skupu za testiranje.
 
-\subsection{DPAv2}
+\subsection{Predikcija okteta na DPAv4}
 
 \begin{figure}[H]
 \includegraphics[width=\textwidth]{greedy_256_acc.pdf}
@@ -2338,7 +2338,7 @@ Arhitekture $[50-50-50]$ i $[50-50-50-50]$ imaju najlošije rezultate po svim fu
 
 \clearpage
 
-\subsection{DPAv4}
+\subsection{Predikcija Hammingove težine na DPAv4}
 \label{sec:greedy_dpav4}
 
 \begin{figure}[H]
@@ -2406,8 +2406,8 @@ Broj iteracija tabu diverzifikacije & 1000 \\
 
 Parametri evolucije su zajednički svim eksperimentima i dani su tablicom \ref{tab:gp_hiperparams}. Vrijednost veličine tabu liste je mijenjana po broju populacija (veličina je broj zapamćenih populacija pomnožen s brojem jedinki u populaciji). Za svaku veličinu tabu liste provedeno je 10 eksperimenata s različitim sjemenjima nasumičnog generatora ($s \in [42,51]$).
 
-\subsection{DPAv2}
-Na DPAv2 podatkovnom skupu pronađene su aktivacijske funkcije koje poboljšavaju generalizacijsku moć mreže u odnosu na popularne funkcije. Najbolja pronađena funkcija daje rezultate ekvivalentne najboljem rezultatu prethodnih eksperimenata za mrežu sa znatno više parametara ([500-500]). Najbolje pronađene funkcije (tablica \ref{tab:dpav2_top5}) sadrže periodičku komponentu (sinus ili kosinus).
+\subsection{Predikcija okteta na DPAv4}
+Pri predikciji okteta na podatkovnom skupu DPAv4 pronađene su aktivacijske funkcije koje poboljšavaju generalizacijsku moć mreže u odnosu na popularne funkcije. Najbolja pronađena funkcija daje rezultate ekvivalentne najboljem rezultatu prethodnih eksperimenata za mrežu sa znatno više parametara ([500-500]). Najbolje pronađene funkcije (tablica \ref{tab:dpav2_top5}) sadrže periodičku komponentu (sinus ili kosinus).
 
 \begin{table}[H]
 \begin{tabular}{lrrr}
@@ -2476,8 +2476,8 @@ U odnosu na najbolji rezultat prethodnih eksperimenata za korištenu arhitekturu
 \todo{Ne znam hoću li stići i ovo izvrtiti. Za najbolju prethodnu arhitekturu ću pronaći najbolji raspored uobičajenih fja po slojevima mreže (npr. sin-relu).}
 \fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{DPAv4}
-Na DPAv4 podatkovnom skupu najbolje pronađene aktivacijske funkcije daju rezultate ekvivalentne najboljem rezultatu prethodnih eksperimenata. Najbolje pronađene funkcije spomenute su u tablici \ref{tab:dpav4_top5}.
+\subsection{Predikcija Hammingove težine na DPAv4}
+Pri predikciji HAmmingove težine na DPAv4 podatkovnom skupu najbolje pronađene aktivacijske funkcije daju rezultate ekvivalentne najboljem rezultatu prethodnih eksperimenata. Najbolje pronađene funkcije spomenute su u tablici \ref{tab:dpav4_top5}.
 
 \begin{table}[H]
 \begin{tabular}{lrrr}
@@ -2576,13 +2576,13 @@ Na početku projekta isproban je TensorFlow API za Javu i napisan je mali demons
 \fi %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Zaključak}
-Potpuno povezane umjetne neuronske mreže korištene su za klasifikacijski zadatak predviđanja kriptografskog ključa iz naponskih mjerenja kriptografskog uređaja. Za mjerenja su korišteni podatkovni skupovi DPAv2 i DPAv4 s reduciranim brojem ulaznih značajki. Performanse mreža uspoređene su na nekoliko odabira arhitekture i aktivacijske funkcije te je korišten postupak izgradnje aktivacijske funkcije genetskim programiranjem.
+Potpuno povezane umjetne neuronske mreže korištene su za klasifikacijski zadatak predviđanja kriptografskog ključa iz naponskih mjerenja kriptografskog uređaja. Za mjerenja je korišten podatkovni skup DPAv4 s reduciranim brojem ulaznih značajki. Performanse mreža uspoređene su na nekoliko odabira arhitekture i aktivacijske funkcije te je korišten postupak izgradnje aktivacijske funkcije genetskim programiranjem.
 
 Pokazuje se da odabir aktivacijske funkcije utječe na performanse neuronske mreže. Najboljom funkcijom pokazala se sinusoida, rijetko korištena u modernoj literaturi dubokog učenja. Izgradnjom aktivacijskih funkcija pronađena su mala poboljšanja u svojstvu generalizacije mreže.
 
 Uvođenjem tabu liste u algoritam genetskog programiranja moguće je poboljšati kvalitetu pronađenih rješenja i usmjeriti postupak pretrage prema neistraženim rješenjima.
 
-Buduće istraživanje uključuje detaljniju analizu dobrih rezultata koje ostvaruju periodične aktivacijske funkcije na podatkovnim skupovima DPAv2 i DPAv4 te ispitivanje učinkovitosti algoritma s tabu listom na problemima simboličke regresije.
+Buduće istraživanje uključuje detaljniju analizu dobrih rezultata koje ostvaruju periodične aktivacijske funkcije na podatkovnim skupovima DPAv4 te ispitivanje učinkovitosti algoritma s tabu listom na problemima simboličke regresije.
 
 \bibliography{literatura}
 \bibliographystyle{fer}

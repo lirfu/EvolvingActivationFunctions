@@ -16,10 +16,15 @@ def will_occur(prob):
 class GA:
     def __init__(self, params, initializer, evaluator):
         self.params = params
-        self.initializer = params['initializer']
-        self.evaluator = params['evaluator']
-        self.stop_condition = StopCondition(params)
+        try:
+            self.initializer = params['initializer']
+            self.evaluator = params['evaluator']
+            self.stop_condition = StopCondition(params)
+        except KeyError:
+            print('')
+            return
 
+        self.population = []
         self.crossovers = []
         self.mutators = []
 

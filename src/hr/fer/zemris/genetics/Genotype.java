@@ -48,5 +48,5 @@ public abstract class Genotype<T> implements Comparable<Genotype<T>>, ISerializa
 
     public abstract Genotype copy();
 
-    public abstract T generateParameter(Random rand);
+    public abstract Genotype<T> generateInstance(Random rand);
 }
